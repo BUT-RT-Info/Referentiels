@@ -142,6 +142,22 @@ for r in RESSOURCES:
     if r.code:
         r.nom = DATA_RESSOURCES[r.semestre][r.code]
 
+    # Remet en forme les ACs
+    acs = r.apprentissages
+    if len(acs) != 3:
+        __LOGGER.warning(f"Problème dans le nombre de compétences de {r.nom}")
+    for comp in range(3):
+        donnees = acs[comp] # chaine de caractères listant les ACS
+        # donnees = donnees.replace("\t", "").replace("-", "") # supprime les tabulations
+        acs_avec_code = devine_acs_by_code(donnees)
+        acs_avec_nom = devine_acs_by_nom(donnees)
+        acs_finaux = sorted(list(set(acs_avec_code + acs_avec_nom)))
+        r.apprentissages[comp] = acs_finaux
+
+# ************************************************************************
+# Affichages divers
+
+
 # Bilan des heures & Calcul somme des heures
 ligne = "{:20s} | {:75s} | {:10s} | {:10s} |"
 trait = "-"*len(ligne.format("", "", "", ""))
