@@ -1,5 +1,7 @@
 import string
 import logging
+import re
+
 __LOGGER = logging.getLogger(__name__)
 
 class Ressource():
@@ -33,4 +35,13 @@ def nettoie_heure(champ):
         heure = champs[0].split("h")[0]
         return int(heure)
 
+def nettoie_code(champ):
+    """Recherche les codes ressources de la forme RXXX dans champ"""
+    codes = re.findall(r"(R[0-9][0-9][0-9])", champ)
+    if len(codes) > 1:
+        __LOGGER.warning("plusieurs codes trouvés :(")
+    elif len(codes) == 0:
+        __LOGGER.warning("code manquant")
+    else:
+        return codes[0]
 
