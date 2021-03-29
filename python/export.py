@@ -116,11 +116,15 @@ print(f"{nbre_ressources} ressources")
 # Post traitement des ressources => gestion des heures
 for r in RESSOURCES:
     # Nettoie le champ heures_encadrees
-    print(r.nom)
+    # print(r.nom)
     if r.heures_encadrees:
         r.heures_encadrees = nettoie_heure(r.heures_encadrees)
     if r.tp:
         r.tp = nettoie_heure(r.tp)
-    print(r.heures_encadrees, r.tp)
+    # print(r.heures_encadrees, r.tp)
 
 # Calcul somme des heures
+heures_formation_total = sum([r.heures_encadrees for r in RESSOURCES if r.heures_encadrees != None])
+print("Heures de formation totales renseignées :", heures_formation_total)
+heures_tp_total = sum([r.tp for r in RESSOURCES if r.tp != None])
+print("Heures de TP renseignées :", heures_tp_total)
