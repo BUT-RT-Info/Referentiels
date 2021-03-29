@@ -6,7 +6,7 @@ import logging
 __LOGGER = logging.getLogger(__name__)
 
 REPERTOIRE = "import"
-DOCUMENT = "000 compilation-ressources 2021-03-26T15_23_09.133Z"
+DOCUMENT = "000 compilation-ressources 2021-03-29T11_19_03.259Z"
 
 # Ouverture du document
 docu = docx2python.docx2python(REPERTOIRE + "/" + DOCUMENT + ".docx")
@@ -26,6 +26,15 @@ def get_indice(champ):
             return i
     return None
 
+def get_indice_sans_accent_ni_espace(champ):
+    """Récupère l'indice d'une entête en se débarrassant des majuscules/caractères spéciaux/espace"""
+    champ_purge = supprime_accent_espace(champ)
+    for (i, entete) in enumerate(ENTETES):
+        entete_purge = supprime_accent_espace(entete)
+        if entete_purge in champ_purge:
+            return i
+    return None
+
 
 """
 Format du parsing issu de docx2python
@@ -35,9 +44,9 @@ Format du parsing issu de docx2python
             [  # table A cell 1  <-- structure des tableaux
 """
 
-RESSOURCES = [] # la liste des ressources
+liste_ressources = [] # la liste des ressources telle qu'extrait du docx
+print("*Etape 1* : Parsing")
 
-__LOGGER.warning("Parsing")
 for i in range(2, len(docu)): # A priori un tableau
     est_ressource = False
     try:
@@ -53,7 +62,7 @@ for i in range(2, len(docu)): # A priori un tableau
 
         # Création de la ressource
         r = Ressource(nom_ressource, res)
-        RESSOURCES.append(r)
+        liste_ressources.append(r)
 
         # if len(res) != 15:
             # __LOGGER.warning(f"Champs en trop ou manquants dans \"{nom_ressource}\"")
@@ -66,12 +75,12 @@ for i in range(2, len(docu)): # A priori un tableau
             ligne = res[j]
             if len(ligne) == 2: # ligne de données classique champ => valeur
                 champ = ligne[0][0] # le nom du champ
-                i = get_indice(champ)  # l'indice de l'entete dans ENTETES
+                i = get_indice_sans_accent_ni_espace(champ)  # l'indice de l'entete dans ENTETES
                 if i != None:
                     data[i] = "\n".join(res[j][1])
                     if champ == "Prérequis" and not data[i]:
                         data[i] = "aucun"
-                        __LOGGER.warning(f"Dans {nom_ressource}, complète les prérequis à \"aucun\"")
+                        print(f"Dans {nom_ressource}, complète les prérequis à \"aucun\"")
                 else:
                     non_interprete.append((champ, ligne[1][0]))
             else: # ligne de données soit chapeau (ex Compétences ciblées) soit détail par compétence
@@ -84,12 +93,15 @@ for i in range(2, len(docu)): # A priori un tableau
 
         if non_interprete: # souvent Heures de formation (incluant les TP)
 
-            indice_champ = [chp[0] for chp in non_interprete].index("Heures de formation (incluant les TP)")
+            try:
+                indice_champ = [chp[0] for chp in non_interprete].index("Heures de formation (incluant les TP)")
+            except:
+                indice_champ = -1
             if indice_champ >= 0: # si le champ "Heures de formation (incluant les TP)" est trouvé
                 # tente de réinjecter les heures dans Heures encadrées si elles n'on pas déjà été renseignées
                 indice_heure = get_indice("formation encadrée")
                 if not data[indice_heure]:
-                    __LOGGER.warning(f"Dans \"{nom_ressource}\", réinjection de \"Heures de formation (incluant les TP)\" dans \"formation encadrée\"")
+                    print(f"Dans \"{nom_ressource}\", réinjection de \"Heures de formation (incluant les TP)\" dans \"formation encadrée\"")
                     data[indice_heure] = champ[1]
                     non_interprete = non_interprete[:indice_champ] + non_interprete[indice_champ+1:] # supprime le champ
 
@@ -114,9 +126,10 @@ print(f"{nbre_ressources} ressources")
 
 # ************************************************************************
 
-# Post traitement des ressources => gestion des heures
+# Post traitement des ressources => gestion des heures/des acs/ + tri par semestre
+ressources = {"S1" : [], "S2": []}
 
-for r in RESSOURCES:
+for r in liste_ressources:
     # Nettoie le champ heures_encadrees
     if r.heures_encadrees:
         r.heures_encadrees = nettoie_heure(r.heures_encadrees)
@@ -133,11 +146,17 @@ for r in RESSOURCES:
                 r.code = code_devine
 
     # Nettoie les semestres
-    if "1" in r.semestre:
-        r.semestre = "S1"
+    if r.semestre:
+        if "1" in r.semestre:
+            r.semestre = "S1"
+        elif "2" in r.semestre:
+            r.semestre = "S2"
+        else:
+            __LOGGER.warning(f"Dans \"{r.nom}, PAS de semestre => rattaché au S2")
+            r.semestre = "S2"
     else:
+        __LOGGER.warning(f"Dans \"{r.nom}, PAS de semestre => rattaché au S2")
         r.semestre = "S2"
-
     # Remet en forme le titre
     if r.code:
         r.nom = DATA_RESSOURCES[r.semestre][r.code]
@@ -154,23 +173,50 @@ for r in RESSOURCES:
         acs_finaux = sorted(list(set(acs_avec_code + acs_avec_nom)))
         r.apprentissages[comp] = acs_finaux
 
+    # Tri dans le bon semestre
+    ressources[r.semestre] += [r]
+
 # ************************************************************************
 # Affichages divers
 
 
-# Bilan des heures & Calcul somme des heures
+# Bilan des heures & Calcul somme des heures par semestre
 ligne = "{:20s} | {:75s} | {:10s} | {:10s} |"
 trait = "-"*len(ligne.format("", "", "", ""))
-print(trait, ligne.format("Code", "Ressource", "CM/TD", "TP"), trait, sep="\n")
-for r in RESSOURCES:
-    print(ligne.format(r.code if r.code else "MANQUANT",
-                       # r.nom[:30] + ("..." if len(r.nom) > 30 else "") ,
-                       r.nom,
-                       str(r.heures_encadrees) if r.heures_encadrees else "MANQUANT",
-                       str(r.tp) if r.tp else "MANQUANT"))
-heures_formation_total = sum([r.heures_encadrees for r in RESSOURCES if r.heures_encadrees != None])
-heures_tp_total = sum([r.tp for r in RESSOURCES if r.tp != None])
-print(trait, ligne.format("", "Total", str(heures_formation_total), str(heures_tp_total)), trait, sep="\n")
+
+for sem in ressources: # parcours des semestres
+    ressem = ressources[sem] # les ressources du semestre
+    print(f"Semestre {sem}")
+    print(trait, ligne.format("Code", "Ressource", "CM/TD", "TP"), trait, sep="\n")
+    for r in ressem:
+        print(ligne.format(r.code if r.code else "MANQUANT",
+                           # r.nom[:30] + ("..." if len(r.nom) > 30 else "") ,
+                           r.nom,
+                           str(r.heures_encadrees) if r.heures_encadrees else "MANQUANT",
+                           str(r.tp) if r.tp else "MANQUANT"))
+    heures_formation_total = sum([r.heures_encadrees for r in ressem if r.heures_encadrees != None])
+    heures_tp_total = sum([r.tp for r in ressem if r.tp != None])
+    print(trait, ligne.format("", "Total", str(heures_formation_total), str(heures_tp_total)), trait, sep="\n")
 
 
 
+# Matrice ACS/ressources
+matrices = {}
+les_codes_acs = [code for comp in DATA_ACS for code in DATA_ACS[comp]]
+nbre_acs = len(les_codes_acs)
+
+for sem in ressources:
+    ressem = ressources[sem] # les ressources du semestre
+    nbre_ressources_semestre = len(DATA_RESSOURCES[sem])
+    if len(ressem) != nbre_ressources_semestre:
+        __LOGGER.warning(f"Pb => il manque des ressources au {sem}")
+
+    matrices[sem] = [[False]*nbre_ressources_semestre]*nbre_acs
+    for (i, r) in enumerate(ressem): # pour chaque ressource
+        for comp in r.apprentissages: # pour chaque comp
+
+            for (j, ac) in enumerate(les_codes_acs): # pour chaque ac
+                if ac in r.apprentissages[comp]: # si l'ac est prévue dans la ressource
+                    matrices[r.semestre][j][i] = True
+
+print(matrices["S1"])

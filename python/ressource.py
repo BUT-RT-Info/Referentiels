@@ -34,6 +34,7 @@ class Ressource():
     def __str__(self):
         print(self.nom + " " + self.code)
 
+
 def nettoie_heure(champ):
     """Nettoie le champ (horaire) (de la forme 46h ou 33...) pour n'en extraire que la valeur numérique"""
     temp = champ.rstrip().lower()
