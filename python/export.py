@@ -132,9 +132,19 @@ ressources = {"S1" : [], "S2": []}
 for r in liste_ressources:
     # Nettoie le champ heures_encadrees
     if r.heures_encadrees:
-        r.heures_encadrees = nettoie_heure(r.heures_encadrees)
+        volumes = nettoie_heure(r.heures_encadrees)
     if r.tp:
         r.tp = nettoie_heure(r.tp)
+    if isinstance(volumes, int):
+        r.heures_encadrees = volumes
+    elif isinstance(volumes, tuple):
+        r.heures_encadrees = volumes[0]
+        if not r.tp:
+            r.tp = volumes[1]
+        elif r.tp != volumes[1]:
+            __LOGGER.warning(r"Dans {r.nom}, pb dans les heures tp/td")
+    else:
+        r.heures_encadrees = None
 
     # Nettoie les codes
     if r.code:
@@ -159,6 +169,8 @@ for r in liste_ressources:
         r.semestre = "S2"
     # Remet en forme le titre
     if r.code:
+        if supprime_accent_espace(r.nom) != supprime_accent_espace(DATA_RESSOURCES[r.semestre][r.code]):
+            __LOGGER.warning(r"Dans {r.nom}, pb dans le nom de la ressource : devient " + DATA_RESSOURCES[r.semestre][r.code])
         r.nom = DATA_RESSOURCES[r.semestre][r.code]
 
     # Remet en forme les ACs
@@ -187,7 +199,7 @@ trait = "-"*len(ligne.format("", "", "", ""))
 for sem in ressources: # parcours des semestres
     ressem = ressources[sem] # les ressources du semestre
     print(f"Semestre {sem}")
-    print(trait, ligne.format("Code", "Ressource", "CM/TD", "TP"), trait, sep="\n")
+    print(trait, ligne.format("Code", "Ressource", "Form.", "dont TP"), trait, sep="\n")
     for r in ressem:
         print(ligne.format(r.code if r.code else "MANQUANT",
                            # r.nom[:30] + ("..." if len(r.nom) > 30 else "") ,

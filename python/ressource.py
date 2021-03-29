@@ -37,13 +37,18 @@ class Ressource():
 
 def nettoie_heure(champ):
     """Nettoie le champ (horaire) (de la forme 46h ou 33...) pour n'en extraire que la valeur numérique"""
-    temp = champ.rstrip().lower()
-    champs = temp.split(" ")
-    if champs[0][0] not in string.digits:
-        __LOGGER.warning("champ heure non analysable/analyse")
-    else:
-        heure = champs[0].split("h")[0]
-        return int(heure)
+    try: # champ contenant uniquement un nbre d'heure
+        volumes = int(champ)
+        return volumes
+    except:
+        volumes = re.findall("(\d{2}\D|\d{1}\D)", champ)
+        if len(volumes) == 1:
+            return int(volumes[0][:-1])
+        elif len(volumes) == 2:
+            volumes = sorted(volumes, reverse=True)
+            return (int(volumes[0][:-1]), int(volumes[1][:-1]))
+        else:
+            __LOGGER.warning("Heures non détectées")
 
 def nettoie_code(champ):
     """Recherche les codes ressources de la forme RXXX dans champ"""
