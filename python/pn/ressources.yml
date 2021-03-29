@@ -16,7 +16,7 @@ S1:
   R115: "Gestion de projet"
 S2:
   R201: "Technologie de l'Internet"
-  R202: "Administration système"
+  R202: "Administration système et fondamentaux de la virtualisation"
   R203: "Bases des services réseaux"
   R204: "Initiation à la téléphonie d'entreprise"
   R205: "Signaux et Systèmes pour les transmissions"
@@ -25,7 +25,7 @@ S2:
   R208: "Analyse et traitement de données structurées"
   R209: "Initiation au développement Web"
   R210: "Développement de l'anglais technique"
-  R211: "Expression-Culture-Communication Professionnelles 2"
+  R211: "Expression-Culture-Communication Professionnelles (ECC2)"
   R212: "PPP: Formalisation du projet"
   R213: "Mathématiques des systèmes numériques"
   R214: "Analyse des signaux"

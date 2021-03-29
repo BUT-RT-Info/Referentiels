@@ -14,6 +14,7 @@ with open("pn/acs.yml", 'r', encoding="utf8") as fid:
     DATA_ACS = yaml.load(fid.read(), Loader=yaml.Loader)
 
 class Ressource():
+    """Classe modélisant les ressources"""
     def __init__(self, nom, brute):
         self.nom = nom
         self.brute = brute # les données brutes de la ressource
@@ -36,7 +37,9 @@ class Ressource():
 
 
 def nettoie_heure(champ):
-    """Nettoie le champ (horaire) (de la forme 46h ou 33...) pour n'en extraire que la valeur numérique"""
+    """Nettoie le champ (horaire) (de la forme 46h ou 33...) pour en extraire la valeur numérique :
+    le champ peut contenir 2 volumes (heures formation puis heures tp), auquel cas les 2 valeurs sont renvoyées
+    dans un tuple"""
     try: # champ contenant uniquement un nbre d'heure
         volumes = int(champ)
         return volumes
@@ -47,8 +50,8 @@ def nettoie_heure(champ):
         elif len(volumes) == 2:
             volumes = sorted(volumes, reverse=True)
             return (int(volumes[0][:-1]), int(volumes[1][:-1]))
-        else:
-            __LOGGER.warning("Heures non détectées")
+        #else:
+            #__LOGGER.warning("Heures non détectées")
 
 def nettoie_code(champ):
     """Recherche les codes ressources de la forme RXXX dans champ"""

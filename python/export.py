@@ -170,8 +170,10 @@ for r in liste_ressources:
     # Remet en forme le titre
     if r.code:
         if supprime_accent_espace(r.nom) != supprime_accent_espace(DATA_RESSOURCES[r.semestre][r.code]):
-            __LOGGER.warning(r"Dans {r.nom}, pb dans le nom de la ressource : devient " + DATA_RESSOURCES[r.semestre][r.code])
+            __LOGGER.warning(f"Dans \"{r.nom}\", pb dans le nom de la ressource : devient " + DATA_RESSOURCES[r.semestre][r.code])
         r.nom = DATA_RESSOURCES[r.semestre][r.code]
+
+
 
     # Remet en forme les ACs
     acs = r.apprentissages
@@ -223,12 +225,25 @@ for sem in ressources:
     if len(ressem) != nbre_ressources_semestre:
         __LOGGER.warning(f"Pb => il manque des ressources au {sem}")
 
-    matrices[sem] = [[False]*nbre_ressources_semestre]*nbre_acs
+    matrices[sem] = [ [False]*nbre_ressources_semestre for i in range(nbre_acs)]
+
     for (i, r) in enumerate(ressem): # pour chaque ressource
-        for comp in r.apprentissages: # pour chaque comp
+        for comp in range(len(r.apprentissages)): # pour chaque comp
 
             for (j, ac) in enumerate(les_codes_acs): # pour chaque ac
                 if ac in r.apprentissages[comp]: # si l'ac est prévue dans la ressource
                     matrices[r.semestre][j][i] = True
 
-print(matrices["S1"])
+    print("Matrice du semestre " + sem)
+    ligne = "{:20s} | " + "{:4s} | "*nbre_ressources_semestre
+    valeurs = ("" for i in range(nbre_ressources_semestre+1))
+    trait = "-"*len(ligne.format(*valeurs))
+    # print(matrices["S1"])
+    valeurs = [""] + [r.code if r.code else "????" for r in ressem] + [""]*(nbre_ressources_semestre-len(ressem))
+    valeurs = tuple(valeurs)
+    print(ligne.format(*valeurs), trait, sep="\n")
+    for (j, ac) in enumerate(les_codes_acs):
+        valeurs = [ac] + [("X" if matrices[sem][j][i] == True else "") for i in range(nbre_ressources_semestre)]
+        valeurs = tuple(valeurs)
+        print(ligne.format(*valeurs))
+
