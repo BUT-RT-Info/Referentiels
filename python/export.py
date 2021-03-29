@@ -1,5 +1,5 @@
 
-import docx2python
+import docx2python, yaml
 from ressource import *
 
 import logging
@@ -110,29 +110,51 @@ for i in range(2, len(docu)): # A priori un tableau
         r.charge_informations(*info)
         r.charge_ac(apprentissages)
 # fin du parsing
-
 print(f"{nbre_ressources} ressources")
 
+# ************************************************************************
+
 # Post traitement des ressources => gestion des heures
+
 for r in RESSOURCES:
     # Nettoie le champ heures_encadrees
     if r.heures_encadrees:
         r.heures_encadrees = nettoie_heure(r.heures_encadrees)
     if r.tp:
         r.tp = nettoie_heure(r.tp)
+
     # Nettoie les codes
     if r.code:
         r.code = nettoie_code(r.code)
+        if not r.code: # Recherche le code dans les ressources
+            code_devine = get_code_from_nom(r)
+            if code_devine:
+                __LOGGER.warning(f"Dans \"{r.nom}\", remplace le code par {code_devine}")
+                r.code = code_devine
+
+    # Nettoie les semestres
+    if "1" in r.semestre:
+        r.semestre = "S1"
+    else:
+        r.semestre = "S2"
+
+    # Remet en forme le titre
+    if r.code:
+        r.nom = DATA_RESSOURCES[r.semestre][r.code]
 
 # Bilan des heures & Calcul somme des heures
-ligne = "{:20s} | {:35s} | {:10s} | {:10s} |"
+ligne = "{:20s} | {:75s} | {:10s} | {:10s} |"
 trait = "-"*len(ligne.format("", "", "", ""))
 print(trait, ligne.format("Code", "Ressource", "CM/TD", "TP"), trait, sep="\n")
 for r in RESSOURCES:
     print(ligne.format(r.code if r.code else "MANQUANT",
-                       r.nom[:30] + ("..." if len(r.nom) > 30 else "") ,
+                       # r.nom[:30] + ("..." if len(r.nom) > 30 else "") ,
+                       r.nom,
                        str(r.heures_encadrees) if r.heures_encadrees else "MANQUANT",
                        str(r.tp) if r.tp else "MANQUANT"))
 heures_formation_total = sum([r.heures_encadrees for r in RESSOURCES if r.heures_encadrees != None])
 heures_tp_total = sum([r.tp for r in RESSOURCES if r.tp != None])
 print(trait, ligne.format("", "Total", str(heures_formation_total), str(heures_tp_total)), trait, sep="\n")
+
+
+
