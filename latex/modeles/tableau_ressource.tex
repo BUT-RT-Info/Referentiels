@@ -1,0 +1,144 @@
+
+% Les formats de colonnes
+\newcolumntype{P}{>{}m{3.6cm}<{}}
+\newcolumntype{Q}{>{}m{4.6cm}<{}} % 4.1 pour équiréparti
+\newcolumntype{C}{>{}p{5.555cm}<{}}
+\newcolumntype{T}{>{}p{13.325cm}<{}} % 12.825cm
+
+% Compteur de ligne pour les tableaux
+\newcounter{noligne}
+
+% Tableau des apprentissages critiques
+\newcommand*{\tableauAC}[2]{%
+\begin{tabular}[t]{@{}C@{}}%
+	\xdef\CODE{#1} % le code de la ressource sous la forme AA
+	\xdef\COMP{#2} % le code de la compétence sous la forme A
+	
+  \forLoop{1}{\value{cptressourceac\CODE\COMP}}{noligne}{
+		\xdef\contenu{{\csname ressourceaccode\CODE\COMP\Alph{noligne}\endcsname} | {\csname ressourceacname\CODE\COMP\Alph{noligne}\endcsname}}
+		\contenu			
+   \tabularnewline %
+   }
+\end{tabular}%
+}%
+
+% Tableau des SAE
+\newcommand*{\tableauSAE}[1]{%
+	\xdef\CODE{#1} % le code de la ressource sous la forme AA
+		\ifthenelse{\equal{\value{cptressourcesae\CODE}}{0}}{ % Si pas de prérequis
+		Aucune
+		}{
+		\begin{tabular}[t]{@{}T@{}}%
+			\forLoop{1}{\value{cptressourcesae\CODE}}{noligne}{
+						\xdef\contenu{{\csname ressourcesaecode\CODE\Alph{noligne}\endcsname} | {\csname ressourcesaename\CODE\Alph{noligne}\endcsname}}
+				\contenu			
+			 \tabularnewline %
+			 }
+		\end{tabular}%
+	}
+}%
+
+% Tableau des pré-requis
+\newcommand*{\tableauPrerequis}[1]{%
+	\xdef\CODE{#1} % le code de la ressource sous la forme AA
+	\ifthenelse{\equal{\value{cptressourceprerequis\CODE}}{0}}{ % Si pas de prérequis
+Aucun
+}{ % Si des pré-requis
+\begin{tabular}[t]{@{}T@{}}%
+
+  \forLoop{1}{\value{cptressourceprerequis\CODE}}{noligne}{
+				\xdef\contenu{{\csname ressourceprerequiscode\CODE\Alph{noligne}\endcsname} | {\csname ressourceprerequisname\CODE\Alph{noligne}\endcsname}}
+		\contenu			
+   \tabularnewline %
+   }
+\end{tabular}%
+}
+}%
+
+% Tableau du descriptif detaillé
+\newcommand*{\tableauDescriptif}[1]{%
+	\xdef\CODE{#1} % le code de la ressource sous la forme AA
+	
+	\begin{tabular}[t]{@{}T@{}} 
+	{\bfseries Ancrage et contexte professionnel :} \\
+	\csname ressourceancrage\CODE\endcsname \\
+	{\bfseries Contenus :} \\
+	\csname ressourcecontenudetaille\CODE\endcsname
+	\end{tabular}
+}
+
+		%\begin{list}{$\bullet$}{\topsep=0pt \partopsep=0pt \parsep=0pt \itemsep=0pt \leftmargin=1em \itemindent=0em}
+			
+
+
+
+% Le tableau complet
+\newcommand\tableauRessource[1]{
+
+\xdef\CODE{#1} % code de la ressource (par ex: AA avec A=1er semestre, A=1ère ressource)
+
+
+\setlength{\tabcolsep}{0.125cm} % Marge des colonnes
+\setlength{\extrarowheight}{5pt} % Marge des lignes
+
+% 1er tableau : Nom/Code/Heures
+\begin{tabular}[t]{|P|Q|P|Q|}
+\hline % 1ère ligne
+	{\bfseries Ressource} 
+	& \multicolumn{3}{l|}{\bfseries \csname ressourcename\CODE\endcsname} \\
+\hline % 2ème ligne
+	{\bfseries Code} 
+	& \csname ressourcecode\CODE\endcsname 
+	& {\bfseries Semestre} 
+	& \csname ressourcesem\CODE\endcsname \\
+\hline % 3ème ligne Heures
+{ \setlength{\extrarowheight}{0pt}
+	\begin{tabular}[t]{@{}Q@{}} \bfseries Heures de formation \\ \bfseries encadrées \end{tabular}
+} 
+& {\csname ressourcetraining\CODE\endcsname}h 
+& {\bfseries dont heures de TP} 
+& {\csname ressourcetp\CODE\endcsname}h \\
+\hline
+\end{tabular}
+
+% 2ème tableau : compétences et apprentissages critiques
+\begin{tabular}[t]{|C|C|C|}
+\hline
+\multicolumn{3}{|c|}{\bfseries Compétence(s) ciblées et apprentissage(s) critique(s) couvert(s)} \\
+\hline
+	\textit{\csname ressourcecomp\CODE A\endcsname} | {\csname ressourcecompniveau\CODE A\endcsname} 
+	&
+	\textit{\csname ressourcecomp\CODE B\endcsname} | {\csname ressourcecompniveau\CODE B\endcsname} 
+	&
+	\textit{\csname ressourcecomp\CODE C\endcsname} | {\csname ressourcecompniveau\CODE C\endcsname} 
+\\
+\hline % AC de RT1
+{\tableauAC{\CODE}{A}
+}
+& % AC de RT2
+{\tableauAC{\CODE}{B}
+}
+& % AC de RT3
+{\tableauAC{\CODE}{C}
+}
+\\
+\hline
+\end{tabular}
+
+% 3ème tableau : SAE, descriptif
+\begin{tabular}[t]{|P|T|}
+\hline
+{\bfseries SAÉ concernée(s) } & \tableauSAE{\CODE} \\
+\hline
+{\bfseries Prérequis} & \tableauPrerequis{\CODE} \\
+\hline
+{\bfseries Descriptif détaillé } & \tableauDescriptif{\CODE} \\
+\hline
+{\bfseries Mots-clés} & {\csname ressourcemotscles\CODE\endcsname} \\
+\hline
+
+\end{tabular}
+
+
+
+} % Fin de la commande

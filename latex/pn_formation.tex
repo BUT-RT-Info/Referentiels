@@ -1,0 +1,100 @@
+\documentclass[11pt,mathserif]{article} % mathserif
+
+%\usepackage[T1]{fontenc}
+\usepackage[LUC,T2A,T1]{fontenc}%
+%\usepackage[utf8x]{inputenc}%
+\usepackage[utf8]{inputenc}
+\usepackage{arev}
+\usepackage{tgtermes,tgadventor} % https://tug.org/FontCatalogue/seriffonts.html
+\usepackage[condensed]{tgheros}
+\usepackage{bookmark}
+\usepackage{textcomp}
+\usepackage{colortbl}%
+\usepackage{etoolbox}
+\usepackage[french]{babel}
+\usepackage{hyperref}
+\usepackage{array} % Pour les tableaux
+\usepackage{multicol}
+\usepackage{geometry}
+\usepackage{forloop}
+\usepackage{xparse}
+\usepackage{enumitem}
+\setlist{leftmargin=1em,topsep=0pt,partopsep=0pt,itemsep=0pt,itemindent=0em}
+
+%\geometry{a4paper,left=25mm,right=25mm,top=25 mm,bottom=25mm} % landscape
+ \geometry{
+ a4paper,
+ % total={170mm,257mm},
+ left=10mm,
+ right=20mm,
+ top=15mm,
+bottom=15mm
+ }
+
+\usepackage{tikz}%
+\usetikzlibrary{calc,fit,shapes,arrows,shadows.blur}%
+\pgfdeclarelayer{background}%
+\pgfdeclarelayer{foreground}%
+\pgfsetlayers{background,main,foreground}%
+
+% ********************************************************
+% Macros et contrôle de l'affichage des mots-clés
+% \draft est defini pour la verison de travail avec annotations et table des matières
+\ifdef{\draft}{
+\usepackage[motscles]{macros_formations} % avec mots-clés
+}{
+\usepackage{macros_formations} % sans mots-clés
+}
+
+% ********************************************************
+\title{Référentiel de formation\\Spécialité : Réseaux et Télécommunications}
+
+%\institute{ACD R\&T}
+%\date{\today}
+%\author{(many people)}%
+% ********************************************************
+
+% Les macros
+\input{styles.tex}
+%\input{macros.tex}
+\input{feminisation-metiers.tex}
+% L'import du référentiel
+\input{referentiel_BUT1.tex}
+
+% Les macros pour affichage
+\input{modeles/tableau_ressource.tex}
+
+
+
+
+\begin{document}
+
+% Les listes
+\renewcommand{\labelitemi}{$\bullet$}
+\renewcommand{\labelitemii}{$\circ$}
+
+
+% ------ TABLE DES MATIERES (en version draft seulement)
+\ifdef{\draft}{
+	%\begin{frame}[plain]{}
+		%\frametitle{\Large Table des matières}
+		%\begin{columns}[t]
+			%\begin{column}{.5\textwidth}
+				%\tableofcontents[sections={1-3}]
+			%\end{column}
+			%\begin{column}{.5\textwidth}
+				%\tableofcontents[sections={4-5}]
+			%\end{column}
+		%\end{columns}
+	%\end{frame}
+}{}
+
+%\loopressourceacAAA
+%\tableauACD{AA}{A}
+
+ % \tableauAC{AA}{A}
+	
+\tableauRessource{AA}
+\tableauRessource{AB}
+
+\end{document}

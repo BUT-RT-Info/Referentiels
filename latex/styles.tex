@@ -1,0 +1,51 @@
+% *****************************************
+% COULEURS des parcours & des compétences
+% *****************************************
+\definecolor{titlebg}{HTML}{0d5769}
+\definecolor{bleuBUT}{HTML}{68BAC5}
+\definecolor{orangeBUT}{HTML}{FFB000}
+
+% Les couleurs de background des composantes
+\definecolor{compCA}{HTML}{C70000}
+\definecolor{compCB}{HTML}{FD904D}
+\definecolor{compCC}{HTML}{FFC000}
+\definecolor{compSA}{HTML}{90D146}
+\definecolor{compSB}{HTML}{031F3C}
+% ou
+%\definecolor{compSA}{HTML}{031F3C}
+%\definecolor{compSB}{HTML}{6612D0}
+
+% Les couleurs de texte
+\definecolor{compCAp}{HTML}{000000}
+\definecolor{compCBp}{HTML}{000000}
+\definecolor{compCCp}{HTML}{000000}
+\definecolor{compSAp}{HTML}{000000}
+%\definecolor{compSAp}{HTML}{FFFFFF}
+\definecolor{compSBp}{HTML}{FFFFFF}
+
+\definecolor{titlebg}{HTML}{07355f}
+\definecolor{titlefg}{HTML}{b4dee9}
+
+% ******************************************
+% Intitulés standards des niveaux
+% ******************************************
+% Les d° de transparences pour la background-color des niveaux
+\def\niveaufillA{10}
+\def\niveaufillB{45}
+\def\niveaufillC{80}
+\def\niveauinkA{0}
+\def\niveauinkB{0}
+\def\niveauinkC{100}
+\def\niveaupathA{50}
+\def\niveaupathB{75}
+\def\niveaupathC{100}
+
+
+% Espacement titres section de la table des matières
+\makeatletter
+\patchcmd{\beamer@sectionintoc}
+  {\vfill}
+  {\vskip 2ex}
+  {}
+  {}
+\makeatother  
