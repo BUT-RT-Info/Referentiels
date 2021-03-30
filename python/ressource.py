@@ -201,8 +201,8 @@ def devine_acs_by_code(champ):
     codes3 = re.findall(r"(AC[0-9][0-9][0-9]\D)", champ) # de code à 3 chiffres
     codes4 = re.findall(r"(AC0[0-9][0-9][0-9])", champ)
 
-    codes3 += [ "AC" + c[-3:] for c in codes4] # supprime le 0 des acs (codage AC0111)
-    return sorted(list(set(codes3)))
+    codes4 += [ "AC0" + c[-4:] for c in codes3] # ajoute les 0 manquants des acs (codage AC0111)
+    return sorted(list(set(codes4)))
 
 def devine_ressources_by_code(champ):
     """Recherche les codes ressources de la forme RXXX dans champ ;
@@ -287,7 +287,7 @@ def get_marqueurs(contenus):
         else:
             ajout = ""
         ligne = ligne.replace("\t","")[0].rstrip() # le marqueur en début de ligne (si 1 caractère)
-        if ligne[0] not in string.ascii_letters and ligne[0] != "É":
+        if ligne[0] not in string.ascii_letters and ligne[0] != "É" and ligne[0] != "/":
             marqueurs += [ajout + ligne[0]] # tous les symboles
 
     marqueurs_finaux = [] # tri les marqueurs en supprimant les doublons et en gardant un ordre (pour détecter les sous listes)
@@ -296,12 +296,16 @@ def get_marqueurs(contenus):
             marqueurs_finaux.append(m)
     return marqueurs_finaux
 
+def get_marqueur(ligne, marqueurs):
+    """Renvoie le marqueur qui marque le début d'une ligne parmi une liste de marqueurs recherchés"""
+    for m in marqueurs:
+        if ligne.startswith(m):
+            return m
+
 def nettoie_contenus(r):
     # suppression des \t
-    if r.code == "R107":
-        print("ici")
+    contenu = r.contenu.replace(" / ", "/")
 
-    contenu = r.contenu
     marqueurs_numeriques = get_marqueur_numerique(contenu)
     for m in marqueurs_numeriques: # remplace les marqueurs numériques
         contenu = contenu.replace(m, ">")
@@ -313,10 +317,7 @@ def nettoie_contenus(r):
 
     contenus_fin = contenus[:] # copie des ligne
 
-    def get_marqueur(ligne, marqueurs):
-        for m in marqueurs:
-            if ligne.startswith(m):
-                return m
+
 
     for (i, ligne) in enumerate(contenus):
         m = get_marqueur(ligne, marqueurs_finaux)
@@ -363,12 +364,41 @@ def convert_ressource_yml_to_latex(fichieryaml, fichierlatex, modele):
         prerequis = "\n".join(liste)
 
     # préparation du contexte
-    contexte = ressource["contexte"].replace("\n\n", "\n")
+    contexte = ressource["contexte"]
 
     # préparation du contenu
-    contenu = ressource["contenu"].replace("\n\n", "\n").split("\n")
-    marqueurs = get_marqueurs(contenu) # les marqueurs (des *)
-    contenu = "".join(contenu)
+    if ressource["code"] == "R107":
+        print("ici")
+
+    contenu = ressource["contenu"] #supprime les passages à la ligne
+    marqueurs = ["*", "\t*"] # les marqueurs de Markdown
+
+    for marq in marqueurs[::-1]:
+        premier_marqueur = False
+        contenu_balise = contenu.split("\n")
+        contenu_latex = []
+
+        for (i, ligne) in enumerate(contenu_balise): # pour le contenu latex actuel
+            un_marqueur = get_marqueur(ligne, [marq])
+            if un_marqueur: # le marqueur est trouvé
+                if premier_marqueur == False:
+                    contenu_latex.append("\\begin{itemize}")
+                    premier_marqueur = True
+                contenu_latex.append( ligne.replace(marq, "\\item"))
+            elif premier_marqueur == True: # le marqueur n'est plus trouvé
+                contenu_latex.append( ligne.replace(marq, "\\item"))
+                contenu_latex.append("\\end{itemize}")
+                premier_marqueur = False
+            else:
+                contenu_latex.append(ligne) # la ligne d'origine
+            if i == len(contenu_balise) -1 and premier_marqueur == True:
+                contenu_latex.append("\\end{itemize}")
+                premier_marqueur = True # ferme la dernière balise
+
+        # contenu_balise = contenu_latex[:]
+            contenu = "\n".join(contenu_latex) # stocke le contenu
+
+        contenu = "\n".join(contenu_latex)
 
     chaine = ""
     chaine = TemplateLatex(modlatex).substitute(code=ressource["code"],

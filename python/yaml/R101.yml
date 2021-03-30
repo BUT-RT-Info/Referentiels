@@ -1,8 +1,8 @@
 nom: Initiation aux réseaux informatiques
 code: R101
 semestre: 1
-heures_formation: '46'
-heures_tp: '24'
+heures_formation: 46
+heures_tp: 24
 acs:
 - - AC0113
   - AC0115

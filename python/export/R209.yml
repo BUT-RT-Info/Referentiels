@@ -4,15 +4,15 @@ semestre: 2
 heures_formation: '24'
 heures_tp: '15'
 acs:
-- - AC112
-  - AC114
+- - AC0112
+  - AC0114
 - []
-- - AC311
-  - AC312
-  - AC313
-  - AC314
-  - AC315
-  - AC316
+- - AC0311
+  - AC0312
+  - AC0313
+  - AC0314
+  - AC0315
+  - AC0316
 sae:
 - SAÉ23
 - SAÉ24
@@ -41,7 +41,7 @@ contenu: >-
   * Scripts côté serveur
   * Eléments d’interaction clientserveur (requête HTTP, URL, formulaire)
   * Interrogation d'un SGBD ou d'une API
-  * Sensibilisation à la sécurisation de sites : failles XSS / XSS stockée / injections
+  * Sensibilisation à la sécurisation de sites : failles XSS/XSS stockée/injections
   SQL
   L’utilisation de l’anglais est préconisée dans la documentation du code.
 motscles: Web; développement; algorithmes; SGBD; API; sécurité; environnement client-serveur.
