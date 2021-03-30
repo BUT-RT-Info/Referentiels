@@ -95,8 +95,15 @@ def affiche_bilan_heures(ressources, sem):
 
 
 def get_officiel_ressource_name_by_code(code):
-    """Pour un code valide, fournit le nom officiel de la ressource (sans conaissance du semestre)"""
+    """Pour un code valide, fournit le nom officiel de la ressource (sans connaissance du semestre)"""
     for sem in DATA_RESSOURCES:
         for rcode in DATA_RESSOURCES[sem]:
             if rcode==code:
                 return DATA_RESSOURCES[sem][code]
+
+def get_officiel_sae_name_by_code(code):
+    """Pour un code valide, fournit le nom officiel de la sae (sans connaissance du semestre)"""
+    for sem in DATA_SAES:
+        for rcode in DATA_SAES[sem]:
+            if rcode==code:
+                return DATA_SAES[sem][code]

@@ -49,7 +49,7 @@ class Ressource():
                 "heures_formation": self.str_heures_formations(),
                 "heures_tp": self.str_heures_tp(),
                 "acs": self.apprentissages,
-                "sae": "",
+                "sae": self.sae,
                 "prerequis": self.prerequis,
                 "contexte": folded(self.contexte),
                 "contenu": folded(self.contenu),
@@ -160,8 +160,11 @@ def nettoie_acs(r):
 
 def nettoie_sae(r):
     """Nettoie les sae en détectant les codes"""
-    print(r.sae)
-
+    SAE_avec_code = devine_sae_by_code(r.sae)
+    liste = [l.rstrip() for l in SAE_avec_code]
+    r.sae = liste
+    if not r.sae:
+        __LOGGER.warning(f"nettoie_sae: dans {r.nom} pas de SAE (:")
 
 def nettoie_prerequis(r):
     """Nettoie les prérequis (ressource) en les remplaçant par leur code de ressource"""
@@ -213,6 +216,14 @@ def devine_ressources_by_nom(donnees):
             nom_purge = supprime_accent_espace(DATA_RESSOURCES[sem][code])
             if nom_purge in donnees_purge:
                 codes += [code]
+    return sorted(list(set(codes)))
+
+def devine_sae_by_code(donnees):
+    """Partant d'une chaine de caractères, détermine les codes des SAE"""
+    codes = re.findall(r"(SAE\d\d)\D", donnees)
+    codes += re.findall(r"(SAÉ\d\d)\D", donnees)# de code à 3 chiffres
+    for (i, code) in enumerate(codes):
+        codes[i] = codes[i].replace("E", "É")
     return sorted(list(set(codes)))
 
 def split_description(r):
@@ -314,14 +325,12 @@ def convert_ressource_yml_to_latex(fichieryaml, fichierlatex, modele):
             comps.append( ajoutac % (accomp[no_ac], DATA_ACS["RT"+str(i+1)][accomp[no_ac]]) )
         compRT.append("\n".join(comps))
 
-        # ajoutsaes = "\\ajoutsae{%s}{%s}"
-        # compRT = []
-        # for i in range(len(self.apprentissages)):
-        #     comps = []
-        #     for ac in self.apprentissages[i]:
-        #         code = self.apprentissages[i]
-        #         comps.append(ajoutac % (code, DATA_ACS["RT" + str(i + 1)][code]))
-        #     compRT.append("\n".join(comps))
+    # Préparation des sae
+    ajoutsaes = "\\ajoutsae{%s}{%s}"
+    saesRT = []
+    for (i, sae) in enumerate(ressource["sae"]): # in range(len(self.apprentissages)):
+        saesRT.append(ajoutsaes % (sae, get_officiel_sae_name_by_code(sae)))
+    saes = "\n".join(saesRT)
 
     ajoutprerequis = "\\ajoutprerequis{%s}{%s}"
     prerequis = ""
@@ -341,7 +350,7 @@ def convert_ressource_yml_to_latex(fichieryaml, fichierlatex, modele):
                                                    compRT1=compRT[0],
                                                    compRT2=compRT[1],
                                                    compRT3=compRT[2],
-                                                   saes="",
+                                                   saes=saes,
                                                    prerequis=prerequis,
                                                    contexte=ressource["contexte"],
                                                    contenu=ressource["contenu"],

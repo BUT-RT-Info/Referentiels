@@ -198,5 +198,5 @@ for sem in ressources:
 for sem in ressources:
     for r in ressources[sem]:
         fichieryaml = "export/{}.yml".format(r.code)
-        fichierlatex = "latex/{}.txt".format(r.code)
+        fichierlatex = "latex/{}.tex".format(r.code)
         convert_ressource_yml_to_latex(fichieryaml, fichierlatex, "pn/modele_ressource.tex")
