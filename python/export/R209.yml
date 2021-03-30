@@ -2,7 +2,7 @@ nom: Initiation au développement Web
 code: R209
 semestre: 2
 heures_formation: '24'
-heures_tp: ???
+heures_tp: '15'
 acs:
 - - AC112
   - AC114
@@ -25,7 +25,6 @@ contexte: >-
   Le professionnel R&T peut être amené à développer, pour ses besoins personnels ou
   pour ses collaborateurs, un site Web (compétence RT3-Programmer), par exemple pour
   fournir une interface de présentation du réseau informatique. 
-
   Il doit en appréhender tous les éléments : il doit aussi bien connaître les protocoles
   de communication du Web que veiller à la sécurité de ceux-ci. Il doit également
   pouvoir accéder, traiter et afficher des informations provenant de différentes sources
@@ -34,25 +33,15 @@ contexte: >-
   
 contenu: >-
   * Introduction au protocole HTTP
-
   * Mise en forme de pages Web :
-
   	* Balises HTML avancées
-
   	* Structure d’une page avec son DOM
-
   	* CSS avancé ou Framework
-
   	* Initiation au dynamisme côté client (JavaScript, jQuery, …)
-
   * Scripts côté serveur
-
   * Eléments d’interaction clientserveur (requête HTTP, URL, formulaire)
-
   * Interrogation d'un SGBD ou d'une API
-
   * Sensibilisation à la sécurisation de sites : failles XSS / XSS stockée / injections
   SQL
-
   L’utilisation de l’anglais est préconisée dans la documentation du code.
-motscles: Web, Développement, Algorithmes, SGBD, API, Sécurité, Environnement client-serveur
+motscles: Web; développement; algorithmes; SGBD; API; sécurité; environnement client-serveur.

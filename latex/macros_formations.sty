@@ -47,10 +47,13 @@
 % \nouveausemestre{}
 \def\nouveausemestre#1{
 	\addtocounter{cptsemestre}{1} % Incrémente le compteur de semestre
+	
 	\setcounter{cptressource}{0} % RAZ du compteur de ressource
 	\setcounter{cptsae}{0}
 	
 	\def\currentsemestre{\Alph{cptsemestre}} % Lettre du semestre courant : A=1, B=2, ...
+	\newcounter{cptressource\currentsemestre} % le compteur des ressources dans le semestre
+	
 	\expandafter\def\csname semestrename\currentsemestre\endcsname{Semestre \arabic{cptsemestre}}
 	\expandafter\def\csname semestrenumero\currentsemestre\endcsname{\arabic{cptsemestre}}
 	
@@ -64,8 +67,8 @@
 % Déclaration de la ressource : 
 % \nouvelleressource{code_ressource}{intitule_ressource}
 \def\nouvelleressource#1#2{
-	\addtocounter{cptressource}{1} % Ajoute une compétence
-	
+	\addtocounter{cptressource}{1} % Ajoute une ressource (tous semestres confondu)
+	\addtocounter{cptressource\currentsemestre}{1} % Ajoute une ressource au semestre
 	\def\currentressource{\currentsemestre\Alph{cptressource}} % Ressource RAA = A pour semestre 1 puis A pour ressource n°1
 	\expandafter\xdef\csname ressourcecode\currentressource\endcsname{#1} % code
 	\expandafter\xdef\csname ressourcename\currentressource\endcsname{#2} % nom/intitule

@@ -2,7 +2,7 @@ nom: Mathématiques des systèmes numériques
 code: R213
 semestre: 2
 heures_formation: ???
-heures_tp: ???
+heures_tp: '6'
 acs:
 - - AC112
 - - AC212
@@ -12,33 +12,21 @@ sae:
 - SAÉ22
 - SAÉ23
 prerequis: Aucun
-contexte: >
+contexte: >-
+  Aucun
 contenu: >-
   * ) Suites, récurrence, signal numérique
-
   	*  raisonnement par récurrence
-
   	*  suites récurrentes
-
   	*  signal discret (exemples : Kronecker, échelon échantillonné…)
-
   	*  convergence d’une suite (opérations sur les limites)
-
   		* ) Vecteurs en D et 3D
-
   	*  définitions
-
   	*  opérations (addition et multiplication externe)
-
   	*  produit scalaire (lien avec la trigonométrie)
-
   	*  application au calcul d’une équation de droite
-
   			* ) Matrices et vecteurs
-
-  	* définition
-
-  	* Opérations
-
-  	* Résolutions de systèmes linéaires (pivot de Gauss)
-motscles: Suites, ensembles, vecteurs, matrices
+  	*  définition
+  	*  opérations
+  	*  résolutions de systèmes linéaires (pivot de Gauss)
+motscles: Suites; ensembles; vecteurs; matrices.

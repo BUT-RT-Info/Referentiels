@@ -25,31 +25,19 @@ contexte: >-
 contenu: >-
   En utilisant un langage de programmation, comme par exemple Python, les contenus
   suivants seront traités :
-
   * Notions d'algorithmique :
-
   	* Variables, types de base (nombres, chaînes, listes/tableaux).
-
   	* Structures de contrôle : tests, répétitions.
-
   	* Fonctions et procédures.
-
   	* Portée des variables.
-
   * Tests et corrections d’un programme.
-
   * Prise en main d’un environnement de programmation (éditeur, environnement de développement).
-
   * Prise en main de bibliothèques, modules, d'objets existants (appels de méthodes),
   …
-
   * Manipulation de fichiers texte.
-
   * Interaction avec le système d'exploitation et la ligne de commande : arguments,
   lancement de commandes.
-
   * Suivi de versions (git, svn, ...).
-
   L’utilisation de l’anglais est préconisée pour la documentation du code.
 motscles: Algorithmes, langages de programmation, méthodologie de développement, suivi
   de versions

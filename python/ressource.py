@@ -51,14 +51,15 @@ class Ressource():
                 "acs": self.apprentissages,
                 "sae": self.sae,
                 "prerequis": self.prerequis,
-                "contexte": folded(self.contexte),
-                "contenu": folded(self.contenu),
-                "motscles": self.mots
+                "contexte": folded(self.contexte).replace("\n\n", "\n"),
+                "contenu": folded(self.contenu).replace("\n\n", "\n"),
+                "motscles": self.mots if self.mots else ""
                 }
         # output = yaml.dump(dico, #Dumper=yaml.Dumper,
         #    sort_keys=False, allow_unicode=True)
         output = ruamel.yaml.dump(dico, Dumper=ruamel.yaml.RoundTripDumper,
                                   allow_unicode=True)
+        output = output.replace("\n\n", "\n")
         return output
 
 def nettoie_heure(r):
@@ -178,6 +179,10 @@ def nettoie_prerequis(r):
     else:
         r.prerequis = "Aucun"
 
+def nettoie_mots_cles(r):
+    mots = r.mots # .encode('utf8', 'ignore').decode('utf8')
+    mots = mots.replace(".", "")
+    r.mots = mots
 
 def get_code_from_nom(ressource):
     """Récupère le code d'une ressource d'après son nom en utilisant les noms officiels
@@ -236,26 +241,40 @@ def split_description(r):
         indicea = [ligne.startswith("Contexte et ") for ligne in champs].index(True)
 
     indicec = 0
-    contexte = ""
+    contexte = []
     if True in [ligne.startswith("Contenus") for ligne in champs]: # la ligne commençant par Contenus
         indicec = [ligne.startswith("Contenus") for ligne in champs].index(True)
     if indicea>=0:
-        contexte = "\n".join(champs[indicea+1:indicec]) # double \n pour passage en latex
+        contexte = champs[indicea+1:indicec]
     else:
-        contexte = "\n".join(champs[:indicec])
+        contexte = champs[:indicec]
+    # suppression des lignes vides
+    contexte = "\n".join(remove_ligne_vide(contexte))
+    # suppression des liens
+    contexte = remove_link(contexte)
+    if not contexte:
+        contexte = "Aucun"
     contenu = "\n".join(champs[indicec+1:])
+
 
     # sauvegarde des champs
     r.contexte = contexte
     r.contenu = contenu
 
+def remove_link(contenu):
+    liens = re.findall("(<a\s.*\">)", contenu)
+    for m in liens:
+        contenu = contenu.replace(m, "")
+    contenu = contenu.replace("</a>", "")
+    return contenu
+
 def remove_ligne_vide(contenus):
     """Supprime les lignes vides"""
-    return [c for c in contenus if c]
+    return [c for c in contenus if c.rstrip()]
 
 def get_marqueur_numerique(contenu):
     """Revoie la liste des marqueurs numériques"""
-    m = re.findall(r"(\d/|\d\s\))", contenu)
+    m = re.findall(r"(\d/|\d\s\)|\d\s/)", contenu)
     return m
 
 def get_marqueurs(contenus):
@@ -287,7 +306,7 @@ def nettoie_contenus(r):
     for m in marqueurs_numeriques: # remplace les marqueurs numériques
         contenu = contenu.replace(m, ">")
 
-    contenus = [ligne.rstrip().replace("--", "-") for ligne in r.contenu.split("\n")] # les contenus
+    contenus = [ligne.rstrip().replace("--", "-") for ligne in contenu.split("\n")] # les contenus
     contenus = remove_ligne_vide(contenus) # supprime les lignes vides
 
     marqueurs_finaux = get_marqueurs(contenus)
@@ -306,12 +325,13 @@ def nettoie_contenus(r):
             contenus_fin[i] = "\t" * pos + "* " + ligne.replace(m, "").replace("\t", "").rstrip()
 
     contenu = "\n".join(contenus_fin)
+    contenu = contenu.replace("\n\n", "\n")
 
     r.contenu = contenu
 
 def convert_ressource_yml_to_latex(fichieryaml, fichierlatex, modele):
-    contenu = get_modele(modele) #"pn/modele_ressource.tex")
-
+    modlatex = get_modele(modele) #"pn/modele_ressource.tex")
+    print(f"Export de {fichieryaml}")
     with open(fichieryaml, "r", encoding="utf8") as fid:
         yaml = ruamel.yaml.YAML()
         ressource = yaml.load(fid.read())
@@ -342,8 +362,16 @@ def convert_ressource_yml_to_latex(fichieryaml, fichierlatex, modele):
             liste.append(ajoutprerequis % (mod, get_officiel_ressource_name_by_code(mod)))
         prerequis = "\n".join(liste)
 
+    # préparation du contexte
+    contexte = ressource["contexte"].replace("\n\n", "\n")
+
+    # préparation du contenu
+    contenu = ressource["contenu"].replace("\n\n", "\n").split("\n")
+    marqueurs = get_marqueurs(contenu) # les marqueurs (des *)
+    contenu = "".join(contenu)
+
     chaine = ""
-    chaine = TemplateLatex(contenu).substitute(code=ressource["code"],
+    chaine = TemplateLatex(modlatex).substitute(code=ressource["code"],
                                                    nom=ressource["nom"],
                                                    heures_formation=ressource["heures_formation"],
                                                    heures_tp=ressource["heures_tp"],
@@ -351,12 +379,12 @@ def convert_ressource_yml_to_latex(fichieryaml, fichierlatex, modele):
                                                    compRT2=compRT[1],
                                                    compRT3=compRT[2],
                                                    saes=saes,
+                                                   motscles=ressource["motscles"],
                                                    prerequis=prerequis,
-                                                   contexte=ressource["contexte"],
-                                                   contenu=ressource["contenu"],
-                                                   motscles=ressource["motscles"]
-                                                   )
-
+                                                   contexte=contexte,
+                                                   contenu=contenu
+                                               )
+    chaine = chaine.replace("&", "\&")
     with open(fichierlatex, "w", encoding="utf8") as fid:
         fid.write(chaine)
 

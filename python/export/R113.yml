@@ -12,48 +12,30 @@ sae:
 - SAÉ13
 - SAÉ22
 prerequis: Aucun
-contexte: >
+contexte: >-
+  Aucun
 contenu: >-
   * ) Introduction aux signaux
-
   	*  graphe d’un signal
-
   	*  symétries : parité, imparité, ...
-
   	*  causalité, support temporel
-
   	*  équation de droite
-
   	*  fonction définie par morceaux (ex. : valeur absolue)
-
   	*  signaux de base : (ex. : porte, triangle, échelon, rampe…)
-
   	*  opérations sur les signaux : avance, retard, dilatation, amplification, offset
   (interprétation géométrique sur le graphe), somme de signaux
-
   Cette partie sera l’occasion de réviser les règles de calculs de base par l’intermédiaire
   du calcul d’images et d’antécédents.
-
   		* ) Éléments de trigonométrie
-
   	*  définition du radian
-
   	*  cercle trigonométrique
-
   	*  formules , , , et  et idem avec sinus
-
   	*  angles remarquables
-
   			* ) Signaux périodiques
-
   	*  période, fréquence, pulsation
-
   	*  signaux périodiques de base : créneau, dent de scie, sinus, cosinus...
-
   	*  fréquence/période/pulsation d’un signal dilaté, d’une combinaison linéaire de
   signaux périodiques
-
   	*  graphe des signaux avancés, retardés, dilatés…
-
   	*  graphe de  ,
 motscles: Signaux, signaux périodiques

@@ -16,24 +16,15 @@ prerequis:
 - R101
 contexte: >-
   --	Comprendre le fonctionnement des réseaux locaux basés sur la technologie Ethernet
-
   --	Configurer les équipements actifs constituant les réseaux locaux
-
-  On introduira des notions de sécurité informatique (les ressources associées aux
-  recommandations de l’ANSSI, CyberEdu, CyberMalveillance pourront servir de support)
 contenu: >-
   * Câblage réseaux
-
   * Différentes topologies physiques et logiques
-
   * Normalisation Ethernet 802 (802.1, 802.2, 802.3)
-
   * Commutation Ethernet : apprentissage des adresses MAC, diffusion, Broadcast.
-
   * Différents équipements actifs : commutateur, routeur, etc...
-
   * Configuration d'un réseau segmenté en VLAN, lien Multivlan, communication Intervlan,
-
   * Redondance et détection de boucles dans un réseau commuté: STP, RSTP….
-motscles: réseaux locaux, Ethernet, commutateurs, routeurs, VLAN, 802.1Q, 802.1P,
-  STP, RSTP
+  Sur chaque thème, faire le lien avec les notions de cybersécurité abordées en R101.
+motscles: Réseaux locaux, Ethernet, commutateurs, routeurs, VLAN, 802.1Q, 802.1P,
+  STP, RSTP.

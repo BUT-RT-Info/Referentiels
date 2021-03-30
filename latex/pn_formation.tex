@@ -92,7 +92,16 @@ bottom=15mm
 
  % \tableauAC{AA}{A}
 	
-\tableauRessource{AA}
-\tableauRessource{AB}
+\newcounter{noressource}
+
+% Les ressources du semestre 1
+\forLoop{1}{\value{cptressourceA}}{noressource}{
+	%A\Alph{noressource}
+	\tableauRessource{A\Alph{noressource}}
+	\newpage
+}
+
+%\tableauRessource{AA} 
+%\tableauRessource{AB}
 
 \end{document}

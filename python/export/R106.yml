@@ -7,12 +7,10 @@ acs:
 - - AC112
 - []
 - - AC311
-sae: []
+sae:
+- SAÉ24
 prerequis: Aucun
-contexte: >-
-  Cette ressource apporte le socle de connaissances et savoir-faire pour les compétences
-  de cœur de métier "Administrer les réseaux et l'Internet" (RT1) et " Créer des outils
-  et applications informatiques pour les R&T" (RT3)
+contexte: >2-
    Les systèmes informatiques et numériques sont au cœur de la spécialité Réseaux
   et Télécoms. Cette ressource vise tout d’abord à permettre la compréhension du codage
   et du stockage des données. Puis elle permet de comprendre de façon très fine le
@@ -20,11 +18,8 @@ contexte: >-
   d’exécution. Enfin elle permettra aux étudiants de relier ces systèmes au monde
   extérieur.
 contenu: >-
-  Codage des nombres, des caractères, des images.
-
-  Fonctions logiques - Logique combinatoire et séquentielle  - Notion d’ALU.
-
-  Structure d’un processeur - Différents types de mémoires.
-
-  Périphériques et entrées-sorties. Exemples GPIO,  liaison série, ...
-motscles: 'Nombres binaires - codage - Fonctions logiques - Processeur - ALU - '
+  * Codage des nombres, des caractères, des images.
+  * Fonctions logiques  Logique combinatoire et séquentielle   Notion d’ALU.
+  * Structure d’un processeur  Différents types de mémoires.
+  * Périphériques et entréessorties. Exemples GPIO,  liaison série.
+motscles: Nombres binaires, codage, fonctions logiques, processeur, ALU..

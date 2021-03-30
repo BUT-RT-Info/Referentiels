@@ -6,7 +6,7 @@ import logging
 __LOGGER = logging.getLogger(__name__)
 
 REPERTOIRE = "import"
-DOCUMENT = "000 compilation-ressources 2021-03-29T11_19_03.259Z"
+DOCUMENT = "000 compilation-ressources 2021-03-29T23_14_27.262Z"
 
 # Ouverture du document
 docu = docx2python.docx2python(REPERTOIRE + "/" + DOCUMENT + ".docx")
@@ -155,6 +155,7 @@ for r in liste_ressources:
     split_description(r)
     nettoie_contenus(r)
 
+    # Remet en forme les mots-clés
     # Tri dans le bon semestre
     ressources[r.semestre] += [r]
 
@@ -198,5 +199,5 @@ for sem in ressources:
 for sem in ressources:
     for r in ressources[sem]:
         fichieryaml = "export/{}.yml".format(r.code)
-        fichierlatex = "latex/{}.tex".format(r.code)
+        fichierlatex = "../latex/ressources/{}.tex".format(r.code)
         convert_ressource_yml_to_latex(fichieryaml, fichierlatex, "pn/modele_ressource.tex")

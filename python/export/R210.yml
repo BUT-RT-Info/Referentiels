@@ -2,38 +2,29 @@ nom: Anglais de communication et développement de l’anglais technique
 code: R210
 semestre: 2
 heures_formation: ???
-heures_tp: ???
+heures_tp: '30'
 acs:
 - - AC112
 - []
 - - AC316
-sae: []
+sae:
+- SAÉ21
+- SAÉ22
+- SAÉ23
+- SAÉ24
 prerequis: Aucun
-contexte: >
+contexte: >-
+  Aucun
 contenu: >-
-  Cette ressource apporte le socle de connaissances langagières pour les compétences
-  de cœur de métier "Administrer les réseaux et l'Internet" (RT1) et "Connecter les
-  entreprises et les usagers" (RT2). Elle contribue aussi à la compétence "Créer des
-  outils et applications informatiques pour les R&T" (RT3) à travers des mises en
-  situations, jeux de rôle, dialogues qui permettent la prise de parole en continu
-  et en interaction, en développant les compétences de compréhension dans un contexte
-  professionnel technique.
-
   Objectifs visés
-
   * Savoir structurer son discours oral et écrit (courriel, conversation téléphonique,
   visioconférence, réunion, débat)
-
   * Présenter son parcours professionnel à l’oral et à l’écrit (CV, lettre de motivation,
   entretien)
-
   * Analyser des problèmes et proposer des solutions
-
   * Faire un exposé technique
-
   * Développer le vocabulaire technique des domaines cibles
-
   * Extensions possibles : télécollaboration, télétandem, parcours international,
-  dispositif EMILE
-motscles: 'Anglais général et technique, Situations de communication professionnelle,
-  expression et compréhension  '
+  dispositif EMILE.
+motscles: Anglais général et technique, situations de communication professionnelle,
+  expression et compréhension.

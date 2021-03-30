@@ -2,7 +2,7 @@ nom: Analyse et traitement de données structurées
 code: R208
 semestre: 2
 heures_formation: '16'
-heures_tp: ???
+heures_tp: '10'
 acs:
 - []
 - []
@@ -26,31 +26,18 @@ contexte: >-
   apprentissages critiques mentionnés précédemment.
 contenu: >-
   * Structure d'un programme : arborescence de fichiers, modules et packages
-
   * Contexte d’exécution : programme principal vs script
-
   * Structure complexe de données :
-
   	* listes 2D, tableaux associatifs/dictionnaires
-
   	* notion de classes (instance, attributs, méthodes)
-
   * Manipulation de fichiers avancée :
-
   	* fichiers structurés (XML, CSV, JSON, YAML)
-
   	* gestion de l’arborescence par le code
-
   	* lecture/écriture de fichiers structurés
-
   	* notion de sérialisation
-
   	* notion de persistance des données
-
   * Initiation aux expressions régulières
-
   * Introduction au traitement des erreurs
-
   L’utilisation de l’anglais est préconisée dans la documentation du code.
 motscles: Algorithmes, langages de programmation, structure de données, méthodologie
   de développement, gestion de versions

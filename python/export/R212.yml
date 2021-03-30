@@ -2,25 +2,21 @@ nom: Projet Personnel et Professionnel
 code: R212
 semestre: 2
 heures_formation: ???
-heures_tp: ???
+heures_tp: '12'
 acs:
 - []
 - []
 - []
 sae: []
 prerequis: Aucun
-contexte: >
+contexte: >-
+  Aucun
 contenu: >-
   Se caractériser pour préparer son stage ou son alternance
-
   * Se présenter, se définir
-
   * Exprimer l’intérêt professionnel, valeurs, motivations, traits de personnalité,
   expériences professionnelles ou personnelles
-
   * Mettre en valeur et présenter son savoirêtre
-
   * Identifier ses compétences
-
   * Préciser et exprimer ses souhaits
 motscles: CV, lettre de motivation, entretien de recrutement, stage, alternance

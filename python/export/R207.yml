@@ -2,7 +2,7 @@ nom: Sources de données
 code: R207
 semestre: 2
 heures_formation: '20'
-heures_tp: ???
+heures_tp: '12'
 acs:
 - - AC112
 - []
@@ -15,19 +15,20 @@ acs:
 sae:
 - SAÉ23
 - SAÉ24
-prerequis: Aucun
+prerequis:
+- R107,
+- R109.
 contexte: >-
   Le professionnel R&T traite un grand nombre de données. Ces données (par exemple
   : l’annuaire des utilisateurs du réseau ou l’état des équipements informatiques)
   peuvent servir à la configuration et à l’administration des services réseau d’une
   entreprise (compétence RT1-Administrer) ou à alimenter les pages d’un site Web (compétence
   RT3-Programmer). Il est donc amené à stocker, organiser, gérer, protéger des données
-  provenant de différentes sources (thématiques intégrant le PIX, cf. <a href="https://pix.fr/competences">https://pix.fr/competences</a>),
+  provenant de différentes sources (thématiques intégrant le PIX, cf. https://pix.fr/competences),
   mais aussi à les traiter en développant différents outils informatiques pour ses
   besoins personnels ou pour son équipe (compétence RT3-Programmer). Plus largement,
   il contribue activement à l’exploitation et à la maintenance du système d’information
   de l’ entreprise. 
-
   Cette ressource introduit les éléments fondamentaux des systèmes de gestion de base
   de données en contribuant à la validation des apprentissages critiques mentionnés
   précédemment. Elle présente différentes alternatives technologiques pour le stockage
@@ -35,27 +36,16 @@ contexte: >-
   données utilise des langages et des scripts spécifiques qui seront introduits. 
 contenu: >-
   *  Stockage et accès aux données  :
-
-  * système de gestion de données (relationnel/non relationnel);
-
-  * structuration des données: fichiers (CSV, JSON), exemples de sources ouvertes
+  	* système de gestion de données (relationnel/non relationnel);
+  	* structuration des données: fichiers (CSV, JSON), exemples de sources ouvertes
   (open data), web scraping;
-
-  * sensibilisation à la réglementation française et internationale (CNIL, RGPD).
-
+  	* sensibilisation à la réglementation française et internationale (CNIL, RGPD).
   *  Base de données relationnelles :
-
-  * Schéma relationnel d'une base de données
-
-  * Sensibilisation aux contraintes d'intégrité
-
-  * Création de tables simples
-
-  * Interrogation de données
-
-  * Ajout et modification de données
-
+  	* Schéma relationnel d'une base de données
+  	* Sensibilisation aux contraintes d'intégrité
+  	* Création de tables simples
+  	* Interrogation de données
+  	* Ajout et modification de données
   *  Lecture d'une documentation technique (UML, diagramme de classes)
-
   L’utilisation de l’anglais est préconisée dans la documentation du code.
-motscles: Base de données, langages informatiques, algorithmes
+motscles: Base de données; langages informatiques; programmation; algorithmes.

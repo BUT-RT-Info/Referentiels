@@ -9,28 +9,24 @@ acs:
   - AC115
 - []
 - []
-sae: []
-prerequis: Aucun
+sae:
+- SAÉ21
+prerequis:
+- R101
+- R102
+- R108
 contexte: >-
   Cette ressource apporte les connaissances et compétences de base nécessaires à la
   mise en oeuvre des services réseaux  dans un système d’information 
 contenu: >-
   * Rappels sur les protocoles de transport (TCP, UDP)
-
   * Utilisation de ssh pour l’accès distant
-
-  * Principe, installation, configuration et tests des services:
-
+  * Principe, installation, configuration et tests des services :
   * DHCP
-
-  *  DNS (fonctions de base)
-
+  * DNS (fonctions de base)
   * HTTP
-
   * TFTP, FTP
-
   * NTP
-
   On introduira des notions de sécurité informatique (les ressources associées aux
-  recommandations de l’ANSSI, CyberEdu, CyberMalveillance pourront servir de support)
-motscles: 'Protocoles et ports applicatifs, '
+  recommandations de l’ANSSI, CyberEdu, CyberMalveillance pourront servir de support).
+motscles: Protocoles et ports applicatifs, services, systèmes d'exploitation.

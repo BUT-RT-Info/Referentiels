@@ -14,22 +14,16 @@ sae:
 - SAÉ21
 - SAÉ24
 prerequis: Aucun
-contexte: >
+contexte: >-
+  Aucun
 contenu: >-
   * Scripts pour l’automatisation de séquences de commandes
-
   * Gestions de processus et services (exemple: systemd)
-
   * Gestion de ressources utilisateurs (comptes, quotas)
-
   * Sauvegardes: principes et outils
-
   * Diagnostiquer un système (journaux, outils)
-
   * Concepts, architectures pour la virtualisation et la conteneurisation
-
   * Mise en oeuvre d’infrastructures de virtualisation
-
   * Introduction du Cloud
 motscles: "Systèmes d'exploitation, Linux, Windows, Scripts, Virtualisation, Conteneurisation,\
   \ Cybersécurité.\n"

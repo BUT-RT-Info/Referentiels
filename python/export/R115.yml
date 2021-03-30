@@ -13,36 +13,26 @@ sae:
 - SAÉ13
 - SAÉ14
 prerequis: Aucun
-contexte: >
+contexte: >-
+  Aucun
 contenu: >-
   * Partager de façon collective l’information :
-
   	* Utilisation avancée du mail : création d’une adresse générique, utilisation du
   CC et du CCI .
-
   	* Utilisation d’outils collaboratifs adaptés (par exemple Slack, MSTeams, Mattermost,
-  drive, OnlyOffice)
-
+  Google Drive, OnlyOffice)
   * Organiser son travail et celui de l’équipe à partir d’outils de planification
   (Gantt, PERT)
-
   * Prendre sa place dans une équipe en connaissant les différents rôles d’une équipe
   projet
-
   * Conceptualiser les étapes des tâches à réaliser à l’aide d’outils adaptés (cartes
   mentales, infographies, etc.)
-
   * Prendre  conscience des délais et échéances dans un travail en mode projet
-
   * Savoir s’adapter à des profils professionnels différents (manager, collaborateur,
   client) qui interviennent dans un projet
-
   * Apprendre à faire un bilan régulier sur l’avancée d’un projet : points bloquants,
   solutions apportées
-
   * Appliquer la critique constructive dans l’intérêt du projet
-
   * Organiser des réunions de projet
-
   * Présenter un projet selon les spécificités du projet et le public visé.
 motscles: Planification, partage d’informations, organisation, conceptualisation,  réunion.

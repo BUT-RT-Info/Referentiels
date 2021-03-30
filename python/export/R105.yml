@@ -8,16 +8,15 @@ acs:
 - - AC211
   - AC213
 - []
-sae: []
+sae:
+- SAÉ13
 prerequis: Aucun
 contexte: >-
   Il s’agit d’étudier les concepts fondamentaux des supports de transmission.  
 contenu: >-
   * Types de support de transmission (réseau d’entreprise, réseau opérateur)
-
   * Caractéristiques d’un ou plusieurs types de supports (exemples: retard de propagation,
   atténuation, continuité, échos, bruit, perturbations, identifier un défaut, bande
   passante,... ) à partir de mesures et d’analyse des signaux
-
-  * Prolongement possible : recettage, certification LAN, ...
-motscles: 'supports de transmission (fibre optique, cuivre, radio), mesures., '
+  * Prolongement possible : recettage, certification LAN.
+motscles: 'Supports de transmission (fibre optique, cuivre, radio), mesures. '
