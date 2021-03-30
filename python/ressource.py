@@ -61,45 +61,6 @@ class Ressource():
                                   allow_unicode=True)
         return output
 
-    def to_latex(self):
-        contenu = get_modele("pn/modele_ressource.tex")
-
-        ajoutac = "\\ajoutac{%s}{%s}"
-        compRT = []
-        for i in range(len(self.apprentissages)):
-            comps = []
-            for ac in self.apprentissages[i]:
-                comps.append( ajoutac % (ac, DATA_ACS["RT"+str(i+1)][ac]) )
-            compRT.append("\n".join(comps))
-
-        # ajoutsaes = "\\ajoutsae{%s}{%s}"
-        # compRT = []
-        # for i in range(len(self.apprentissages)):
-        #     comps = []
-        #     for ac in self.apprentissages[i]:
-        #         code = self.apprentissages[i]
-        #         comps.append(ajoutac % (code, DATA_ACS["RT" + str(i + 1)][code]))
-        #     compRT.append("\n".join(comps))
-
-        ajoutprerequis = "\\ajoutprerequis{%s}{%s}"
-        prerequis = ""
-
-        chaine = TemplateLatex(contenu).substitute(code=self.code,
-                                                   nom=self.nom,
-                                                   heures_formation=self.str_heures_formations(),
-                                                   heures_tp=self.str_heures_tp(),
-                                                   compRT1=compRT[0],
-                                                   compRT2=compRT[1],
-                                                   compRT3=compRT[2],
-                                                   saes="",
-                                                   prerequis=prerequis,
-                                                   contexte=self.contexte,
-                                                   contenu=self.contenu,
-                                                   motscles=self.mots
-                                                   )
-        return chaine
-
-
 def nettoie_heure(r):
     """Nettoie le champ (horaire) (de la forme 46h ou 33...) pour en extraire la valeur numérique :
     le champ peut contenir 2 volumes (heures formation puis heures tp), auquel cas les 2 valeurs sont renvoyées
@@ -319,7 +280,7 @@ def nettoie_contenus(r):
         for m in marqueurs:
             if ligne.startswith(m):
                 return m
-            
+
     for (i, ligne) in enumerate(contenus):
         m = get_marqueur(ligne, marqueurs_finaux)
         if m:
@@ -330,6 +291,49 @@ def nettoie_contenus(r):
 
     r.contenu = contenu
 
+def convert_ressource_yml_to_latex(fichieryaml, fichierlatex, modele):
+    contenu = get_modele(modele) #"pn/modele_ressource.tex")
+
+    with open(fichieryaml, "r", encoding="utf8") as fid:
+        yaml = ruamel.yaml.YAML()
+        ressource = yaml.load(fid.read())
+
+    # Préparation des ac
+    ajoutac = "\\ajoutac{%s}{%s}"
+    compRT = []
+    for (i, accomp) in enumerate(ressource["acs"]):
+        comps = []
+        for no_ac in range(len(accomp)): # les ac de la comp
+            comps.append( ajoutac % (no_ac, DATA_ACS["RT"+str(i+1)][accomp[no_ac]]) )
+        compRT.append("\n".join(comps))
+
+        # ajoutsaes = "\\ajoutsae{%s}{%s}"
+        # compRT = []
+        # for i in range(len(self.apprentissages)):
+        #     comps = []
+        #     for ac in self.apprentissages[i]:
+        #         code = self.apprentissages[i]
+        #         comps.append(ajoutac % (code, DATA_ACS["RT" + str(i + 1)][code]))
+        #     compRT.append("\n".join(comps))
+
+    ajoutprerequis = "\\ajoutprerequis{%s}{%s}"
+    prerequis = ""
+
+    chaine = ""
+    chaine = TemplateLatex(contenu).substitute(code=ressource["code"],
+                                                   nom=ressource["nom"],
+                                                   heures_formation=ressource["heures_formation"],
+                                                   heures_tp=ressource["heures_tp"],
+                                                   compRT1=compRT[0],
+                                                   compRT2=compRT[1],
+                                                   compRT3=compRT[2],
+                                                   saes="",
+                                                   prerequis=prerequis,
+                                                   contexte=ressource["contexte"],
+                                                   contenu=ressource["contenu"],
+                                                   motscles=ressource["motscles"]
+                                                   )
+    return chaine
 
 if __name__=="__main__":
     # Eléments de test
