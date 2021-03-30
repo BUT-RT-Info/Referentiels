@@ -53,7 +53,7 @@ class Ressource():
                 "contenu": self.contenu,
                 "motscles": self.mots
                 }
-        output = yaml.dump(dico, Dumper=yaml.Dumper, sort_keys=False)
+        output = yaml.dump(dico, Dumper=yaml.Dumper, sort_keys=False, allow_unicode=True)
         return output
 
     def to_latex(self):
