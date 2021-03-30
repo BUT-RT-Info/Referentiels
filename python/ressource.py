@@ -1,10 +1,7 @@
-import string
-import logging
 import re
-import yaml
-import unicodedata
 from officiel import *
 from modeles import *
+from officiel import supprime_accent_espace
 
 __LOGGER = logging.getLogger(__name__)
 
@@ -178,13 +175,6 @@ def nettoie_prerequis(r):
         r.prerequis = R_finaux
     else:
         r.prerequis = "Aucun"
-
-def supprime_accent_espace(chaine):
-    """Met en minuscule, supprime les accents, les ponctuations et les espaces"""
-    purge = chaine.lower().replace("'", "").replace("’", "")
-    purge = unicodedata.normalize('NFD', purge).encode('ascii', 'ignore').decode('ascii')
-    purge = purge.replace(" ", "")
-    return purge
 
 
 def get_code_from_nom(ressource):

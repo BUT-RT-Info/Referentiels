@@ -1,5 +1,5 @@
 
-import docx2python, yaml
+import docx2python
 from ressource import *
 
 import logging
@@ -192,33 +192,11 @@ les_codes_acs = [code for comp in DATA_ACS for code in DATA_ACS[comp]]
 nbre_acs = len(les_codes_acs)
 
 for sem in ressources:
-    ressem = ressources[sem] # les ressources du semestre
-    nbre_ressources_semestre = len(DATA_RESSOURCES[sem])
-    if len(ressem) != nbre_ressources_semestre:
-        __LOGGER.warning(f"Pb => il manque des ressources au {sem}")
+    # print("Matrice du semestre " + sem)
+    (matrices[sem], chaine) = get_matrices_ac_ressource(ressources, sem)
 
-    matrices[sem] = [ [False]*nbre_ressources_semestre for i in range(nbre_acs)]
-
-    for (i, r) in enumerate(ressem): # pour chaque ressource
-        for comp in range(len(r.apprentissages)): # pour chaque comp
-
-            for (j, ac) in enumerate(les_codes_acs): # pour chaque ac
-                if ac in r.apprentissages[comp]: # si l'ac est prévue dans la ressource
-                    matrices[r.semestre][j][i] = True
-
-    print("Matrice du semestre " + sem)
-    ligne = "{:20s} | " + "{:4s} | "*nbre_ressources_semestre
-    valeurs = ("" for i in range(nbre_ressources_semestre+1))
-    trait = "-"*len(ligne.format(*valeurs))
-    # print(matrices["S1"])
-    valeurs = [""] + [r.code if r.code else "????" for r in ressem] + [""]*(nbre_ressources_semestre-len(ressem))
-    valeurs = tuple(valeurs)
-    print(ligne.format(*valeurs), trait, sep="\n")
-    for (j, ac) in enumerate(les_codes_acs):
-        valeurs = [ac] + [("X" if matrices[sem][j][i] == True else "") for i in range(nbre_ressources_semestre)]
-        valeurs = tuple(valeurs)
-        print(ligne.format(*valeurs))
 
 for sem in ressources:
     for r in ressources[sem]:
-        print(r.to_latex())
+        pass
+        # print(r.to_latex())
