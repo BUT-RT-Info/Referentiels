@@ -130,69 +130,41 @@ print(f"{nbre_ressources} ressources")
 ressources = {"S1" : [], "S2": []}
 
 for r in liste_ressources:
+    # Nettoie titre
+    nettoie_titre(r)
+
     # Nettoie le champ heures_encadrees
-    if r.heures_encadrees:
-        volumes = nettoie_heure(r.heures_encadrees)
-    if r.tp:
-        r.tp = nettoie_heure(r.tp)
-    if isinstance(volumes, int):
-        r.heures_encadrees = volumes
-    elif isinstance(volumes, tuple):
-        r.heures_encadrees = volumes[0]
-        if not r.tp:
-            r.tp = volumes[1]
-        elif r.tp != volumes[1]:
-            __LOGGER.warning(r"Dans {r.nom}, pb dans les heures tp/td")
-    else:
-        r.heures_encadrees = None
+    nettoie_heure(r)
 
     # Nettoie les codes
-    if r.code:
-        r.code = nettoie_code(r.code)
-        if not r.code: # Recherche le code dans les ressources
-            code_devine = get_code_from_nom(r)
-            if code_devine:
-                __LOGGER.warning(f"Dans \"{r.nom}\", remplace le code par {code_devine}")
-                r.code = code_devine
+    nettoie_code(r)
 
     # Nettoie les semestres
-    if r.semestre:
-        if "1" in r.semestre:
-            r.semestre = "S1"
-        elif "2" in r.semestre:
-            r.semestre = "S2"
-        else:
-            __LOGGER.warning(f"Dans \"{r.nom}, PAS de semestre => rattaché au S2")
-            r.semestre = "S2"
-    else:
-        __LOGGER.warning(f"Dans \"{r.nom}, PAS de semestre => rattaché au S2")
-        r.semestre = "S2"
-    # Remet en forme le titre
-    if r.code:
-        if supprime_accent_espace(r.nom) != supprime_accent_espace(DATA_RESSOURCES[r.semestre][r.code]):
-            __LOGGER.warning(f"Dans \"{r.nom}\", pb dans le nom de la ressource : devient " + DATA_RESSOURCES[r.semestre][r.code])
-        r.nom = DATA_RESSOURCES[r.semestre][r.code]
-
-
+    nettoie_semestre(r)
 
     # Remet en forme les ACs
-    acs = r.apprentissages
-    if len(acs) != 3:
-        __LOGGER.warning(f"Problème dans le nombre de compétences de {r.nom}")
-    for comp in range(3):
-        donnees = acs[comp] # chaine de caractères listant les ACS
-        # donnees = donnees.replace("\t", "").replace("-", "") # supprime les tabulations
-        acs_avec_code = devine_acs_by_code(donnees)
-        acs_avec_nom = devine_acs_by_nom(donnees)
-        acs_finaux = sorted(list(set(acs_avec_code + acs_avec_nom)))
-        r.apprentissages[comp] = acs_finaux
+    nettoie_acs(r)
+
+    # Remet en forme les pré-requis
+    nettoie_prerequis(r)
+
+    # Remet en forme le descriptif
+    nettoie_description(r)
 
     # Tri dans le bon semestre
     ressources[r.semestre] += [r]
 
+# complète les codes d'après les numéros
+for sem in ressources:
+    for (i, r) in enumerate(ressources[sem]):
+        if not r.code:
+            if i == 0:
+                r.code = "R" + sem[1] + "01"
+            elif ressources[sem][i-1].code:
+                r.code = "R" + sem[1] + "{:02d}".format(int(ressources[sem][i-1].code[-2:])+1)
+
 # ************************************************************************
 # Affichages divers
-
 
 # Bilan des heures & Calcul somme des heures par semestre
 ligne = "{:20s} | {:75s} | {:10s} | {:10s} |"
@@ -247,3 +219,6 @@ for sem in ressources:
         valeurs = tuple(valeurs)
         print(ligne.format(*valeurs))
 
+for sem in ressources:
+    for r in ressources[sem]:
+        print(r.to_latex())
