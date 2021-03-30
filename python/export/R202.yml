@@ -1,0 +1,35 @@
+nom: Administration système et fondamentaux de la virtualisation
+code: R202
+semestre: 2
+heures_formation: ???
+heures_tp: '20'
+acs:
+- - AC113
+  - AC114
+  - AC115
+  - AC116
+- []
+- - AC311
+sae:
+- SAÉ21
+- SAÉ24
+prerequis: Aucun
+contexte: >
+contenu: >-
+  * Scripts pour l’automatisation de séquences de commandes
+
+  * Gestions de processus et services (exemple: systemd)
+
+  * Gestion de ressources utilisateurs (comptes, quotas)
+
+  * Sauvegardes: principes et outils
+
+  * Diagnostiquer un système (journaux, outils)
+
+  * Concepts, architectures pour la virtualisation et la conteneurisation
+
+  * Mise en oeuvre d’infrastructures de virtualisation
+
+  * Introduction du Cloud
+motscles: "Systèmes d'exploitation, Linux, Windows, Scripts, Virtualisation, Conteneurisation,\
+  \ Cybersécurité.\n"

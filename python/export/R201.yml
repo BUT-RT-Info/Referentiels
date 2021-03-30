@@ -1,0 +1,33 @@
+nom: Technologies de l’Internet
+code: R201
+semestre: 2
+heures_formation: ???
+heures_tp: '30'
+acs:
+- - AC113
+  - AC115
+  - AC116
+- - AC213
+- - AC311
+sae:
+- SAÉ21
+- SAÉ24
+prerequis:
+- R101
+- R102
+- R103
+contexte: >-
+  On introduira des notions de sécurité informatique (les ressources associées aux
+  recommandations de l’ANSSI, CyberEdu, CyberMalveillance pourront servir de support)
+contenu: >-
+  * Protocole et adressage IPv4&6,
+
+  * Traduction d'adresses (NAT/PAT),
+
+  * Routage statique et routage dynamique (OSPF),
+
+  * TCP, UDP,
+
+  * Politiques de filtrage ACL
+motscles: Plan d’adressage, routage état de lien, stratégies de filtrage,, CIDR,
+  VLSM, agrégation de routes, IPv6, NDP
