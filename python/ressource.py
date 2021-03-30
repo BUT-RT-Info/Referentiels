@@ -2,6 +2,7 @@ import re
 from officiel import *
 from modeles import *
 from officiel import supprime_accent_espace
+from collections import OrderedDict
 
 __LOGGER = logging.getLogger(__name__)
 
@@ -30,6 +31,31 @@ class Ressource():
     def __str__(self):
         print(self.nom + " " + self.code)
 
+    def str_heures_formations(self):
+        return str(self.heures_encadrees) if self.heures_encadrees else "???"
+
+    def str_heures_tp(self):
+        return str(self.tp) if self.tp else "???"
+
+    def str_semestre(self):
+        return int(self.semestre[1])
+
+    def to_yaml(self):
+        dico = {"nom": self.nom,
+                "code": self.code,
+                "semestre" : self.str_semestre(),
+                "heures_formation": self.str_heures_formations(),
+                "heures_tp": self.str_heures_tp(),
+                "acs": self.apprentissages,
+                "sae": "",
+                "prerequis": self.prerequis,
+                "contexte": self.contexte,
+                "contenu": self.contenu,
+                "motscles": self.mots
+                }
+        output = yaml.dump(dico, Dumper=yaml.Dumper, sort_keys=False)
+        return output
+
     def to_latex(self):
         contenu = get_modele("pn/modele_ressource.tex")
 
@@ -55,8 +81,8 @@ class Ressource():
 
         chaine = TemplateLatex(contenu).substitute(code=self.code,
                                                    nom=self.nom,
-                                                   heures_formation=str(self.heures_encadrees) if self.heures_encadrees else "???",
-                                                   heures_tp=str(self.tp) if self.tp else "???",
+                                                   heures_formation=self.str_heures_formations(),
+                                                   heures_tp=self.str_heures_tp(),
                                                    compRT1=compRT[0],
                                                    compRT2=compRT[1],
                                                    compRT3=compRT[2],
@@ -160,7 +186,7 @@ def nettoie_acs(r):
         donnees = r.apprentissages[comp] # chaine de caractères listant les ACS
         # donnees = donnees.replace("\t", "").replace("-", "") # supprime les tabulations
         acs_avec_code = devine_acs_by_code(donnees)
-        acs_avec_nom = devine_acs_by_nom(donnees)
+        acs_avec_nom = devine_code_by_nom_from_dict(donnees, DATA_ACS)
         acs_finaux = acs_avec_code + acs_avec_nom
         acs_finaux = [ac.replace(" ", "") for ac in acs_finaux]
         acs_finaux = sorted(list(set(acs_finaux)))
@@ -169,7 +195,7 @@ def nettoie_acs(r):
 def nettoie_prerequis(r):
     """Nettoie les prérequis (ressource) en les remplaçant par leur code de ressource"""
     R_avec_code = devine_ressources_by_code(r.prerequis)
-    R_avec_nom = devine_ressources_by_code(r.prerequis)
+    R_avec_nom = devine_code_by_nom_from_dict(r.prerequis, DATA_RESSOURCES)
     R_finaux = sorted(list(set(R_avec_code + R_avec_nom)))
     if R_finaux:
         r.prerequis = R_finaux
@@ -196,20 +222,6 @@ def devine_acs_by_code(champ):
 
     codes3 += [ "AC" + c[-3:] for c in codes4] # supprime le 0 des acs (codage AC0111)
     return sorted(list(set(codes3)))
-
-def devine_acs_by_nom(donnees):
-    """Partant d'une chaine de caractères, détermine les codes des ACS
-    présent dans la donnée, en utilisant les infos officielles de
-    acs.yml"""
-    acs = []
-    donnees_purge = supprime_accent_espace(donnees)
-
-    for comp in DATA_ACS:
-        for code in DATA_ACS[comp]:
-            acs_purge = supprime_accent_espace(DATA_ACS[comp][code])
-            if acs_purge in donnees_purge:
-                acs += [code]
-    return sorted(list(set(acs)))
 
 def devine_ressources_by_code(champ):
     """Recherche les codes ressources de la forme RXXX dans champ ;

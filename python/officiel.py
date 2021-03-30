@@ -69,3 +69,26 @@ def get_matrices_ac_ressource(ressources, sem):
         chaine += ligne.format(*valeurs) + "\n"
     chaine += trait + "\n"
     return (matrice, chaine)
+
+def affiche_bilan_heures(ressources, sem):
+    """Renvoie une chaine décrivant un bilan des heures pour un sem donné"""
+    ligne = "{:20s} | {:75s} | {:10s} | {:10s} |"
+    trait = "-"*len(ligne.format("", "", "", ""))
+
+    ressem = ressources[sem] # les ressources du semestre
+    chaine = ""
+    chaine += trait + "\n"
+    chaine += ligne.format("Code", "Ressource", "Form.", "dont TP") + "\n"
+    chaine += trait + "\n"
+    for r in ressem:
+        chaine += ligne.format(r.code if r.code else "MANQUANT",
+                           # r.nom[:30] + ("..." if len(r.nom) > 30 else "") ,
+                           r.nom,
+                           str(r.heures_encadrees) if r.heures_encadrees else "MANQUANT",
+                           str(r.tp) if r.tp else "MANQUANT") + "\n"
+    heures_formation_total = sum([r.heures_encadrees for r in ressem if r.heures_encadrees != None])
+    heures_tp_total = sum([r.tp for r in ressem if r.tp != None])
+    chaine += trait + "\n"
+    chaine += ligne.format("", "Total", str(heures_formation_total), str(heures_tp_total)) + "\n"
+    chaine += trait + "\n"
+    return chaine

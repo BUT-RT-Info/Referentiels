@@ -165,25 +165,10 @@ for sem in ressources:
 
 # ************************************************************************
 # Affichages divers
-
-# Bilan des heures & Calcul somme des heures par semestre
-ligne = "{:20s} | {:75s} | {:10s} | {:10s} |"
-trait = "-"*len(ligne.format("", "", "", ""))
-
+# Le tableau des heures ressources
 for sem in ressources: # parcours des semestres
-    ressem = ressources[sem] # les ressources du semestre
-    print(f"Semestre {sem}")
-    print(trait, ligne.format("Code", "Ressource", "Form.", "dont TP"), trait, sep="\n")
-    for r in ressem:
-        print(ligne.format(r.code if r.code else "MANQUANT",
-                           # r.nom[:30] + ("..." if len(r.nom) > 30 else "") ,
-                           r.nom,
-                           str(r.heures_encadrees) if r.heures_encadrees else "MANQUANT",
-                           str(r.tp) if r.tp else "MANQUANT"))
-    heures_formation_total = sum([r.heures_encadrees for r in ressem if r.heures_encadrees != None])
-    heures_tp_total = sum([r.tp for r in ressem if r.tp != None])
-    print(trait, ligne.format("", "Total", str(heures_formation_total), str(heures_tp_total)), trait, sep="\n")
-
+    # print(f"Semestre {sem}")
+    chaine = affiche_bilan_heures(ressources, sem)
 
 
 # Matrice ACS/ressources
@@ -194,6 +179,16 @@ nbre_acs = len(les_codes_acs)
 for sem in ressources:
     # print("Matrice du semestre " + sem)
     (matrices[sem], chaine) = get_matrices_ac_ressource(ressources, sem)
+
+# Export yaml
+WITH_EXPORT = True
+for sem in ressources:
+    for r in ressources[sem]:
+        output = r.to_yaml()
+        if WITH_EXPORT and r.code:
+            fichier = "export/{}.yml".format(r.code)
+            with open(fichier, "w", encoding="utf8") as fid:
+                fid.write(output)
 
 
 for sem in ressources:
