@@ -92,3 +92,11 @@ def affiche_bilan_heures(ressources, sem):
     chaine += ligne.format("", "Total", str(heures_formation_total), str(heures_tp_total)) + "\n"
     chaine += trait + "\n"
     return chaine
+
+
+def get_officiel_ressource_name_by_code(code):
+    """Pour un code valide, fournit le nom officiel de la ressource (sans conaissance du semestre)"""
+    for sem in DATA_RESSOURCES:
+        for rcode in DATA_RESSOURCES[sem]:
+            if rcode==code:
+                return DATA_RESSOURCES[sem][code]

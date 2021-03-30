@@ -145,6 +145,9 @@ for r in liste_ressources:
     # Remet en forme les ACs
     nettoie_acs(r)
 
+    # Remet en forme les saé
+    nettoie_sae(r)
+
     # Remet en forme les pré-requis
     nettoie_prerequis(r)
 
@@ -195,4 +198,5 @@ for sem in ressources:
 for sem in ressources:
     for r in ressources[sem]:
         fichieryaml = "export/{}.yml".format(r.code)
-        convert_ressource_yml_to_latex(fichieryaml, "export/test.txt", "pn/modele_ressource.tex")
+        fichierlatex = "latex/{}.txt".format(r.code)
+        convert_ressource_yml_to_latex(fichieryaml, fichierlatex, "pn/modele_ressource.tex")

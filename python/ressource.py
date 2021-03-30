@@ -158,11 +158,18 @@ def nettoie_acs(r):
         acs_finaux = sorted(list(set(acs_finaux)))
         r.apprentissages[comp] = acs_finaux
 
+def nettoie_sae(r):
+    """Nettoie les sae en détectant les codes"""
+    print(r.sae)
+
+
 def nettoie_prerequis(r):
     """Nettoie les prérequis (ressource) en les remplaçant par leur code de ressource"""
     R_avec_code = devine_ressources_by_code(r.prerequis)
     R_avec_nom = devine_code_by_nom_from_dict(r.prerequis, DATA_RESSOURCES)
-    R_finaux = sorted(list(set(R_avec_code + R_avec_nom)))
+    liste = R_avec_code + R_avec_nom
+    liste = [l.rstrip() for l in liste] # supprime les espaces
+    R_finaux = sorted(list(set(liste)))
     if R_finaux:
         r.prerequis = R_finaux
     else:
@@ -304,7 +311,7 @@ def convert_ressource_yml_to_latex(fichieryaml, fichierlatex, modele):
     for (i, accomp) in enumerate(ressource["acs"]):
         comps = []
         for no_ac in range(len(accomp)): # les ac de la comp
-            comps.append( ajoutac % (no_ac, DATA_ACS["RT"+str(i+1)][accomp[no_ac]]) )
+            comps.append( ajoutac % (accomp[no_ac], DATA_ACS["RT"+str(i+1)][accomp[no_ac]]) )
         compRT.append("\n".join(comps))
 
         # ajoutsaes = "\\ajoutsae{%s}{%s}"
@@ -318,6 +325,13 @@ def convert_ressource_yml_to_latex(fichieryaml, fichierlatex, modele):
 
     ajoutprerequis = "\\ajoutprerequis{%s}{%s}"
     prerequis = ""
+    if ressource["prerequis"] == "Aucun":
+        prerequis = ""
+    else:
+        liste = []
+        for (no, mod) in enumerate(ressource["prerequis"]):
+            liste.append(ajoutprerequis % (mod, get_officiel_ressource_name_by_code(mod)))
+        prerequis = "\n".join(liste)
 
     chaine = ""
     chaine = TemplateLatex(contenu).substitute(code=ressource["code"],
@@ -333,6 +347,10 @@ def convert_ressource_yml_to_latex(fichieryaml, fichierlatex, modele):
                                                    contenu=ressource["contenu"],
                                                    motscles=ressource["motscles"]
                                                    )
+
+    with open(fichierlatex, "w", encoding="utf8") as fid:
+        fid.write(chaine)
+
     return chaine
 
 if __name__=="__main__":
