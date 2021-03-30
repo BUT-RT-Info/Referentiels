@@ -260,14 +260,14 @@ def split_description(r):
     contexte = ""
     if True in [ligne.startswith("Contenus") for ligne in champs]: # la ligne commençant par Contenus
         indicec = [ligne.startswith("Contenus") for ligne in champs].index(True)
-    if indicea>0:
-        contexte = "\n\n".join(champs[indicea+1:indicec]) # double \n pour passage en latex
+    if indicea>=0:
+        contexte = "\n".join(champs[indicea+1:indicec]) # double \n pour passage en latex
     else:
-        contexte = "\n\n".join(champs[:indicec])
+        contexte = "\n".join(champs[:indicec])
     contenu = "\n".join(champs[indicec+1:])
 
     # sauvegarde des champs
-    r.contexe = contexte
+    r.contexte = contexte
     r.contenu = contenu
 
 def remove_ligne_vide(contenus):
@@ -300,6 +300,9 @@ def get_marqueurs(contenus):
 
 def nettoie_contenus(r):
     # suppression des \t
+    if r.code == "R107":
+        print("ici")
+
     contenu = r.contenu
     marqueurs_numeriques = get_marqueur_numerique(contenu)
     for m in marqueurs_numeriques: # remplace les marqueurs numériques
@@ -311,17 +314,17 @@ def nettoie_contenus(r):
     marqueurs_finaux = get_marqueurs(contenus)
 
     contenus_fin = contenus[:] # copie des ligne
+
+    def get_marqueur(ligne, marqueurs):
+        for m in marqueurs:
+            if ligne.startswith(m):
+                return m
+            
     for (i, ligne) in enumerate(contenus):
-        if ligne[0] in string.digits:
-            pos = marqueurs_finaux.index("1")
-            if ligne[1:].startswith("/"):
-                contenus_fin[i] = "\t" * pos + "* " + ligne[2:].replace("\t", "").rstrip()
-            else:
-                contenus_fin[i] = "\t" * pos + "* " + ligne[1:].replace("\t", "").rstrip() # la ligne avec marqueur supprimé et / supprimé
-        else:
-            if ligne[0] in marqueurs_finaux:
-                pos = marqueurs_finaux.index(ligne[0])
-                contenus_fin[i] = "\t" * pos + "* " + ligne[1:].replace("\t", "").rstrip()
+        m = get_marqueur(ligne, marqueurs_finaux)
+        if m:
+            pos = marqueurs_finaux.index(m)
+            contenus_fin[i] = "\t" * pos + "* " + ligne.replace(m, "").replace("\t", "").rstrip()
 
     contenu = "\n".join(contenus_fin)
 
