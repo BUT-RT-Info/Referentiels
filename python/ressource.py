@@ -2,7 +2,8 @@ import re
 from officiel import *
 from modeles import *
 from officiel import supprime_accent_espace
-from collections import OrderedDict
+import ruamel.yaml
+from ruamel.yaml.scalarstring import FoldedScalarString as folded
 
 __LOGGER = logging.getLogger(__name__)
 
@@ -41,6 +42,7 @@ class Ressource():
         return int(self.semestre[1])
 
     def to_yaml(self):
+
         dico = {"nom": self.nom,
                 "code": self.code,
                 "semestre" : self.str_semestre(),
@@ -49,11 +51,14 @@ class Ressource():
                 "acs": self.apprentissages,
                 "sae": "",
                 "prerequis": self.prerequis,
-                "contexte": self.contexte,
-                "contenu": self.contenu,
+                "contexte": folded(self.contexte),
+                "contenu": folded(self.contenu),
                 "motscles": self.mots
                 }
-        output = yaml.dump(dico, Dumper=yaml.Dumper, sort_keys=False, allow_unicode=True)
+        # output = yaml.dump(dico, #Dumper=yaml.Dumper,
+        #    sort_keys=False, allow_unicode=True)
+        output = ruamel.yaml.dump(dico, Dumper=ruamel.yaml.RoundTripDumper,
+                                  allow_unicode=True)
         return output
 
     def to_latex(self):
@@ -242,7 +247,8 @@ def devine_ressources_by_nom(donnees):
                 codes += [code]
     return sorted(list(set(codes)))
 
-def nettoie_description(r):
+def split_description(r):
+    """Découpe le champ description en un contexte+un contenu ; si pas possible """
     champs = r.description.split("\n")
     champs = [c for c in champs if c] # supprime les lignes vides
 
@@ -251,17 +257,30 @@ def nettoie_description(r):
         indicea = [ligne.startswith("Contexte et ") for ligne in champs].index(True)
 
     indicec = 0
+    contexte = ""
     if True in [ligne.startswith("Contenus") for ligne in champs]: # la ligne commençant par Contenus
         indicec = [ligne.startswith("Contenus") for ligne in champs].index(True)
     if indicea>0:
-        contexte = "\n".join(champs[indicea:indicec])
+        contexte = "\n\n".join(champs[indicea+1:indicec]) # double \n pour passage en latex
     else:
-        contexte = "\n".join(champs[:indicec])
+        contexte = "\n\n".join(champs[:indicec])
+    contenu = "\n".join(champs[indicec+1:])
 
-    contenus = champs[indicec+1:]
-    # suppression des \t
-    contenus = [ligne.rstrip().replace("--", "-") for ligne in contenus]
-    contenus = [c for c in contenus if c] # supprime les lignes vides
+    # sauvegarde des champs
+    r.contexe = contexte
+    r.contenu = contenu
+
+def remove_ligne_vide(contenus):
+    """Supprime les lignes vides"""
+    return [c for c in contenus if c]
+
+def get_marqueur_numerique(contenu):
+    """Revoie la liste des marqueurs numériques"""
+    m = re.findall(r"(\d/|\d\s\))", contenu)
+    return m
+
+def get_marqueurs(contenus):
+    """Renvoie la liste des marqueurs partant d'une liste de ligne"""
     marqueurs = []
     for ligne in contenus:
         m = re.search(r"(\t)*", ligne) # dès \t ?
@@ -269,22 +288,27 @@ def nettoie_description(r):
             ajout = m.group()
         else:
             ajout = ""
-        ligne = ligne.replace("\t","")[0]
+        ligne = ligne.replace("\t","")[0].rstrip() # le marqueur en début de ligne (si 1 caractère)
         if ligne[0] not in string.ascii_letters and ligne[0] != "É":
-            marqueurs += [ajout + ligne[0]]
+            marqueurs += [ajout + ligne[0]] # tous les symboles
 
-    def has_digits(liste):
-        return sum([m in string.digits for m in liste])>0
-
-    a_marqueur_numerique = has_digits(marqueurs) # des marqueurs numériques ?
-    marqueurs_finaux = [] # tri les marqueurs
+    marqueurs_finaux = [] # tri les marqueurs en supprimant les doublons et en gardant un ordre (pour détecter les sous listes)
     for m in marqueurs:
-        if m not in string.digits and m not in marqueurs_finaux:
+        if m not in marqueurs_finaux:
             marqueurs_finaux.append(m)
-        elif m not in marqueurs_finaux:
-            if a_marqueur_numerique:
-                if not has_digits(marqueurs_finaux):
-                    marqueurs_finaux.append(m)
+    return marqueurs_finaux
+
+def nettoie_contenus(r):
+    # suppression des \t
+    contenu = r.contenu
+    marqueurs_numeriques = get_marqueur_numerique(contenu)
+    for m in marqueurs_numeriques: # remplace les marqueurs numériques
+        contenu = contenu.replace(m, ">")
+
+    contenus = [ligne.rstrip().replace("--", "-") for ligne in r.contenu.split("\n")] # les contenus
+    contenus = remove_ligne_vide(contenus) # supprime les lignes vides
+
+    marqueurs_finaux = get_marqueurs(contenus)
 
     contenus_fin = contenus[:] # copie des ligne
     for (i, ligne) in enumerate(contenus):
@@ -301,9 +325,8 @@ def nettoie_description(r):
 
     contenu = "\n".join(contenus_fin)
 
-    r.contexte = contexte
     r.contenu = contenu
-    print(r.nom, contexte, contenu, sep="\n")
+
 
 if __name__=="__main__":
     # Eléments de test

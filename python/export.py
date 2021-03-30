@@ -149,7 +149,8 @@ for r in liste_ressources:
     nettoie_prerequis(r)
 
     # Remet en forme le descriptif
-    nettoie_description(r)
+    split_description(r)
+    nettoie_contenus(r)
 
     # Tri dans le bon semestre
     ressources[r.semestre] += [r]
