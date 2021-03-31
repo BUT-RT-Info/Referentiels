@@ -4,9 +4,11 @@ semestre: 1
 heures_formation: 33
 heures_tp: 18
 acs:
-- - AC0111
-- - AC0211
-- []
+  RT1:
+  - AC0111
+  RT2:
+  - AC0211
+  RT3: []
 sae: []
 prerequis: Aucun
 contexte: >-

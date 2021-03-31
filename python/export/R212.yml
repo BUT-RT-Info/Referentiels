@@ -4,9 +4,9 @@ semestre: 2
 heures_formation: ???
 heures_tp: 12
 acs:
-- []
-- []
-- []
+  RT1: []
+  RT2: []
+  RT3: []
 sae: []
 prerequis: Aucun
 contexte: >-

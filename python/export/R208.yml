@@ -4,9 +4,10 @@ semestre: 2
 heures_formation: 16
 heures_tp: 10
 acs:
-- []
-- []
-- - AC0311
+  RT1: []
+  RT2: []
+  RT3:
+  - AC0311
   - AC0312
   - AC0313
   - AC0315

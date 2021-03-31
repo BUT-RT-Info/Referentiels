@@ -49,7 +49,7 @@ def get_matrices_ac_ressource(ressources, sem):
     matrice = [[False] * nbre_ressources_semestre for i in range(nbre_acs)]
 
     for (i, r) in enumerate(ressem):  # pour chaque ressource
-        for comp in range(len(r.apprentissages)):  # pour chaque comp
+        for comp in r.apprentissages:  # pour chaque comp
             for (j, ac) in enumerate(les_codes_acs):  # pour chaque ac
                 if ac in r.apprentissages[comp]:  # si l'ac est prévue dans la ressource
                     matrice[j][i] = True

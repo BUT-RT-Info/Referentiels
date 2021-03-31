@@ -4,11 +4,12 @@ semestre: 2
 heures_formation: ???
 heures_tp: 18
 acs:
-- - AC0113
+  RT1:
+  - AC0113
   - AC0114
   - AC0115
-- []
-- []
+  RT2: []
+  RT3: []
 sae:
 - SAÉ21
 prerequis:

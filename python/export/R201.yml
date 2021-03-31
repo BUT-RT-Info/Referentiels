@@ -4,11 +4,14 @@ semestre: 2
 heures_formation: ???
 heures_tp: 30
 acs:
-- - AC0113
+  RT1:
+  - AC0113
   - AC0115
   - AC0116
-- - AC0213
-- - AC0311
+  RT2:
+  - AC0213
+  RT3:
+  - AC0311
 sae:
 - SAÉ21
 - SAÉ24

@@ -4,9 +4,11 @@ semestre: 1
 heures_formation: 24
 heures_tp: 12
 acs:
-- - AC0112
-- []
-- - AC0311
+  RT1:
+  - AC0112
+  RT2: []
+  RT3:
+  - AC0311
 sae:
 - SAÉ24
 prerequis: Aucun

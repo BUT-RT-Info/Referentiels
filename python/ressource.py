@@ -151,6 +151,7 @@ def nettoie_acs(r):
     """Nettoie les acs d'une ressource en les remplaçant par leur code pour les 3 compétences"""
     if len(r.apprentissages) != 3:
         __LOGGER.warning(f"nettoie_acs : Problème dans le nombre de compétences de {r.nom}")
+    dico = {}
     for comp in range(3):
         donnees = r.apprentissages[comp] # chaine de caractères listant les ACS
         # donnees = donnees.replace("\t", "").replace("-", "") # supprime les tabulations
@@ -159,7 +160,8 @@ def nettoie_acs(r):
         acs_finaux = acs_avec_code + acs_avec_nom
         acs_finaux = [ac.replace(" ", "") for ac in acs_finaux]
         acs_finaux = sorted(list(set(acs_finaux)))
-        r.apprentissages[comp] = acs_finaux
+        dico["RT" + str(comp+1)] = acs_finaux
+    r.apprentissages = dico # [comp] = acs_finaux
 
 def nettoie_sae(r):
     """Nettoie les sae en détectant les codes"""
@@ -342,10 +344,10 @@ def convert_ressource_yml_to_latex(fichieryaml, fichierlatex, modele):
     # Préparation des ac
     ajoutac = "\\ajoutac{%s}{%s}"
     compRT = []
-    for (i, accomp) in enumerate(ressource["acs"]):
+    for accomp in ressource["acs"]:
         comps = []
-        for no_ac in range(len(accomp)): # les ac de la comp
-            comps.append( ajoutac % (accomp[no_ac], DATA_ACS["RT"+str(i+1)][accomp[no_ac]]) )
+        for no_ac in range(len(ressource["acs"][accomp])): # les ac de la comp
+            comps.append( ajoutac % (accomp, DATA_ACS[accomp][ressource["acs"][accomp][no_ac]]) )
         compRT.append("\n".join(comps))
 
     # Préparation des sae
