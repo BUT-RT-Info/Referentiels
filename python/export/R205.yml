@@ -2,7 +2,7 @@ nom: Signaux et Systèmes pour les transmissions
 code: R205
 semestre: 2
 heures_formation: ???
-heures_tp: '15'
+heures_tp: 15
 acs:
 - - AC0111
 - - AC0211
@@ -14,19 +14,11 @@ prerequis:
 - R113,
 - R114,
 contexte: >-
-  La caractérisation du comportement d’un système télécom en fonction de la fréquence
-  permet au technicien d’appréhender la notion de bande passante et d’introduire celle
-  de canal de transmission.
-  La représentation spectrale des signaux permet de comprendre quelles modifications
-  ces signaux vont subir dans un système télécom.
+  La caractérisation du comportement d’un système télécom en fonction de la fréquence permet au technicien d’appréhender la notion de bande passante et d’introduire celle de canal de transmission.
+  La représentation spectrale des signaux permet de comprendre quelles modifications ces signaux vont subir dans un système télécom.
 contenu: >-
-  Étude de la fonction de transfert d’un système linéaire  – Notion de filtrage –
-  Réponse fréquentielle d’un support de transmission – Notion de bande passante. Atténuation,
-  amplification des systèmes.
-  Représentations temporelles et fréquentielles des signaux - Analyse spectrale de
-  signaux réels (exemples : audio, WiFi, ADSL, etc.).
-  Influence de la fonction de transfert d’un système sur un signal (exemples : audio,
-  numérique, …)
+  Étude de la fonction de transfert d’un système linéaire  – Notion de filtrage – Réponse fréquentielle d’un support de transmission – Notion de bande passante. Atténuation, amplification des systèmes.
+  Représentations temporelles et fréquentielles des signaux - Analyse spectrale de signaux réels (exemples : audio, WiFi, ADSL, etc.).
+  Influence de la fonction de transfert d’un système sur un signal (exemples : audio, numérique, …)
   Bilans de liaison de systèmes de transmissions
-motscles: Représentations temporelles et fréquentielles des signaux; fonction de transfert;
-  bande passante; analyse spectrale.
+motscles: Représentations temporelles et fréquentielles des signaux; fonction de transfert; bande passante; analyse spectrale.

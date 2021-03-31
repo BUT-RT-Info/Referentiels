@@ -1,8 +1,8 @@
 nom: Initiation au développement Web
 code: R209
 semestre: 2
-heures_formation: '24'
-heures_tp: '15'
+heures_formation: 24
+heures_tp: 15
 acs:
 - - AC0112
   - AC0114
@@ -22,14 +22,10 @@ prerequis:
 - R207
 - R208
 contexte: >-
-  Le professionnel R&T peut être amené à développer, pour ses besoins personnels ou
-  pour ses collaborateurs, un site Web (compétence RT3-Programmer), par exemple pour
-  fournir une interface de présentation du réseau informatique. 
-  Il doit en appréhender tous les éléments : il doit aussi bien connaître les protocoles
-  de communication du Web que veiller à la sécurité de ceux-ci. Il doit également
-  pouvoir accéder, traiter et afficher des informations provenant de différentes sources
-  de données telles que des SGBD, des API ou des fichiers structurés. La présente
-  ressource contribue de fait aux apprentissages critiques mentionnés précédemment.
+  Le professionnel R&T peut être amené à développer, pour ses besoins personnels ou pour ses collaborateurs, un site Web (compétence RT3-Programmer), par exemple pour fournir une interface de présentation
+  du réseau informatique. 
+  Il doit en appréhender tous les éléments : il doit aussi bien connaître les protocoles de communication du Web que veiller à la sécurité de ceux-ci. Il doit également pouvoir accéder, traiter et afficher
+  des informations provenant de différentes sources de données telles que des SGBD, des API ou des fichiers structurés. La présente ressource contribue de fait aux apprentissages critiques mentionnés précédemment.
   
 contenu: >-
   * Introduction au protocole HTTP
@@ -41,7 +37,6 @@ contenu: >-
   * Scripts côté serveur
   * Eléments d’interaction clientserveur (requête HTTP, URL, formulaire)
   * Interrogation d'un SGBD ou d'une API
-  * Sensibilisation à la sécurisation de sites : failles XSS/XSS stockée/injections
-  SQL
+  * Sensibilisation à la sécurisation de sites : failles XSS/XSS stockée/injections SQL
   L’utilisation de l’anglais est préconisée dans la documentation du code.
 motscles: Web; développement; algorithmes; SGBD; API; sécurité; environnement client-serveur.

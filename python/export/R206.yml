@@ -2,7 +2,7 @@ nom: Numérisation de l'information
 code: R206
 semestre: 2
 heures_formation: ???
-heures_tp: '12'
+heures_tp: 12
 acs:
 - - AC0112
 - - AC0211
@@ -14,16 +14,12 @@ prerequis:
 - R113,
 - R114,
 contexte: >-
-  Les systèmes de Réseaux et Télécoms véhiculent en permanence de données numérisées.
-  Ce module vient donc présenter les principes de la numérisation de l’information,
-  les contraintes de cette numérisation et les conséquences sur la qualité du signal.
-  Il trouvera des prolongements en téléphonie, ou en télécommunications numériques.
+  Les systèmes de Réseaux et Télécoms véhiculent en permanence de données numérisées. Ce module vient donc présenter les principes de la numérisation de l’information, les contraintes de cette numérisation
+  et les conséquences sur la qualité du signal. Il trouvera des prolongements en téléphonie, ou en télécommunications numériques.
 contenu: >-
-  * Comprendre la notion de signal numérique, et le principe de la numérisation et
-  de la restitution de signaux analogique
+  * Comprendre la notion de signal numérique, et le principe de la numérisation et de la restitution de signaux analogique
   * Échantillonnage des signaux : choix d’une fréquence adéquate d’échantillonnage
   * Quantification des signaux – Erreur de quantification
   * Filtre Antirepliement et filtre de restitution
   * 
-motscles: Numérisation – Échantillonnage – Quantification – Acquisition/Restitution
-  – CAN & CNA.
+motscles: Numérisation – Échantillonnage – Quantification – Acquisition/Restitution – CAN & CNA.

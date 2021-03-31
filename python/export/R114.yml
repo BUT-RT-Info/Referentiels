@@ -1,8 +1,8 @@
 nom: Mathématiques des transmissions
 code: R114
 semestre: 1
-heures_formation: '30'
-heures_tp: '6'
+heures_formation: 30
+heures_tp: 6
 acs:
 - - AC0111
 - - AC0211

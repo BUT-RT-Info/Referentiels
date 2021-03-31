@@ -2,7 +2,7 @@ nom: Administration système et fondamentaux de la virtualisation
 code: R202
 semestre: 2
 heures_formation: ???
-heures_tp: '20'
+heures_tp: 20
 acs:
 - - AC0113
   - AC0114
@@ -25,5 +25,4 @@ contenu: >-
   * Concepts, architectures pour la virtualisation et la conteneurisation
   * Mise en oeuvre d’infrastructures de virtualisation
   * Introduction du Cloud
-motscles: "Systèmes d'exploitation, Linux, Windows, Scripts, Virtualisation, Conteneurisation,\
-  \ Cybersécurité.\n"
+motscles: "Systèmes d'exploitation, Linux, Windows, Scripts, Virtualisation, Conteneurisation, Cybersécurité.\n"

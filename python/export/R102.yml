@@ -1,8 +1,8 @@
 nom: Principes et architecture des réseaux
 code: R102
 semestre: 1
-heures_formation: '30'
-heures_tp: '15'
+heures_formation: 30
+heures_tp: 15
 acs:
 - - AC0114
   - AC0115
@@ -15,8 +15,7 @@ prerequis:
 - R101
 - R106
 contexte: >-
-  Cette ressource apporte le socle de connaissances et savoirs-faire pour les compétences
-  de cœur de métier "Administrer les réseaux et l'Internet" (RT1). 
+  Cette ressource apporte le socle de connaissances et savoirs-faire pour les compétences de cœur de métier "Administrer les réseaux et l'Internet" (RT1). 
 contenu: >-
   * Approche en couches et encapsulation ,
   * Etude détaillée des protocoles Ethernet, ARP, ICMP
@@ -24,6 +23,5 @@ contenu: >-
   * Topologies de réseaux,
   * Principes de normalisation des technologies de l’Internet,
   * Notions sur les métriques de performances: débit, fiabilité, gigue, taux de pertes
-  Outils préconisés: logiciels du type wireshark, gns3, packet tracer, scapy, marionnet.Faire
-  le lien avec les aspects sécurité informatique et réseaux mentionnés en R101.
+  Outils préconisés: logiciels du type wireshark, gns3, packet tracer, scapy, marionnet.Faire le lien avec les aspects sécurité informatique et réseaux mentionnés en R101.
 motscles: 'Architecture en couches, topologies, protocoles, modèle TCP/IP. '

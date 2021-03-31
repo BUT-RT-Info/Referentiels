@@ -2,7 +2,7 @@ nom: Bases des services réseaux
 code: R203
 semestre: 2
 heures_formation: ???
-heures_tp: '18'
+heures_tp: 18
 acs:
 - - AC0113
   - AC0114
@@ -16,8 +16,7 @@ prerequis:
 - R102
 - R108
 contexte: >-
-  Cette ressource apporte les connaissances et compétences de base nécessaires à la
-  mise en oeuvre des services réseaux  dans un système d’information 
+  Cette ressource apporte les connaissances et compétences de base nécessaires à la mise en oeuvre des services réseaux  dans un système d’information 
 contenu: >-
   * Rappels sur les protocoles de transport (TCP, UDP)
   * Utilisation de ssh pour l’accès distant
@@ -27,6 +26,5 @@ contenu: >-
   * HTTP
   * TFTP, FTP
   * NTP
-  On introduira des notions de sécurité informatique (les ressources associées aux
-  recommandations de l’ANSSI, CyberEdu, CyberMalveillance pourront servir de support).
+  On introduira des notions de sécurité informatique (les ressources associées aux recommandations de l’ANSSI, CyberEdu, CyberMalveillance pourront servir de support).
 motscles: Protocoles et ports applicatifs, services, systèmes d'exploitation.

@@ -1,8 +1,8 @@
 nom: Mathématiques du signal
 code: R113
 semestre: 1
-heures_formation: '30'
-heures_tp: '6'
+heures_formation: 30
+heures_tp: 6
 acs:
 - - AC0111
 - - AC0211
@@ -22,10 +22,8 @@ contenu: >-
   	*  équation de droite
   	*  fonction définie par morceaux (ex. : valeur absolue)
   	*  signaux de base : (ex. : porte, triangle, échelon, rampe…)
-  	*  opérations sur les signaux : avance, retard, dilatation, amplification, offset
-  (interprétation géométrique sur le graphe), somme de signaux
-  Cette partie sera l’occasion de réviser les règles de calculs de base par l’intermédiaire
-  du calcul d’images et d’antécédents.
+  	*  opérations sur les signaux : avance, retard, dilatation, amplification, offset (interprétation géométrique sur le graphe), somme de signaux
+  Cette partie sera l’occasion de réviser les règles de calculs de base par l’intermédiaire du calcul d’images et d’antécédents.
   		* ) Éléments de trigonométrie
   	*  définition du radian
   	*  cercle trigonométrique
@@ -34,8 +32,7 @@ contenu: >-
   			* ) Signaux périodiques
   	*  période, fréquence, pulsation
   	*  signaux périodiques de base : créneau, dent de scie, sinus, cosinus...
-  	*  fréquence/période/pulsation d’un signal dilaté, d’une combinaison linéaire de
-  signaux périodiques
+  	*  fréquence/période/pulsation d’un signal dilaté, d’une combinaison linéaire de signaux périodiques
   	*  graphe des signaux avancés, retardés, dilatés…
   	*  graphe de  ,
 motscles: Signaux, signaux périodiques

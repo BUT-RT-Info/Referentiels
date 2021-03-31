@@ -1,8 +1,8 @@
 nom: Architecture des systèmes numériques et informatiques
 code: R106
 semestre: 1
-heures_formation: '24'
-heures_tp: '12'
+heures_formation: 24
+heures_tp: 12
 acs:
 - - AC0112
 - []
@@ -11,11 +11,8 @@ sae:
 - SAÉ24
 prerequis: Aucun
 contexte: >2-
-   Les systèmes informatiques et numériques sont au cœur de la spécialité Réseaux
-  et Télécoms. Cette ressource vise tout d’abord à permettre la compréhension du codage
-  et du stockage des données. Puis elle permet de comprendre de façon très fine le
-  comportement interne des systèmes numériques avec notamment des notions de temps
-  d’exécution. Enfin elle permettra aux étudiants de relier ces systèmes au monde
+   Les systèmes informatiques et numériques sont au cœur de la spécialité Réseaux et Télécoms. Cette ressource vise tout d’abord à permettre la compréhension du codage et du stockage des données. Puis elle
+  permet de comprendre de façon très fine le comportement interne des systèmes numériques avec notamment des notions de temps d’exécution. Enfin elle permettra aux étudiants de relier ces systèmes au monde
   extérieur.
 contenu: >-
   * Codage des nombres, des caractères, des images.

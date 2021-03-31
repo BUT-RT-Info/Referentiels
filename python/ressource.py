@@ -33,10 +33,10 @@ class Ressource():
         print(self.nom + " " + self.code)
 
     def str_heures_formations(self):
-        return str(self.heures_encadrees) if self.heures_encadrees else "???"
+        return self.heures_encadrees if self.heures_encadrees else "???"
 
     def str_heures_tp(self):
-        return str(self.tp) if self.tp else "???"
+        return self.tp if self.tp else "???"
 
     def str_semestre(self):
         return int(self.semestre[1])
@@ -57,8 +57,10 @@ class Ressource():
                 }
         # output = yaml.dump(dico, #Dumper=yaml.Dumper,
         #    sort_keys=False, allow_unicode=True)
+
         output = ruamel.yaml.dump(dico, Dumper=ruamel.yaml.RoundTripDumper,
-                                  allow_unicode=True)
+                                  allow_unicode=True,
+                                  width=200)
         output = output.replace("\n\n", "\n")
         return output
 

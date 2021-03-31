@@ -1,8 +1,8 @@
 nom: Introduction aux technologies Web
 code: R109
 semestre: 1
-heures_formation: '9'
-heures_tp: '5'
+heures_formation: 9
+heures_tp: 5
 acs:
 - []
 - []
@@ -11,23 +11,15 @@ sae:
 - SAÉ14
 prerequis: Aucun
 contexte: >-
-  Le professionnel R&T peut être amené à modifier et à produire des contenus Web pour
-  le site Web et l’intranet d’une entreprise. Grâce aux pages Web, il peut aisément
-  mettre à disposition des collaborateurs les outils-métiers qu’il aura développés
-  (compétence RT3-Programmer) et leurs documentations. Plus généralement, il pourra
-  même développer une application Web.
-  La présente ressource fournit les bases conceptuelles et pratiques pour écrire et
-  modifier des pages Web dans un langage normalisé de description de contenus et de
-  sa présentation. Elle traite donc de la création de contenus Web (un thème abordé
-  par PIX, cf. https://pix.fr/competences) mais également des technologies mises en
-  œuvre pour délivrer ses contenus aux utilisateurs par le biais d’un navigateur Web.
-  
+  Le professionnel R&T peut être amené à modifier et à produire des contenus Web pour le site Web et l’intranet d’une entreprise. Grâce aux pages Web, il peut aisément mettre à disposition des collaborateurs
+  les outils-métiers qu’il aura développés (compétence RT3-Programmer) et leurs documentations. Plus généralement, il pourra même développer une application Web.
+  La présente ressource fournit les bases conceptuelles et pratiques pour écrire et modifier des pages Web dans un langage normalisé de description de contenus et de sa présentation. Elle traite donc de
+  la création de contenus Web (un thème abordé par PIX, cf. https://pix.fr/competences) mais également des technologies mises en œuvre pour délivrer ses contenus aux utilisateurs par le biais d’un navigateur
+  Web. 
 contenu: >-
   * Utilisation avancée d'un navigateur Web
   * Structure d'un site Web : clientserveur, arborescence, URL
-  * Structure d’une page : langage à balise, mise en forme et feuilles de styles (notions
-  élémentaires de CSS), notions de responsive design
+  * Structure d’une page : langage à balise, mise en forme et feuilles de styles (notions élémentaires de CSS), notions de responsive design
   * Contenu d’une page : éléments multimédia, encodage des caractères
-  * Sensibilisation aux mentions obligatoires d’un site Web (mentions légales, copyright,
-  ...)
+  * Sensibilisation aux mentions obligatoires d’un site Web (mentions légales, copyright, ...)
 motscles: Web, HTML, CSS, client/serveur, codage de l'information.

@@ -1,8 +1,8 @@
 nom: Supports de transmission pour les réseaux
 code: R105
 semestre: 1
-heures_formation: '12'
-heures_tp: '6'
+heures_formation: 12
+heures_tp: 6
 acs:
 - []
 - - AC0211
@@ -15,8 +15,7 @@ contexte: >-
   Il s’agit d’étudier les concepts fondamentaux des supports de transmission.  
 contenu: >-
   * Types de support de transmission (réseau d’entreprise, réseau opérateur)
-  * Caractéristiques d’un ou plusieurs types de supports (exemples: retard de propagation,
-  atténuation, continuité, échos, bruit, perturbations, identifier un défaut, bande
-  passante,... ) à partir de mesures et d’analyse des signaux
+  * Caractéristiques d’un ou plusieurs types de supports (exemples: retard de propagation, atténuation, continuité, échos, bruit, perturbations, identifier un défaut, bande passante,... ) à partir de mesures
+  et d’analyse des signaux
   * Prolongement possible : recettage, certification LAN.
 motscles: 'Supports de transmission (fibre optique, cuivre, radio), mesures. '

@@ -1,8 +1,8 @@
 nom: Fondamentaux de la programmation
 code: R107
 semestre: 1
-heures_formation: '41'
-heures_tp: '30'
+heures_formation: 41
+heures_tp: 30
 acs:
 - []
 - []
@@ -14,17 +14,11 @@ sae:
 - SAÉ15
 prerequis: Aucun
 contexte: >-
-  Elle fournit les bases conceptuelles et pratiques pour concevoir et spécifier formellement
-  un traitement automatisé de l'information. Ces bases pourront venir en appui de
-  nombreuses compétences techniques (en informatique, en réseau, en télécommunication,
-  ...) que le professionnel R&T doit développer et s’inscrivent dans de nombreuses
-  situations professionnelles que rencontrent le professionnel R&T, notamment  le
-  développement d’outils informatiques à usage interne d'une équipe (compétence RT3-Programmer)
-  ou l’automatisation du déploiement et de la maintenance des outils logiciels (compétence
-  RT1-Administrer).  
+  Elle fournit les bases conceptuelles et pratiques pour concevoir et spécifier formellement un traitement automatisé de l'information. Ces bases pourront venir en appui de nombreuses compétences techniques
+  (en informatique, en réseau, en télécommunication, ...) que le professionnel R&T doit développer et s’inscrivent dans de nombreuses situations professionnelles que rencontrent le professionnel R&T, notamment  le
+  développement d’outils informatiques à usage interne d'une équipe (compétence RT3-Programmer) ou l’automatisation du déploiement et de la maintenance des outils logiciels (compétence RT1-Administrer).  
 contenu: >-
-  En utilisant un langage de programmation, comme par exemple Python, les contenus
-  suivants seront traités :
+  En utilisant un langage de programmation, comme par exemple Python, les contenus suivants seront traités :
   * Notions d'algorithmique :
   	* Variables, types de base (nombres, chaînes, listes/tableaux).
   	* Structures de contrôle : tests, répétitions.
@@ -32,12 +26,9 @@ contenu: >-
   	* Portée des variables.
   * Tests et corrections d’un programme.
   * Prise en main d’un environnement de programmation (éditeur, environnement de développement).
-  * Prise en main de bibliothèques, modules, d'objets existants (appels de méthodes),
-  …
+  * Prise en main de bibliothèques, modules, d'objets existants (appels de méthodes), …
   * Manipulation de fichiers texte.
-  * Interaction avec le système d'exploitation et la ligne de commande : arguments,
-  lancement de commandes.
+  * Interaction avec le système d'exploitation et la ligne de commande : arguments, lancement de commandes.
   * Suivi de versions (git, svn, ...).
   L’utilisation de l’anglais est préconisée pour la documentation du code.
-motscles: Algorithmes, langages de programmation, méthodologie de développement, suivi
-  de versions
+motscles: Algorithmes, langages de programmation, méthodologie de développement, suivi de versions
