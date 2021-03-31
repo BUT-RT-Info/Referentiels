@@ -61,7 +61,7 @@ for i in range(2, len(docu)): # A priori un tableau
         nom_ressource = res[0][1][0]
 
         # Création de la ressource
-        r = Ressource(nom_ressource, res)
+        r = RessourceDocx(nom_ressource, res)
         liste_ressources.append(r)
 
         # if len(res) != 15:
@@ -195,9 +195,3 @@ for sem in ressources:
             with open(fichier, "w", encoding="utf8") as fid:
                 fid.write(output)
 
-
-for sem in ressources:
-    for r in ressources[sem]:
-        fichieryaml = "export/{}.yml".format(r.code)
-        fichierlatex = "../latex/ressources/{}.tex".format(r.code)
-        convert_ressource_yml_to_latex(fichieryaml, fichierlatex, "pn/modele_ressource.tex")

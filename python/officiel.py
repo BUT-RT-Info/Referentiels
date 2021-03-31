@@ -107,3 +107,14 @@ def get_officiel_sae_name_by_code(code):
         for rcode in DATA_SAES[sem]:
             if rcode==code:
                 return DATA_SAES[sem][code]
+
+
+def get_code_from_nom(ressource):
+    """Récupère le code d'une ressource d'après son nom en utilisant les noms officiels
+    des ressources du yaml"""
+    nom = supprime_accent_espace(ressource.nom)
+    for sem in DATA_RESSOURCES:
+        for code in DATA_RESSOURCES[sem]:
+            nom_data = supprime_accent_espace(DATA_RESSOURCES[sem][code])
+            if nom.startswith(nom_data):
+                return code

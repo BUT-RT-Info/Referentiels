@@ -1,15 +1,15 @@
 import re
 from officiel import *
 from modeles import *
-from officiel import supprime_accent_espace
+from officiel import supprime_accent_espace, get_code_from_nom
 import ruamel.yaml
 from ruamel.yaml.scalarstring import FoldedScalarString as folded
 
 __LOGGER = logging.getLogger(__name__)
 
 
-class Ressource():
-    """Classe modélisant les ressources"""
+class RessourceDocx():
+    """Classe modélisant les ressources, lorsqu'elles sont extraites du docx"""
     def __init__(self, nom, brute):
         self.nom = nom
         self.brute = brute # les données brutes de la ressource
@@ -188,15 +188,6 @@ def nettoie_mots_cles(r):
     mots = mots.replace(".", "")
     r.mots = mots
 
-def get_code_from_nom(ressource):
-    """Récupère le code d'une ressource d'après son nom en utilisant les noms officiels
-    des ressources du yaml"""
-    nom = supprime_accent_espace(ressource.nom)
-    for sem in DATA_RESSOURCES:
-        for code in DATA_RESSOURCES[sem]:
-            nom_data = supprime_accent_espace(DATA_RESSOURCES[sem][code])
-            if nom.startswith(nom_data):
-                return code
 
 def devine_acs_by_code(champ):
     """Recherche les codes ressources de la forme ACXXX ou AC0XXX dans champ ;
@@ -334,95 +325,103 @@ def nettoie_contenus(r):
 
     r.contenu = contenu
 
-def convert_ressource_yml_to_latex(fichieryaml, fichierlatex, modele):
-    modlatex = get_modele(modele) #"pn/modele_ressource.tex")
-    print(f"Export de {fichieryaml}")
-    with open(fichieryaml, "r", encoding="utf8") as fid:
-        yaml = ruamel.yaml.YAML()
-        ressource = yaml.load(fid.read())
+class Ressource():
+    """Modélise une ressource lorsqu'elle est extraite d'un yaml"""
+    __LOGGER = logging.getLogger(__name__)
 
-    # Préparation des ac
-    ajoutac = "\\ajoutac{%s}{%s}"
-    compRT = []
-    for accomp in ressource["acs"]:
-        comps = []
-        for no_ac in range(len(ressource["acs"][accomp])): # les ac de la comp
-            comps.append( ajoutac % (accomp, DATA_ACS[accomp][ressource["acs"][accomp][no_ac]]) )
-        compRT.append("\n".join(comps))
+    def __init__(self, fichieryaml):
+        with open(fichieryaml, "r", encoding="utf8") as fid:
+            yaml = ruamel.yaml.YAML()
+            try:
+                self.ressource = yaml.load(fid.read())
+            except:
+                Ressource.__LOGGER.warning(f"Pb de chargement de {fichieryaml}")
 
-    # Préparation des sae
-    ajoutsaes = "\\ajoutsae{%s}{%s}"
-    saesRT = []
-    for (i, sae) in enumerate(ressource["sae"]): # in range(len(self.apprentissages)):
-        saesRT.append(ajoutsaes % (sae, get_officiel_sae_name_by_code(sae)))
-    saes = "\n".join(saesRT)
+    def str_to_latex(self, modele="pn/modele_ressource.tex"):
+        """Génère le code latex décrivant la ressource"""
+        modlatex = get_modele(modele) #"pn/modele_ressource.tex")
 
-    ajoutprerequis = "\\ajoutprerequis{%s}{%s}"
-    prerequis = ""
-    if ressource["prerequis"] == "Aucun":
+
+        # Préparation des ac
+        ajoutac = "\\ajoutac{%s}{%s}"
+        compRT = []
+        for accomp in self.ressource["acs"]:
+            comps = []
+            for no_ac in range(len(self.ressource["acs"][accomp])): # les ac de la comp
+                comps.append( ajoutac % (accomp, DATA_ACS[accomp][self.ressource["acs"][accomp][no_ac]]) )
+            compRT.append("\n".join(comps))
+
+        # Préparation des sae
+        ajoutsaes = "\\ajoutsae{%s}{%s}"
+        saesRT = []
+        for (i, sae) in enumerate(self.ressource["sae"]): # in range(len(self.apprentissages)):
+            saesRT.append(ajoutsaes % (sae, get_officiel_sae_name_by_code(sae)))
+        saes = "\n".join(saesRT)
+
+        ajoutprerequis = "\\ajoutprerequis{%s}{%s}"
         prerequis = ""
-    else:
-        liste = []
-        for (no, mod) in enumerate(ressource["prerequis"]):
-            liste.append(ajoutprerequis % (mod, get_officiel_ressource_name_by_code(mod)))
-        prerequis = "\n".join(liste)
+        if self.ressource["prerequis"] == "Aucun":
+            prerequis = ""
+        else:
+            liste = []
+            for (no, mod) in enumerate(self.ressource["prerequis"]):
+                liste.append(ajoutprerequis % (mod, get_officiel_ressource_name_by_code(mod)))
+            prerequis = "\n".join(liste)
 
-    # préparation du contexte
-    contexte = ressource["contexte"]
+        # préparation du contexte
+        contexte = self.ressource["contexte"]
 
-    # préparation du contenu
-    if ressource["code"] == "R107":
-        print("ici")
+        # préparation du contenu
+        # if self.ressource["code"] == "R107":
+        #    print("ici")
 
-    contenu = ressource["contenu"] #supprime les passages à la ligne
-    marqueurs = ["*", "\t*"] # les marqueurs de Markdown
+        contenu = self.ressource["contenu"] #supprime les passages à la ligne
+        marqueurs = ["*", "\t*"] # les marqueurs de Markdown
 
-    for marq in marqueurs[::-1]:
-        premier_marqueur = False
-        contenu_balise = contenu.split("\n")
-        contenu_latex = []
+        for marq in marqueurs[::-1]:
+            premier_marqueur = False
+            contenu_balise = contenu.split("\n")
+            contenu_latex = []
 
-        for (i, ligne) in enumerate(contenu_balise): # pour le contenu latex actuel
-            un_marqueur = get_marqueur(ligne, [marq])
-            if un_marqueur: # le marqueur est trouvé
-                if premier_marqueur == False:
-                    contenu_latex.append("\\begin{itemize}")
-                    premier_marqueur = True
-                contenu_latex.append( ligne.replace(marq, "\\item"))
-            elif premier_marqueur == True: # le marqueur n'est plus trouvé
-                contenu_latex.append( ligne.replace(marq, "\\item"))
-                contenu_latex.append("\\end{itemize}")
-                premier_marqueur = False
-            else:
-                contenu_latex.append(ligne) # la ligne d'origine
-            if i == len(contenu_balise) -1 and premier_marqueur == True:
-                contenu_latex.append("\\end{itemize}")
-                premier_marqueur = True # ferme la dernière balise
+            for (i, ligne) in enumerate(contenu_balise): # pour le contenu latex actuel
+                un_marqueur = get_marqueur(ligne, [marq])
+                if un_marqueur: # le marqueur est trouvé
+                    if premier_marqueur == False:
+                        contenu_latex.append("\\begin{itemize}")
+                        premier_marqueur = True
+                    contenu_latex.append( ligne.replace(marq, "\\item"))
+                elif premier_marqueur == True: # le marqueur n'est plus trouvé
+                    contenu_latex.append( ligne.replace(marq, "\\item"))
+                    contenu_latex.append("\\end{itemize}")
+                    premier_marqueur = False
+                else:
+                    contenu_latex.append(ligne) # la ligne d'origine
+                if i == len(contenu_balise) -1 and premier_marqueur == True:
+                    contenu_latex.append("\\end{itemize}")
+                    premier_marqueur = True # ferme la dernière balise
 
-        # contenu_balise = contenu_latex[:]
-            contenu = "\n".join(contenu_latex) # stocke le contenu
+            # contenu_balise = contenu_latex[:]
+                contenu = "\n".join(contenu_latex) # stocke le contenu
 
-        contenu = "\n".join(contenu_latex)
+            contenu = "\n".join(contenu_latex)
 
-    chaine = ""
-    chaine = TemplateLatex(modlatex).substitute(code=ressource["code"],
-                                                   nom=ressource["nom"],
-                                                   heures_formation=ressource["heures_formation"],
-                                                   heures_tp=ressource["heures_tp"],
-                                                   compRT1=compRT[0],
-                                                   compRT2=compRT[1],
-                                                   compRT3=compRT[2],
-                                                   saes=saes,
-                                                   motscles=ressource["motscles"],
-                                                   prerequis=prerequis,
-                                                   contexte=contexte,
-                                                   contenu=contenu
-                                               )
-    chaine = chaine.replace("&", "\&")
-    with open(fichierlatex, "w", encoding="utf8") as fid:
-        fid.write(chaine)
+        chaine = ""
+        chaine = TemplateLatex(modlatex).substitute(code=self.ressource["code"],
+                                                       nom=self.ressource["nom"],
+                                                       heures_formation=self.ressource["heures_formation"],
+                                                       heures_tp=self.ressource["heures_tp"],
+                                                       compRT1=compRT[0],
+                                                       compRT2=compRT[1],
+                                                       compRT3=compRT[2],
+                                                       saes=saes,
+                                                       motscles=self.ressource["motscles"],
+                                                       prerequis=prerequis,
+                                                       contexte=contexte,
+                                                       contenu=contenu
+                                                   )
+        chaine = chaine.replace("&", "\&")
+        return chaine
 
-    return chaine
 
 if __name__=="__main__":
     # Eléments de test
