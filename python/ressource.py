@@ -179,7 +179,7 @@ def nettoie_prerequis(r):
     R_avec_code = devine_ressources_by_code(r.prerequis)
     R_avec_nom = devine_code_by_nom_from_dict(r.prerequis, DATA_RESSOURCES)
     liste = R_avec_code + R_avec_nom
-    liste = [l.rstrip() for l in liste] # supprime les espaces
+    liste = [l.rstrip().replace(",", "").replace(".","") for l in liste] # supprime les espaces
     R_finaux = sorted(list(set(liste)))
     if R_finaux:
         r.prerequis = R_finaux
@@ -356,6 +356,9 @@ class Ressource():
         modlatex = get_modele(modele) #"pn/modele_ressource.tex")
 
 
+        if self.ressource["code"] == "R107":
+            print("ici")
+
         # Préparation des ac
         ajoutac = "\\ajoutac{%s}{%s}"
         compRT = []
@@ -364,7 +367,7 @@ class Ressource():
 
             for no_ac in range(len(self.ressource["acs"][accomp])): # les ac de la comp
                 code_ac = self.ressource["acs"][accomp][no_ac]
-                comps.append( ajoutac % (accomp, DATA_ACS[accomp][code_ac]) )
+                comps.append( ajoutac % (code_ac, DATA_ACS[accomp][code_ac]) )
             compRT.append("\n".join(comps))
 
         # Préparation des sae
@@ -397,8 +400,6 @@ class Ressource():
 
         # contexte = remove_ligne_vide(contexte)
         # préparation du contenu
-        if self.ressource["code"] == "R107":
-            print("ici")
 
         contenu = self.ressource["contenu"] #supprime les passages à la ligne
         contenu = contenu.replace("\n", "\n\n").replace("\n"*4, "\n") # corrige les suppressions de ligne à la relecture du yaml
