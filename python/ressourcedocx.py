@@ -322,8 +322,11 @@ def get_marqueur_numerique(contenu):
     m += re.findall(r"(--\s|--\t)", contenu)
     return m
 
-def get_marqueurs(contenus):
-    """Renvoie la liste des marqueurs (à 1 caractère) partant d'une liste de lignes (éventuellement vide)"""
+def get_marqueurs(contenu):
+    """Renvoie la liste des marqueurs (à 1 caractère) partant d'un contenu - splitable en plusieurs lignes
+    (éventuellement vide)"""
+    contenus = [ligne.rstrip() for ligne in contenu.split("\n")]  # les contenus
+
     marqueurs = []
     for ligne in contenus:
         m = re.search(r"(\t)*", ligne) # y a-t-il des tabulations ?
@@ -331,7 +334,7 @@ def get_marqueurs(contenus):
             ajout = m.group()
         else:
             ajout = ""
-        ligne = ligne.replace("\t","").rstrip()
+        ligne = ligne.replace("\t","").rstrip() # supprime les tabulations pour rapatrier le marqueur en début de ligne
         if ligne: # si la ligne n'est pas vide, cherche le marqueur en début de ligne (si 1 caractère)
             if ligne[0] not in string.ascii_letters and ligne[0] != "É" and ligne[0] != "/":
                 marqueurs += [ajout + ligne[0]] # tous les symboles
@@ -342,7 +345,7 @@ def get_marqueurs(contenus):
             marqueurs_finaux.append(m)
     return marqueurs_finaux
 
-def get_marqueur(ligne, marqueurs):
+def get_marqueur_from_liste(ligne, marqueurs):
     """Renvoie le marqueur qui marque le début d'une ligne parmi une liste de marqueurs recherchés"""
     for m in marqueurs:
         if ligne.startswith(m):
@@ -356,30 +359,26 @@ def remplace_marqueur_numerique_with_caracteres(contenu):
         contenu = contenu.replace(m, ">")
     return contenu
 
-def nettoie_contenus(r):
-    # suppression des \t
-    contenu = r.contenu.replace(" / ", "/")
-
+def convert_to_markdown(contenu):
+    """Convertit un contenu avec des marqueurs en markdown"""
     contenu = remplace_marqueur_numerique_with_caracteres(contenu)
-
-    contenus = [ligne.rstrip() for ligne in contenu.split("\n")] # les contenus
-    # contenus = remove_ligne_vide(contenus) # supprime les lignes vides
-
-    marqueurs_finaux = get_marqueurs(contenus)
-
-    contenus_fin = contenus[:] # copie des ligne
-
-    for (i, ligne) in enumerate(contenus):
-        m = get_marqueur(ligne, marqueurs_finaux)
+    marqueurs_finaux = get_marqueurs(contenu)
+    lignes = contenu.split("\n")
+    contenus_fin =  lignes[:] # copie des ligne
+    for (i, ligne) in enumerate(lignes):
+        m = get_marqueur_from_liste(ligne, marqueurs_finaux) # identifie la présence d'un marqueur dans la ligne
         if m:
             pos = marqueurs_finaux.index(m)
             contenus_fin[i] = "\t" * (pos) + "* " + ligne.replace(m, "").replace("\t", "").rstrip()
-
     contenu = "\n\n".join(contenus_fin)
-    # contenu = contenu.replace("\n\n", "\n")
+    return contenu
 
+
+def nettoie_contenus_ressource(r):
+    # suppression des \t
+    contenu = r.contenu.replace(" / ", "/")
+    contenu = convert_to_markdown(contenu)
     r.contenu = contenu
-
 
 class SAEDocx():
 

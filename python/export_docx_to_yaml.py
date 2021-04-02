@@ -129,7 +129,7 @@ for r in liste_ressources:
 
     # Remet en forme le descriptif
     split_description(r)
-    nettoie_contenus(r)
+    nettoie_contenus_ressource(r)
 
     # Remet en forme les mots-clés
     # Tri dans le bon semestre
