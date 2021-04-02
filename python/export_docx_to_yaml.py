@@ -17,7 +17,7 @@ docu[1] # Tableau de synthèse des ressources
 nbre_ressources = 0
 
 
-ENTETES = ["Nom",  "Code", "Semestre", "formation encadrée", "dont heures de TP",
+ENTETES = ["Nom",  "Code", "Semestre", "Heures de formation", "dont heures de TP",
            "SAÉ", "Prérequis", "Descriptif", "Mots"]
 def get_indice(champ):
     """Récupère l'indice d'une entête"""

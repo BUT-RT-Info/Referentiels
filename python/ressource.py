@@ -52,9 +52,9 @@ class RessourceDocx():
                 "acs": self.apprentissages,
                 "sae": self.sae,
                 "prerequis": self.prerequis,
-                "contexte": folded(self.contexte),
-                "contenu": folded(self.contenu),
-                "motscles": self.mots if self.mots else ""
+                "contexte": folded(caracteres_recalcitrants(self.contexte)),
+                "contenu": folded(caracteres_recalcitrants(self.contenu)),
+                "motscles": caracteres_recalcitrants(self.mots) if self.mots else ""
                 }
         # output = yaml.dump(dico, #Dumper=yaml.Dumper,
         #    sort_keys=False, allow_unicode=True)
@@ -245,7 +245,7 @@ def split_description(r):
     contexte = []
     if True in [ligne.startswith("Contenus") for ligne in champs]: # la ligne commençant par Contenus
         indicec = [ligne.startswith("Contenus") for ligne in champs].index(True)
-    if indicea>=0:
+    if True in [ligne.startswith("Contexte et ") for ligne in champs]:
         contexte = champs[indicea+1:indicec]
     else:
         contexte = champs[:indicec]
@@ -271,7 +271,12 @@ def remove_link(contenu):
 
 def remove_ligne_vide(contenus):
     """Supprime les lignes vides"""
-    return [c for c in contenus if c.rstrip()]
+    if isinstance(contenus, list):
+        return [c for c in contenus if c.rstrip()]
+    else: # contenu = chaine
+        temp = contenus.split("\n")
+        temp = [t for t in temp if t.replace("\t", "").rstrip()]
+        return "\n".join(temp)
 
 def get_marqueur_numerique(contenu):
     """Revoie la liste des marqueurs numériques"""
@@ -307,9 +312,9 @@ def get_marqueur(ligne, marqueurs):
 
 def nettoie_contenus(r):
     # suppression des \t
-    contenu = r.contenu.replace(" / ", "/").replace(u'\xa0', ' ') # supprime les nbsp
+    contenu = r.contenu.replace(" / ", "/") # supprime les nbsp
 
-    if r.code == "R102":
+    if r.code == "R113":
         print("ici")
 
     marqueurs_numeriques = get_marqueur_numerique(contenu)
@@ -381,43 +386,28 @@ class Ressource():
 
         # préparation du contexte
         contexte = self.ressource["contexte"]
+        contexte = contexte.replace("\n", "\n\n").replace("\n" * 4,
+                                                        "\n")  # corrige les suppressions de ligne à la relecture du yaml
 
+        output = pypandoc.convert_text(contexte, 'tex', format='md',
+                                       extra_args=['--atx-headers'])
+        output = output.replace("\r\n", "\n")
+        contexte = caracteres_recalcitrants(output)
+        contexte = remove_ligne_vide(contexte)
+
+        # contexte = remove_ligne_vide(contexte)
         # préparation du contenu
-        # if self.ressource["code"] == "R107":
-        #    print("ici")
+        if self.ressource["code"] == "R107":
+            print("ici")
 
         contenu = self.ressource["contenu"] #supprime les passages à la ligne
-        # marqueurs = ["*", "\t*"] # les marqueurs de Markdown
-        #
-        # for marq in marqueurs[::-1]:
-        #     premier_marqueur = False
-        #     contenu_balise = contenu.split("\n")
-        #     contenu_latex = []
-        #
-        #     for (i, ligne) in enumerate(contenu_balise): # pour le contenu latex actuel
-        #         un_marqueur = get_marqueur(ligne, [marq])
-        #         if un_marqueur: # le marqueur est trouvé
-        #             if premier_marqueur == False:
-        #                 contenu_latex.append("\\begin{itemize}")
-        #                 premier_marqueur = True
-        #             contenu_latex.append( ligne.replace(marq, "\\item"))
-        #         elif premier_marqueur == True: # le marqueur n'est plus trouvé
-        #             contenu_latex.append( ligne.replace(marq, "\\item"))
-        #             contenu_latex.append("\\end{itemize}")
-        #             premier_marqueur = False
-        #         else:
-        #             contenu_latex.append(ligne) # la ligne d'origine
-        #         if i == len(contenu_balise) -1 and premier_marqueur == True:
-        #             contenu_latex.append("\\end{itemize}")
-        #             premier_marqueur = True # ferme la dernière balise
-        #
-        #     # contenu_balise = contenu_latex[:]
-        #         contenu = "\n".join(contenu_latex) # stocke le contenu
-        #
-        #     contenu = "\n".join(contenu_latex)
+        contenu = contenu.replace("\n", "\n\n").replace("\n"*4, "\n") # corrige les suppressions de ligne à la relecture du yaml
 
         output = pypandoc.convert_text(contenu, 'tex', format='md',
             extra_args=['--atx-headers'])
+        output = output.replace("\r\n", "\n")
+        contenu = caracteres_recalcitrants(output)
+        contenu = remove_ligne_vide(contenu)
 
         chaine = ""
         chaine = TemplateLatex(modlatex).substitute(code=self.ressource["code"],
@@ -428,14 +418,21 @@ class Ressource():
                                                        compRT2=compRT[1],
                                                        compRT3=compRT[2],
                                                        saes=saes,
-                                                       motscles=self.ressource["motscles"],
+                                                       motscles=caracteres_recalcitrants(self.ressource["motscles"]),
                                                        prerequis=prerequis,
-                                                       contexte=contexte,
-                                                       contenu=output.replace("\r\n", "\n").replace("\n\n", "\n")
+                                                       contexte=caracteres_recalcitrants(contexte),
+                                                       contenu=contenu,
                                                    )
-        chaine = chaine.replace("&", "\&").replace("\n\n", "\n")
+        # chaine = chaine.replace("&", "\&")
+
+        chaine = chaine.replace("\\tightlist\n", "")
         return chaine
 
+def caracteres_recalcitrants(contenu):
+    contenu = contenu.replace("è", "è").replace("’", "'").replace("é", "é")
+    contenu = contenu.replace("â", "â").replace(b'a\xcc\x82'.decode("utf8"), "â")
+    contenu = contenu.replace('\xa0', ' ') # le nbsp
+    return contenu
 
 if __name__=="__main__":
     # Eléments de test
