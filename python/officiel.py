@@ -93,28 +93,28 @@ def affiche_bilan_heures(ressources, sem):
     chaine += trait + "\n"
     return chaine
 
+def get_officiel_name_by_code_using_dict(code, dico):
+    """Extrait un nom à partir d'un code (pour les RESSOURCES ou les SAES)"""
+    for sem in dico:
+        for rcode in dico[sem]:
+            if rcode==code:
+                return dico[sem][code]
 
 def get_officiel_ressource_name_by_code(code):
     """Pour un code valide, fournit le nom officiel de la ressource (sans connaissance du semestre)"""
-    for sem in DATA_RESSOURCES:
-        for rcode in DATA_RESSOURCES[sem]:
-            if rcode==code:
-                return DATA_RESSOURCES[sem][code]
+    return get_officiel_name_by_code_using_dict(code, DATA_RESSOURCES)
 
 def get_officiel_sae_name_by_code(code):
     """Pour un code valide, fournit le nom officiel de la sae (sans connaissance du semestre)"""
-    for sem in DATA_SAES:
-        for rcode in DATA_SAES[sem]:
-            if rcode==code:
-                return DATA_SAES[sem][code]
+    return get_officiel_name_by_code_using_dict(code, DATA_SAES)
 
 
-def get_code_from_nom(ressource):
+def get_code_from_nom_using_dict(ressource, dico):
     """Récupère le code d'une ressource d'après son nom en utilisant les noms officiels
-    des ressources du yaml"""
+    des ressources du yaml si dico == DATA_RESSOURCES ; sinon fait de même avec les SAE"""
     nom = supprime_accent_espace(ressource.nom)
-    for sem in DATA_RESSOURCES:
-        for code in DATA_RESSOURCES[sem]:
-            nom_data = supprime_accent_espace(DATA_RESSOURCES[sem][code])
+    for sem in dico:
+        for code in dico[sem]:
+            nom_data = supprime_accent_espace(dico[sem][code])
             if nom.startswith(nom_data):
                 return code

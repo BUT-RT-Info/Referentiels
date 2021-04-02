@@ -3,6 +3,9 @@ import docx2python
 from ressourcedocx import *
 
 import logging
+
+from tools import get_indice, get_indice_sans_accent_ni_espace
+
 __LOGGER = logging.getLogger(__name__)
 
 REPERTOIRE = "import"
@@ -19,22 +22,6 @@ nbre_ressources = 0
 
 ENTETES = ["Nom",  "Code", "Semestre", "Heures de formation", "dont heures de TP",
            "SAÉ", "Prérequis", "Descriptif", "Mots"]
-def get_indice(champ):
-    """Récupère l'indice d'une entête"""
-    for (i, entete) in enumerate(ENTETES):
-        if entete in champ:
-            return i
-    return None
-
-def get_indice_sans_accent_ni_espace(champ):
-    """Récupère l'indice d'une entête en se débarrassant des majuscules/caractères spéciaux/espace"""
-    champ_purge = supprime_accent_espace(champ)
-    for (i, entete) in enumerate(ENTETES):
-        entete_purge = supprime_accent_espace(entete)
-        if entete_purge in champ_purge:
-            return i
-    return None
-
 
 """
 Format du parsing issu de docx2python
@@ -75,7 +62,7 @@ for i in range(2, len(docu)): # A priori un tableau
             ligne = res[j]
             if len(ligne) == 2: # ligne de données classique champ => valeur
                 champ = ligne[0][0] # le nom du champ
-                i = get_indice_sans_accent_ni_espace(champ)  # l'indice de l'entete dans ENTETES
+                i = get_indice_sans_accent_ni_espace(champ, ENTETES)  # l'indice de l'entete dans ENTETES
                 if i != None:
                     data[i] = "\n".join(res[j][1])
                     if champ == "Prérequis" and not data[i]:
@@ -99,7 +86,7 @@ for i in range(2, len(docu)): # A priori un tableau
                 indice_champ = -1
             if indice_champ >= 0: # si le champ "Heures de formation (incluant les TP)" est trouvé
                 # tente de réinjecter les heures dans Heures encadrées si elles n'on pas déjà été renseignées
-                indice_heure = get_indice("formation encadrée")
+                indice_heure = get_indice("formation encadrée", ENTETES)
                 if not data[indice_heure]:
                     print(f"Dans \"{nom_ressource}\", réinjection de \"Heures de formation (incluant les TP)\" dans \"formation encadrée\"")
                     data[indice_heure] = champ[1]
@@ -131,8 +118,8 @@ ressources = {"S1" : [], "S2": []}
 
 for r in liste_ressources:
     nettoie_titre(r)
-    nettoie_heure(r)
-    nettoie_code(r)
+    nettoie_heure_ressource(r)
+    nettoie_code(r, type="ressource")
     nettoie_semestre(r)
     nettoie_acs(r)
     nettoie_sae(r)

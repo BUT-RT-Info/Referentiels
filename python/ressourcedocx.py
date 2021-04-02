@@ -1,7 +1,7 @@
 import re
 from officiel import *
 from modeles import *
-from officiel import supprime_accent_espace, get_code_from_nom
+from officiel import supprime_accent_espace, get_code_from_nom_using_dict
 import ruamel.yaml
 from ruamel.yaml.scalarstring import FoldedScalarString as folded
 
@@ -10,9 +10,9 @@ __LOGGER = logging.getLogger(__name__)
 
 class RessourceDocx():
     """Classe modélisant les ressources, lorsqu'elles sont extraites du docx"""
-    def __init__(self, nom, brute):
+    def __init__(self, nom, brut):
         self.nom = nom
-        self.brute = brute # les données brutes de la ressource
+        self.brut = brut # les données brutes de la ressource
 
     def charge_informations(self, code, semestre, heures_encadrees, tp, sae, prerequis, description, mots):
         self.code = code
@@ -64,26 +64,28 @@ class RessourceDocx():
         output = output.replace("\n\n", "\n")
         return output
 
-def nettoie_heure(r):
+def nettoie_champ_heure(champ):
+    try: # champ contenant uniquement un nbre d'heure
+        volumes = int(champ)
+        return volumes
+    except:
+        volumes = re.findall("(\d{2}\D|\d{1}\D)", champ)
+        if len(volumes) == 1:
+            return int(volumes[0][:-1])
+        elif len(volumes) == 2:
+            volumes = sorted(volumes, reverse=True)
+            return (int(volumes[0][:-1]), int(volumes[1][:-1]))
+
+def nettoie_heure_ressource(r):
     """Nettoie le champ (horaire) (de la forme 46h ou 33...) pour en extraire la valeur numérique :
     le champ peut contenir 2 volumes (heures formation puis heures tp), auquel cas les 2 valeurs sont renvoyées
     dans un tuple"""
-    def nettoie_champ_heure(champ):
-        try: # champ contenant uniquement un nbre d'heure
-            volumes = int(champ)
-            return volumes
-        except:
-            volumes = re.findall("(\d{2}\D|\d{1}\D)", champ)
-            if len(volumes) == 1:
-                return int(volumes[0][:-1])
-            elif len(volumes) == 2:
-                volumes = sorted(volumes, reverse=True)
-                return (int(volumes[0][:-1]), int(volumes[1][:-1]))
 
     if r.heures_encadrees: # si les heures encadrées sont renseignées
         volumes = nettoie_champ_heure(r.heures_encadrees)
     if r.tp:
         r.tp = nettoie_champ_heure(r.tp)
+
     if isinstance(volumes, int):
         r.heures_encadrees = volumes
     elif isinstance(volumes, tuple):
@@ -97,11 +99,46 @@ def nettoie_heure(r):
         #else:
             #__LOGGER.warning("Heures non détectées")
 
-def nettoie_code(r):
-    """Recherche les codes ressources de la forme RXXX dans champ"""
+
+def nettoie_heure_sae(r):
+    """Nettoie les champs (horaires) des saes"""
+
+    if r.heures_encadrees:  # si les heures encadrées sont renseignées
+        r.heures_encadrees = nettoie_champ_heure(r.heures_encadrees)
+    else:
+        __LOGGER.warning(r"nettoie_heure_sae: dans {r.nom}, manque les heures de formation")
+        r.heures_encadrees = "???"
+    if r.tp:
+        r.tp = nettoie_champ_heure(r.tp)
+    else:
+        __LOGGER.warning(r"nettoie_heure_sae: dans {r.nom}, manque les heures de tp")
+        r.tp = "???"
+
+    if r.projet:
+        r.projet = nettoie_champ_heure(r.projet)
+    else:
+        __LOGGER.warning(r"nettoie_heure_sae: dans {r.nom}, manque les heures de projet")
+        r.projet = "???"
+    try:
+        if r.heures_encadrees < r.tp:
+            __LOGGER.warning(r"nettoie_heure_sae: dans {r.nom}, pb dans les heures formations/tp")
+    except:
+        pass
+
+
+def nettoie_code(r, type = "ressource"):
+    """Recherche les codes dans le champ:
+    * de la forme RXXX si type=ressource
+    * de la forme SAE|éXX si type=sae"""
+
     champ = r.code
     if r.code:
-        codes = re.findall(r"(R[0-9][0-9][0-9])", champ)
+        if type == "ressource":
+            codes = re.findall(r"(R[0-9][0-9][0-9])", champ)
+        else: # type = "sae"
+            codes = re.findall(r"(SAE[0-9][0-9]|SAÉ[0-9][0-9])", champ)
+            # ajout des É
+            codes = [c.replace("E", "É") for c in codes]
         # if len(codes) > 1:
         #    __LOGGER.warning("plusieurs codes trouvés :(")
         #elif len(codes) == 0:
@@ -109,7 +146,10 @@ def nettoie_code(r):
         if len(codes) == 1:
             r.code = codes[0]
         else:
-            code_devine = get_code_from_nom(r)
+            if type == "ressource":
+                code_devine = get_code_from_nom_using_dict(r, DATA_RESSOURCES)
+            else:
+                code_devine = get_code_from_nom_using_dict(r, DATA_SAES)
             if code_devine:
                 __LOGGER.warning(f"nettoie_code : \"{r.nom}\" => code {code_devine}")
                 r.code = code_devine
@@ -166,12 +206,20 @@ def nettoie_acs(r):
     r.apprentissages = dico # [comp] = acs_finaux
 
 def nettoie_sae(r):
-    """Nettoie les sae en détectant les codes"""
+    """Nettoie le champ SAe d'une ressource en détectant les codes"""
     SAE_avec_code = devine_sae_by_code(r.sae)
     liste = [l.rstrip() for l in SAE_avec_code]
     r.sae = liste
     if not r.sae:
         __LOGGER.warning(f"nettoie_sae: dans {r.nom} pas de SAE (:")
+
+def nettoie_ressources(r):
+    """Nettoie le champ ressource d'une sae en détectant les codes"""
+    ressources_avec_code = devine_ressources_by_code(r.ressources)
+    liste = [l.rstrip() for l in ressources_avec_code]
+    r.ressources = liste
+    if not r.ressources:
+        __LOGGER.warning(f"nettoie_ressources: dans {r.nom} pas de ressources (:")
 
 def nettoie_prerequis(r):
     """Nettoie les prérequis (ressource) en les remplaçant par leur code de ressource"""
@@ -345,6 +393,40 @@ def caracteres_recalcitrants(contenu):
     contenu = contenu.replace("â", "â").replace(b'a\xcc\x82'.decode("utf8"), "â")
     contenu = contenu.replace('\xa0', ' ') # le nbsp
     return contenu
+
+
+class SAEDocx():
+
+    def __init__(self, nom, brut):
+        self.nom = nom
+        self.brut = brut  # les données brutes de la ressource
+
+    def charge_informations(self, code, semestre, heures_encadrees, tp, projet, description, ressources, livrables, mots):
+        self.code = code
+        self.semestre = semestre  # <--
+        self.heures_encadrees = heures_encadrees
+        self.tp = tp
+        self.projet = projet
+        self.description = description
+        self.ressources = ressources
+        self.livrables = livrables
+        self.mots = mots
+
+    def charge_ac(self, apprentissages):
+        self.apprentissages = apprentissages
+
+class ExempleSAEDocx():
+
+    def __init__(self, nom, brut):
+        self.nom = nom
+        self.brut = brut  # les données brutes de la ressource
+
+    def charge_informations(self, description, formes, problematique, modalite):
+        self.description = description
+        self.formes = formes  # <--
+        self.problematique = problematique
+        self.modalite = modalite
+
 
 if __name__=="__main__":
     # Eléments de test
