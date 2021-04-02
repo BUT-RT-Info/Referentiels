@@ -34,22 +34,13 @@ class RessourceDocx():
     def __str__(self):
         print(self.nom + " " + self.code)
 
-    def str_heures_formations(self):
-        return self.heures_encadrees if self.heures_encadrees else "???"
-
-    def str_heures_tp(self):
-        return self.tp if self.tp else "???"
-
-    def str_semestre(self):
-        return int(self.semestre[1])
-
     def to_yaml(self):
-
+        """Exporte la ressource en yaml"""
         dico = {"nom": self.nom,
                 "code": self.code,
-                "semestre" : self.str_semestre(),
-                "heures_formation": self.str_heures_formations(),
-                "heures_tp": self.str_heures_tp(),
+                "semestre" : int(self.semestre[1]),
+                "heures_formation": self.heures_encadrees if self.heures_encadrees else "???",
+                "heures_tp": self.tp if self.tp else "???",
                 "acs": self.apprentissages,
                 "sae": self.sae,
                 "prerequis": self.prerequis,
@@ -57,13 +48,9 @@ class RessourceDocx():
                 "contenu": folded(self.contenu),
                 "motscles": self.mots if self.mots else ""
                 }
-        # output = yaml.dump(dico, #Dumper=yaml.Dumper,
-        #    sort_keys=False, allow_unicode=True)
-
         output = ruamel.yaml.dump(dico, Dumper=ruamel.yaml.RoundTripDumper,
-                                  allow_unicode=True,
-                                  width=100)
-        output = output.replace("\n\n", "\n")
+                                  allow_unicode=True, width=100)
+        output = output.replace("\n\n\n", "\n\n")
         return output
 
 def nettoie_champ_heure(champ):
