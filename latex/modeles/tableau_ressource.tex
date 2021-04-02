@@ -14,7 +14,7 @@
 	\xdef\CODE{#1} % le code de la ressource sous la forme AA
 	\xdef\COMP{#2} % le code de la compétence sous la forme A
 	
-  \forLoop{1}{\value{cptressourceac\CODE\COMP}}{noligne}{
+  \forLoop{1}{\value{cptRac\CODE\COMP}}{noligne}{
 		\xdef\contenu{{\csname Raccode\CODE\COMP\Alph{noligne}\endcsname} |
 				{\csname Racname\CODE\COMP\Alph{noligne}\endcsname}}
 		\contenu			
@@ -26,11 +26,11 @@
 % Tableau des SAE
 \newcommand*{\tableauSAE}[1]{%
 	\xdef\CODE{#1} % le code de la ressource sous la forme AA
-		\ifthenelse{\equal{\value{cptressourcesae\CODE}}{0}}{ % Si pas de prérequis
+		\ifthenelse{\equal{\value{cptRsae\CODE}}{0}}{ % Si pas de prérequis
 		Aucune
 		}{
 		\begin{tabular}[t]{@{}T@{}}%
-			\forLoop{1}{\value{cptressourcesae\CODE}}{noligne}{
+			\forLoop{1}{\value{cptRsae\CODE}}{noligne}{
 						\xdef\contenu{{\csname Rsaecode\CODE\Alph{noligne}\endcsname} |
 								{\csname Rsaename\CODE\Alph{noligne}\endcsname}}
 				\contenu			
@@ -43,12 +43,12 @@
 % Tableau des pré-requis
 \newcommand*{\tableauPrerequis}[1]{%
 	\xdef\CODE{#1} % le code de la ressource sous la forme AA
-	\ifthenelse{\equal{\value{cptressourceprerequis\CODE}}{0}}{ % Si pas de prérequis
+	\ifthenelse{\equal{\value{cptRprerequis\CODE}}{0}}{ % Si pas de prérequis
 Aucun
 }{ % Si des pré-requis
 \begin{tabular}[t]{@{}T@{}}%
 
-  \forLoop{1}{\value{cptressourceprerequis\CODE}}{noligne}{
+  \forLoop{1}{\value{cptRprerequis\CODE}}{noligne}{
 				\xdef\contenu{{\csname Rprerequiscode\CODE\Alph{noligne}\endcsname} |
 						{\csname Rprerequisname\CODE\Alph{noligne}\endcsname}}
 		\contenu			

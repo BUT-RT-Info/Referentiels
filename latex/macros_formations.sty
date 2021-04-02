@@ -27,7 +27,7 @@
 % Variables globales
 % **************************************
 \newcounter{cptsemestre} % 
-\newcounter{cptressource} % 
+\newcounter{cptR} %
 \newcounter{cptsae}
 
 \xdef\comploop{A,B,C} % Les compétences de la ressource
@@ -48,12 +48,13 @@
 \def\nouveausemestre#1{
 	\addtocounter{cptsemestre}{1} % Incrémente le compteur de semestre
 	
-	\setcounter{cptressource}{0} % RAZ du compteur de ressource
+	\setcounter{cptR}{0} % RAZ du compteur de ressource total
 	\setcounter{cptsae}{0}
 	
 	\def\currentsemestre{\Alph{cptsemestre}} % Lettre du semestre courant : A=1, B=2, ...
-	\newcounter{cptressource\currentsemestre} % le compteur des ressources dans le semestre
-	
+	\newcounter{cptR\currentsemestre} % le compteur des ressources dans le semestre
+	\newcounter{cptS\currentsemestre} % le compteur des sae dans le semestre
+
 	\expandafter\def\csname semestrename\currentsemestre\endcsname{Semestre \arabic{cptsemestre}}
 	\expandafter\def\csname semestrenumero\currentsemestre\endcsname{\arabic{cptsemestre}}
 }
@@ -67,34 +68,31 @@
 % Déclaration de la ressource : 
 % \nouvelleressource{code_ressource}{intitule_ressource}
 \def\nouvelleressource#1#2{
-	\addtocounter{cptressource}{1} % Ajoute une ressource (tous semestres confondu)
-	\addtocounter{cptressource\currentsemestre}{1} % Ajoute une ressource au semestre
-	\def\currentressource{\currentsemestre\Alph{cptressource}} % Ressource RAA = A pour semestre 1 puis A pour ressource n°1
+	\addtocounter{cptR}{1} % Ajoute une ressource (tous semestres confondu)
+	\addtocounter{cptR\currentsemestre}{1} % Ajoute une ressource au semestre
+	\def\currentRressource{\currentsemestre\Alph{cptR}} % Ressource RAA = A pour semestre 1 puis A pour ressource n°1
 
-	\expandafter\xdef\csname Rcode\currentressource\endcsname{#1} % code
-	\expandafter\xdef\csname Rname\currentressource\endcsname{#2} % nom/intitule
-	\expandafter\xdef\csname Rsem\currentressource\endcsname{\csname semestrenumero\currentsemestre\endcsname} % nom du semestre
+	\expandafter\xdef\csname Rcode\currentRressource\endcsname{#1} % code
+	\expandafter\xdef\csname Rname\currentRressource\endcsname{#2} % nom/intitule
+	\expandafter\xdef\csname Rsem\currentRressource\endcsname{\csname semestrenumero\currentsemestre\endcsname} % nom du semestre
 	
-	\newcounter{cptcontenu\currentressource}  % le compteur de contenu pour la ressource, mis à 0
-	\newcounter{cptressourcecomp\currentressource} % le compteur de compétences rattachées à la ressource
-	\newcounter{cptressourcesae\currentressource} % Le compteur de sae
-	\newcounter{cptressourceprerequis\currentressource}
-	
-	%\definecollection{ressourcedescription\currentressource}
+	\newcounter{cptRcomp\currentRressource} % le compteur de compétences rattachées à la ressource
+	\newcounter{cptRsae\currentRressource} % Le compteur de sae
+	\newcounter{cptRprerequis\currentRressource}
 }
 
 % ****************************
 % Ajout des heures à la ressource courante
 \def\ajoutRheures#1#2{
-	\expandafter\xdef\csname Rtraining\currentressource\endcsname{#1} % heures de formation encadrées
-	\expandafter\xdef\csname Rtp\currentressource\endcsname{#2} % heures de projet
+	\expandafter\xdef\csname Rtraining\currentRressource\endcsname{#1} % heures de formation encadrées
+	\expandafter\xdef\csname Rtp\currentRressource\endcsname{#2} % heures de projet
 }
 
 % ****************************
-% Ajout du descriptif (ancrage)
+% Ajout du descriptif (ancrage professionnel)
 \def\ajoutRancrage#1{
 	\begingroup\let\+\relax
-	\expandafter\gdef\csname Rancrage\currentressource\endcsname{\noexpand #1} % descriptif
+	\expandafter\gdef\csname Rancrage\currentRressource\endcsname{\noexpand #1} % descriptif
 	\endgroup
 }
 
@@ -102,7 +100,7 @@
 % Ajout des contenus
 \def\ajoutRcontenudetaille#1{
 	\begingroup\let\+\relax
-	\expandafter\gdef\csname Rcontenu\currentressource\endcsname{\noexpand #1} % liste de contenu
+	\expandafter\gdef\csname Rcontenu\currentRressource\endcsname{\noexpand #1} % liste de contenu
 	\endgroup
 }
 
@@ -110,50 +108,137 @@
 % Ajout des compétences 
 % \ajoutcompetence{nom_competence}{niveau}
 \def\ajoutRcompetence#1#2{
-	\addtocounter{cptressourcecomp\currentressource}{1} % le compteur de la comp dans la ressource
-	\xdef\currentcomp{\Alph{cptressourcecomp\currentressource}} % La lettre de la comp dans la ressource
+	\addtocounter{cptRcomp\currentRressource}{1} % le compteur de la comp dans la ressource
+	\xdef\currentRcomp{\Alph{cptRcomp\currentRressource}} % La lettre de la comp dans la ressource
 	
 	
-	\expandafter\xdef\csname Rcomp\currentressource\currentcomp\endcsname{#1} % le nom de la comp
-	\expandafter\xdef\csname Rniveau\currentressource\currentcomp\endcsname{#2} % le nom de la comp
+	\expandafter\xdef\csname Rcomp\currentRressource\currentRcomp\endcsname{#1} % le nom de la comp
+	\expandafter\xdef\csname Rniveau\currentRressource\currentRcomp\endcsname{#2} % le nom de la comp
 	
-	\newcounter{cptressourceac\currentressource\currentcomp} % le compteur d'ac pour la compétence rattachées à la ressource
+	\newcounter{cptRac\currentRressource\currentRcomp} % le compteur d'ac pour la compétence rattachées à la ressource
 }
 
 % ****************************
 % Ajout d'AC aux compétences
 \def\ajoutRac#1#2{
-	\addtocounter{cptressourceac\currentressource\currentcomp}{1} % le compteur de l'ac pour la comp dans la ressource
-	\xdef\currentac{\Alph{cptressourceac\currentressource\currentcomp}} % La lettre de l'ac pour la comp dans la ressource
+	\addtocounter{cptRac\currentRressource\currentRcomp}{1} % le compteur de l'ac pour la comp dans la ressource
+	\xdef\currentRac{\Alph{cptRac\currentRressource\currentRcomp}} % La lettre de l'ac pour la comp dans la ressource
 	
-	\expandafter\xdef\csname Raccode\currentressource\currentcomp\currentac\endcsname{#1} % le nom de la comp
-	\expandafter\xdef\csname Racname\currentressource\currentcomp\currentac\endcsname{#2} % le nom de la comp
+	\expandafter\xdef\csname Raccode\currentRressource\currentRcomp\currentRac\endcsname{#1} % le nom de la comp
+	\expandafter\xdef\csname Racname\currentRressource\currentRcomp\currentRac\endcsname{#2} % le nom de la comp
 }
 
 % ****************************
 % Ajout des SAE
 \def\ajoutRsae#1#2{
-	\addtocounter{cptressourcesae\currentressource}{1} % le compteur de la sae dans la ressource
-	\xdef\currentsae{\Alph{cptressourcesae\currentressource}} % La lettre
+	\addtocounter{cptRsae\currentRressource}{1} % le compteur de la sae dans la ressource
+	\xdef\currentRsae{\Alph{cptRsae\currentRressource}} % La lettre
 	
-	\expandafter\xdef\csname Rsaecode\currentressource\currentsae\endcsname{#1} %
-	\expandafter\xdef\csname Rsaename\currentressource\currentsae\endcsname{#2} %
+	\expandafter\xdef\csname Rsaecode\currentRressource\currentRsae\endcsname{#1} %
+	\expandafter\xdef\csname Rsaename\currentRressource\currentRsae\endcsname{#2} %
 }
 
 % ****************************
 % Ajout des prerequis
 \def\ajoutRprerequis#1#2{
-	\addtocounter{cptressourceprerequis\currentressource}{1} % le compteur du prerequis dans la ressource
-	\xdef\currentprerequis{\Alph{cptressourceprerequis\currentressource}} % La lettre
+	\addtocounter{cptRprerequis\currentRressource}{1} % le compteur du prerequis dans la ressource
+	\xdef\currentprerequis{\Alph{cptRprerequis\currentRressource}} % La lettre
 	
-	\expandafter\xdef\csname Rprerequiscode\currentressource\currentprerequis\endcsname{#1} %
-	\expandafter\xdef\csname Rprerequisname\currentressource\currentprerequis\endcsname{#2} %
+	\expandafter\xdef\csname Rprerequiscode\currentRressource\currentprerequis\endcsname{#1} %
+	\expandafter\xdef\csname Rprerequisname\currentRressource\currentprerequis\endcsname{#2} %
 }
 
 % ****************************
 % Ajout des mots-clés
 \def\ajoutRmotscles#1{
-	\expandafter\xdef\csname Rmotscles\currentressource\endcsname{#1} % descriptif
+	\expandafter\xdef\csname Rmotscles\currentRressource\endcsname{#1} % descriptif
+}
+
+
+% **********************************************
+% Déclaration d'une SAé
+% **********************************************
+
+
+% ****************************
+% Déclaration de la ressource :
+% \nouvellesae{code_sae}{intitule_sae}
+\def\nouvellesae#1#2{
+	\addtocounter{cptsae}{1} % Ajoute une ressource (tous semestres confondu)
+	\addtocounter{cptS\currentsemestre}{1} % Ajoute une ressource au semestre
+	\def\currentSsae{\currentsemestre\Alph{cptsae}} % Ressource RAA = A pour semestre 1 puis A pour ressource n°1
+
+	\expandafter\xdef\csname Scode\currentSsae\endcsname{#1} % code
+	\expandafter\xdef\csname Sname\currentSsae\endcsname{#2} % nom/intitule
+	\expandafter\xdef\csname Ssem\currentSsae\endcsname{\csname semestrenumero\currentSsae\endcsname} % nom du semestre
+
+	\newcounter{cptScomp\currentSsae} % le compteur de compétences rattachées à la ressource
+	\newcounter{cptSressource\currentSsae} % Le compteur de ressources dans la SAé
+}
+
+% ****************************
+% Ajout des heures à la saé courante
+\def\ajoutSheures#1#2#3{
+	\expandafter\xdef\csname Straining\currentSsae\endcsname{#1} % heures de formation encadrées
+	\expandafter\xdef\csname Stp\currentSsae\endcsname{#2} % heures de tp
+	\expandafter\xdef\csname Sprojet\currentSsae\endcsname{#3} % heures de projet
+}
+
+% ****************************
+% Ajout du descriptif (description des objectifs)
+\def\ajoutSdescription#1{
+	\begingroup\let\+\relax
+	\expandafter\gdef\csname Rdescriptif\currentSsae\endcsname{\noexpand #1} % descriptif
+	\endgroup
+}
+
+
+% ****************************
+% Ajout des compétences
+% \ajoutcompetence{nom_competence}{niveau}
+\def\ajoutScompetence#1#2{
+	\addtocounter{cptScomp\currentSsae}{1} % le compteur de la comp dans la ressource
+	\xdef\currentScomp{\Alph{cptScomp\currentSsae}} % La lettre de la comp dans la ressource
+
+
+	\expandafter\xdef\csname Scomp\currentSsae\currentScomp\endcsname{#1} % le nom de la comp
+	\expandafter\xdef\csname Sniveau\currentSsae\currentScomp\endcsname{#2} % le nom de la comp
+
+	\newcounter{cptSac\currentSsae\currentScomp} % le compteur d'ac pour la compétence rattachées à la ressource
+}
+
+% ****************************
+% Ajout d'AC aux compétences
+\def\ajoutSac#1#2{
+	\addtocounter{cptSac\currentSsae\currentScomp}{1} % le compteur de l'ac pour la comp dans la ressource
+	\xdef\currentSac{\Alph{cptSac\currentSsae\currentScomp}} % La lettre de l'ac pour la comp dans la ressource
+
+	\expandafter\xdef\csname Raccode\currentSsae\currentScomp\currentSac\endcsname{#1} % le nom de la comp
+	\expandafter\xdef\csname Racname\currentSsae\currentScomp\currentSac\endcsname{#2} % le nom de la comp
+}
+
+% ****************************
+% Ajout des ressources mobilisées par l'étudiant
+\def\ajoutSressources#1#2{
+	\addtocounter{cptSressource\currentSsae}{1} % le compteur de la sae dans la ressource
+	\xdef\currentSressource{\Alph{cptSressource\currentSsae}} % La lettre
+
+	\expandafter\xdef\csname Sressourcecode\currentSsae\currentSressource\endcsname{#1} %
+	\expandafter\xdef\csname Sressourcename\currentSsae\currentSressource\endcsname{#2} %
+}
+
+	% ****************************
+% Ajout des livrables
+\def\ajoutSlivrables#1{
+	\begingroup\let\+\relax
+	\expandafter\gdef\csname Rlivrables\currentSsae\endcsname{\noexpand #1} % descriptif
+	\endgroup
+}
+
+% ****************************
+% Ajout des mots-clés
+\def\ajoutSmotscles#1{
+	\expandafter\xdef\csname Smotscles\currentSsae\endcsname{#1} % mots-clés
 }
 
 

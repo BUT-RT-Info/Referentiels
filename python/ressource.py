@@ -103,3 +103,84 @@ class Ressource():
 
         chaine = chaine.replace("\\tightlist\n", "")
         return chaine
+
+
+class SAE():
+    """Modélise une ressource lorsqu'elle est extraite d'un yaml"""
+    __LOGGER = logging.getLogger(__name__)
+
+    def __init__(self, fichieryaml):
+        with open(fichieryaml, "r", encoding="utf8") as fid:
+            yaml = ruamel.yaml.YAML()
+            try:
+                self.sae = yaml.load(fid.read())
+            except:
+                Ressource.__LOGGER.warning(f"Pb de chargement de {fichieryaml}")
+
+    def to_latex(self, modele="pn/modele_sae.tex"):
+        """Génère le code latex décrivant la ressource"""
+        modlatex = get_modele(modele) #"pn/modele_ressource.tex")
+
+        # Préparation des ac
+        ajoutac = "\\ajoutSac{%s}{%s}"
+        compRT = []
+        for accomp in self.sae["acs"]:
+            comps = []
+            for no_ac in range(len(self.sae["acs"][accomp])): # les ac de la comp
+                code_ac = self.sae["acs"][accomp][no_ac]
+                comps.append( ajoutac % (code_ac, DATA_ACS[accomp][code_ac]) )
+            compRT.append("\n".join(comps))
+
+        # Préparation des ressources
+        ajoutressources = "\\ajoutSressources{%s}{%s}"
+        resRT = []
+        for (i, res) in enumerate(self.sae["ressources"]): # in range(len(self.apprentissages)):
+            resRT.append(ajoutressources % (res, get_officiel_ressource_name_by_code(res)))
+        ressources = "\n".join(resRT)
+
+
+        # préparation du descriptif
+        descriptif = self.sae["description"]
+        if descriptif == "Aucun":
+            descriptif = ""
+            SAE.__LOGGER.warning(f"{self.sae['titre']} n'a pas de description")
+        else:
+            descriptif = descriptif.replace("\n", "\n\n").replace("\n" * 4, "\n")  # corrige les suppressions de ligne à la relecture du yaml
+            descriptif = md_to_latex(descriptif)
+
+        # préparation des livrables
+        livrables = self.sae["livrables"]
+        if livrables == "Aucun":
+            livrables = ""
+            SAE.__LOGGER.warning(f"{self.sae['titre']} n'a pas de livrables")
+        else:
+            livrables = livrables.replace("\n", "\n\n").replace("\n" * 4, "\n")  # corrige les suppressions de ligne à la relecture du yaml
+            livrables = md_to_latex(livrables)
+
+        chaine = ""
+        chaine = TemplateLatex(modlatex).substitute(code=self.sae["code"],
+                                                    titre=self.sae["titre"],
+                                                    heures_encadrees=self.sae["heures_encadrees"],
+                                                    heures_tp=self.sae["tp"],
+                                                    heures_projet=self.sae["projet"],
+                                                    compRT1=compRT[0],
+                                                    compRT2=compRT[1],
+                                                    compRT3=compRT[2],
+                                                    description=caracteres_recalcitrants(descriptif),
+                                                    ressources=ressources,
+                                                    livrables= livrables,
+                                                    motscles = caracteres_recalcitrants(self.sae["motscles"]),
+                                                   )
+        # chaine = chaine.replace("&", "\&")
+
+        chaine = chaine.replace("\\tightlist\n", "")
+        return chaine
+
+def md_to_latex(contenu):
+    """Réalise la conversion markdown to latex avec pypandoc"""
+    contenu = pypandoc.convert_text(contenu, 'tex', format='md',
+                                   extra_args=['--atx-headers'])
+    contenu = contenu.replace("\r\n", "\n")
+    contenu = caracteres_recalcitrants(contenu)
+    contenu = remove_ligne_vide(contenu)
+    return contenu
