@@ -1,6 +1,6 @@
 
 import os
-from ressource import *
+from ressourcedocx import *
 
 import logging
 __LOGGER = logging.getLogger(__name__)
