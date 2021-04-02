@@ -1,5 +1,4 @@
-
-import os
+from ressource import Ressource
 from ressourcedocx import *
 
 import logging
