@@ -5,7 +5,8 @@ import ruamel.yaml
 
 from modeles import get_modele, TemplateLatex
 from officiel import DATA_ACS, get_officiel_sae_name_by_code, get_officiel_ressource_name_by_code
-from ressourcedocx import caracteres_recalcitrants, remove_ligne_vide
+from ressourcedocx import remove_ligne_vide
+from tools import caracteres_recalcitrants
 
 
 class Ressource():

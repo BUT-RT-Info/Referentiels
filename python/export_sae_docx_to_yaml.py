@@ -69,7 +69,7 @@ for i in range(1, len(docu)): # A priori un tableau
         for j in range(len(res)): # parcours des entêtes du tableau décrivant la ressource
             ligne = res[j]
             if len(ligne) == 2: # ligne de données classique champ => valeur
-                champ = ligne[0][0] # le nom du champ
+                champ = caracteres_recalcitrants(ligne[0][0]) # le nom du champ
                 if champ.startswith("Nom de la"):
                     champ = "Titre de la" # corrige les noms/titres
                 i = get_indice_sans_accent_ni_espace(champ, ENTETES_CHAPEAU)  # l'indice de l'entete dans ENTETES
@@ -84,7 +84,7 @@ for i in range(1, len(docu)): # A priori un tableau
                     # j+1 = les ACs par compétences
                     acs = res[j+2]
                     for k in range(len(acs)):
-                        apprentissages[k] = "\n".join(acs[k]) # fusionne les ACS (généralement sur plusieurs lignes)
+                        apprentissages[k] = caracteres_recalcitrants("\n".join(acs[k])) # fusionne les ACS (généralement sur plusieurs lignes)
 
         if non_interprete: # souvent Heures de formation (incluant les TP)
 
@@ -127,7 +127,7 @@ for i in range(1, len(docu)): # A priori un tableau
         for j in range(len(res)): # parcours des entêtes du tableau décrivant la ressource
             ligne = res[j]
             if len(ligne) == 2: # ligne de données classique champ => valeur
-                champ = ligne[0][0] # le nom du champ
+                champ = caracteres_recalcitrants(ligne[0][0]) # le nom du champ
                 i = get_indice_sans_accent_ni_espace(champ, ENTETES_EXEMPLES)  # l'indice de l'entete dans ENTETES
                 if i != None:
                     data[i] = "\n".join(res[j][1])

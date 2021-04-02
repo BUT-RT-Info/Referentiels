@@ -1,6 +1,7 @@
 
 import docx2python
 from ressourcedocx import *
+import tools
 
 import logging
 
@@ -64,7 +65,7 @@ for i in range(2, len(docu)): # A priori un tableau
                 champ = ligne[0][0] # le nom du champ
                 i = get_indice_sans_accent_ni_espace(champ, ENTETES)  # l'indice de l'entete dans ENTETES
                 if i != None:
-                    data[i] = "\n".join(res[j][1])
+                    data[i] = tools.caracteres_recalcitrants("\n".join(res[j][1]))
                     if champ == "Prérequis" and not data[i]:
                         data[i] = "aucun"
                         print(f"Dans {nom_ressource}, complète les prérequis à \"aucun\"")
@@ -76,7 +77,7 @@ for i in range(2, len(docu)): # A priori un tableau
                     # j+1 = les ACs par compétences
                     acs = res[j+2]
                     for k in range(len(acs)):
-                        apprentissages[k] = "\n".join(acs[k]) # fusionne les ACS (généralement sur plusieurs lignes)
+                        apprentissages[k] = tools.caracteres_recalcitrants("\n".join(acs[k])) # fusionne les ACS (généralement sur plusieurs lignes)
 
         if non_interprete: # souvent Heures de formation (incluant les TP)
 

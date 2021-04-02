@@ -5,6 +5,8 @@ from officiel import supprime_accent_espace, get_code_from_nom_using_dict
 import ruamel.yaml
 from ruamel.yaml.scalarstring import FoldedScalarString as folded
 
+from tools import caracteres_recalcitrants
+
 __LOGGER = logging.getLogger(__name__)
 
 
@@ -51,9 +53,9 @@ class RessourceDocx():
                 "acs": self.apprentissages,
                 "sae": self.sae,
                 "prerequis": self.prerequis,
-                "contexte": folded(caracteres_recalcitrants(self.contexte)),
-                "contenu": folded(caracteres_recalcitrants(self.contenu)),
-                "motscles": caracteres_recalcitrants(self.mots) if self.mots else ""
+                "contexte": folded(self.contexte),
+                "contenu": folded(self.contenu),
+                "motscles": self.mots if self.mots else ""
                 }
         # output = yaml.dump(dico, #Dumper=yaml.Dumper,
         #    sort_keys=False, allow_unicode=True)
@@ -334,17 +336,18 @@ def get_marqueur_numerique(contenu):
     return m
 
 def get_marqueurs(contenus):
-    """Renvoie la liste des marqueurs (à 1 caractère) partant d'une liste de ligne"""
+    """Renvoie la liste des marqueurs (à 1 caractère) partant d'une liste de lignes (éventuellement vide)"""
     marqueurs = []
     for ligne in contenus:
-        m = re.search(r"(\t)*", ligne) # des \t ?
+        m = re.search(r"(\t)*", ligne) # y a-t-il des tabulations ?
         if m.group() != "":
             ajout = m.group()
         else:
             ajout = ""
-        ligne = ligne.replace("\t","")[0].rstrip() # le marqueur en début de ligne (si 1 caractère)
-        if ligne[0] not in string.ascii_letters and ligne[0] != "É" and ligne[0] != "/":
-            marqueurs += [ajout + ligne[0]] # tous les symboles
+        ligne = ligne.replace("\t","").rstrip()
+        if ligne: # si la ligne n'est pas vide, cherche le marqueur en début de ligne (si 1 caractère)
+            if ligne[0] not in string.ascii_letters and ligne[0] != "É" and ligne[0] != "/":
+                marqueurs += [ajout + ligne[0]] # tous les symboles
 
     marqueurs_finaux = [] # tri les marqueurs en supprimant les doublons et en gardant un ordre (pour détecter les sous listes)
     for m in marqueurs:
@@ -358,19 +361,22 @@ def get_marqueur(ligne, marqueurs):
         if ligne.startswith(m):
             return m
 
-def nettoie_contenus(r):
-    # suppression des \t
-    contenu = r.contenu.replace(" / ", "/") # supprime les nbsp
 
-    if r.code == "R113":
-        print("ici")
-
+def remplace_marqueur_numerique_with_caracteres(contenu):
+    """Remplace les marqueurs numériques par des marqueurs > lorsque présents dans un contenu"""
     marqueurs_numeriques = get_marqueur_numerique(contenu)
     for m in marqueurs_numeriques: # remplace les marqueurs numériques
         contenu = contenu.replace(m, ">")
+    return contenu
+
+def nettoie_contenus(r):
+    # suppression des \t
+    contenu = r.contenu.replace(" / ", "/")
+
+    contenu = remplace_marqueur_numerique_with_caracteres(contenu)
 
     contenus = [ligne.rstrip() for ligne in contenu.split("\n")] # les contenus
-    contenus = remove_ligne_vide(contenus) # supprime les lignes vides
+    # contenus = remove_ligne_vide(contenus) # supprime les lignes vides
 
     marqueurs_finaux = get_marqueurs(contenus)
 
@@ -386,13 +392,6 @@ def nettoie_contenus(r):
     # contenu = contenu.replace("\n\n", "\n")
 
     r.contenu = contenu
-
-
-def caracteres_recalcitrants(contenu):
-    contenu = contenu.replace("è", "è").replace("’", "'").replace("é", "é")
-    contenu = contenu.replace("â", "â").replace(b'a\xcc\x82'.decode("utf8"), "â")
-    contenu = contenu.replace('\xa0', ' ') # le nbsp
-    return contenu
 
 
 class SAEDocx():

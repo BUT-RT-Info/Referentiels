@@ -17,3 +17,10 @@ def get_indice_sans_accent_ni_espace(champ, entetes):
         if entete_purge in champ_purge:
             return i
     return None
+
+
+def caracteres_recalcitrants(contenu):
+    contenu = contenu.replace("è", "è").replace("’", "'").replace("é", "é")
+    contenu = contenu.replace("â", "â").replace(b'a\xcc\x82'.decode("utf8"), "â")
+    contenu = contenu.replace('\xa0', ' ') # le nbsp
+    return contenu
