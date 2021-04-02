@@ -6,7 +6,7 @@ import logging
 __LOGGER = logging.getLogger(__name__)
 
 REPERTOIRE = "import"
-DOCUMENT = "ressources_v0"
+DOCUMENT = "000 compilation-saes 2021-03-29T11_10_11.377Z"
 
 # Ouverture du document
 docu = docx2python.docx2python(REPERTOIRE + "/" + DOCUMENT + ".docx")
@@ -17,8 +17,10 @@ docu[1] # Tableau de synthèse des ressources
 nbre_ressources = 0
 
 
-ENTETES = ["Nom",  "Code", "Semestre", "formation encadrée", "dont heures de TP",
-           "SAÉ", "Prérequis", "Descriptif", "Mots"]
+ENTETES_CHAPEAU = ["Titre",  "Code", "Semestre", "Heures de formation", "dont heures de TP", "Heures \"projet",
+                    "Description des objectifs",
+                   "Liste des ressources", "Type de livrable", "Mots clefs"]
+ENTETES_EXEMPLES = ["Titre", "Compétence", "Description des objectifs", "Types"]
 def get_indice(champ):
     """Récupère l'indice d'une entête"""
     for (i, entete) in enumerate(ENTETES):
@@ -131,7 +133,6 @@ ressources = {"S1" : [], "S2": []}
 
 for r in liste_ressources:
     # Nettoie titre
-
     nettoie_titre(r)
 
     # Nettoie le champ heures_encadrees

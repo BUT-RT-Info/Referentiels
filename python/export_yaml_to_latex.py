@@ -18,9 +18,24 @@ for file in fichiers:
     sem = "S" + str(r.ressource["semestre"])
     ressources[sem].append(r)
 
+r1 = ressources["S1"][0]
+r2 = ressources["S1"][1]
+
+temp1 = r1.ressource["contenu"]
+temp2 = r2.ressource["contenu"]
+
+output1 = pypandoc.convert_text(temp1, 'tex', format='md',
+                               extra_args=['--atx-headers'])
+
+output2 = pypandoc.convert_text(temp2, 'tex', format='md',
+                               extra_args=['--atx-headers'])
+
+print("ici")
 # Export latex
 for sem in ressources:
     for r in ressources[sem]:
+        if r.ressource["nom"] == "R112":
+            print("ici")
         fichierlatex = REPERTOIRE_LATEX + "/" + "{}.tex".format(r.ressource["code"])
         contenu = r.str_to_latex()
         with open(fichierlatex, "w", encoding="utf8") as fid:

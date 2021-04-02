@@ -4,6 +4,7 @@ from modeles import *
 from officiel import supprime_accent_espace, get_code_from_nom
 import ruamel.yaml
 from ruamel.yaml.scalarstring import FoldedScalarString as folded
+import pypandoc
 
 __LOGGER = logging.getLogger(__name__)
 
@@ -51,8 +52,8 @@ class RessourceDocx():
                 "acs": self.apprentissages,
                 "sae": self.sae,
                 "prerequis": self.prerequis,
-                "contexte": folded(self.contexte).replace("\n\n", "\n"),
-                "contenu": folded(self.contenu).replace("\n\n", "\n"),
+                "contexte": folded(self.contexte),
+                "contenu": folded(self.contenu),
                 "motscles": self.mots if self.mots else ""
                 }
         # output = yaml.dump(dico, #Dumper=yaml.Dumper,
@@ -60,7 +61,7 @@ class RessourceDocx():
 
         output = ruamel.yaml.dump(dico, Dumper=ruamel.yaml.RoundTripDumper,
                                   allow_unicode=True,
-                                  width=200)
+                                  width=100)
         output = output.replace("\n\n", "\n")
         return output
 
@@ -157,6 +158,8 @@ def nettoie_acs(r):
         # donnees = donnees.replace("\t", "").replace("-", "") # supprime les tabulations
         acs_avec_code = devine_acs_by_code(donnees)
         acs_avec_nom = devine_code_by_nom_from_dict(donnees, DATA_ACS)
+        if acs_avec_code and set(acs_avec_nom).intersection(set(acs_avec_code)) != set(acs_avec_nom):
+            __LOGGER.warning(f"Dans {r.nom}, revoir les ACS : {acs_avec_code} vs {acs_avec_nom}")
         acs_finaux = acs_avec_code + acs_avec_nom
         acs_finaux = [ac.replace(" ", "") for ac in acs_finaux]
         acs_finaux = sorted(list(set(acs_finaux)))
@@ -196,7 +199,10 @@ def devine_acs_by_code(champ):
     codes3 = re.findall(r"(AC[0-9][0-9][0-9]\D)", champ) # de code à 3 chiffres
     codes4 = re.findall(r"(AC0[0-9][0-9][0-9])", champ)
 
-    codes4 += [ "AC0" + c[-4:] for c in codes3] # ajoute les 0 manquants des acs (codage AC0111)
+    codes3 = [c.rstrip() for c in codes3]
+    codes4 = [c.rstrip() for c in codes4]
+    codes4 += [ "AC0" + c[-3:] for c in codes3] # ajoute les 0 manquants des acs (codage AC0111)
+
     return sorted(list(set(codes4)))
 
 def devine_ressources_by_code(champ):
@@ -269,14 +275,16 @@ def remove_ligne_vide(contenus):
 
 def get_marqueur_numerique(contenu):
     """Revoie la liste des marqueurs numériques"""
-    m = re.findall(r"(\d/|\d\s\)|\d\s/)", contenu)
+    m = re.findall(r"(\d/|\d\s/)", contenu)
+    m += re.findall(r"(\d\s\)|\d\))", contenu) # les marqueurs de la forme 1)
+    m += re.findall(r"(--\s|--\t)", contenu)
     return m
 
 def get_marqueurs(contenus):
-    """Renvoie la liste des marqueurs partant d'une liste de ligne"""
+    """Renvoie la liste des marqueurs (à 1 caractère) partant d'une liste de ligne"""
     marqueurs = []
     for ligne in contenus:
-        m = re.search(r"(\t)*", ligne) # dès \t ?
+        m = re.search(r"(\t)*", ligne) # des \t ?
         if m.group() != "":
             ajout = m.group()
         else:
@@ -299,29 +307,30 @@ def get_marqueur(ligne, marqueurs):
 
 def nettoie_contenus(r):
     # suppression des \t
-    contenu = r.contenu.replace(" / ", "/")
+    contenu = r.contenu.replace(" / ", "/").replace(u'\xa0', ' ') # supprime les nbsp
+
+    if r.code == "R102":
+        print("ici")
 
     marqueurs_numeriques = get_marqueur_numerique(contenu)
     for m in marqueurs_numeriques: # remplace les marqueurs numériques
         contenu = contenu.replace(m, ">")
 
-    contenus = [ligne.rstrip().replace("--", "-") for ligne in contenu.split("\n")] # les contenus
+    contenus = [ligne.rstrip() for ligne in contenu.split("\n")] # les contenus
     contenus = remove_ligne_vide(contenus) # supprime les lignes vides
 
     marqueurs_finaux = get_marqueurs(contenus)
 
     contenus_fin = contenus[:] # copie des ligne
 
-
-
     for (i, ligne) in enumerate(contenus):
         m = get_marqueur(ligne, marqueurs_finaux)
         if m:
             pos = marqueurs_finaux.index(m)
-            contenus_fin[i] = "\t" * pos + "* " + ligne.replace(m, "").replace("\t", "").rstrip()
+            contenus_fin[i] = "\t" * (pos) + "* " + ligne.replace(m, "").replace("\t", "").rstrip()
 
-    contenu = "\n".join(contenus_fin)
-    contenu = contenu.replace("\n\n", "\n")
+    contenu = "\n\n".join(contenus_fin)
+    # contenu = contenu.replace("\n\n", "\n")
 
     r.contenu = contenu
 
@@ -347,8 +356,10 @@ class Ressource():
         compRT = []
         for accomp in self.ressource["acs"]:
             comps = []
+
             for no_ac in range(len(self.ressource["acs"][accomp])): # les ac de la comp
-                comps.append( ajoutac % (accomp, DATA_ACS[accomp][self.ressource["acs"][accomp][no_ac]]) )
+                code_ac = self.ressource["acs"][accomp][no_ac]
+                comps.append( ajoutac % (accomp, DATA_ACS[accomp][code_ac]) )
             compRT.append("\n".join(comps))
 
         # Préparation des sae
@@ -376,34 +387,37 @@ class Ressource():
         #    print("ici")
 
         contenu = self.ressource["contenu"] #supprime les passages à la ligne
-        marqueurs = ["*", "\t*"] # les marqueurs de Markdown
+        # marqueurs = ["*", "\t*"] # les marqueurs de Markdown
+        #
+        # for marq in marqueurs[::-1]:
+        #     premier_marqueur = False
+        #     contenu_balise = contenu.split("\n")
+        #     contenu_latex = []
+        #
+        #     for (i, ligne) in enumerate(contenu_balise): # pour le contenu latex actuel
+        #         un_marqueur = get_marqueur(ligne, [marq])
+        #         if un_marqueur: # le marqueur est trouvé
+        #             if premier_marqueur == False:
+        #                 contenu_latex.append("\\begin{itemize}")
+        #                 premier_marqueur = True
+        #             contenu_latex.append( ligne.replace(marq, "\\item"))
+        #         elif premier_marqueur == True: # le marqueur n'est plus trouvé
+        #             contenu_latex.append( ligne.replace(marq, "\\item"))
+        #             contenu_latex.append("\\end{itemize}")
+        #             premier_marqueur = False
+        #         else:
+        #             contenu_latex.append(ligne) # la ligne d'origine
+        #         if i == len(contenu_balise) -1 and premier_marqueur == True:
+        #             contenu_latex.append("\\end{itemize}")
+        #             premier_marqueur = True # ferme la dernière balise
+        #
+        #     # contenu_balise = contenu_latex[:]
+        #         contenu = "\n".join(contenu_latex) # stocke le contenu
+        #
+        #     contenu = "\n".join(contenu_latex)
 
-        for marq in marqueurs[::-1]:
-            premier_marqueur = False
-            contenu_balise = contenu.split("\n")
-            contenu_latex = []
-
-            for (i, ligne) in enumerate(contenu_balise): # pour le contenu latex actuel
-                un_marqueur = get_marqueur(ligne, [marq])
-                if un_marqueur: # le marqueur est trouvé
-                    if premier_marqueur == False:
-                        contenu_latex.append("\\begin{itemize}")
-                        premier_marqueur = True
-                    contenu_latex.append( ligne.replace(marq, "\\item"))
-                elif premier_marqueur == True: # le marqueur n'est plus trouvé
-                    contenu_latex.append( ligne.replace(marq, "\\item"))
-                    contenu_latex.append("\\end{itemize}")
-                    premier_marqueur = False
-                else:
-                    contenu_latex.append(ligne) # la ligne d'origine
-                if i == len(contenu_balise) -1 and premier_marqueur == True:
-                    contenu_latex.append("\\end{itemize}")
-                    premier_marqueur = True # ferme la dernière balise
-
-            # contenu_balise = contenu_latex[:]
-                contenu = "\n".join(contenu_latex) # stocke le contenu
-
-            contenu = "\n".join(contenu_latex)
+        output = pypandoc.convert_text(contenu, 'tex', format='md',
+            extra_args=['--atx-headers'])
 
         chaine = ""
         chaine = TemplateLatex(modlatex).substitute(code=self.ressource["code"],
@@ -417,9 +431,9 @@ class Ressource():
                                                        motscles=self.ressource["motscles"],
                                                        prerequis=prerequis,
                                                        contexte=contexte,
-                                                       contenu=contenu
+                                                       contenu=output.replace("\r\n", "\n").replace("\n\n", "\n")
                                                    )
-        chaine = chaine.replace("&", "\&")
+        chaine = chaine.replace("&", "\&").replace("\n\n", "\n")
         return chaine
 
 
