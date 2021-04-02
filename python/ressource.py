@@ -58,14 +58,19 @@ class Ressource():
 
         # préparation du contexte
         contexte = self.ressource["contexte"]
-        contexte = contexte.replace("\n", "\n\n").replace("\n" * 4,
-                                                        "\n")  # corrige les suppressions de ligne à la relecture du yaml
+        if contexte == "Aucun":
+            contexte = ""
+            Ressource.__LOGGER.warning(f"{self.ressource['nom']} n'a pas de contexte")
 
-        output = pypandoc.convert_text(contexte, 'tex', format='md',
-                                       extra_args=['--atx-headers'])
-        output = output.replace("\r\n", "\n")
-        contexte = caracteres_recalcitrants(output)
-        contexte = remove_ligne_vide(contexte)
+        else:
+            contexte = contexte.replace("\n", "\n\n").replace("\n" * 4,
+                                                            "\n")  # corrige les suppressions de ligne à la relecture du yaml
+
+            output = pypandoc.convert_text(contexte, 'tex', format='md',
+                                           extra_args=['--atx-headers'])
+            output = output.replace("\r\n", "\n")
+            contexte = caracteres_recalcitrants(output)
+            contexte = remove_ligne_vide(contexte)
 
         # contexte = remove_ligne_vide(contexte)
         # préparation du contenu

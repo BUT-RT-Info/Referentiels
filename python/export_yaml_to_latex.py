@@ -1,5 +1,7 @@
 from ressource import Ressource
 from ressourcedocx import *
+import pypandoc
+
 
 import logging
 __LOGGER = logging.getLogger(__name__)

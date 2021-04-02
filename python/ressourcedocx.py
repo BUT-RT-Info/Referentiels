@@ -187,7 +187,8 @@ def nettoie_prerequis(r):
 
 def nettoie_mots_cles(r):
     mots = r.mots # .encode('utf8', 'ignore').decode('utf8')
-    mots = mots.replace(".", "")
+    mots = mots.replace(".", "").replace(";", ",")
+    mots = mots.replace(" ,", ",")
     r.mots = mots
 
 

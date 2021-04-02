@@ -130,27 +130,14 @@ print(f"{nbre_ressources} ressources")
 ressources = {"S1" : [], "S2": []}
 
 for r in liste_ressources:
-    # Nettoie titre
-
     nettoie_titre(r)
-
-    # Nettoie le champ heures_encadrees
     nettoie_heure(r)
-
-    # Nettoie les codes
     nettoie_code(r)
-
-    # Nettoie les semestres
     nettoie_semestre(r)
-
-    # Remet en forme les ACs
     nettoie_acs(r)
-
-    # Remet en forme les saé
     nettoie_sae(r)
-
-    # Remet en forme les pré-requis
     nettoie_prerequis(r)
+    nettoie_mots_cles(r)
 
     # Remet en forme le descriptif
     split_description(r)
