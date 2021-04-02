@@ -56,7 +56,6 @@
 	
 	\expandafter\def\csname semestrename\currentsemestre\endcsname{Semestre \arabic{cptsemestre}}
 	\expandafter\def\csname semestrenumero\currentsemestre\endcsname{\arabic{cptsemestre}}
-	
 }
 
 
@@ -64,6 +63,7 @@
 % Ressources
 % ****************************
 
+% ****************************
 % Déclaration de la ressource : 
 % \nouvelleressource{code_ressource}{intitule_ressource}
 \def\nouvelleressource#1#2{
@@ -82,55 +82,33 @@
 	%\definecollection{ressourcedescription\currentressource}
 }
 
+% ****************************
 % Ajout des heures à la ressource courante
-\def\ajoutheures#1#2{
+\def\ajoutRheures#1#2{
 	\expandafter\xdef\csname ressourcetraining\currentressource\endcsname{#1} % heures de formation encadrées
 	\expandafter\xdef\csname ressourcetp\currentressource\endcsname{#2} % heures de projet
 }
 
+% ****************************
 % Ajout du descriptif (ancrage)
-\def\ajoutancrage#1{
+\def\ajoutRancrage#1{
 	\begingroup\let\+\relax
 	\expandafter\gdef\csname ressourceancrage\currentressource\endcsname{\noexpand #1} % descriptif
 	\endgroup
 }
 
+% ****************************
 % Ajout des contenus
-\def\ajoutcontenudetaille#1{
+\def\ajoutRcontenudetaille#1{
 	\begingroup\let\+\relax
 	\expandafter\gdef\csname ressourcecontenudetaille\currentressource\endcsname{\noexpand #1} % liste de contenu
 	\endgroup
 }
 
-%% Ajout des contenus principaux : introduction éventuelle
-%\def\ajoutintrocontenu#1{
-	%\expandafter\xdef\csname ressourceintrocontenu\currentressource\endcsname{#1} % descriptif
-%}
-%
-%% Ajout des contenus principaux
-%\def\ajoutcontenu#1{
-	%\addtocounter{cptcontenu\currentressource}{1} % Ajoute un contenu (aka un item à la liste des contenus)
-	%\xdef\currentcontenu{\Alph{cptcontenu\currentressource}} % La lettre du contenu courant
-	%
-	%\expandafter\xdef\csname ressourcecontenu\currentressource\currentcontenu\endcsname{#1} % descriptif
-	%\newcounter{cptcontenudetail\currentressource\currentcontenu} % Le compteur de détails 
-%}
-%
-%% Ajout de détails aux contenux (sous-liste)
-%\def\ajoutdetailcontenu#1{
-	%\addtocounter{cptcontenudetail\currentressource\currentcontenu}{1} % Ajoute un détail à la liste des contenus
-	%
-	%\expandafter\xdef\csname ressourcecontenudetail\currentressource\currentcontenu\Alph{cptcontenudetail\currentressource\currentcontenu}\endcsname{#1} % descriptif
-%}
-%
-%\def\ajoutconclusioncontenu#1{
-	%\expandafter\xdef\csname ressourceconclucontenu\currentressource\endcsname{#1} % la conclusion
-%}
-
-
+% ****************************
 % Ajout des compétences 
 % \ajoutcompetence{nom_competence}{niveau}
-\def\ajoutcompetence#1#2{
+\def\ajoutRcompetence#1#2{
 	\addtocounter{cptressourcecomp\currentressource}{1} % le compteur de la comp dans la ressource
 	\xdef\currentcomp{\Alph{cptressourcecomp\currentressource}} % La lettre de la comp dans la ressource
 	
@@ -141,8 +119,9 @@
 	\newcounter{cptressourceac\currentressource\currentcomp} % le compteur d'ac pour la compétence rattachées à la ressource
 }
 
+% ****************************
 % Ajout d'AC aux compétences
-\def\ajoutac#1#2{
+\def\ajoutRac#1#2{
 	\addtocounter{cptressourceac\currentressource\currentcomp}{1} % le compteur de l'ac pour la comp dans la ressource
 	\xdef\currentac{\Alph{cptressourceac\currentressource\currentcomp}} % La lettre de l'ac pour la comp dans la ressource
 	
@@ -155,12 +134,11 @@
 	\else
 		\expandafter\xdef\csname loopressourceac\currentressource\currentcomp\endcsname{\csname loopressourceac\currentressource\currentcomp\endcsname,\currentac}
 	\fi
-	
-
 }
 
+% ****************************
 % Ajout des SAE
-\def\ajoutsae#1#2{
+\def\ajoutRsae#1#2{
 	\addtocounter{cptressourcesae\currentressource}{1} % le compteur de la sae dans la ressource
 	\xdef\currentsae{\Alph{cptressourcesae\currentressource}} % La lettre
 	
@@ -168,8 +146,9 @@
 	\expandafter\xdef\csname ressourcesaename\currentressource\currentsae\endcsname{#2} % 
 }
 
+% ****************************
 % Ajout des prerequis
-\def\ajoutprerequis#1#2{
+\def\ajoutRprerequis#1#2{
 	\addtocounter{cptressourceprerequis\currentressource}{1} % le compteur du prerequis dans la ressource
 	\xdef\currentprerequis{\Alph{cptressourceprerequis\currentressource}} % La lettre
 	
@@ -177,10 +156,10 @@
 	\expandafter\xdef\csname ressourceprerequisname\currentressource\currentprerequis\endcsname{#2} % 
 }
 
+% ****************************
 % Ajout des mots-clés
-\def\ajoutmotscles#1{
+\def\ajoutRmotscles#1{
 	\expandafter\xdef\csname ressourcemotscles\currentressource\endcsname{#1} % descriptif
-
 }
 
 

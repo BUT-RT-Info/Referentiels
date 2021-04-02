@@ -21,7 +21,7 @@ class Ressource():
             except:
                 Ressource.__LOGGER.warning(f"Pb de chargement de {fichieryaml}")
 
-    def str_to_latex(self, modele="pn/modele_ressource.tex"):
+    def to_latex(self, modele="pn/modele_ressource.tex"):
         """Génère le code latex décrivant la ressource"""
         modlatex = get_modele(modele) #"pn/modele_ressource.tex")
 
@@ -30,7 +30,7 @@ class Ressource():
             print("ici")
 
         # Préparation des ac
-        ajoutac = "\\ajoutac{%s}{%s}"
+        ajoutac = "\\ajoutRac{%s}{%s}"
         compRT = []
         for accomp in self.ressource["acs"]:
             comps = []
@@ -41,13 +41,13 @@ class Ressource():
             compRT.append("\n".join(comps))
 
         # Préparation des sae
-        ajoutsaes = "\\ajoutsae{%s}{%s}"
+        ajoutsaes = "\\ajoutRsae{%s}{%s}"
         saesRT = []
         for (i, sae) in enumerate(self.ressource["sae"]): # in range(len(self.apprentissages)):
             saesRT.append(ajoutsaes % (sae, get_officiel_sae_name_by_code(sae)))
         saes = "\n".join(saesRT)
 
-        ajoutprerequis = "\\ajoutprerequis{%s}{%s}"
+        ajoutprerequis = "\\ajoutRprerequis{%s}{%s}"
         prerequis = ""
         if self.ressource["prerequis"] == "Aucun":
             prerequis = ""

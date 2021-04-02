@@ -164,56 +164,24 @@ for s in liste_exemples:
 saes = {"S1" : [], "S2": []}
 
 for s in liste_saes:
+    print(f"{s.nom}")
     nettoie_heure_sae(s)
     nettoie_semestre(s)
     nettoie_acs(s)
     nettoie_ressources(s)
-    print("ici")
-#
-#     # Remet en forme les pré-requis
-#     nettoie_prerequis(r)
-#
-#     # Remet en forme le descriptif
-#     split_description(r)
-#     nettoie_contenus(r)
-#
-#     # Remet en forme les mots-clés
-#     # Tri dans le bon semestre
-#     ressources[r.semestre] += [r]
-#
-# # complète les codes d'après les numéros
-# for sem in ressources:
-#     for (i, r) in enumerate(ressources[sem]):
-#         if not r.code:
-#             if i == 0:
-#                 r.code = "R" + sem[1] + "01"
-#             elif ressources[sem][i-1].code:
-#                 r.code = "R" + sem[1] + "{:02d}".format(int(ressources[sem][i-1].code[-2:])+1)
-#
-# # ************************************************************************
-# # Affichages divers
-# # Le tableau des heures ressources
-# for sem in ressources: # parcours des semestres
-#     # print(f"Semestre {sem}")
-#     chaine = affiche_bilan_heures(ressources, sem)
-#
-#
-# # Matrice ACS/ressources
-# matrices = {}
-# les_codes_acs = [code for comp in DATA_ACS for code in DATA_ACS[comp]]
-# nbre_acs = len(les_codes_acs)
-#
-# for sem in ressources:
-#     # print("Matrice du semestre " + sem)
-#     (matrices[sem], chaine) = get_matrices_ac_ressource(ressources, sem)
-#
+    # nettoie_description(s) => rien à faire ?
+    nettoie_livrables_sae(s)
+    nettoie_mots_cles(s)
+
+    # Tri dans le bon semestre
+    saes[s.semestre] += [s]
+
 # # Export yaml
-# WITH_EXPORT = True
-# for sem in ressources:
-#     for r in ressources[sem]:
-#         output = r.to_yaml()
-#         if WITH_EXPORT and r.code:
-#             fichier = "export/{}.yml".format(r.code)
-#             with open(fichier, "w", encoding="utf8") as fid:
-#                 fid.write(output)
-#
+for sem in saes:
+     for s in saes[sem]:
+         output = s.to_yaml()
+         if s.code:
+             fichier = "export/{}.yml".format(s.code.replace("É", "E"))
+             with open(fichier, "w", encoding="utf8") as fid:
+                 fid.write(output)
+

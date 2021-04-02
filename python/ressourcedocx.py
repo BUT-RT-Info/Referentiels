@@ -375,10 +375,18 @@ def convert_to_markdown(contenu):
 
 
 def nettoie_contenus_ressource(r):
-    # suppression des \t
+    """Partant du contenu détaillé d'une ressource, la transforme
+    en markdown en générant les listes à puces"""
     contenu = r.contenu.replace(" / ", "/")
     contenu = convert_to_markdown(contenu)
     r.contenu = contenu
+
+def nettoie_livrables_sae(s):
+    """Partant du contenu détaillé d'une ressource, la transforme
+    en markdown en générant les listes à puces"""
+    contenu = s.livrables
+    contenu = convert_to_markdown(contenu)
+    s.livrables = contenu
 
 class SAEDocx():
 
@@ -399,6 +407,26 @@ class SAEDocx():
 
     def charge_ac(self, apprentissages):
         self.apprentissages = apprentissages
+
+    def to_yaml(self):
+        """Exporte la ressource en yaml"""
+        dico = {"titre": self.nom,
+                "code": self.code,
+                "semestre": int(self.semestre[1]),
+                "heures_encadrees": self.heures_encadrees if self.heures_encadrees else "???",
+                "tp": self.tp if self.tp else "???",
+                "projet": self.projet if self.projet else "???",
+                "description": folded(self.description),
+                "acs": self.apprentissages,
+                "ressources": self.ressources,
+                "livrables": folded(self.livrables),
+                "motscles": self.mots if self.mots else ""
+                }
+        output = ruamel.yaml.dump(dico, Dumper=ruamel.yaml.RoundTripDumper,
+                                      allow_unicode=True, width=100)
+        output = output.replace("\n\n\n", "\n\n")
+        return output
+
 
 class ExempleSAEDocx():
 

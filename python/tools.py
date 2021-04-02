@@ -20,7 +20,9 @@ def get_indice_sans_accent_ni_espace(champ, entetes):
 
 
 def caracteres_recalcitrants(contenu):
-    contenu = contenu.replace("è", "è").replace("’", "'").replace("é", "é")
+    contenu = contenu.replace("è", "è").replace(b"\xe2\x80\x99".decode("utf8"), "'").replace("é", "é")
+    contenu = contenu.replace("’", "'")
     contenu = contenu.replace("â", "â").replace(b'a\xcc\x82'.decode("utf8"), "â")
     contenu = contenu.replace('\xa0', ' ') # le nbsp
+
     return contenu
