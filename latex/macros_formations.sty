@@ -170,7 +170,7 @@
 
 	\expandafter\xdef\csname Scode\currentSsae\endcsname{#1} % code
 	\expandafter\xdef\csname Sname\currentSsae\endcsname{#2} % nom/intitule
-	\expandafter\xdef\csname Ssem\currentSsae\endcsname{\csname semestrenumero\currentSsae\endcsname} % nom du semestre
+	\expandafter\xdef\csname Ssem\currentSsae\endcsname{\csname semestrenumero\currentsemestre\endcsname} % nom du semestre
 
 	\newcounter{cptScomp\currentSsae} % le compteur de compétences rattachées à la ressource
 	\newcounter{cptSressource\currentSsae} % Le compteur de ressources dans la SAé
@@ -188,7 +188,7 @@
 % Ajout du descriptif (description des objectifs)
 \def\ajoutSdescription#1{
 	\begingroup\let\+\relax
-	\expandafter\gdef\csname Rdescriptif\currentSsae\endcsname{\noexpand #1} % descriptif
+	\expandafter\gdef\csname Sdescriptif\currentSsae\endcsname{\noexpand #1} % descriptif
 	\endgroup
 }
 
@@ -213,8 +213,8 @@
 	\addtocounter{cptSac\currentSsae\currentScomp}{1} % le compteur de l'ac pour la comp dans la ressource
 	\xdef\currentSac{\Alph{cptSac\currentSsae\currentScomp}} % La lettre de l'ac pour la comp dans la ressource
 
-	\expandafter\xdef\csname Raccode\currentSsae\currentScomp\currentSac\endcsname{#1} % le nom de la comp
-	\expandafter\xdef\csname Racname\currentSsae\currentScomp\currentSac\endcsname{#2} % le nom de la comp
+	\expandafter\xdef\csname Saccode\currentSsae\currentScomp\currentSac\endcsname{#1} % le nom de la comp
+	\expandafter\xdef\csname Sacname\currentSsae\currentScomp\currentSac\endcsname{#2} % le nom de la comp
 }
 
 % ****************************
@@ -231,7 +231,7 @@
 % Ajout des livrables
 \def\ajoutSlivrables#1{
 	\begingroup\let\+\relax
-	\expandafter\gdef\csname Rlivrables\currentSsae\endcsname{\noexpand #1} % descriptif
+	\expandafter\gdef\csname Slivrables\currentSsae\endcsname{\noexpand #1} % descriptif
 	\endgroup
 }
 

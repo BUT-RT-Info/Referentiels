@@ -1,83 +1,6 @@
 
-% Les formats de colonnes
-\newcolumntype{P}{>{}m{3.6cm}<{}}
-\newcolumntype{Q}{>{}m{4.6cm}<{}} % 4.1 pour équiréparti
-\newcolumntype{C}{>{}p{5.555cm}<{}}
-\newcolumntype{T}{>{}p{13.325cm}<{}} % 12.825cm
 
-% Compteur de ligne pour les tableaux
-\newcounter{noligne}
-
-% Tableau des apprentissages critiques
-\newcommand*{\tableauAC}[2]{%
-\begin{tabular}[t]{@{}C@{}}%
-	\xdef\CODE{#1} % le code de la ressource sous la forme AA
-	\xdef\COMP{#2} % le code de la compétence sous la forme A
-	
-  \forLoop{1}{\value{cptRac\CODE\COMP}}{noligne}{
-		\xdef\contenu{{\csname Raccode\CODE\COMP\Alph{noligne}\endcsname} |
-				{\csname Racname\CODE\COMP\Alph{noligne}\endcsname}}
-		\contenu			
-   \tabularnewline %
-   }
-\end{tabular}%
-}%
-
-% Tableau des SAE
-\newcommand*{\tableauSAE}[1]{%
-	\xdef\CODE{#1} % le code de la ressource sous la forme AA
-		\ifthenelse{\equal{\value{cptRsae\CODE}}{0}}{ % Si pas de prérequis
-		Aucune
-		}{
-		\begin{tabular}[t]{@{}T@{}}%
-			\forLoop{1}{\value{cptRsae\CODE}}{noligne}{
-						\xdef\contenu{{\csname Rsaecode\CODE\Alph{noligne}\endcsname} |
-								{\csname Rsaename\CODE\Alph{noligne}\endcsname}}
-				\contenu			
-			 \tabularnewline %
-			 }
-		\end{tabular}%
-	}
-}%
-
-% Tableau des pré-requis
-\newcommand*{\tableauPrerequis}[1]{%
-	\xdef\CODE{#1} % le code de la ressource sous la forme AA
-	\ifthenelse{\equal{\value{cptRprerequis\CODE}}{0}}{ % Si pas de prérequis
-Aucun
-}{ % Si des pré-requis
-\begin{tabular}[t]{@{}T@{}}%
-
-  \forLoop{1}{\value{cptRprerequis\CODE}}{noligne}{
-				\xdef\contenu{{\csname Rprerequiscode\CODE\Alph{noligne}\endcsname} |
-						{\csname Rprerequisname\CODE\Alph{noligne}\endcsname}}
-		\contenu			
-   \tabularnewline %
-   }
-\end{tabular}%
-}
-}%
-
-% Tableau du descriptif detaillé
-\newcommand*{\tableauDescriptif}[1]{%
-	\xdef\CODE{#1} % le code de la ressource sous la forme AA
-	
-	\begin{tabular}[t]{@{}T@{}} 
-	% {\bfseries Ancrage et contexte professionnel :} \\
-	\csname Rancrage\CODE\endcsname \\
-	{\bfseries Contenus :} \\
-	%{\setlength{\extrarowheight}{1pt} 
-	\csname Rcontenu\CODE\endcsname
-	%}
-	\end{tabular}
-}
-
-		%\begin{list}{$\bullet$}{\topsep=0pt \partopsep=0pt \parsep=0pt \itemsep=0pt \leftmargin=1em \itemindent=0em}
-			
-
-
-
-% Le tableau complet
+% Le tableau complet présentant une ressource
 \newcommand\tableauRessource[1]{
 
 \xdef\CODE{#1} % code de la ressource (par ex: AA avec A=1er semestre, A=1ère ressource)
@@ -97,11 +20,14 @@ Aucun
 	& {\bfseries Semestre} 
 	& \csname Rsem\CODE\endcsname \\
 \hline % 3ème ligne Heures
-{ \setlength{\extrarowheight}{0pt}
-	\begin{tabular}[t]{@{}Q@{}} \bfseries Heures de formation \\ \bfseries encadrées \end{tabular}
-} 
+%{ \setlength{\extrarowheight}{0pt}
+%	\begin{tabular}[t]{@{}Q@{}} \bfseries Heures de formation \\ \bfseries encadrées \end{tabular}
+%}
+\hline
+{\bfseries Formation encadrée}
 & {\csname Rtraining\CODE\endcsname}h
-& {\bfseries dont heures de TP} 
+& % {\bfseries dont heures de TP}
+	{\bfseries dont TP}
 & {\csname Rtp\CODE\endcsname}h \\
 \hline
 \end{tabular}
@@ -118,13 +44,13 @@ Aucun
 	\textit{\csname Rcomp\CODE C\endcsname} | {\csname Rniveau\CODE C\endcsname}
 \\
 \hline % AC de RT1
-{\tableauAC{\CODE}{A}
+{\listeAC{R}{\CODE}{A}
 }
 & % AC de RT2
-{\tableauAC{\CODE}{B}
+{\listeAC{R}{\CODE}{B}
 }
 & % AC de RT3
-{\tableauAC{\CODE}{C}
+{\listeAC{R}{\CODE}{C}
 }
 \\
 \hline
@@ -133,11 +59,15 @@ Aucun
 % 3ème tableau : SAE, descriptif
 \begin{tabular}[t]{|P|T|}
 \hline
-{\bfseries SAÉ concernée(s) } & \tableauSAE{\CODE} \\
+{\bfseries SAÉ concernée(s) } & \listeSAE{\CODE} \\
 \hline
-{\bfseries Prérequis} & \tableauPrerequis{\CODE} \\
+{\bfseries Prérequis} & \listePrerequis{\CODE} \\
 \hline
-{\bfseries Descriptif détaillé } & \tableauDescriptif{\CODE} \\
+% {\bfseries Descriptif } & \tableauDescriptif{\CODE} \\
+{\bfseries Descriptif } & \tableauChampLong{\csname Rancrage\CODE\endcsname} \\
+\hline
+{\bfseries Contenus } & {\csname Rcontenu\CODE\endcsname}
+\\
 \hline
 {\bfseries Mots-clés} & {\csname Rmotscles\CODE\endcsname} \\
 \hline

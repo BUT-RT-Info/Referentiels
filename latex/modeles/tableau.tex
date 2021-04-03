@@ -1,0 +1,120 @@
+
+% Les formats de colonnes
+\newcolumntype{P}{>{}m{3.6cm}<{}}  % Pour la colonne d'entete
+
+%% Pour les champs horaires (lorsqu'il y en a 2)
+\newcolumntype{Q}{>{}m{4.6cm}<{}}  % En 3 (4.1 pour équiréparti)
+
+%% Pour les champs horaire lorsqu'il y en a 3
+\newcolumntype{S}{>{}m{1.69cm}<{}}
+
+%% Pour les compétences et les ACs
+\newcolumntype{C}{>{}p{5.555cm}<{}}
+
+%% Pour les champs de description (2de colonne)
+\newcolumntype{T}{>{}p{13.325cm}<{}} % 12.825cm
+
+% Compteur de ligne pour les tableaux
+\newcounter{noligne}
+
+% Liste des apprentissages critiques
+% \listeAC{R}{code_ressource}{lettre_competence} pour une ressource
+% \listeAC{S}{code_ressource}{lettre_competence} pour une sae
+\newcommand*{\listeAC}[3]{%
+\begin{tabular}[t]{@{}C@{}}%
+    \xdef\TYPE{#1} % R pour ressource, S pour SAE
+	\xdef\CODE{#2} % le code de la ressource sous la forme AA
+	\xdef\COMP{#3} % le code de la compétence sous la forme A
+
+  \forLoop{1}{\value{cpt\TYPE ac\CODE\COMP}}{noligne}{
+		\xdef\contenu{{\csname \TYPE accode\CODE\COMP\Alph{noligne}\endcsname} |
+				{\csname \TYPE acname\CODE\COMP\Alph{noligne}\endcsname}}
+		\contenu
+   \tabularnewline %
+   }
+\end{tabular}%
+}%
+
+
+% Liste des SAE (dans un tableau), utilisée pour décrire les SAE d'une ressource
+\newcommand*{\listeSAE}[1]{%
+	\xdef\CODE{#1} % le code de la ressource sous la forme AA
+		\ifthenelse{\equal{\value{cptRsae\CODE}}{0}}{ % Si pas de prérequis
+		Aucune
+		}{
+		\begin{tabular}[t]{@{}T@{}}%
+			\forLoop{1}{\value{cptRsae\CODE}}{noligne}{
+						\xdef\contenu{{\csname Rsaecode\CODE\Alph{noligne}\endcsname} |
+								{\csname Rsaename\CODE\Alph{noligne}\endcsname}}
+				\contenu
+			 \tabularnewline %
+			 }
+		\end{tabular}%
+	}
+}%
+
+
+% Liste des pré-requis
+\newcommand*{\listePrerequis}[1]{%
+	\xdef\CODE{#1} % le code de la ressource sous la forme AA
+	\ifthenelse{\equal{\value{cptRprerequis\CODE}}{0}}{ % Si pas de prérequis
+Aucun
+}{ % Si des pré-requis
+\begin{tabular}[t]{@{}T@{}}%
+
+  \forLoop{1}{\value{cptRprerequis\CODE}}{noligne}{
+				\xdef\contenu{{\csname Rprerequiscode\CODE\Alph{noligne}\endcsname} |
+						{\csname Rprerequisname\CODE\Alph{noligne}\endcsname}}
+		\contenu
+   \tabularnewline %
+   }
+\end{tabular}%
+}
+}%
+
+
+
+% Descriptif detaillé
+\newcommand*{\tableauDescriptif}[1]{%
+	\xdef\CODE{#1} % le code de la ressource sous la forme AA
+
+	\begin{tabular}[t]{@{}T@{}}
+	% {\bfseries Ancrage et contexte professionnel :} \\
+	\csname Rancrage\CODE\endcsname \\
+	{\bfseries Contenus :} \\
+	%{\setlength{\extrarowheight}{1pt}
+	\csname Rcontenu\CODE\endcsname
+	%}
+	\end{tabular}
+}
+
+% Place un champ long dans un tableau => interprète les CR ?
+\newcommand*{\tableauChampLong}[1]{
+	\begin{tabular}[t]{@{}T@{}}
+	#1 \\
+	\end{tabular}
+}
+
+\newcommand*{\tableauChampCourt}[1]{
+    \setlength{\extrarowheight}{0pt}
+	\begin{tabular}[t]{@{}P@{}}
+	#1 \\
+	\end{tabular}
+}
+
+% Liste des ressources (dans un tableau), utilisée pour décrire les ressources d'une SAE
+\newcommand*{\listeRessources}[1]{%
+	\xdef\CODE{#1} % le code de la sae sous la forme AA
+		\ifthenelse{\equal{\value{cptSressource\CODE}}{0}}{ % Si pas de ressource
+		Aucune
+		}{
+		\begin{tabular}[t]{@{}T@{}}%
+			\forLoop{1}{\value{cptSressource\CODE}}{noligne}{
+						\xdef\contenu{{\csname Sressourcecode\CODE\Alph{noligne}\endcsname} |
+								{\csname Sressourcename\CODE\Alph{noligne}\endcsname}}
+				\contenu
+			 \tabularnewline %
+			 }
+		\end{tabular}%
+	}
+}%

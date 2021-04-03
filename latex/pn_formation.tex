@@ -62,8 +62,9 @@ bottom=15mm
 \input{referentiel_BUT1.tex}
 
 % Les macros pour affichage
+\input{modeles/tableau.tex}
 \input{modeles/tableau_ressource.tex}
-
+\input{modeles/tableau_sae.tex}
 
 \begin{document}
 
@@ -94,12 +95,17 @@ bottom=15mm
 
 \newcounter{noressource}
 \newcounter{nosae}
+
 % Les ressources du semestre 1
-%\forLoop{1}{\value{cptRA}}{noressource}{
-	%%A\Alph{noressource}
-	%\tableauRessource{A\Alph{noressource}}
-	%\newpage
-%}
+
+\tableauSAE{AA} 
+\newpage
+
+\forLoop{1}{\value{cptRA}}{noressource}{
+	%A\Alph{noressource}
+	\tableauRessource{A\Alph{noressource}}
+	\newpage
+}
 
 %\forLoop{1}{\value{cptressourceB}}{noressource}{
 	%%A\Alph{noressource}
@@ -107,7 +113,7 @@ bottom=15mm
 	%\newpage
 %}
 
-%\tableauRessource{AA} 
+
 %\tableauRessource{AB}
 
 \end{document}
