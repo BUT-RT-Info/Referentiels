@@ -96,11 +96,18 @@ bottom=15mm
 \newcounter{noressource}
 \newcounter{nosae}
 
+%% SEMESTRE 1
+
+% Les SAE du semestre 1
+% ****************************
+% \tableauSAE{AA} 
+\forLoop{1}{\value{cptSA}}{nosae}{
+	%A\Alph{noressource}
+	\tableauSAE{A\Alph{nosae}}
+	\newpage
+}
+
 % Les ressources du semestre 1
-
-\tableauSAE{AA} 
-\newpage
-
 \forLoop{1}{\value{cptRA}}{noressource}{
 	%A\Alph{noressource}
 	\tableauRessource{A\Alph{noressource}}
