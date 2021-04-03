@@ -44,9 +44,12 @@
 		}{
 		\begin{tabular}[t]{@{}T@{}}%
 			\forLoop{1}{\value{cptRsae\CODE}}{noligne}{
-						\xdef\contenu{{\csname Rsaecode\CODE\Alph{noligne}\endcsname} |
-								{\csname Rsaename\CODE\Alph{noligne}\endcsname}}
-				\contenu
+				\xdef\saecode{\csname Rsaecode\CODE\Alph{noligne}\endcsname}
+				\xdef\contenu{
+						{\saecode} |
+						{\csname Rsaename\CODE\Alph{noligne}\endcsname}
+				}
+				\hyperlink{sae:\saecode}{\contenu}
 			 \tabularnewline %
 			 }
 		\end{tabular}%
@@ -63,8 +66,10 @@ Aucun
 \begin{tabular}[t]{@{}T@{}}%
 
   \forLoop{1}{\value{cptRprerequis\CODE}}{noligne}{
-				\xdef\contenu{{\csname Rprerequiscode\CODE\Alph{noligne}\endcsname} |
-						{\csname Rprerequisname\CODE\Alph{noligne}\endcsname}}
+				\xdef\contenu{ %
+						{\csname Rprerequiscode\CODE\Alph{noligne}\endcsname} |
+						{\csname Rprerequisname\CODE\Alph{noligne}\endcsname}
+				}
 		\contenu
    \tabularnewline %
    }
@@ -110,9 +115,12 @@ Aucun
 		}{
 		\begin{tabular}[t]{@{}T@{}}%
 			\forLoop{1}{\value{cptSressource\CODE}}{noligne}{
-						\xdef\contenu{{\csname Sressourcecode\CODE\Alph{noligne}\endcsname} |
-								{\csname Sressourcename\CODE\Alph{noligne}\endcsname}}
-				\contenu
+					\xdef\rescode{\csname Sressourcecode\CODE\Alph{noligne}\endcsname}
+					\xdef\contenu{
+						{\rescode} |
+						{\csname Sressourcename\CODE\Alph{noligne}\endcsname}
+					}
+				\hyperlink{res:\rescode}{\contenu}
 			 \tabularnewline %
 			 }
 		\end{tabular}%

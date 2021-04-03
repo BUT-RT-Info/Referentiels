@@ -175,6 +175,8 @@
 	\newcounter{cptScomp\currentSsae} % le compteur de compétences rattachées à la ressource
 	\newcounter{cptSressource\currentSsae} % Le compteur de ressources dans la SAé
 	\newcounter{cptSexemple\currentSsae} % Le compteur d'exemples d'une SAE
+
+
 }
 
 % ****************************
@@ -249,6 +251,7 @@
 	\addtocounter{cptSexemple\currentSsae}{1} % Ajoute un exemple (tous semestres confondu)
 	\def\currentESsae{\currentSsae\Alph{cptSexemple\currentSsae}} %
 
+	\expandafter\xdef\csname ESsae\currentESsae\endcsname{\csname Sname\currentSsae\endcsname} % nom de la SAE
 	\expandafter\xdef\csname ESname\currentESsae\endcsname{#1} % nom/intitule
 	% \expandafter\xdef\csname ESsem\currentESsae\endcsname{\csname semestrenumero\currentsemestre\endcsname} % nom du semestre
 }

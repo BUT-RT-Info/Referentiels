@@ -12,7 +12,10 @@
 % 1er tableau : Nom/Code/Semestre
 
 % 3ème tableau : descriptif
-\begin{tabular}[t]{|P|T|}
+\begin{longtable}[t]{|P|T|}
+\hline
+	{\bfseries Exemple de la SAÉ} &
+		{\csname ESsae\EXEMPLE\endcsname} \\
 \hline
 	{\bfseries Titre} &
 		{\csname ESname\EXEMPLE\endcsname} \\
@@ -42,14 +45,11 @@
 	{\bfseries Modalités} \\
 	{\bfseries d'évaluation} \\
 	{\bfseries assurant l'acquisition} \\
-	{\bfseries du niveau de compétence} \\
-	{\bfseries visée} \\
+	{\bfseries du niveau de} \\
+	{\bfseries compétence visée} \\
 	\end{tabular}
 }
 & \tableauChampLong{\csname ESmodalite\EXEMPLE\endcsname} \\
 \hline
-\hline
-
-\end{tabular}
-
+\end{longtable}
 }

@@ -13,7 +13,10 @@
 \begin{tabular}[t]{|P|Q|P|Q|}
 \hline % 1ère ligne
 	{\bfseries Ressource} 
-	& \multicolumn{3}{l|}{\bfseries \csname Rname\CODE\endcsname} \\
+	& \multicolumn{3}{l|}{
+		\xdef\rescode{\csname Rcode\CODE\endcsname}
+		\hypertarget{res:\rescode}{\bfseries \csname Rname\CODE\endcsname}
+	} \\
 \hline % 2ème ligne
 	{\bfseries Code} 
 	& \csname Rcode\CODE\endcsname

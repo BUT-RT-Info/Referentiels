@@ -11,7 +11,10 @@
 \begin{tabular}[t]{|P|Q|P|Q|}
 \hline % 1ère ligne
 	{\bfseries Titre de la SAÉ}
-	& \multicolumn{3}{l|}{\bfseries \csname Sname\CODE\endcsname} \\
+	& \multicolumn{3}{l|}{
+	\xdef\saecode{\csname Scode\CODE\endcsname}
+	\hypertarget{sae:\saecode}{\bfseries \csname Sname\CODE\endcsname}
+	} \\
 \hline % 2ème ligne
 	{\bfseries Code}
 	& \csname Scode\CODE\endcsname

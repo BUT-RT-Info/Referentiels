@@ -19,16 +19,19 @@
 \usepackage{forloop}
 \usepackage{xparse}
 \usepackage{enumitem}
+\usepackage{longtable}
+\usepackage{hyperref}
+
 \setlist{leftmargin=1em,topsep=0pt,partopsep=0pt,itemsep=0pt,itemindent=0em}
 
 %\geometry{a4paper,left=25mm,right=25mm,top=25 mm,bottom=25mm} % landscape
  \geometry{
  a4paper,
  % total={170mm,257mm},
- left=10mm,
- right=20mm,
- top=15mm,
-bottom=15mm
+	left=10mm,
+	right=20mm,
+	top=15mm,
+	bottom=15mm
  }
 
 \usepackage{tikz}%
@@ -48,6 +51,14 @@ bottom=15mm
 
 % ********************************************************
 \title{Référentiel de formation\\Spécialité : Réseaux et Télécommunications}
+
+\hypersetup{
+  pdfinfo={
+    Title={Référentiel de formation},
+    Subject={Spécialité : Réseaux et Télécommunications},
+    % ...
+  }
+}
 
 %\institute{ACD R\&T}
 %\date{\today}
@@ -98,16 +109,21 @@ bottom=15mm
 \newcounter{nosae}
 \newcounter{noexemple}
 
-%% SEMESTRE 1
+\hypertarget{sae:SAÉ}{toto}
 
-%\tableauExempleSAE{AA}{A}
 
-% Les SAE du semestre 1
-% ****************************
-% \tableauSAE{AA} 
-\forLoop{1}{\value{cptSA}}{nosae}{ % Pour chaque SAE
+Puis :
+\hyperlink{sae:SAÉ}{test}
+
+%%%%%%%%%%%%%%%%
+%% SEMESTRE 1 %%
+%%%%%%%%%%%%%%%%
+\def\sem{A}
+
+% Les SAE du semestre 1 + les exemples
+\forLoop{1}{\value{cptS\sem}}{nosae}{ % Pour chaque SAE
 	%A\Alph{noressource}
-	\def\currentSAE{A\Alph{nosae}}
+	\def\currentSAE{\sem\Alph{nosae}}
 	\tableauSAE{\currentSAE}
 	\forLoop{1}{\value{cptSexemple\currentSAE}}{noexemple}{
 		\tableauExempleSAE{\currentSAE}{\Alph{noexemple}}
@@ -116,19 +132,35 @@ bottom=15mm
 }
 
 % Les ressources du semestre 1
-\forLoop{1}{\value{cptRA}}{noressource}{
+\forLoop{1}{\value{cptR\sem}}{noressource}{
 	%A\Alph{noressource}
-	\tableauRessource{A\Alph{noressource}}
+	\tableauRessource{\sem\Alph{noressource}}
 	\newpage
 }
 
-%\forLoop{1}{\value{cptressourceB}}{noressource}{
-	%%A\Alph{noressource}
-	%\tableauRessource{B\Alph{noressource}}
-	%\newpage
-%}
 
+%%%%%%%%%%%%%%%%
+%% SEMESTRE 2 %%
+%%%%%%%%%%%%%%%%
 
-%\tableauRessource{AB}
+\def\sem{B} % Le semestre 2
+
+% Les SAE du semestre 1 + les exemples
+\forLoop{1}{\value{cptS\sem}}{nosae}{ % Pour chaque SAE
+	%A\Alph{noressource}
+	\def\currentSAE{\sem\Alph{nosae}}
+	\tableauSAE{\currentSAE}
+	\forLoop{1}{\value{cptSexemple\currentSAE}}{noexemple}{
+		\tableauExempleSAE{\currentSAE}{\Alph{noexemple}}
+	}
+	\newpage
+}
+
+% Les ressources du semestre 1
+\forLoop{1}{\value{cptR\sem}}{noressource}{
+	%A\Alph{noressource}
+	\tableauRessource{\sem\Alph{noressource}}
+	\newpage
+}
 
 \end{document}
