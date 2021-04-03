@@ -160,8 +160,9 @@ def nettoie_semestre(r):
         __LOGGER.warning(f"nettoie_semestre : dans \"{r.nom}, PAS de semestre => rattaché au S2")
         r.semestre = "S2"
 
-def nettoie_titre(r):
-    """Nettoie le titre en utilisant les titres officiels"""
+def nettoie_titre_ressource(r):
+    """Nettoie le titre d'une ressource en utilisant les titres officiels fournis dans le
+    yaml (via le dictionnaire DATA_RESSOURCES)"""
     def devine_nom_from_ressources(champ):
         champ_purge = supprime_accent_espace(champ)
         for sem in DATA_RESSOURCES:
@@ -173,8 +174,25 @@ def nettoie_titre(r):
     old = r.nom
     titre = devine_nom_from_ressources(r.nom)
     if titre and titre != old:
-        __LOGGER.warning(f"nettoie_titre : {old} => titre \"{titre}\"")
+        __LOGGER.warning(f"nettoie_titre_ressource : {old} => titre \"{titre}\"")
         r.nom = titre
+
+def nettoie_titre_sae(s):
+    """Nettoie le titre d'une sae en utilisant les titres officiels fournis dans le
+    yaml (via le dictionnaire DATA_RESSOURCES)"""
+    def devine_nom_from_sae(champ):
+        champ_purge = supprime_accent_espace(champ)
+        for sem in DATA_SAES:
+            for code in DATA_SAES[sem]:
+                nom_purge = supprime_accent_espace(DATA_SAES[sem][code])
+                if champ_purge.startswith(nom_purge):
+                    return DATA_SAES[sem][code] # le bon nom
+
+    old = s.nom
+    titre = devine_nom_from_sae(s.nom)
+    if titre and titre != old:
+        __LOGGER.warning(f"nettoie_titre_sae : {old} => titre \"{titre}\"")
+        s.nom = titre
 
 def nettoie_acs(r):
     """Nettoie les acs d'une ressource en les remplaçant par leur code pour les 3 compétences"""
@@ -370,6 +388,8 @@ def convert_to_markdown(contenu):
         if m:
             pos = marqueurs_finaux.index(m)
             contenus_fin[i] = "\t" * (pos) + "* " + ligne.replace(m, "").replace("\t", "").rstrip()
+
+
     contenu = "\n\n".join(contenus_fin)
     return contenu
 
@@ -388,6 +408,31 @@ def nettoie_livrables_sae(s):
     contenu = convert_to_markdown(contenu)
     s.livrables = contenu
 
+def nettoie_description(s):
+    """Nettoie la description d'un exemple de SAE"""
+    contenu = s.description
+    contenu = remove_link(contenu) # supprime les liens
+    contenu = convert_to_markdown(contenu)
+    s.description = contenu
+
+def nettoie_problematique(s):
+    """Nettoie la description d'un exemple de SAE"""
+    if s.problematique:
+        contenu = s.problematique
+        contenu = convert_to_markdown(contenu)
+        s.problematique = contenu
+    else:
+        s.problematique = ""
+
+def nettoie_modalite(s):
+    """Nettoie les modalités (d'évaluation) d'un exemple de SAE"""
+    if s.modalite:
+        contenu = s.modalite
+        contenu = convert_to_markdown(contenu)
+        s.modalite = contenu
+    else:
+        s.modalite = f"Les même que les livrables et les productions de la {s.code}"
+
 class SAEDocx():
 
     def __init__(self, nom, brut):
@@ -404,6 +449,7 @@ class SAEDocx():
         self.ressources = ressources
         self.livrables = livrables
         self.mots = mots
+
 
     def charge_ac(self, apprentissages):
         self.apprentissages = apprentissages
@@ -430,9 +476,12 @@ class SAEDocx():
 
 class ExempleSAEDocx():
 
-    def __init__(self, nom, brut):
+    def __init__(self, nom, brut, code):
         self.nom = nom
         self.brut = brut  # les données brutes de la ressource
+        self.code = code # code de la SAE à laquelle l'exemple est raccroché
+        # Ajoute le semestre de la SAE
+        self.semestre = int(get_officiel_sem_sae_by_code(code)[1])
 
     def charge_informations(self, description, formes, problematique, modalite):
         self.description = description
@@ -440,6 +489,20 @@ class ExempleSAEDocx():
         self.problematique = problematique
         self.modalite = modalite
 
+    def to_yaml(self):
+        """Exporte la ressource en yaml"""
+        dico = {"titre": self.nom,
+                "code": self.code,
+                "semestre": self.semestre,
+                "description": folded(self.description),
+                "formes": self.formes,
+                "problematique": folded(self.problematique),
+                "modalite": folded(self.modalite),
+                }
+        output = ruamel.yaml.dump(dico, Dumper=ruamel.yaml.RoundTripDumper,
+                                      allow_unicode=True, width=100)
+        output = output.replace("\n\n\n", "\n\n")
+        return output
 
 if __name__=="__main__":
     # Eléments de test

@@ -109,6 +109,7 @@ def get_officiel_sae_name_by_code(code):
     return get_officiel_name_by_code_using_dict(code, DATA_SAES)
 
 
+
 def get_code_from_nom_using_dict(ressource, dico):
     """Récupère le code d'une ressource d'après son nom en utilisant les noms officiels
     des ressources du yaml si dico == DATA_RESSOURCES ; sinon fait de même avec les SAE"""
@@ -118,3 +119,9 @@ def get_code_from_nom_using_dict(ressource, dico):
             nom_data = supprime_accent_espace(dico[sem][code])
             if nom.startswith(nom_data):
                 return code
+
+def get_officiel_sem_sae_by_code(sae):
+    """Récupère le semestre de la SAE d'après son code"""
+    for sem in DATA_SAES:
+        if sae in DATA_SAES[sem]:
+            return sem

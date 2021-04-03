@@ -105,7 +105,7 @@ for i in range(1, len(docu)): # A priori un tableau
         r.charge_ac(apprentissages)
 
         # nettoie le titre et le code
-        nettoie_titre(r)
+        nettoie_titre_sae(r)
         nettoie_code(r, type="sae")
 
         last_sae = r.code
@@ -116,7 +116,7 @@ for i in range(1, len(docu)): # A priori un tableau
         nom_exemple = res[0][1][0]
 
         # Création de la ressource
-        r = ExempleSAEDocx(nom_exemple, res)
+        r = ExempleSAEDocx(nom_exemple, res, last_sae)
         liste_exemples[last_sae].append(r)
 
         # Parsing des données brute de la sae
@@ -159,8 +159,10 @@ for s in liste_exemples:
     print(f"{s} :" + str(len(liste_exemples[s])) + " exemples")
 
 # ************************************************************************
+print("*Etape 2* : Post-traitement")
 
 # Post traitement des saes => gestion des heures/des acs/ + tri par semestre
+print(" > SAE")
 saes = {"S1" : [], "S2": []}
 
 for s in liste_saes:
@@ -176,7 +178,26 @@ for s in liste_saes:
     # Tri dans le bon semestre
     saes[s.semestre] += [s]
 
-# # Export yaml
+# Post traitement des exemples "S1" => "codesae chapeau" => "ExempleSAE"
+exemples = {"S1" : {}, "S2" : {} }
+print(" > Exemples")
+for s in liste_exemples: # la sae
+    sem = get_officiel_sem_sae_by_code(s)
+    exemples[sem][s] = []
+    for e in liste_exemples[s]:
+        print(f"{s} : {e.nom}")
+        # nettoie_description(s) => rien à faire ?
+        nettoie_description(e)
+        nettoie_problematique(e)
+        if e.nom.startswith("Concevoir"):
+            print("ici")
+        nettoie_modalite(e)
+
+        # Tri dans le bon semestre
+        exemples[sem][s].append(e)
+
+# Export yaml
+print("*Etape 3* : Export yaml")
 for sem in saes:
      for s in saes[sem]:
          output = s.to_yaml()
@@ -184,4 +205,13 @@ for sem in saes:
              fichier = "export/{}.yml".format(s.code.replace("É", "E"))
              with open(fichier, "w", encoding="utf8") as fid:
                  fid.write(output)
+
+for sem in exemples:
+     for s in exemples[sem]:
+         for (i, e) in enumerate(exemples[sem][s]):
+            output = e.to_yaml()
+            fichier = "export/{}_exemple{}.yml".format(s.replace("É", "E"), i+1)
+            with open(fichier, "w", encoding="utf8") as fid:
+                fid.write(output)
+
 

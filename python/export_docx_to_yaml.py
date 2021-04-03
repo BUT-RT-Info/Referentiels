@@ -118,7 +118,7 @@ print(f"{nbre_ressources} ressources")
 ressources = {"S1" : [], "S2": []}
 
 for r in liste_ressources:
-    nettoie_titre(r)
+    nettoie_titre_ressource(r)
     nettoie_heure_ressource(r)
     nettoie_code(r, type="ressource")
     nettoie_semestre(r)

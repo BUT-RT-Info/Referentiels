@@ -1,5 +1,5 @@
-from ressource import Ressource, SAE
-from ressourcedocx import *
+from ressource import *
+import os
 import pypandoc
 
 
@@ -27,12 +27,21 @@ fichiers = os.listdir(REPERTOIRE_RESSOURCES)
 fichiers = sorted(fichiers) # tri par ordre alphabétique
 
 saes = {"S1": [], "S2": []}
+exemples = {"S1" : {}, "S2" : {} }
+
 for file in fichiers:
     fichieryaml = REPERTOIRE_RESSOURCES + "/" + file
-    if file.startswith("S"): # si c'est une sae
+    if file.startswith("S") and "exemple" not in file: # si c'est le chapeau d'une sae
         s = SAE(fichieryaml)
         sem = "S" + str(s.sae["semestre"])
         saes[sem].append(s)
+    elif file.startswith("S") and "exemple" in file: # si c'est un exemple de sae
+        e = ExempleSAE(fichieryaml)
+        sem = "S" + str(e.exemple["semestre"])
+        sae = e.exemple["code"]
+        if sae not in exemples[sem]:
+            exemples[sem][sae] = []
+        exemples[sem][sae].append(e)
 
 # Eléments de tests
 r1 = ressources["S1"][0]
