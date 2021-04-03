@@ -1,0 +1,55 @@
+
+% Le tableau complet présentant un exemple d'une SAE donné
+\newcommand\tableauExempleSAE[2]{
+
+\xdef\CODE{#1} % code de la sae (par ex: AA avec A=1er semestre, A=1ère ressource)
+\xdef\NUMERO{#2} % numéro de l'exemple
+\xdef\EXEMPLE{\CODE\NUMERO} % code de l'exemple pour latex
+
+\setlength{\tabcolsep}{0.125cm} % Marge des colonnes
+\setlength{\extrarowheight}{2pt} % Marge des lignes
+
+% 1er tableau : Nom/Code/Semestre
+
+% 3ème tableau : descriptif
+\begin{tabular}[t]{|P|T|}
+\hline
+	{\bfseries Titre} &
+		{\csname ESname\EXEMPLE\endcsname} \\
+\hline
+	{\bfseries Description} &
+	\tableauChampLong{\csname ESdescription\EXEMPLE\endcsname} \\
+\hline
+	{ \setlength{\extrarowheight}{0pt}
+	\begin{tabular}[t]{@{}P@{}}
+	{\bfseries Problématique} \\
+	{\bfseries professionnelle} \\
+	{\bfseries posée} \\
+	\end{tabular}
+} &
+	\tableauChampLong{\csname ESproblematique\EXEMPLE\endcsname} \\
+\hline
+{ \setlength{\extrarowheight}{0pt}
+	\begin{tabular}[t]{@{}P@{}}
+	{\bfseries Formes} \\
+	{\bfseries pédagogiques} \\
+	\end{tabular}
+}
+& \tableauChampLong{\csname ESformes\EXEMPLE\endcsname} \\
+\hline
+{ \setlength{\extrarowheight}{0pt}
+	\begin{tabular}[t]{@{}P@{}}
+	{\bfseries Modalités} \\
+	{\bfseries d'évaluation} \\
+	{\bfseries assurant l'acquisition} \\
+	{\bfseries du niveau de compétence} \\
+	{\bfseries visée} \\
+	\end{tabular}
+}
+& \tableauChampLong{\csname ESmodalite\EXEMPLE\endcsname} \\
+\hline
+\hline
+
+\end{tabular}
+
+}

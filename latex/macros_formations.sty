@@ -245,15 +245,41 @@
 % *********************************************
 % Exemples de SAE
 % *********************************************
-\def\nouvelexemple#1#2{
+\def\nouvelexemple#1{
 	\addtocounter{cptSexemple\currentSsae}{1} % Ajoute un exemple (tous semestres confondu)
 	\def\currentESsae{\currentSsae\Alph{cptSexemple\currentSsae}} %
 
-	\expandafter\xdef\csname EScode\currentESsae\endcsname{#1} % code
-	\expandafter\xdef\csname ESname\currentESsae\endcsname{#2} % nom/intitule
+	\expandafter\xdef\csname ESname\currentESsae\endcsname{#1} % nom/intitule
 	% \expandafter\xdef\csname ESsem\currentESsae\endcsname{\csname semestrenumero\currentsemestre\endcsname} % nom du semestre
 }
 
+% La description
+\def\ajoutESdescription#1{
+	\begingroup\let\+\relax
+	\expandafter\gdef\csname ESdescription\currentESsae\endcsname{\noexpand #1} % descriptif
+	\endgroup
+}
+
+% Les formes pédagogique
+\def\ajoutESformes#1{
+	\begingroup\let\+\relax
+	\expandafter\gdef\csname ESformes\currentESsae\endcsname{\noexpand #1} % descriptif
+	\endgroup
+}
+
+% La problématique
+\def\ajoutESproblematique#1{
+	\begingroup\let\+\relax
+	\expandafter\gdef\csname ESproblematique\currentESsae\endcsname{\noexpand #1} % descriptif
+	\endgroup
+}
+
+% La modalité
+\def\ajoutESmodalite#1{
+	\begingroup\let\+\relax
+	\expandafter\gdef\csname ESmodalite\currentESsae\endcsname{\noexpand #1} % descriptif
+	\endgroup
+}
 
 % *************************************
 \definecolor{colormotscle}{RGB}{120, 185, 235}

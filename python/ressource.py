@@ -188,60 +188,53 @@ class ExempleSAE():
             except:
                 Ressource.__LOGGER.warning(f"Pb de chargement de {fichieryaml}")
 
-    def to_latex(self, modele="pn/modele_sae_exemple.tex"):
+    def to_latex(self, modele="pn/modele_exemple_sae.tex"):
         """Génère le code latex décrivant la ressource"""
         modlatex = get_modele(modele) #"pn/modele_ressource.tex")
 
-        # Préparation des ac
-        ajoutac = "\\ajoutSac{%s}{%s}"
-        compRT = []
-        for accomp in self.sae["acs"]:
-            comps = []
-            for no_ac in range(len(self.sae["acs"][accomp])): # les ac de la comp
-                code_ac = self.sae["acs"][accomp][no_ac]
-                comps.append( ajoutac % (code_ac, DATA_ACS[accomp][code_ac]) )
-            compRT.append("\n".join(comps))
-
-        # Préparation des ressources
-        ajoutressources = "\\ajoutSressources{%s}{%s}"
-        resRT = []
-        for (i, res) in enumerate(self.sae["ressources"]): # in range(len(self.apprentissages)):
-            resRT.append(ajoutressources % (res, get_officiel_ressource_name_by_code(res)))
-        ressources = "\n".join(resRT)
-
-
         # préparation du descriptif
-        descriptif = self.sae["description"]
-        if descriptif == "Aucun":
-            descriptif = ""
-            SAE.__LOGGER.warning(f"{self.sae['titre']} n'a pas de description")
+        description = self.exemple["description"]
+        if not description:
+            description = ""
+            ExempleSAE.__LOGGER.warning(f"{self.exemple['titre']} n'a pas de description")
         else:
-            descriptif = descriptif.replace("\n", "\n\n").replace("\n" * 4, "\n")  # corrige les suppressions de ligne à la relecture du yaml
-            descriptif = md_to_latex(descriptif)
+            description = description.replace("\n", "\n\n").replace("\n" * 4, "\n")  # corrige les suppressions de ligne à la relecture du yaml
+            description = md_to_latex(description)
 
-        # préparation des livrables
-        livrables = self.sae["livrables"]
-        if livrables == "Aucun":
-            livrables = ""
-            SAE.__LOGGER.warning(f"{self.sae['titre']} n'a pas de livrables")
+        # préparation de la forme
+        formes = self.exemple["formes"]
+        if not formes:
+            formes = ""
+            ExempleSAE.__LOGGER.warning(f"{self.exemple['titre']} n'a pas de formes")
         else:
-            livrables = livrables.replace("\n", "\n\n").replace("\n" * 4, "\n")  # corrige les suppressions de ligne à la relecture du yaml
-            livrables = md_to_latex(livrables)
+            formes = formes.replace("\n", "\n\n").replace("\n" * 4, "\n")  # corrige les suppressions de ligne à la relecture du yaml
+            formes = md_to_latex(formes)
+
+        # préparation de la problématique
+        problematique = self.exemple["problematique"]
+        if not formes:
+            problematique = ""
+            ExempleSAE.__LOGGER.warning(f"{self.exemple['titre']} n'a pas de problematique")
+        else:
+            problematique = problematique.replace("\n", "\n\n").replace("\n" * 4, "\n")  # corrige les suppressions de ligne à la relecture du yaml
+            problematique = md_to_latex(problematique)
+
+        # préparation des modalites
+        modalite = self.exemple["modalite"]
+        if not formes:
+            modalite = ""
+            ExempleSAE.__LOGGER.warning(f"{self.exemple['titre']} n'a pas de modalite")
+        else:
+            modalite = modalite.replace("\n", "\n\n").replace("\n" * 4, "\n")  # corrige les suppressions de ligne à la relecture du yaml
+            modalite = md_to_latex(modalite)
 
         chaine = ""
-        chaine = TemplateLatex(modlatex).substitute(code=self.sae["code"],
-                                                    titre=self.sae["titre"],
-                                                    heures_encadrees=self.sae["heures_encadrees"],
-                                                    heures_tp=self.sae["tp"],
-                                                    heures_projet=self.sae["projet"],
-                                                    compRT1=compRT[0],
-                                                    compRT2=compRT[1],
-                                                    compRT3=compRT[2],
-                                                    description=caracteres_recalcitrants(descriptif),
-                                                    ressources=ressources,
-                                                    livrables= livrables,
-                                                    motscles = caracteres_recalcitrants(self.sae["motscles"]),
-                                                   )
+        chaine = TemplateLatex(modlatex).substitute(titre=self.exemple["titre"],
+                                                    description=description,
+                                                    formes=formes,
+                                                    problematique = problematique,
+                                                    modalite=modalite
+                                                    )
         # chaine = chaine.replace("&", "\&")
 
         chaine = chaine.replace("\\tightlist\n", "")

@@ -496,7 +496,7 @@ class ExempleSAEDocx():
                 "semestre": self.semestre,
                 "description": folded(self.description),
                 "formes": self.formes,
-                "problematique": folded(self.problematique),
+                "problematique": folded(self.problematique) if self.problematique !="" else "",
                 "modalite": folded(self.modalite),
                 }
         output = ruamel.yaml.dump(dico, Dumper=ruamel.yaml.RoundTripDumper,

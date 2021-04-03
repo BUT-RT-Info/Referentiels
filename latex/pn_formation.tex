@@ -65,6 +65,7 @@ bottom=15mm
 \input{modeles/tableau.tex}
 \input{modeles/tableau_ressource.tex}
 \input{modeles/tableau_sae.tex}
+\input{modeles/tableau_exemple.tex}
 
 \begin{document}
 
@@ -95,15 +96,22 @@ bottom=15mm
 
 \newcounter{noressource}
 \newcounter{nosae}
+\newcounter{noexemple}
 
 %% SEMESTRE 1
+
+%\tableauExempleSAE{AA}{A}
 
 % Les SAE du semestre 1
 % ****************************
 % \tableauSAE{AA} 
-\forLoop{1}{\value{cptSA}}{nosae}{
+\forLoop{1}{\value{cptSA}}{nosae}{ % Pour chaque SAE
 	%A\Alph{noressource}
-	\tableauSAE{A\Alph{nosae}}
+	\def\currentSAE{A\Alph{nosae}}
+	\tableauSAE{\currentSAE}
+	\forLoop{1}{\value{cptSexemple\currentSAE}}{noexemple}{
+		\tableauExempleSAE{\currentSAE}{\Alph{noexemple}}
+	}
 	\newpage
 }
 

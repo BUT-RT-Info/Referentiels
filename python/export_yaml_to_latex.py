@@ -63,12 +63,23 @@ if False:
                 fid.write(contenu)
             print(f"Export de {fichierlatex} ")
 
-# Export latex des ressources
-for sem in saes:
-    for s in saes[sem]:
+# Export latex des sae
+if False:
+    for sem in saes:
+        for s in saes[sem]:
 
-        fichierlatex = REPERTOIRE_LATEX + "/" + "{}.tex".format(s.sae["code"].replace("É", "E"))
-        contenu = s.to_latex()
-        with open(fichierlatex, "w", encoding="utf8") as fid:
-            fid.write(contenu)
-        print(f"Export de {fichierlatex} ")
+            fichierlatex = REPERTOIRE_LATEX + "/" + "{}.tex".format(s.sae["code"].replace("É", "E"))
+            contenu = s.to_latex()
+            with open(fichierlatex, "w", encoding="utf8") as fid:
+                fid.write(contenu)
+            print(f"Export de {fichierlatex} ")
+
+# Export latex des exemples
+for sem in exemples:
+    for s in exemples[sem]:
+        for (i, e) in enumerate(exemples[sem][s]):
+            fichierlatex = REPERTOIRE_LATEX + "/" + "{}_exemple{}.tex".format(e.exemple["code"].replace("É", "E"), i+1)
+            contenu = e.to_latex()
+            with open(fichierlatex, "w", encoding="utf8") as fid:
+                fid.write(contenu)
+            print(f"Export de {fichierlatex} ")
