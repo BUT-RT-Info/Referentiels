@@ -110,10 +110,10 @@ def get_officiel_sae_name_by_code(code):
 
 
 
-def get_code_from_nom_using_dict(ressource, dico):
+def get_code_from_nom_using_dict(nom, dico):
     """Récupère le code d'une ressource d'après son nom en utilisant les noms officiels
     des ressources du yaml si dico == DATA_RESSOURCES ; sinon fait de même avec les SAE"""
-    nom = supprime_accent_espace(ressource.nom)
+    nom = supprime_accent_espace(nom)
     for sem in dico:
         for code in dico[sem]:
             nom_data = supprime_accent_espace(dico[sem][code])

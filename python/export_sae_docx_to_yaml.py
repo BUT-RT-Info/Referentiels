@@ -105,8 +105,8 @@ for i in range(1, len(docu)): # A priori un tableau
         r.charge_ac(apprentissages)
 
         # nettoie le titre et le code
-        nettoie_titre_sae(r)
-        nettoie_code(r, type="sae")
+        r.nettoie_titre_sae()
+        r.nettoie_code()
 
         last_sae = r.code
         liste_exemples[r.code] = []
@@ -167,13 +167,13 @@ saes = {"S1" : [], "S2": []}
 
 for s in liste_saes:
     print(f"{s.nom}")
-    nettoie_heure_sae(s)
-    nettoie_semestre(s)
-    nettoie_acs(s)
-    nettoie_ressources(s)
-    # nettoie_description(s) => rien à faire ?
-    nettoie_livrables_sae(s)
-    nettoie_mots_cles(s)
+    s.nettoie_heures_sae()
+    s.nettoie_semestre()
+    s.nettoie_acs()
+    s.nettoie_ressources()
+    s.nettoie_description()
+    s.nettoie_livrables_sae()
+    s.nettoie_mots_cles()
 
     # Tri dans le bon semestre
     saes[s.semestre] += [s]
@@ -186,12 +186,7 @@ for s in liste_exemples: # la sae
     exemples[sem][s] = []
     for e in liste_exemples[s]:
         print(f"{s} : {e.nom}")
-        # nettoie_description(s) => rien à faire ?
-        nettoie_description(e)
-        nettoie_problematique(e)
-        if e.nom.startswith("Concevoir"):
-            print("ici")
-        nettoie_modalite(e)
+        e.nettoie_champs()
 
         # Tri dans le bon semestre
         exemples[sem][s].append(e)

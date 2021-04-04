@@ -11,15 +11,85 @@ __LOGGER = logging.getLogger(__name__)
 
 class Docx():
     """Classe de base pour les ressources/saé/exemples du docx"""
+    __LOGGER = logging.getLogger(__name__)
+
     def __init__(self, nom, brut):
         self.nom = nom
-        self.brut = brut  # les données brutes de la ressource
+        self.brut = brut  # les données brutes de la ressource/saé
+        self.semestre = None # le semestre de la ressource/saé (chargé ultérieurement)
+        self.apprentissages = None # les acs (chargés ultérieurement)
+        self.mots = None # les mots-clés chargés ultérieurement
 
     def charge_ac(self, apprentissages):
         self.apprentissages = apprentissages
 
     def __str__(self):
         print(self.nom + " " + self.code)
+
+    def nettoie_semestre(self):
+        """Pour une ressource, ou une SAE, nettoie le champ semestre"""
+        if self.semestre:
+            if "1" in self.semestre:
+                self.semestre = "S1"
+            elif "2" in self.semestre:
+                self.semestre = "S2"
+            else:
+                Docx.__LOGGER.warning(f"nettoie_semestre : dans \"{self.nom}, PAS de semestre => rattaché au S2")
+                self.semestre = "S2"
+        else:
+            Docx.__LOGGER.warning(f"nettoie_semestre : dans \"{self.nom}, PAS de semestre => rattaché au S2")
+            self.semestre = "S2"
+
+    def nettoie_acs(self):
+        """Nettoie les acs d'une ressource ou d'une saé,
+        en les remplaçant par leur code pour les 3 compétences"""
+
+        if len(self.apprentissages) != 3:
+            Docx.__LOGGER.warning(f"nettoie_acs : Problème dans le nombre de compétences de {self.nom}")
+
+        dico = {}
+        for comp in range(3):
+            donnees = self.apprentissages[comp]  # chaine de caractères listant les ACS
+
+            acs_avec_code = devine_acs_by_code(donnees) # récupère les codes des acs
+            acs_avec_code = [ac.replace(" ", "") for ac in acs_avec_code]  # supprime les espaces inutiles
+
+            acs_avec_nom = devine_code_by_nom_from_dict(donnees, DATA_ACS) # récupère les codes en utilisant les noms
+            acs_avec_nom = [ac.replace(" ", "") for ac in acs_avec_nom]  # supprime les espaces inutiles
+
+            if acs_avec_code and set(acs_avec_nom).intersection(set(acs_avec_code)) != set(acs_avec_nom):
+                Docx.__LOGGER.warning(f"Dans {self.nom}, revoir les ACS : {acs_avec_code} vs {acs_avec_nom}")
+
+            acs_finaux = sorted(list(set(acs_avec_code + acs_avec_nom)))
+            dico["RT" + str(comp + 1)] = acs_finaux
+
+        self.apprentissages = dico  # Mise à jour du champ
+
+    def nettoie_mots_cles(self):
+        mots = self.mots  # .encode('utf8', 'ignore').decode('utf8')
+        mots = mots.replace(".", "").replace(";", ",")
+        liste_mots = mots.split(",")
+        liste_mots = [l.rstrip() for l in liste_mots] # supprime les espaces inutiles
+        mots = ", ".join(liste_mots)
+        self.mots = mots
+
+    def nettoie_titre(self, data_titres):
+        """Nettoie le titre d'une ressource ou d'une SAE en utilisant les titres officiels
+        fournis dans le yaml (via le dictionnaire DATA_RESSOURCES)"""
+
+        def devine_nom(champ):
+            champ_purge = supprime_accent_espace(champ)
+            for sem in data_titres:
+                for code in data_titres[sem]:
+                    nom_purge = supprime_accent_espace(data_titres[sem][code])
+                    if champ_purge.startswith(nom_purge):
+                        return data_titres[sem][code]  # le bon nom
+
+        old = self.nom
+        titre = devine_nom(self.nom)
+        if titre and titre != old:
+            Docx.__LOGGER.warning(f"nettoie_titre : {old} => titre \"{titre}\"")
+            self.nom = titre
 
     def dico_to_yaml(self, dico):
         if self.code == "R108":
@@ -31,7 +101,7 @@ class Docx():
         lignes_finales = []
         for (i, ligne) in enumerate(lignes):
             if ligne.rstrip() == "":
-                if i != len(lignes)-1 and lignes[i+1].rstrip() == "":
+                if i != len(lignes)-1 and lignes[i+1].rstrip() != "":
                     lignes_finales.append(ligne) # ajoute la ligne si la suivante n'est pas vide
             else:
                 lignes_finales.append(ligne)
@@ -41,6 +111,7 @@ class Docx():
 
 class RessourceDocx(Docx):
     """Classe modélisant les ressources, lorsqu'elles sont extraites du docx"""
+    __LOGGER = logging.getLogger(__name__)
 
     def charge_informations(self, code, semestre, heures_encadrees, tp, sae, prerequis, description, mots):
         self.code = code
@@ -53,6 +124,102 @@ class RessourceDocx(Docx):
         self.contexte = None
         self.contenu = None
         self.mots = mots
+
+
+    def nettoie_titre_ressource(self, data_titres):
+        """Nettoie le titre d'une ressource ou d'une SAE en utilisant les titres officiels
+        fournis dans le yaml (via le dictionnaire DATA_RESSOURCES)"""
+        self.nettoie_titre(DATA_RESSOURCES)
+
+    def nettoie_code(self):
+        """Recherche le code de la forme RXXX"""
+        if self.code:
+            codes = devine_ressources_by_code(self.code)
+
+            if len(codes) == 1:
+                self.code = codes[0]
+            else:
+                code_devine = get_code_from_nom_using_dict(self.nom, DATA_RESSOURCES)
+                if code_devine:
+                    RessourceDocx.__LOGGER.warning(f"nettoie_code : \"{self.nom}\" => code {code_devine}")
+                    self.code = code_devine
+                else:
+                    self.code = None
+
+        if not self.code:
+            RessourceDocx.__LOGGER.warning(f"nettoie_code : \"{self.nom}\" => code manquant")
+
+    def nettoie_prerequis(self):
+        """Nettoie les prérequis"""
+        if self.prerequis:
+            self.prerequis = nettoie_liste_ressources(self.prerequis)
+        if not self.prerequis:
+            self.prerequis = "Aucun"
+
+    def nettoie_sae(self):
+        """Nettoie le champ SAe d'une ressource en détectant les codes"""
+        SAE_avec_code = devine_sae_by_code(self.sae)
+        liste = [l.rstrip() for l in SAE_avec_code]
+        self.sae = liste
+        if not self.sae:
+            RessourceDocx.__LOGGER.warning(f"nettoie_sae: dans {self.nom} pas de SAE (:")
+
+    def nettoie_heures(self):
+        """Nettoie le champ (horaire) (de la forme 46h ou 33...) pour en extraire la valeur numérique :
+        le champ peut contenir 2 volumes (heures formation puis heures tp), auquel cas les 2 valeurs sont renvoyées
+        dans un tuple"""
+
+        if self.heures_encadrees:  # si les heures encadrées sont renseignées
+            volumes = nettoie_champ_heure(self.heures_encadrees)
+        if self.tp:
+            self.tp = nettoie_champ_heure(self.tp)
+
+        if isinstance(volumes, int):
+            self.heures_encadrees = volumes
+        elif isinstance(volumes, tuple):
+            self.heures_encadrees = volumes[0]
+            if not self.tp:
+                self.tp = volumes[1]
+            elif self.tp != volumes[1]:
+                RessourceDocx.__LOGGER.warning(r"nettoie_heure: ans {self.nom}, pb dans les heures tp/td")
+        else:
+            self.heures_encadrees = None
+
+    def split_description(self):
+        """Découpe le champ description en un contexte+un contenu ; si pas possible """
+        champs = self.description.split("\n")
+        champs = [c for c in champs if c]  # supprime les lignes vides
+
+        indicea = 0  # la ligne mentionnant le contexte
+        if True in [ligne.startswith("Contexte et ") for ligne in champs]:  # la ligne commençant par Contenus
+            indicea = [ligne.startswith("Contexte et ") for ligne in champs].index(True)
+
+        indicec = 0
+        contexte = []
+        if True in [ligne.startswith("Contenus") for ligne in champs]:  # la ligne commençant par Contenus
+            indicec = [ligne.startswith("Contenus") for ligne in champs].index(True)
+        if True in [ligne.startswith("Contexte et ") for ligne in champs]:
+            contexte = champs[indicea + 1:indicec]
+        else:
+            contexte = champs[:indicec]
+        # suppression des lignes vides
+        contexte = "\n".join(remove_ligne_vide(contexte))
+        # suppression des liens
+        contexte = remove_link(contexte)
+        if not contexte:
+            contexte = "Aucun"
+        contenu = "\n".join(champs[indicec + 1:])
+
+        # sauvegarde des champs
+        self.contexte = contexte
+        self.contenu = contenu
+
+    def nettoie_contenu(self):
+        """Partant du contenu détaillé d'une ressource, la transforme
+        en markdown en générant les listes à puces"""
+        contenu = self.contenu.replace(" / ", "/")
+        self.contenu = convert_to_markdown(contenu)
+
 
     def to_yaml(self):
         """Exporte la ressource en yaml"""
@@ -82,186 +249,16 @@ def nettoie_champ_heure(champ):
             volumes = sorted(volumes, reverse=True)
             return (int(volumes[0][:-1]), int(volumes[1][:-1]))
 
-def nettoie_heure_ressource(r):
-    """Nettoie le champ (horaire) (de la forme 46h ou 33...) pour en extraire la valeur numérique :
-    le champ peut contenir 2 volumes (heures formation puis heures tp), auquel cas les 2 valeurs sont renvoyées
-    dans un tuple"""
 
-    if r.heures_encadrees: # si les heures encadrées sont renseignées
-        volumes = nettoie_champ_heure(r.heures_encadrees)
-    if r.tp:
-        r.tp = nettoie_champ_heure(r.tp)
-
-    if isinstance(volumes, int):
-        r.heures_encadrees = volumes
-    elif isinstance(volumes, tuple):
-        r.heures_encadrees = volumes[0]
-        if not r.tp:
-            r.tp = volumes[1]
-        elif r.tp != volumes[1]:
-            __LOGGER.warning(r"nettoie_heure: ans {r.nom}, pb dans les heures tp/td")
-    else:
-        r.heures_encadrees = None
-        #else:
-            #__LOGGER.warning("Heures non détectées")
-
-
-def nettoie_heure_sae(r):
-    """Nettoie les champs (horaires) des saes"""
-
-    if r.heures_encadrees:  # si les heures encadrées sont renseignées
-        r.heures_encadrees = nettoie_champ_heure(r.heures_encadrees)
-    else:
-        __LOGGER.warning(r"nettoie_heure_sae: dans {r.nom}, manque les heures de formation")
-        r.heures_encadrees = "???"
-    if r.tp:
-        r.tp = nettoie_champ_heure(r.tp)
-    else:
-        __LOGGER.warning(r"nettoie_heure_sae: dans {r.nom}, manque les heures de tp")
-        r.tp = "???"
-
-    if r.projet:
-        r.projet = nettoie_champ_heure(r.projet)
-    else:
-        __LOGGER.warning(r"nettoie_heure_sae: dans {r.nom}, manque les heures de projet")
-        r.projet = "???"
-    try:
-        if r.heures_encadrees < r.tp:
-            __LOGGER.warning(r"nettoie_heure_sae: dans {r.nom}, pb dans les heures formations/tp")
-    except:
-        pass
-
-
-def nettoie_code(r, type = "ressource"):
-    """Recherche les codes dans le champ:
-    * de la forme RXXX si type=ressource
-    * de la forme SAE|éXX si type=sae"""
-
-    champ = r.code
-    if r.code:
-        if type == "ressource":
-            codes = re.findall(r"(R[0-9][0-9][0-9])", champ)
-        else: # type = "sae"
-            codes = re.findall(r"(SAE[0-9][0-9]|SAÉ[0-9][0-9])", champ)
-            # ajout des É
-            codes = [c.replace("E", "É") for c in codes]
-        # if len(codes) > 1:
-        #    __LOGGER.warning("plusieurs codes trouvés :(")
-        #elif len(codes) == 0:
-        #    __LOGGER.warning("code manquant")
-        if len(codes) == 1:
-            r.code = codes[0]
-        else:
-            if type == "ressource":
-                code_devine = get_code_from_nom_using_dict(r, DATA_RESSOURCES)
-            else:
-                code_devine = get_code_from_nom_using_dict(r, DATA_SAES)
-            if code_devine:
-                __LOGGER.warning(f"nettoie_code : \"{r.nom}\" => code {code_devine}")
-                r.code = code_devine
-            else:
-                r.code = None
-                __LOGGER.warning(f"nettoie_code : \"{r.nom}\" => code manquant")
-
-def nettoie_semestre(r):
-    """Nettoie les semestres : semestre 1 => "S1", semestre 2 => "S2" """
-    if r.semestre:
-        if "1" in r.semestre:
-            r.semestre = "S1"
-        elif "2" in r.semestre:
-            r.semestre = "S2"
-        else:
-            __LOGGER.warning(f"nettoie_semestre : dans \"{r.nom}, PAS de semestre => rattaché au S2")
-            r.semestre = "S2"
-    else:
-        __LOGGER.warning(f"nettoie_semestre : dans \"{r.nom}, PAS de semestre => rattaché au S2")
-        r.semestre = "S2"
-
-def nettoie_titre_ressource(r):
-    """Nettoie le titre d'une ressource en utilisant les titres officiels fournis dans le
-    yaml (via le dictionnaire DATA_RESSOURCES)"""
-    def devine_nom_from_ressources(champ):
-        champ_purge = supprime_accent_espace(champ)
-        for sem in DATA_RESSOURCES:
-            for code in DATA_RESSOURCES[sem]:
-                nom_purge = supprime_accent_espace(DATA_RESSOURCES[sem][code])
-                if champ_purge.startswith(nom_purge):
-                    return DATA_RESSOURCES[sem][code] # le bon nom
-
-    old = r.nom
-    titre = devine_nom_from_ressources(r.nom)
-    if titre and titre != old:
-        __LOGGER.warning(f"nettoie_titre_ressource : {old} => titre \"{titre}\"")
-        r.nom = titre
-
-def nettoie_titre_sae(s):
-    """Nettoie le titre d'une sae en utilisant les titres officiels fournis dans le
-    yaml (via le dictionnaire DATA_RESSOURCES)"""
-    def devine_nom_from_sae(champ):
-        champ_purge = supprime_accent_espace(champ)
-        for sem in DATA_SAES:
-            for code in DATA_SAES[sem]:
-                nom_purge = supprime_accent_espace(DATA_SAES[sem][code])
-                if champ_purge.startswith(nom_purge):
-                    return DATA_SAES[sem][code] # le bon nom
-
-    old = s.nom
-    titre = devine_nom_from_sae(s.nom)
-    if titre and titre != old:
-        __LOGGER.warning(f"nettoie_titre_sae : {old} => titre \"{titre}\"")
-        s.nom = titre
-
-def nettoie_acs(r):
-    """Nettoie les acs d'une ressource en les remplaçant par leur code pour les 3 compétences"""
-    if len(r.apprentissages) != 3:
-        __LOGGER.warning(f"nettoie_acs : Problème dans le nombre de compétences de {r.nom}")
-    dico = {}
-    for comp in range(3):
-        donnees = r.apprentissages[comp] # chaine de caractères listant les ACS
-        # donnees = donnees.replace("\t", "").replace("-", "") # supprime les tabulations
-        acs_avec_code = devine_acs_by_code(donnees)
-        acs_avec_nom = devine_code_by_nom_from_dict(donnees, DATA_ACS)
-        if acs_avec_code and set(acs_avec_nom).intersection(set(acs_avec_code)) != set(acs_avec_nom):
-            __LOGGER.warning(f"Dans {r.nom}, revoir les ACS : {acs_avec_code} vs {acs_avec_nom}")
-        acs_finaux = acs_avec_code + acs_avec_nom
-        acs_finaux = [ac.replace(" ", "") for ac in acs_finaux]
-        acs_finaux = sorted(list(set(acs_finaux)))
-        dico["RT" + str(comp+1)] = acs_finaux
-    r.apprentissages = dico # [comp] = acs_finaux
-
-def nettoie_sae(r):
-    """Nettoie le champ SAe d'une ressource en détectant les codes"""
-    SAE_avec_code = devine_sae_by_code(r.sae)
-    liste = [l.rstrip() for l in SAE_avec_code]
-    r.sae = liste
-    if not r.sae:
-        __LOGGER.warning(f"nettoie_sae: dans {r.nom} pas de SAE (:")
-
-def nettoie_ressources(r):
-    """Nettoie le champ ressource d'une sae en détectant les codes"""
-    ressources_avec_code = devine_ressources_by_code(r.ressources)
-    liste = [l.rstrip() for l in ressources_avec_code]
-    r.ressources = liste
-    if not r.ressources:
-        __LOGGER.warning(f"nettoie_ressources: dans {r.nom} pas de ressources (:")
-
-def nettoie_prerequis(r):
-    """Nettoie les prérequis (ressource) en les remplaçant par leur code de ressource"""
-    R_avec_code = devine_ressources_by_code(r.prerequis)
-    R_avec_nom = devine_code_by_nom_from_dict(r.prerequis, DATA_RESSOURCES)
+def nettoie_liste_ressources(contenu):
+    """Nettoie un contenu contenant une liste ressources, en extrayant les codes ressources
+    et en les fournissant les codes extraits dans une liste
+    """
+    R_avec_code = devine_ressources_by_code(contenu)
+    R_avec_nom = devine_code_by_nom_from_dict(contenu, DATA_RESSOURCES)
     liste = R_avec_code + R_avec_nom
-    liste = [l.rstrip().replace(",", "").replace(".","") for l in liste] # supprime les espaces
-    R_finaux = sorted(list(set(liste)))
-    if R_finaux:
-        r.prerequis = R_finaux
-    else:
-        r.prerequis = "Aucun"
-
-def nettoie_mots_cles(r):
-    mots = r.mots # .encode('utf8', 'ignore').decode('utf8')
-    mots = mots.replace(".", "").replace(";", ",")
-    mots = mots.replace(" ,", ",")
-    r.mots = mots
+    liste = [l.rstrip().replace(",", "").replace(".", "") for l in liste] # supprime les espaces et les ponctuations restantes
+    return sorted(list(set(liste)))
 
 
 def devine_acs_by_code(champ):
@@ -276,6 +273,7 @@ def devine_acs_by_code(champ):
     codes4 += [ "AC0" + c[-3:] for c in codes3] # ajoute les 0 manquants des acs (codage AC0111)
 
     return sorted(list(set(codes4)))
+
 
 def devine_ressources_by_code(champ):
     """Recherche les codes ressources de la forme RXXX dans champ ;
@@ -298,41 +296,11 @@ def devine_ressources_by_nom(donnees):
 
 def devine_sae_by_code(donnees):
     """Partant d'une chaine de caractères, détermine les codes des SAE"""
-    codes = re.findall(r"(SAE\d\d)\D", donnees)
-    codes += re.findall(r"(SAÉ\d\d)\D", donnees)# de code à 3 chiffres
+    codes = re.findall(r"(SAE\d\d)", donnees)
+    codes += re.findall(r"(SAÉ\d\d)", donnees)# de code à 3 chiffres
     for (i, code) in enumerate(codes):
         codes[i] = codes[i].replace("E", "É")
     return sorted(list(set(codes)))
-
-def split_description(r):
-    """Découpe le champ description en un contexte+un contenu ; si pas possible """
-    champs = r.description.split("\n")
-    champs = [c for c in champs if c] # supprime les lignes vides
-
-    indicea = 0 # la ligne mentionnant le contexte
-    if True in [ligne.startswith("Contexte et ") for ligne in champs]:  # la ligne commençant par Contenus
-        indicea = [ligne.startswith("Contexte et ") for ligne in champs].index(True)
-
-    indicec = 0
-    contexte = []
-    if True in [ligne.startswith("Contenus") for ligne in champs]: # la ligne commençant par Contenus
-        indicec = [ligne.startswith("Contenus") for ligne in champs].index(True)
-    if True in [ligne.startswith("Contexte et ") for ligne in champs]:
-        contexte = champs[indicea+1:indicec]
-    else:
-        contexte = champs[:indicec]
-    # suppression des lignes vides
-    contexte = "\n".join(remove_ligne_vide(contexte))
-    # suppression des liens
-    contexte = remove_link(contexte)
-    if not contexte:
-        contexte = "Aucun"
-    contenu = "\n".join(champs[indicec+1:])
-
-
-    # sauvegarde des champs
-    r.contexte = contexte
-    r.contenu = contenu
 
 def remove_link(contenu):
     liens = re.findall("(<a\s.*\">)", contenu)
@@ -396,6 +364,8 @@ def remplace_marqueur_numerique_with_caracteres(contenu):
 
 def convert_to_markdown(contenu):
     """Convertit un contenu avec des marqueurs en markdown"""
+    contenu = remove_link(contenu) # supprime les liens
+
     contenu = remplace_marqueur_numerique_with_caracteres(contenu)
     marqueurs_finaux = get_marqueurs(contenu)
     lignes = contenu.split("\n")
@@ -411,50 +381,9 @@ def convert_to_markdown(contenu):
     return contenu
 
 
-def nettoie_contenus_ressource(r):
-    """Partant du contenu détaillé d'une ressource, la transforme
-    en markdown en générant les listes à puces"""
-    contenu = r.contenu.replace(" / ", "/")
-    contenu = convert_to_markdown(contenu)
-    r.contenu = contenu
-
-def nettoie_livrables_sae(s):
-    """Partant du contenu détaillé d'une ressource, la transforme
-    en markdown en générant les listes à puces"""
-    contenu = s.livrables
-    contenu = convert_to_markdown(contenu)
-    s.livrables = contenu
-
-def nettoie_description(s):
-    """Nettoie la description d'un exemple de SAE"""
-    contenu = s.description
-    contenu = remove_link(contenu) # supprime les liens
-    contenu = convert_to_markdown(contenu)
-    s.description = contenu
-
-def nettoie_problematique(s):
-    """Nettoie la description d'un exemple de SAE"""
-    if s.problematique:
-        contenu = s.problematique
-        contenu = convert_to_markdown(contenu)
-        s.problematique = contenu
-    else:
-        s.problematique = ""
-
-def nettoie_modalite(s):
-    """Nettoie les modalités (d'évaluation) d'un exemple de SAE"""
-    if s.modalite:
-        contenu = s.modalite
-        contenu = convert_to_markdown(contenu)
-        s.modalite = contenu
-    else:
-        s.modalite = f"Les même que les livrables et les productions de la {s.code}"
-
-class SAEDocx():
-
-    def __init__(self, nom, brut):
-        self.nom = nom
-        self.brut = brut  # les données brutes de la ressource
+class SAEDocx(Docx):
+    """Classe modélisant un chapeau de SAé relu dans les docx"""
+    __LOGGER = logging.getLogger(__name__)
 
     def charge_informations(self, code, semestre, heures_encadrees, tp, projet, description, ressources, livrables, mots):
         self.code = code
@@ -467,9 +396,67 @@ class SAEDocx():
         self.livrables = livrables
         self.mots = mots
 
+    def nettoie_titre_sae(self):
+        """Nettoie le titre d'une SAE en utilisant les titres officiels
+        fournis dans le yaml (via le dictionnaire DATA_RESSOURCES)"""
+        self.nettoie_titre(DATA_SAES)
 
-    def charge_ac(self, apprentissages):
-        self.apprentissages = apprentissages
+    def nettoie_code(self):
+        """Recherche les codes de la forme SAE|éXX """
+        if self.code:
+            codes = devine_sae_by_code(self.code)
+            if len(codes) == 1:
+                self.code = codes[0]
+            else:
+                code_devine = get_code_from_nom_using_dict(self.nom, DATA_SAES)
+                if code_devine:
+                    SAEDocx.__LOGGER.warning(f"nettoie_code : \"{self.nom}\" => code {code_devine}")
+                    self.code = code_devine
+                else:
+                    self.code = None
+        if not self.code:
+            SAEDocx.__LOGGER.warning(f"nettoie_code : \"{self.nom}\" => code manquant")
+
+    def nettoie_heures_sae(self):
+        """Nettoie les champs (horaires) des saes"""
+        if self.heures_encadrees:  # si les heures encadrées sont renseignées
+            self.heures_encadrees = nettoie_champ_heure(self.heures_encadrees)
+        else:
+            SAEDocx.__LOGGER.warning(f"nettoie_heures_sae: dans {self.nom}, manque les heures de formation")
+            self.heures_encadrees = "???"
+        if self.tp:
+            self.tp = nettoie_champ_heure(self.tp)
+        else:
+            SAEDocx.__LOGGER.warning(f"nettoie_heures_sae: dans {self.nom}, manque les heures de tp")
+            self.tp = "???"
+
+        if self.projet:
+            self.projet = nettoie_champ_heure(self.projet)
+        else:
+            SAEDocx.__LOGGER.warning(f"nettoie_heures_sae: dans {self.nom}, manque les heures de projet")
+            self.projet = "???"
+
+        try:
+            if self.heures_encadrees < self.tp:
+                SAEDocx.__LOGGER.warning(f"nettoie_heures_sae: dans {self.nom}, pb dans les heures formations/tp")
+        except:
+            pass
+
+    def nettoie_livrables_sae(self):
+        """Partant du contenu détaillé d'une ressource, la transforme
+        en markdown en générant les listes à puces"""
+        self.livrables = convert_to_markdown(self.livrables)
+
+    def nettoie_ressources(self):
+        """Nettoie le champ ressource d'une sae en détectant les codes"""
+        self.ressources = nettoie_liste_ressources(self.ressources)
+        if not self.ressources:
+            SAEDocx.__LOGGER.warning(f"nettoie_ressources: dans {self.nom} pas de ressources (:")
+
+    def nettoie_description(self):
+        """Nettoie le champ description"""
+        self.description = convert_to_markdown(self.description)
+
 
     def to_yaml(self):
         """Exporte la ressource en yaml"""
@@ -485,16 +472,14 @@ class SAEDocx():
                 "livrables": folded(self.livrables),
                 "motscles": self.mots if self.mots else ""
                 }
-        output = ruamel.yaml.dump(dico, Dumper=ruamel.yaml.RoundTripDumper,
-                                      allow_unicode=True, width=100)
-        output = output.replace("\n\n\n", "\n\n")
-        return output
+        return self.dico_to_yaml(dico)
 
 
-class ExempleSAEDocx():
+class ExempleSAEDocx(Docx):
+    """Classe modélisant les exemples de SAE tel que relu dans les Docx"""
 
     def __init__(self, nom, brut, code):
-        self.nom = nom
+        self.nom = nom.rstrip()
         self.brut = brut  # les données brutes de la ressource
         self.code = code # code de la SAE à laquelle l'exemple est raccroché
         # Ajoute le semestre de la SAE
@@ -506,6 +491,30 @@ class ExempleSAEDocx():
         self.problematique = problematique
         self.modalite = modalite
 
+    def nettoie_description(self):
+        """Nettoie la description d'un exemple de SAE"""
+        self.description = convert_to_markdown(self.description)
+
+    def nettoie_problematique(self):
+        """Nettoie la description d'un exemple de SAE"""
+        if self.problematique:
+            self.problematique = convert_to_markdown(self.problematique)
+        else:
+            self.problematique = ""
+
+    def nettoie_modalite(self):
+        """Nettoie les modalités (d'évaluation) d'un exemple de SAE"""
+        if self.modalite:
+            self.modalite = convert_to_markdown(self.modalite)
+        else:
+            self.modalite = f"Les même que les livrables et les productions de la {self.code}"
+
+    def nettoie_champs(self):
+        """Déclenche le nettoyage des champs de l'exemple"""
+        self.nettoie_modalite()
+        self.nettoie_description()
+        self.nettoie_modalite()
+
     def to_yaml(self):
         """Exporte la ressource en yaml"""
         dico = {"titre": self.nom,
@@ -516,10 +525,7 @@ class ExempleSAEDocx():
                 "problematique": folded(self.problematique) if self.problematique !="" else "",
                 "modalite": folded(self.modalite),
                 }
-        output = ruamel.yaml.dump(dico, Dumper=ruamel.yaml.RoundTripDumper,
-                                      allow_unicode=True, width=100)
-        output = output.replace("\n\n\n", "\n\n")
-        return output
+        return self.dico_to_yaml(dico)
 
 if __name__=="__main__":
     # Eléments de test
