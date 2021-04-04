@@ -8,27 +8,38 @@
 \setlength{\extrarowheight}{2pt} % Marge des lignes
 
 % 1er tableau : Nom/Code/Semestre
-\begin{tabular}[t]{|P|Q|P|Q|}
+\begin{tabular}[t]{|P|Q|V|}
 \hline % 1ère ligne
-	{\bfseries Titre de la SAÉ}
-	& \multicolumn{3}{l|}{
 	\xdef\saecode{\csname Scode\CODE\endcsname}
+	{\bfseries % SAÉ
+	\saecode}
+	& \multicolumn{2}{l|}{
 	\hypertarget{sae:\saecode}{\bfseries \csname Sname\CODE\endcsname}
 	} \\
 \hline % 2ème ligne
-	{\bfseries Code}
-	& \csname Scode\CODE\endcsname
-	& {\bfseries Semestre}
-	& \csname Ssem\CODE\endcsname \\
+	% {\bfseries Code}
+	% & \csname Scode\CODE\endcsname
+	% &
+	{\bfseries Semestre}
+	& \multicolumn{2}{l|}{\csname Ssem\CODE\endcsname} \\
+	% & \csname Ssem\CODE\endcsname \\
 \hline
 \hline
+	{\bfseries Heures }
+	&
 	{\bfseries Formation encadrée}
-	& {\csname Straining\CODE\endcsname}h
-	& {\bfseries dont TP}
-	& {\csname Stp\CODE\endcsname}h	\\
-\hline
-	{\bfseries Projet}
-	& \multicolumn{3}{l|}{{\csname Sprojet\CODE\endcsname}h} \\
+		& {\csname Straining\CODE\endcsname}h,
+			dont {\csname Stp\CODE\endcsname}h de TP \\
+\cline{2-3}
+	& {\bfseries Projet}
+		& {\csname Sprojet\CODE\endcsname}h \\
+%	{\bfseries Formation encadrée}
+%	& {\csname Straining\CODE\endcsname}h
+%	& {\bfseries dont TP}
+%	& {\csname Stp\CODE\endcsname}h	\\
+%\hline
+	%{\bfseries Projet}
+	% & \multicolumn{3}{l|}{{\csname Sprojet\CODE\endcsname}h} \\
 \hline
 \end{tabular}
 
@@ -102,7 +113,16 @@
 \hline
 {\bfseries Mots-clés} & {\csname Smotscles\CODE\endcsname} \\
 \hline
-
+\hline
+{ \setlength{\extrarowheight}{0pt}
+	\begin{tabular}[t]{@{}P@{}}
+	{\bfseries Exemples de} \\
+	{\bfseries mise en oeuvre} \\
+	\end{tabular}
+}
+	&
+	\tableauExemples{\CODE} \\
+\hline
 \end{tabular}
 
 }

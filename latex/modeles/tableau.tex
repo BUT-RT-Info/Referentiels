@@ -14,6 +14,8 @@
 %% Pour les champs de description (2de colonne)
 \newcolumntype{T}{>{}p{13.325cm}<{}} % 12.825cm
 
+\newcolumntype{V}{>{}p{8.45cm}<{}} % 12.825cm
+
 % Compteur de ligne pour les tableaux
 \newcounter{noligne}
 
@@ -129,3 +131,19 @@ Aucun
 		\end{tabular}%
 	}
 }%
+
+% Tableau des exemples
+\newcommand*{\tableauExemples}[1]{%
+	\xdef\CODE{#1} % le code de la sae sous la forme AA
+
+	\begin{tabular}[t]{@{}T@{}}
+	% {\bfseries Ancrage et contexte professionnel :} \\
+	\forLoop{1}{\value{cptSexemple\CODE}}{noligne}{
+		\xdef\exemplecode{\CODE\Alph{noligne}}
+		\xdef\titreexemple{\csname ESname\exemplecode\endcsname}
+        Exemple \arabic{noligne}~: \titreexemple
+        \tabularnewline
+	}
+	\end{tabular}
+}
+
