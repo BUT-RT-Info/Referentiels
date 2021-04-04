@@ -1,0 +1,88 @@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Affichae des SAE (et leur exemple) pour un semestre %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \affichageSAE{code_semestre} avec code_semestre=A pour le S1, B pour le S2
+\newcounter{nosae}
+\newcounter{noexemple}
+\newcommand{\affichageSAE}[1]{
+    \xdef\sem{#1}
+
+    \forLoop{1}{\value{cptS\sem}}{nosae}{ % Pour chaque SAE
+        %A\Alph{noressource}
+        \xdef\currentSAE{\sem\Alph{nosae}}
+        \tableauSAE{\currentSAE}
+        \forLoop{1}{\value{cptSexemple\currentSAE}}{noexemple}{
+            \tableauExempleSAE{\currentSAE}{\Alph{noexemple}}
+        }
+        \newpage
+    }
+}
+
+\newcommand{\listeTitreSAE}[1]{
+    \setlength{\tabcolsep}{0.125cm} % Marge des colonnes
+    \setlength{\extrarowheight}{2pt} % Marge des lignes
+
+    \begin{tabular}[t]{|P|T|}
+        \hline {\bfseries Codes des SAÉ} & {\bfseries Titre} \\ \hline
+
+        \forLoop{1}{\value{cptS\sem}}{nosae}{ % Pour chaque SAE
+            %A\Alph{noressource}
+            \xdef\currentSAE{\sem\Alph{nosae}} % code de la SAE
+            \xdef\saecode{\csname Scode\currentSAE\endcsname}
+            \xdef\saetitre{\csname Sname\currentSAE\endcsname}
+            {\bfseries \saecode}
+            &
+            {\bfseries \hyperlink{res:\saecode}{\saetitre}}
+            \tabularnewline
+
+            \forLoop{1}{\value{cptSexemple\currentSAE}}{noexemple}{
+                \xdef\exemplecode{\currentSAE\Alph{noexemple}}
+                \xdef\titreexemple{\csname ESname\exemplecode\endcsname}
+                & {\itshape Exemple \arabic{noexemple}~: \titreexemple}
+                \ifthenelse{%
+                    \equal{\thenoexemple}{\value{cptSexemple\currentSAE}}}{ %
+                    \tabularnewline\hline
+                }{%
+                    \tabularnewline
+                }
+            }
+        }
+    \end{tabular}
+}
+
+\newcommand{\listeTitreRessource}[1]{
+    \setlength{\tabcolsep}{0.125cm} % Marge des colonnes
+    \setlength{\extrarowheight}{2pt} % Marge des lignes
+
+    \begin{tabular}[t]{|P|T|}
+        \hline {\bfseries Codes des ressources} & {\bfseries Nom} \\
+        \hline
+
+        \forLoop{1}{\value{cptR\sem}}{noressource}{ % Pour chaque SAE
+            %A\Alph{noressource}
+            \def\CODE{\sem\Alph{noressource}} % code de la SAE
+            \xdef\rescode{\csname Rcode\CODE\endcsname}
+            \xdef\resnom{\csname Rname\CODE\endcsname}
+            {\bfseries \rescode}
+            &
+            \hyperlink{res:\rescode}{\resnom}
+            \tabularnewline
+            \hline
+        }
+    \end{tabular}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Affichage des ressources %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcounter{noressource}
+\newcommand{\affichageRessource}[1]{
+    \xdef\sem{#1}
+    \forLoop{1}{\value{cptR\sem}}{noressource}{
+        %A\Alph{noressource}
+        \tableauRessource{\sem\Alph{noressource}}
+        \newpage
+}
+
+}

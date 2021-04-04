@@ -77,6 +77,7 @@
 \input{modeles/tableau_ressource.tex}
 \input{modeles/tableau_sae.tex}
 \input{modeles/tableau_exemple.tex}
+\input{modeles/affichages.tex}
 
 \begin{document}
 
@@ -84,83 +85,51 @@
 \renewcommand{\labelitemi}{$\bullet$}
 \renewcommand{\labelitemii}{$\circ$}
 
+\maketitle
 
 % ------ TABLE DES MATIERES (en version draft seulement)
-\ifdef{\draft}{
-	%\begin{frame}[plain]{}
-		%\frametitle{\Large Table des matières}
-		%\begin{columns}[t]
-			%\begin{column}{.5\textwidth}
-				%\tableofcontents[sections={1-3}]
-			%\end{column}
-			%\begin{column}{.5\textwidth}
-				%\tableofcontents[sections={4-5}]
-			%\end{column}
-		%\end{columns}
-	%\end{frame}
-}{}
+%\ifdef{\draft}{
+	%\section*{Table des matières}
+\tableofcontents % [sections={1-3}]
+	
+\newpage
+%}
 
-%\loopressourceacAAA
-%\tableauACD{AA}{A}
-
- % \tableauAC{AA}{A}
-
-\newcounter{noressource}
-\newcounter{nosae}
-\newcounter{noexemple}
-
-\hypertarget{sae:SAÉ}{toto}
-
-
-Puis :
-\hyperlink{sae:SAÉ}{test}
 
 %%%%%%%%%%%%%%%%
 %% SEMESTRE 1 %%
 %%%%%%%%%%%%%%%%
+\section{Semestre 1}
 \def\sem{A}
 
+\subsection{SAÉs du semestre 1}
+
+\listeTitreSAE{\sem}
+
+\subsection{Ressources du semestre 1}
+
+\listeTitreRessource{\sem}
+
+\newpage
+
 % Les SAE du semestre 1 + les exemples
-\forLoop{1}{\value{cptS\sem}}{nosae}{ % Pour chaque SAE
-	%A\Alph{noressource}
-	\def\currentSAE{\sem\Alph{nosae}}
-	\tableauSAE{\currentSAE}
-	\forLoop{1}{\value{cptSexemple\currentSAE}}{noexemple}{
-		\tableauExempleSAE{\currentSAE}{\Alph{noexemple}}
-	}
-	\newpage
-}
+\affichageSAE{\sem}
 
 % Les ressources du semestre 1
-\forLoop{1}{\value{cptR\sem}}{noressource}{
-	%A\Alph{noressource}
-	\tableauRessource{\sem\Alph{noressource}}
-	\newpage
-}
-
+\affichageRessource{\sem}
 
 %%%%%%%%%%%%%%%%
 %% SEMESTRE 2 %%
 %%%%%%%%%%%%%%%%
-
+\section{Semestre 2}
 \def\sem{B} % Le semestre 2
 
-% Les SAE du semestre 1 + les exemples
-\forLoop{1}{\value{cptS\sem}}{nosae}{ % Pour chaque SAE
-	%A\Alph{noressource}
-	\def\currentSAE{\sem\Alph{nosae}}
-	\tableauSAE{\currentSAE}
-	\forLoop{1}{\value{cptSexemple\currentSAE}}{noexemple}{
-		\tableauExempleSAE{\currentSAE}{\Alph{noexemple}}
-	}
-	\newpage
-}
+\newpage
 
-% Les ressources du semestre 1
-\forLoop{1}{\value{cptR\sem}}{noressource}{
-	%A\Alph{noressource}
-	\tableauRessource{\sem\Alph{noressource}}
-	\newpage
-}
+% Les SAE du semestre 2 + les exemples
+\affichageSAE{\sem}
+
+% Les ressources du semestre 2
+\affichageRessource{\sem}
 
 \end{document}
