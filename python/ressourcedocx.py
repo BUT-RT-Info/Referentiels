@@ -126,7 +126,7 @@ class RessourceDocx(Docx):
         self.mots = mots
 
 
-    def nettoie_titre_ressource(self, data_titres):
+    def nettoie_titre_ressource(self):
         """Nettoie le titre d'une ressource ou d'une SAE en utilisant les titres officiels
         fournis dans le yaml (via le dictionnaire DATA_RESSOURCES)"""
         self.nettoie_titre(DATA_RESSOURCES)
@@ -497,6 +497,9 @@ class ExempleSAEDocx(Docx):
 
     def nettoie_problematique(self):
         """Nettoie la description d'un exemple de SAE"""
+        if self.code=="SAÉ15":
+            print("ici")
+
         if self.problematique:
             self.problematique = convert_to_markdown(self.problematique)
         else:
@@ -513,7 +516,7 @@ class ExempleSAEDocx(Docx):
         """Déclenche le nettoyage des champs de l'exemple"""
         self.nettoie_modalite()
         self.nettoie_description()
-        self.nettoie_modalite()
+        self.nettoie_problematique()
 
     def to_yaml(self):
         """Exporte la ressource en yaml"""
