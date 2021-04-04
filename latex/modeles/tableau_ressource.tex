@@ -10,28 +10,30 @@
 \setlength{\extrarowheight}{2pt} % Marge des lignes
 
 % 1er tableau : Nom/Code/Heures
-\begin{tabular}[t]{|P|Q|P|Q|}
+\begin{tabular}[t]{|P|Q|V|}
 \hline % 1ère ligne
-	{\bfseries Ressource} 
-	& \multicolumn{3}{l|}{
-		\xdef\rescode{\csname Rcode\CODE\endcsname}
-		\hypertarget{res:\rescode}{\bfseries \csname Rname\CODE\endcsname}
-	} \\
+	\xdef\rescode{\csname Rcode\CODE\endcsname}
+	{\bfseries Ressource \rescode}
+	& \multicolumn{2}{l|}{\hypertarget{res:\rescode}{\bfseries \csname Rname\CODE\endcsname}}
+	\\
 \hline % 2ème ligne
-	{\bfseries Code} 
-	& \csname Rcode\CODE\endcsname
-	& {\bfseries Semestre} 
-	& \csname Rsem\CODE\endcsname \\
+	%{\bfseries Code}
+	%& \csname Rcode\CODE\endcsname
+	%&
+	{\bfseries Semestre}
+	& \multicolumn{2}{l|}{\csname Rsem\CODE\endcsname} \\
 \hline % 3ème ligne Heures
 %{ \setlength{\extrarowheight}{0pt}
 %	\begin{tabular}[t]{@{}Q@{}} \bfseries Heures de formation \\ \bfseries encadrées \end{tabular}
 %}
 \hline
+{\bfseries Heures}
+&
 {\bfseries Formation encadrée}
-& {\csname Rtraining\CODE\endcsname}h
-& % {\bfseries dont heures de TP}
-	{\bfseries dont TP}
-& {\csname Rtp\CODE\endcsname}h \\
+& {\csname Rtraining\CODE\endcsname}h, dont {\csname Rtp\CODE\endcsname}h de TP \\
+%& % {\bfseries dont heures de TP}
+%	{\bfseries dont TP}
+%& {\csname Rtp\CODE\endcsname}h \\
 \hline
 \end{tabular}
 

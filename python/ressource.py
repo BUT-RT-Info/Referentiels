@@ -145,7 +145,6 @@ class SAE():
             descriptif = ""
             SAE.__LOGGER.warning(f"{self.sae['titre']} n'a pas de description")
         else:
-            descriptif = descriptif.replace("\n", "\n\n").replace("\n" * 4, "\n")  # corrige les suppressions de ligne à la relecture du yaml
             descriptif = md_to_latex(descriptif)
 
         # préparation des livrables
@@ -154,7 +153,6 @@ class SAE():
             livrables = ""
             SAE.__LOGGER.warning(f"{self.sae['titre']} n'a pas de livrables")
         else:
-            livrables = livrables.replace("\n", "\n\n").replace("\n" * 4, "\n")  # corrige les suppressions de ligne à la relecture du yaml
             livrables = md_to_latex(livrables)
 
         chaine = ""
@@ -198,7 +196,6 @@ class ExempleSAE():
             description = ""
             ExempleSAE.__LOGGER.warning(f"{self.exemple['titre']} n'a pas de description")
         else:
-            description = description.replace("\n", "\n\n").replace("\n" * 4, "\n")  # corrige les suppressions de ligne à la relecture du yaml
             description = md_to_latex(description)
 
         # préparation de la forme
@@ -207,7 +204,6 @@ class ExempleSAE():
             formes = ""
             ExempleSAE.__LOGGER.warning(f"{self.exemple['titre']} n'a pas de formes")
         else:
-            formes = formes.replace("\n", "\n\n").replace("\n" * 4, "\n")  # corrige les suppressions de ligne à la relecture du yaml
             formes = md_to_latex(formes)
 
         # préparation de la problématique
@@ -216,7 +212,6 @@ class ExempleSAE():
             problematique = ""
             ExempleSAE.__LOGGER.warning(f"{self.exemple['titre']} n'a pas de problematique")
         else:
-            problematique = problematique.replace("\n", "\n\n").replace("\n" * 4, "\n")  # corrige les suppressions de ligne à la relecture du yaml
             problematique = md_to_latex(problematique)
 
         # préparation des modalites
@@ -225,7 +220,6 @@ class ExempleSAE():
             modalite = ""
             ExempleSAE.__LOGGER.warning(f"{self.exemple['titre']} n'a pas de modalite")
         else:
-            modalite = modalite.replace("\n", "\n\n").replace("\n" * 4, "\n")  # corrige les suppressions de ligne à la relecture du yaml
             modalite = md_to_latex(modalite)
 
         chaine = ""
@@ -242,9 +236,15 @@ class ExempleSAE():
 
 def md_to_latex(contenu):
     """Réalise la conversion markdown to latex avec pypandoc"""
+    contenu = contenu.replace("\n", "\n\n")  # corrige les suppressions de ligne à la relecture du yaml
+
     contenu = pypandoc.convert_text(contenu, 'tex', format='md',
                                    extra_args=['--atx-headers'])
     contenu = contenu.replace("\r\n", "\n")
     contenu = caracteres_recalcitrants(contenu)
     contenu = remove_ligne_vide(contenu)
+    lignes = contenu.split("\n") # pour debug
+
+    if contenu.startswith("\\begin{itemize}"):
+        contenu = "\\vspace{-5pt}\n" + contenu # ajout d'un offset en cas de liste à puces
     return contenu

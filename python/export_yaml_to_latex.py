@@ -53,7 +53,7 @@ output1 = pypandoc.convert_text(temp1, 'tex', format='md',
 
 print("ici")
 # Export latex des ressources
-if False:
+if True:
     for sem in ressources:
         for r in ressources[sem]:
 
@@ -64,7 +64,7 @@ if False:
             print(f"Export de {fichierlatex} ")
 
 # Export latex des sae
-if False:
+if True:
     for sem in saes:
         for s in saes[sem]:
 

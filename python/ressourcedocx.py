@@ -9,12 +9,38 @@ from tools import caracteres_recalcitrants
 
 __LOGGER = logging.getLogger(__name__)
 
-
-class RessourceDocx():
-    """Classe modélisant les ressources, lorsqu'elles sont extraites du docx"""
+class Docx():
+    """Classe de base pour les ressources/saé/exemples du docx"""
     def __init__(self, nom, brut):
         self.nom = nom
-        self.brut = brut # les données brutes de la ressource
+        self.brut = brut  # les données brutes de la ressource
+
+    def charge_ac(self, apprentissages):
+        self.apprentissages = apprentissages
+
+    def __str__(self):
+        print(self.nom + " " + self.code)
+
+    def dico_to_yaml(self, dico):
+        if self.code == "R108":
+            print("ici")
+        output = ruamel.yaml.dump(dico, Dumper=ruamel.yaml.RoundTripDumper,
+                                  allow_unicode=True, width=100)
+        # Purge les lignes vides en trop
+        lignes = output.split("\n")
+        lignes_finales = []
+        for (i, ligne) in enumerate(lignes):
+            if ligne.rstrip() == "":
+                if i != len(lignes)-1 and lignes[i+1].rstrip() == "":
+                    lignes_finales.append(ligne) # ajoute la ligne si la suivante n'est pas vide
+            else:
+                lignes_finales.append(ligne)
+        output = "\n".join(lignes_finales)
+        lignes = output.split("\n") # pour vérif
+        return output
+
+class RessourceDocx(Docx):
+    """Classe modélisant les ressources, lorsqu'elles sont extraites du docx"""
 
     def charge_informations(self, code, semestre, heures_encadrees, tp, sae, prerequis, description, mots):
         self.code = code
@@ -27,12 +53,6 @@ class RessourceDocx():
         self.contexte = None
         self.contenu = None
         self.mots = mots
-
-    def charge_ac(self, apprentissages):
-        self.apprentissages = apprentissages
-
-    def __str__(self):
-        print(self.nom + " " + self.code)
 
     def to_yaml(self):
         """Exporte la ressource en yaml"""
@@ -48,10 +68,7 @@ class RessourceDocx():
                 "contenu": folded(self.contenu),
                 "motscles": self.mots if self.mots else ""
                 }
-        output = ruamel.yaml.dump(dico, Dumper=ruamel.yaml.RoundTripDumper,
-                                  allow_unicode=True, width=100)
-        output = output.replace("\n\n\n", "\n\n")
-        return output
+        return self.dico_to_yaml(dico)
 
 def nettoie_champ_heure(champ):
     try: # champ contenant uniquement un nbre d'heure
