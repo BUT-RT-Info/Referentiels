@@ -92,8 +92,6 @@ class Docx():
             self.nom = titre
 
     def dico_to_yaml(self, dico):
-        if self.code == "R108":
-            print("ici")
         output = ruamel.yaml.dump(dico, Dumper=ruamel.yaml.RoundTripDumper,
                                   allow_unicode=True, width=100)
         # Purge les lignes vides en trop
@@ -106,7 +104,35 @@ class Docx():
             else:
                 lignes_finales.append(ligne)
         output = "\n".join(lignes_finales)
+
+        # Ajoute les espaces manquants dans les listes markdown
+        # écrite sur plusieurs lignes
         lignes = output.split("\n") # pour vérif
+        lignes_finales = []
+        avec_marqueur = False
+        last_marqueur = 0
+        for (i, ligne) in enumerate(lignes):
+            if "d’API" in ligne:
+                print("ici")
+            ligne = ligne.replace("\t", " "*2)
+            if "    *" in ligne and avec_marqueur == False:
+                avec_marqueur = True
+                last_marqueur = "    *"
+            elif "  *" in ligne and avec_marqueur == False:
+                avec_marqueur = True
+                last_marqueur = "  *"
+            else: # pas de marqueur
+                if ligne.strip() == "" or ligne[0] != " ":
+                    avec_marqueur = False # fin du marqueur
+                elif ligne.strip() != "" and avec_marqueur == True:
+                    if last_marqueur == "  *":
+                        ligne = " "*4 + ligne.lstrip()
+                    else:
+                        ligne = " "*6 + ligne.lstrip()
+            lignes_finales.append(ligne)
+
+        output = "\n".join(lignes_finales)
+
         return output
 
 class RessourceDocx(Docx):
@@ -378,6 +404,7 @@ def convert_to_markdown(contenu):
 
 
     contenu = "\n\n".join(contenus_fin)
+
     return contenu
 
 
@@ -497,9 +524,6 @@ class ExempleSAEDocx(Docx):
 
     def nettoie_problematique(self):
         """Nettoie la description d'un exemple de SAE"""
-        if self.code=="SAÉ15":
-            print("ici")
-
         if self.problematique:
             self.problematique = convert_to_markdown(self.problematique)
         else:
