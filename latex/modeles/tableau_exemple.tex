@@ -17,9 +17,9 @@
 	{\bfseries Titre} &
 		{\bfseries \csname ESname\EXEMPLE\endcsname} \\
 \hline
-
-	{\bfseries Exemple de la {\csname EScode\EXEMPLE\endcsname}} &
-		{\csname ESsae\EXEMPLE\endcsname} \\
+	\xdef\saecode{\csname EScode\EXEMPLE\endcsname}
+	{\bfseries Exemple de la \saecode} &
+		\hyperlink{sae:\saecode}{\csname ESsae\EXEMPLE\endcsname} \\
 
 \hline
 	{\bfseries Description} &

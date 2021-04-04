@@ -71,11 +71,11 @@ Aucun
 \begin{tabular}[t]{@{}T@{}}%
 
   \forLoop{1}{\value{cptRprerequis\CODE}}{noligne}{
-				\xdef\contenu{ %
-						{\csname Rprerequiscode\CODE\Alph{noligne}\endcsname} |
-						{\csname Rprerequisname\CODE\Alph{noligne}\endcsname}
-				}
-		\contenu
+  		\xdef\rescode{\csname Rprerequiscode\CODE\Alph{noligne}\endcsname}
+		\xdef\contenu{ %
+			\rescode~| {\csname Rprerequisname\CODE\Alph{noligne}\endcsname}
+		}
+		\hyperlink{res:\rescode}{\contenu}
    \tabularnewline %
    }
 \end{tabular}%
