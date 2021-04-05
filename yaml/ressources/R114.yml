@@ -26,11 +26,11 @@ contexte: >-
 contenu: >-
   * Trigonométrie
 
-    * formules  , idem avec sinus
+    * formules $\cos(a\pm b)$, $\cos(a)\cos(b)$, $cos^2(a)$ ; même formules avec sinus
 
     * lien avec les vecteurs et le produit scalaire
 
-    * forme
+    * forme $a\cos(\omega_0 t)+b\sin(\omega_0 t) = A\cos(\omega_0 t +\phi)=A\cos(2\pi f_0 t+\phi)$
 
     * fonctions trigonométriques réciproques (en particulier arctangente)
 
