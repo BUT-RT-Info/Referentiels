@@ -139,9 +139,10 @@ Aucun
 	\begin{tabular}[t]{@{}T@{}}
 	% {\bfseries Ancrage et contexte professionnel :} \\
 	\forLoop{1}{\value{cptSexemple\CODE}}{noligne}{
-		\xdef\exemplecode{\CODE\Alph{noligne}}
+		\xdef\exemplecode{\csname EScodeE\CODE\Alph{noligne}\endcsname}
 		\xdef\titreexemple{\csname ESname\exemplecode\endcsname}
-        Exemple \arabic{noligne}~: \titreexemple
+		\xdef\contenu{\titreexemple}
+        Exemple \arabic{noligne}~: \hyperlink{exemple:\exemplecode}{\contenu}
         \tabularnewline
 	}
 	\end{tabular}

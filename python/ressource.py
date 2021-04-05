@@ -70,8 +70,8 @@ class Ressource():
             output = pypandoc.convert_text(contexte, 'tex', format='md',
                                            extra_args=['--atx-headers'])
             output = output.replace("\r\n", "\n")
-            contexte = caracteres_recalcitrants(output)
-            contexte = remove_ligne_vide(contexte)
+            # contexte = caracteres_recalcitrants(output)
+            contexte = remove_ligne_vide(output)
 
         # contexte = remove_ligne_vide(contexte)
         # préparation du contenu
@@ -82,8 +82,8 @@ class Ressource():
         output = pypandoc.convert_text(contenu, 'tex', format='md',
             extra_args=['--atx-headers'])
         output = output.replace("\r\n", "\n")
-        contenu = caracteres_recalcitrants(output)
-        contenu = remove_ligne_vide(contenu)
+        # contenu = caracteres_recalcitrants(output)
+        contenu = remove_ligne_vide(output)
 
         chaine = ""
         chaine = TemplateLatex(modlatex).substitute(code=self.ressource["code"],
@@ -94,9 +94,9 @@ class Ressource():
                                                        compRT2=compRT[1],
                                                        compRT3=compRT[2],
                                                        saes=saes,
-                                                       motscles=caracteres_recalcitrants(self.ressource["motscles"]),
+                                                       motscles=self.ressource["motscles"],
                                                        prerequis=prerequis,
-                                                       contexte=caracteres_recalcitrants(contexte),
+                                                       contexte=contexte,
                                                        contenu=contenu,
                                                    )
         # chaine = chaine.replace("&", "\&")
@@ -164,10 +164,10 @@ class SAE():
                                                     compRT1=compRT[0],
                                                     compRT2=compRT[1],
                                                     compRT3=compRT[2],
-                                                    description=caracteres_recalcitrants(descriptif),
+                                                    description=descriptif,
                                                     ressources=ressources,
                                                     livrables= livrables,
-                                                    motscles = caracteres_recalcitrants(self.sae["motscles"]),
+                                                    motscles = self.sae["motscles"],
                                                    )
         # chaine = chaine.replace("&", "\&")
 
@@ -241,7 +241,7 @@ def md_to_latex(contenu):
     contenu = pypandoc.convert_text(contenu, 'tex', format='md',
                                    extra_args=['--atx-headers'])
     contenu = contenu.replace("\r\n", "\n")
-    contenu = caracteres_recalcitrants(contenu)
+    # contenu = caracteres_recalcitrants(contenu)
     contenu = remove_ligne_vide(contenu)
     lignes = contenu.split("\n") # pour debug
 

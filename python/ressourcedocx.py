@@ -69,7 +69,7 @@ class Docx():
         mots = self.mots  # .encode('utf8', 'ignore').decode('utf8')
         mots = mots.replace(".", "").replace(";", ",")
         liste_mots = mots.split(",")
-        liste_mots = [l.rstrip() for l in liste_mots] # supprime les espaces inutiles
+        liste_mots = [l.strip() for l in liste_mots] # supprime les espaces inutiles
         mots = ", ".join(liste_mots)
         self.mots = mots
 
@@ -88,7 +88,7 @@ class Docx():
         old = self.nom
         titre = devine_nom(self.nom)
         if titre and titre != old:
-            Docx.__LOGGER.warning(f"nettoie_titre : {old} => titre \"{titre}\"")
+            Docx.__LOGGER.warning(f"nettoie_titre : {old} => titre deviné \"{titre}\"")
             self.nom = titre
 
     def dico_to_yaml(self, dico):
@@ -155,7 +155,12 @@ class RessourceDocx(Docx):
     def nettoie_titre_ressource(self):
         """Nettoie le titre d'une ressource ou d'une SAE en utilisant les titres officiels
         fournis dans le yaml (via le dictionnaire DATA_RESSOURCES)"""
+        old = self.nom
         self.nettoie_titre(DATA_RESSOURCES)
+        titre2 = get_officiel_ressource_name_by_code(self.code)
+        if titre2 != self.nom:
+            self.nom = titre2
+            RessourceDocx.__LOGGER.warning(f"nettoie_titre : {old} => titre d'après PN \"{titre2}\"")
 
     def nettoie_code(self):
         """Recherche le code de la forme RXXX"""
@@ -246,6 +251,21 @@ class RessourceDocx(Docx):
         contenu = self.contenu.replace(" / ", "/")
         self.contenu = convert_to_markdown(contenu)
 
+    def nettoie_champ(self):
+        """Lance le nettoyage des champs"""
+        self.nettoie_code()
+        self.nettoie_titre_ressource()
+        self.nettoie_heures()
+
+        self.nettoie_semestre()
+        self.nettoie_acs()
+        self.nettoie_sae()
+        self.nettoie_prerequis()
+        self.nettoie_mots_cles()
+
+        # Remet en forme le descriptif
+        self.split_description()
+        self.nettoie_contenu()
 
     def to_yaml(self):
         """Exporte la ressource en yaml"""
@@ -283,7 +303,7 @@ def nettoie_liste_ressources(contenu):
     R_avec_code = devine_ressources_by_code(contenu)
     R_avec_nom = devine_code_by_nom_from_dict(contenu, DATA_RESSOURCES)
     liste = R_avec_code + R_avec_nom
-    liste = [l.rstrip().replace(",", "").replace(".", "") for l in liste] # supprime les espaces et les ponctuations restantes
+    liste = [l.strip().replace(",", "").replace(".", "") for l in liste] # supprime les espaces et les ponctuations restantes
     return sorted(list(set(liste)))
 
 
@@ -297,14 +317,16 @@ def devine_acs_by_code(champ):
     codes3 = [c.rstrip() for c in codes3]
     codes4 = [c.rstrip() for c in codes4]
     codes4 += [ "AC0" + c[-3:] for c in codes3] # ajoute les 0 manquants des acs (codage AC0111)
-
+    codes4 = [c.strip() for c in codes4]
     return sorted(list(set(codes4)))
 
 
 def devine_ressources_by_code(champ):
     """Recherche les codes ressources de la forme RXXX dans champ ;
     """
-    codes = re.findall(r"(R\d{3}\D)", champ) # de code à 3 chiffres
+    codes1 = re.findall(r"(R\d{3})", champ) # de code à 3 chiffres
+    codes2 = re.findall(r"(R\d{3}\D)", champ)
+    codes = codes1 + [c.strip() for c in codes2]
     return sorted(list(set(codes)))
 
 def devine_ressources_by_nom(donnees):
@@ -348,7 +370,8 @@ def get_marqueur_numerique(contenu):
     """Revoie la liste des marqueurs numériques"""
     m = re.findall(r"(\d/|\d\s/)", contenu)
     m += re.findall(r"(\d\s\)|\d\))", contenu) # les marqueurs de la forme 1)
-    m += re.findall(r"(--\s|--\t)", contenu)
+    m += re.findall(r"(--)\s", contenu)
+    m += re.findall(r"(--)\t", contenu)
     return m
 
 def get_marqueurs(contenu):
@@ -400,8 +423,12 @@ def convert_to_markdown(contenu):
         m = get_marqueur_from_liste(ligne, marqueurs_finaux) # identifie la présence d'un marqueur dans la ligne
         if m:
             pos = marqueurs_finaux.index(m)
-            contenus_fin[i] = "\t" * (pos) + "* " + ligne.replace(m, "").replace("\t", "").rstrip()
-
+            ligne = "\t" * (pos) + "* " + ligne.replace(m, "").replace("\t", "").rstrip()
+            # corrige les espaces après les marqueurs
+            champ = re.findall(r"(\*\s+)\w", ligne)
+            for c in champ:
+                ligne = ligne.replace(c, "* ")
+        contenus_fin[i] = ligne
 
     contenu = "\n\n".join(contenus_fin)
 
@@ -426,7 +453,12 @@ class SAEDocx(Docx):
     def nettoie_titre_sae(self):
         """Nettoie le titre d'une SAE en utilisant les titres officiels
         fournis dans le yaml (via le dictionnaire DATA_RESSOURCES)"""
+        old = self.nom
         self.nettoie_titre(DATA_SAES)
+        titre2 = get_officiel_sae_name_by_code(self.code)
+        if titre2 != self.nom:
+            self.nom = titre2
+            SAEDocx.__LOGGER.warning(f"nettoie_titre : {old} => titre d'après PN \"{titre2}\"")
 
     def nettoie_code(self):
         """Recherche les codes de la forme SAE|éXX """
@@ -536,11 +568,21 @@ class ExempleSAEDocx(Docx):
         else:
             self.modalite = f"Les même que les livrables et les productions de la {self.code}"
 
+    def nettoie_formes(self):
+        """Nettoie les modalités (d'évaluation) d'un exemple de SAE"""
+        if self.formes:
+            self.formes = convert_to_markdown(self.formes)
+        else:
+            self.formes = ""
+
+
     def nettoie_champs(self):
         """Déclenche le nettoyage des champs de l'exemple"""
+        self.nom = self.nom.strip()
         self.nettoie_modalite()
         self.nettoie_description()
         self.nettoie_problematique()
+        self.nettoie_formes()
 
     def to_yaml(self):
         """Exporte la ressource en yaml"""
@@ -548,7 +590,7 @@ class ExempleSAEDocx(Docx):
                 "code": self.code,
                 "semestre": self.semestre,
                 "description": folded(self.description),
-                "formes": self.formes,
+                "formes": folded(self.formes),
                 "problematique": folded(self.problematique) if self.problematique !="" else "",
                 "modalite": folded(self.modalite),
                 }

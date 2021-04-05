@@ -253,7 +253,8 @@
 
 	\expandafter\xdef\csname ESsae\currentESsae\endcsname{\csname Sname\currentSsae\endcsname} % nom de la SAE
 	\expandafter\xdef\csname ESname\currentESsae\endcsname{#1} % nom/intitule
-	\expandafter\xdef\csname EScode\currentESsae\endcsname{\csname Scode\currentSsae\endcsname} % nom de la SAE
+	\expandafter\xdef\csname EScode\currentESsae\endcsname{\csname Scode\currentSsae\endcsname} % le code de la SAE
+	\expandafter\xdef\csname EScodeE\currentESsae\endcsname{\currentESsae} % le code de l'exemple
 
 	% \expandafter\xdef\csname ESsem\currentESsae\endcsname{\csname semestrenumero\currentsemestre\endcsname} % nom du semestre
 }

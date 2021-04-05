@@ -46,7 +46,7 @@ for i in range(2, len(docu)): # A priori un tableau
 
     if est_ressource == True:
         res = docu[i] # la ressource
-        nom_ressource = res[0][1][0]
+        nom_ressource = tools.caracteres_recalcitrants(res[0][1][0])
 
         # Création de la ressource
         r = RessourceDocx(nom_ressource, res)
@@ -117,20 +117,10 @@ print(f"{nbre_ressources} ressources")
 # Post traitement des ressources => gestion des heures/des acs/ + tri par semestre
 ressources = {"S1" : [], "S2": []}
 
-for r in liste_ressources:
-    r.nettoie_titre_ressource()
-    r.nettoie_heures()
-    r.nettoie_code()
-    r.nettoie_semestre()
-    r.nettoie_acs()
-    r.nettoie_sae()
-    r.nettoie_prerequis()
-    r.nettoie_mots_cles()
-
-
-    # Remet en forme le descriptif
-    r.split_description()
-    r.nettoie_contenu()
+for (i, r) in enumerate(liste_ressources):
+    if r.nom.startswith("Projet "):
+        print("ici")
+    r.nettoie_champ()
 
     # Remet en forme les mots-clés
     # Tri dans le bon semestre

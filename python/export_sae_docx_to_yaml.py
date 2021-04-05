@@ -55,7 +55,7 @@ for i in range(1, len(docu)): # A priori un tableau
 
     if est_sae == True:
         res = docu[i] # la ressource
-        nom_sae = res[0][1][0]
+        nom_sae = caracteres_recalcitrants(res[0][1][0])
 
         # Création de la ressource
         r = SAEDocx(nom_sae, res)
@@ -74,7 +74,7 @@ for i in range(1, len(docu)): # A priori un tableau
                     champ = "Titre de la" # corrige les noms/titres
                 i = get_indice_sans_accent_ni_espace(champ, ENTETES_CHAPEAU)  # l'indice de l'entete dans ENTETES
                 if i != None:
-                    data[i] = "\n".join(res[j][1])
+                    data[i] = caracteres_recalcitrants("\n".join(res[j][1]))
                 else:
                     non_interprete.append((champ, ligne[1][0]))
             else: # ligne de données soit chapeau (ex Compétences ciblées) soit détail par compétence
@@ -105,15 +105,16 @@ for i in range(1, len(docu)): # A priori un tableau
         r.charge_ac(apprentissages)
 
         # nettoie le titre et le code
-        r.nettoie_titre_sae()
         r.nettoie_code()
+        r.nettoie_titre_sae()
+
 
         last_sae = r.code
         liste_exemples[r.code] = []
 
     elif est_exemple == True:
         res = docu[i] # la ressource
-        nom_exemple = res[0][1][0]
+        nom_exemple = caracteres_recalcitrants(res[0][1][0])
 
         # Création de la ressource
         r = ExempleSAEDocx(nom_exemple, res, last_sae)
@@ -130,7 +131,7 @@ for i in range(1, len(docu)): # A priori un tableau
                 champ = caracteres_recalcitrants(ligne[0][0]) # le nom du champ
                 i = get_indice_sans_accent_ni_espace(champ, ENTETES_EXEMPLES)  # l'indice de l'entete dans ENTETES
                 if i != None:
-                    data[i] = "\n".join(res[j][1])
+                    data[i] = caracteres_recalcitrants("\n".join(res[j][1]))
                 else:
                     non_interprete.append((champ, ligne[1][0]))
             else: # ligne de données soit chapeau (ex Compétences ciblées) soit détail par compétence
@@ -182,10 +183,13 @@ for s in liste_saes:
 exemples = {"S1" : {}, "S2" : {} }
 print(" > Exemples")
 for s in liste_exemples: # la sae
+
     sem = get_officiel_sem_sae_by_code(s)
     exemples[sem][s] = []
     for e in liste_exemples[s]:
         print(f"{s} : {e.nom}")
+        if e.nom.startswith("Caractériser un support radio"):
+            print("ici")
         e.nettoie_champs()
 
         # Tri dans le bon semestre

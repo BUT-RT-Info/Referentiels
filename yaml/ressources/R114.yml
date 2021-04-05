@@ -1,0 +1,62 @@
+nom: Mathématiques des transmissions
+code: R114
+semestre: 1
+heures_formation: 30
+heures_tp: 6
+acs:
+  RT1:
+  - AC0111
+  RT2:
+  - AC0211
+  - AC0212
+  RT3: []
+sae:
+- SAÉ13
+- SAÉ22
+- SAÉ24
+prerequis:
+- R113
+contexte: >-
+  Les systèmes de transmission font intervenir des fonctions sinusoïdales et peuvent être modélisés à
+  l'aide de nombres complexes. De plus, l'échelle logarithmique est couramment utilisée pour représenter
+  certains signaux dont la puissance est mesurée en décibels qui nécessitent la connaissance des fonctions
+  exponentielle et logarithme.  On veillera à montrer l'intérêt des concepts présentés pour modéliser
+  les systèmes électroniques et on choisira de préférence des exercices en lien avec l'électronique et
+  les télécommunications.
+contenu: >-
+  * Trigonométrie
+
+    * formules  , idem avec sinus
+
+    * lien avec les vecteurs et le produit scalaire
+
+    * forme
+
+    * fonctions trigonométriques réciproques (en particulier arctangente)
+
+  * Fonctions logarithme et exponentielle, puissances
+
+    * graphes
+
+    * propriétés, retour sur les propriétés des puissances
+
+    * application au dB
+
+  * Nombres complexes
+
+    * forme algébrique
+
+    * addition, multiplication et division avec la forme algébrique
+
+    * forme exponentielle (retour sur les propriétés de l'expo)
+
+    * addition, multiplication et division avec la forme exponentielle
+
+    * formules d'Euler
+
+    * interprétation géométrique, lien avec les vecteurs
+
+    * lien avec la trigonométrie
+
+    * racines complexes d'un polynôme de degré 2 (à coefficients réels)
+motscles: Trigonométrie, logarithme, exponentielle, complexes

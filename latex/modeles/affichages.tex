@@ -11,7 +11,14 @@
     \forLoop{1}{\value{cptS\sem}}{nosae}{ % Pour chaque SAE
         %A\Alph{noressource}
         \xdef\currentSAE{\sem\Alph{nosae}}
+
+        \xdef\saecode{\csname Scode\currentSAE\endcsname}
+	    \xdef\saenom{\csname Sname\currentSAE\endcsname}
+        %\addtocontents{toc}{hihi} %\saecode : \saenom}
+        \addcontentsline{toc}{subsubsection}{SAÉ}
+
         \tableauSAE{\currentSAE}
+
         \forLoop{1}{\value{cptSexemple\currentSAE}}{noexemple}{
             \tableauExempleSAE{\currentSAE}{\Alph{noexemple}}
         }
