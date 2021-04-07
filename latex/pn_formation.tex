@@ -15,7 +15,6 @@
 \usepackage{etoolbox}
 \usepackage[francais]{babel}
 \usepackage{hyperref}
-\usepackage{array} % Pour les tableaux
 \usepackage{multicol}
 \usepackage{geometry}
 \usepackage{forloop}
@@ -24,6 +23,11 @@
 % \usepackage{longtable}
 \usepackage{hyperref}
 \usepackage{amsmath} % pour les formules de maths
+\usepackage{nicematrix} % pour les tableaux de synthèse 
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{fontawesome}
+\usepackage{amssymb}
 
 \setlist{leftmargin=1em,topsep=0pt,partopsep=0pt,itemsep=0pt,itemindent=0em}
 
@@ -47,10 +51,17 @@
 % Macros et contrôle de l'affichage des mots-clés
 % \draft est defini pour la verison de travail avec annotations et table des matières
 \ifdef{\draft}{
-\usepackage[motscles]{macros_formations} % avec mots-clés
+\usepackage[motscles]{macros_competences} % avec mots-clés
 }{
-\usepackage{macros_formations} % sans mots-clés
+\usepackage{macros_competences} % sans mots-clés
 }
+\usepackage{macros_formations} 
+
+\hypersetup{  
+	linkcolor=blue,
+	colorlinks=true,
+}
+\urlstyle{rm}
 
 % ********************************************************
 \title{Référentiel de formation\\Spécialité : Réseaux et Télécommunications}
@@ -73,6 +84,8 @@
 %\input{macros.tex}
 \input{feminisation-metiers.tex}
 % L'import du référentiel
+\specialite{Réseaux et Télécommunications}
+\input{referentiel_competences.tex}
 \input{referentiel_BUT1.tex}
 
 % Les macros pour affichage
@@ -81,6 +94,7 @@
 \input{modeles/tableau_sae.tex}
 \input{modeles/tableau_exemple.tex}
 \input{modeles/affichages.tex}
+\input{modeles/tableau_competence.tex}
 
 \begin{document}
 
@@ -98,6 +112,13 @@
 \newpage
 %}
 
+\section{Compétences du tronc commun}
+
+\foreach \CNOM/\CTYPE/\CLETTRE [count=\COUXX] in {CCA/C/A, CCB/C/B, CCC/C/C} {
+	\subsection{ {\csname compcoderef\CNOM\endcsname} - {\csname compname\CNOM\endcsname} }
+		\tableauCompetence{\CNOM}{\CTYPE}{\CLETTRE}
+}
+
 
 %%%%%%%%%%%%%%%%
 %% SEMESTRE 1 %%
@@ -113,6 +134,14 @@
 %
 \listeTitreRessource{\sem}
 
+\subsection{Matrice Compétences/SAÉs-Ressources du semestre 1}
+
+\scalebox{0.95}{\input{synthese/S1_acs_vs_saes_ressources.tex}}
+
+\subsection{Volumes horaires et coefficients}
+
+\input{synthese/S1_coeffs_saes_ressources.tex}
+
 \newpage
 
 % Les SAE du semestre 1 + les exemples
@@ -120,27 +149,35 @@
 
 % Les ressources du semestre 1
 \affichageRessource{\sem}
-%
-%%%%%%%%%%%%%%%%%
-%%% SEMESTRE 2 %%
-%%%%%%%%%%%%%%%%%
-%\section{Semestre 2}
-%\def\sem{B} % Le semestre 2
-%
-%\subsection{SAÉs du semestre 2}
-%
-%\listeTitreSAE{\sem}
-%
-%\subsection{Ressources du semestre 2}
-%
-%\listeTitreRessource{\sem}
-%
-%\newpage
-%
-%% Les SAE du semestre 2 + les exemples
-%\affichageSAE{\sem}
-%
-%% Les ressources du semestre 2
-%\affichageRessource{\sem}
+
+%%%%%%%%%%%%%%%%
+%% SEMESTRE 2 %%
+%%%%%%%%%%%%%%%%
+\section{Semestre 2}
+\def\sem{B} % Le semestre 2
+
+\subsection{SAÉs du semestre 2}
+
+\listeTitreSAE{\sem}
+
+\subsection{Ressources du semestre 2}
+
+\listeTitreRessource{\sem}
+
+\subsection{Matrice Compétences/SAÉs-Ressources du semestre 2}
+
+\scalebox{0.95}{\input{synthese/S2_acs_vs_saes_ressources.tex}}
+
+\subsection{Volumes horaires et coefficients}
+
+\input{synthese/S2_coeffs_saes_ressources.tex}
+
+\newpage
+
+% Les SAE du semestre 2 + les exemples
+\affichageSAE{\sem}
+
+% Les ressources du semestre 2
+\affichageRessource{\sem}
 
 \end{document}

@@ -9,6 +9,8 @@
 %% Les compétences et les ACs
 \ajoutRcompetence{RT1-Administrer}{\niveauA}
 
+\ajoutRcoeff{12}
+
 \ajoutRac{AC0113}{Configurer les fonctions de base du réseau local}
 \ajoutRac{AC0114}{Maîtriser les rôles et les principes fondamentaux des systèmes d'exploitation afin d'interagir avec ceux-ci pour la configuration et administration des réseaux et services fournis}
 \ajoutRac{AC0115}{Identifier les dysfonctionnements du réseau local}
@@ -18,32 +20,39 @@
 
 
 
+
+
 \ajoutRcompetence{RT3-Programmer}{\niveauA}
+
+\ajoutRcoeff{3}
 
 \ajoutRac{AC0311}{Utiliser un système informatique et ses outils}
 % Les SAE
 \ajoutRsae{SAÉ21}{Construire un réseau informatique pour une petite structure}
-\ajoutRsae{SAÉ24}{Projet intégratif de S2}
+\ajoutRsae{SAÉ24}{Projet intégratif}
 
 % Les pre-requis
-
+\ajoutRprerequis{R101}{Initiation aux réseaux informatiques}
+\ajoutRprerequis{R107}{Fondamentaux de la programmation}
+\ajoutRprerequis{R108}{Bases des systèmes d'exploitation}
 
 % Le descriptif
 \ajoutRancrage{Cette ressource apporte le socle de connaissances et savoir-faire pour
 les compétences de cœur de métier ``Administrer les réseaux et
-l'Internet'' (RT1). Elle donne aux étudiants toutes les compétences pour
+l'Internet'' (RT1). Elle donne aux étudiants les compétences pour
 effectuer des tâches simples d'administration du système d'information
 de l'entreprise (processus, utilisateurs, automatisation) et pour
-utiliser des solutions de virtualisation, de conteneurisation.
+utiliser des solutions de virtualisation, de conteneurisation.\\
 Elle contribue aussi à la compétence ``Créer des outils et applications
 informatiques pour les R\&T'' (RT3) à travers la découverte du poste
 client et de son environnement logiciel.}
 
 % Contenus
 \ajoutRcontenudetaille{
+\vspace{-5pt}
 \begin{itemize}
 \item
-  Gestion des systèmes de fichiers
+  Gestion des systèmes de fichiers (volumes, droits, types de fichiers)
 \item
   Gestion de processus et services
 \item
@@ -51,7 +60,7 @@ client et de son environnement logiciel.}
 \item
   Scripts pour l'automatisation de séquences de commandes
 \item
-  Utilisation de fichiers de traces
+  Utilisation de fichiers de traces (logs)
 \item
   Initiation et mise en oeuvre d'infrastructures de virtualisation et/ou
   de conteneurisation

@@ -19,9 +19,13 @@ class Docx():
         self.semestre = None # le semestre de la ressource/saé (chargé ultérieurement)
         self.apprentissages = None # les acs (chargés ultérieurement)
         self.mots = None # les mots-clés chargés ultérieurement
+        self.coeffs = None # chargés ultérieurement
 
     def charge_ac(self, apprentissages):
         self.apprentissages = apprentissages
+
+    def charge_coeffs(self, coeffs):
+        self.coeffs = coeffs
 
     def __str__(self):
         print(self.nom + " " + self.code)
@@ -61,7 +65,8 @@ class Docx():
                 Docx.__LOGGER.warning(f"Dans {self.nom}, revoir les ACS : {acs_avec_code} vs {acs_avec_nom}")
 
             acs_finaux = sorted(list(set(acs_avec_code + acs_avec_nom)))
-            dico["RT" + str(comp + 1)] = acs_finaux
+            if acs_finaux:
+                dico["RT" + str(comp + 1)] = acs_finaux
 
         self.apprentissages = dico  # Mise à jour du champ
 
@@ -90,6 +95,18 @@ class Docx():
         if titre and titre != old:
             Docx.__LOGGER.warning(f"nettoie_titre : {old} => titre deviné \"{titre}\"")
             self.nom = titre
+
+    def nettoie_coeffs(self):
+        coeffs_finaux = {}
+        for (comp, chaine) in enumerate(self.coeffs):
+            if "coef" in chaine: # s'il y a un coeff
+                champ = chaine.split(" ")
+                coeff = eval(champ[1])
+                coeffs_finaux["RT" + str(comp + 1)] = coeff
+            elif "X" in chaine:
+                coeff = 0
+                coeffs_finaux["RT" + str(comp + 1)] = coeff
+        self.coeffs = coeffs_finaux
 
     def dico_to_yaml(self, dico):
         output = ruamel.yaml.dump(dico, Dumper=ruamel.yaml.RoundTripDumper,
@@ -262,6 +279,7 @@ class RessourceDocx(Docx):
         self.nettoie_sae()
         self.nettoie_prerequis()
         self.nettoie_mots_cles()
+        self.nettoie_coeffs()
 
         # Remet en forme le descriptif
         self.split_description()
@@ -274,6 +292,7 @@ class RessourceDocx(Docx):
                 "semestre" : int(self.semestre[1]),
                 "heures_formation": self.heures_encadrees if self.heures_encadrees else "???",
                 "heures_tp": self.tp if self.tp else "???",
+                "coeffs": self.coeffs,
                 "acs": self.apprentissages,
                 "sae": self.sae,
                 "prerequis": self.prerequis,
@@ -326,7 +345,7 @@ def devine_ressources_by_code(champ):
     """
     codes1 = re.findall(r"(R\d{3})", champ) # de code à 3 chiffres
     codes2 = re.findall(r"(R\d{3}\D)", champ)
-    codes = codes1 + [c.strip() for c in codes2]
+    codes = codes1 + [c.strip() for c in codes2 if "|" not in c]
     return sorted(list(set(codes)))
 
 def devine_ressources_by_nom(donnees):
@@ -362,14 +381,21 @@ def remove_ligne_vide(contenus):
     if isinstance(contenus, list):
         return [c for c in contenus if c.rstrip()]
     else: # contenu = chaine
-        temp = contenus.split("\n")
-        temp = [t for t in temp if t.replace("\t", "").rstrip()]
-        return "\n".join(temp)
+        if get_marqueurs(contenus):
+            temp = contenus.split("\n")
+            temp = [t for t in temp if t.replace("\t", "").rstrip()]
+            return "\n".join(temp)
+        else: # pas de marqueur => respect des paragraphes
+            contenus = contenus.replace("\n\n", "\\\\\n")
+            temp = contenus.split("\n")
+            temp = [t for t in temp if t.replace("\t", "").rstrip()]
+            return "\n".join(temp)
 
 def get_marqueur_numerique(contenu):
     """Revoie la liste des marqueurs numériques"""
     m = re.findall(r"(\d/|\d\s/)", contenu)
-    m += re.findall(r"(\d\s\)|\d\))", contenu) # les marqueurs de la forme 1)
+    #m += re.findall(r"(\d\s\)|\d\))", contenu) # les marqueurs de la forme 1)
+    m += re.findall(r"(\d\s\))", contenu)
     m += re.findall(r"(--)\s", contenu)
     m += re.findall(r"(--)\t", contenu)
     return m
@@ -508,17 +534,32 @@ class SAEDocx(Docx):
 
     def nettoie_ressources(self):
         """Nettoie le champ ressource d'une sae en détectant les codes"""
+        if "24" in self.code:
+            print("ici")
         self.ressources = nettoie_liste_ressources(self.ressources)
         if not self.ressources:
             SAEDocx.__LOGGER.warning(f"nettoie_ressources: dans {self.nom} pas de ressources (:")
 
     def nettoie_description(self):
         """Nettoie le champ description"""
-        self.description = convert_to_markdown(self.description)
+        if self.description:
+            self.description = convert_to_markdown(self.description)
+        else:
+            self.description = ""
 
+    def nettoie_champs(self):
+        """Lance le nettoyage de tous les champs de la saé"""
+        self.nettoie_heures_sae()
+        self.nettoie_semestre()
+        self.nettoie_acs()
+        self.nettoie_ressources()
+        self.nettoie_description()
+        self.nettoie_livrables_sae()
+        self.nettoie_mots_cles()
+        self.nettoie_coeffs()
 
     def to_yaml(self):
-        """Exporte la ressource en yaml"""
+        """Exporte la saé en yaml"""
         dico = {"titre": self.nom,
                 "code": self.code,
                 "semestre": int(self.semestre[1]),
@@ -526,6 +567,7 @@ class SAEDocx(Docx):
                 "tp": self.tp if self.tp else "???",
                 "projet": self.projet if self.projet else "???",
                 "description": folded(self.description),
+                "coeffs": self.coeffs,
                 "acs": self.apprentissages,
                 "ressources": self.ressources,
                 "livrables": folded(self.livrables),

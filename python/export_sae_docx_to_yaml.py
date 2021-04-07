@@ -7,7 +7,7 @@ import logging
 __LOGGER = logging.getLogger(__name__)
 
 REPERTOIRE = "import"
-DOCUMENT = "sae_v0"
+DOCUMENT = "sae_v1"
 
 # Ouverture du document
 docu = docx2python.docx2python(REPERTOIRE + "/" + DOCUMENT + ".docx")
@@ -64,6 +64,7 @@ for i in range(1, len(docu)): # A priori un tableau
         # Parsing des données brute de la sae
         data = [None for i in range(len(ENTETES_CHAPEAU))] # les données attendues Nom, Code, ..., Mots clés
         apprentissages = [None for i in range(3)] # les apprentissages des 3 compétences
+        coeffs = [None for i in range(3)]
 
         non_interprete = []
         for j in range(len(res)): # parcours des entêtes du tableau décrivant la ressource
@@ -85,6 +86,9 @@ for i in range(1, len(docu)): # A priori un tableau
                     acs = res[j+2]
                     for k in range(len(acs)):
                         apprentissages[k] = caracteres_recalcitrants("\n".join(acs[k])) # fusionne les ACS (généralement sur plusieurs lignes)
+                elif "Compétence(s) ciblée(s)" in champ:
+                    les_coeffs = res[j+2]
+                    coeffs = [elmt[0] for elmt in les_coeffs]
 
         if non_interprete: # souvent Heures de formation (incluant les TP)
 
@@ -103,6 +107,7 @@ for i in range(1, len(docu)): # A priori un tableau
         info = tuple(data[1:])
         r.charge_informations(*info)
         r.charge_ac(apprentissages)
+        r.charge_coeffs(coeffs)
 
         # nettoie le titre et le code
         r.nettoie_code()
@@ -168,13 +173,7 @@ saes = {"S1" : [], "S2": []}
 
 for s in liste_saes:
     print(f"{s.nom}")
-    s.nettoie_heures_sae()
-    s.nettoie_semestre()
-    s.nettoie_acs()
-    s.nettoie_ressources()
-    s.nettoie_description()
-    s.nettoie_livrables_sae()
-    s.nettoie_mots_cles()
+    s.nettoie_champs()
 
     # Tri dans le bon semestre
     saes[s.semestre] += [s]

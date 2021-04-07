@@ -1,4 +1,5 @@
 
+
 % Les formats de colonnes
 \newcolumntype{P}{>{}m{3.6cm}<{}}  % Pour la colonne d'entete
 
@@ -25,16 +26,15 @@
 
 % \listeAC{R}{code_ressource}{lettre_competence} pour une ressource
 % \listeAC{S}{code_ressource}{lettre_competence} pour une sae
-\newcommand*{\listeAC}[3]{%
+\newcommand*{\listeAC}[4]{%
 \begin{tabular}[t]{@{}C@{}}%
     \xdef\TYPE{#1} % R pour ressource, S pour SAE
 	\xdef\CODE{#2} % le code de la ressource sous la forme AA
 	\xdef\COMP{#3} % le code de la compétence sous la forme A
-
+	\xdef\targetcomp{#4}
   \forLoop{1}{\value{cpt\TYPE ac\CODE\COMP}}{noligne}{
-		\xdef\contenu{{\csname \TYPE accode\CODE\COMP\Alph{noligne}\endcsname} |
-				{\csname \TYPE acname\CODE\COMP\Alph{noligne}\endcsname}}
-		\contenu
+  		\xdef\accode{\csname \TYPE accode\CODE\COMP\Alph{noligne}\endcsname}
+		\hyperlink{comp:\targetcomp}{\accode} | {\csname \TYPE acname\CODE\COMP\Alph{noligne}\endcsname}
    \tabularnewline %
    }
 \end{tabular}%
@@ -50,11 +50,8 @@
 		\begin{tabular}[t]{@{}T@{}}%
 			\forLoop{1}{\value{cptRsae\CODE}}{noligne}{
 				\xdef\saecode{\csname Rsaecode\CODE\Alph{noligne}\endcsname}
-				\xdef\contenu{
-						{\saecode} |
+				\hyperlink{sae:\saecode}{\saecode}~|
 						{\csname Rsaename\CODE\Alph{noligne}\endcsname}
-				}
-				\hyperlink{sae:\saecode}{\contenu}
 			 \tabularnewline %
 			 }
 		\end{tabular}%
@@ -72,10 +69,7 @@ Aucun
 
   \forLoop{1}{\value{cptRprerequis\CODE}}{noligne}{
   		\xdef\rescode{\csname Rprerequiscode\CODE\Alph{noligne}\endcsname}
-		\xdef\contenu{ %
-			\rescode~| {\csname Rprerequisname\CODE\Alph{noligne}\endcsname}
-		}
-		\hyperlink{res:\rescode}{\contenu}
+		\hyperlink{res:\rescode}{\rescode}~| {\csname Rprerequisname\CODE\Alph{noligne}\endcsname}
    \tabularnewline %
    }
 \end{tabular}%
@@ -120,12 +114,9 @@ Aucun
 		}{
 		\begin{tabular}[t]{@{}T@{}}%
 			\forLoop{1}{\value{cptSressource\CODE}}{noligne}{
-					\xdef\rescode{\csname Sressourcecode\CODE\Alph{noligne}\endcsname}
-					\xdef\contenu{
-						{\rescode} |
-						{\csname Sressourcename\CODE\Alph{noligne}\endcsname}
-					}
-				\hyperlink{res:\rescode}{\contenu}
+					\xdef\rescode{\csname Sressourcecode\CODE\Roman{noligne}\endcsname}
+				\hyperlink{res:\rescode}{\rescode} |
+						{\csname Sressourcename\CODE\Roman{noligne}\endcsname}
 			 \tabularnewline %
 			 }
 		\end{tabular}%
@@ -142,7 +133,7 @@ Aucun
 		\xdef\exemplecode{\csname EScodeE\CODE\Alph{noligne}\endcsname}
 		\xdef\titreexemple{\csname ESname\exemplecode\endcsname}
 		\xdef\contenu{\titreexemple}
-        Exemple \arabic{noligne}~: \hyperlink{exemple:\exemplecode}{\contenu}
+        \hyperlink{exemple:\exemplecode}{Exemple \arabic{noligne}}~: \contenu
         \tabularnewline
 	}
 	\end{tabular}

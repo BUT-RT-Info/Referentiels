@@ -3,13 +3,15 @@ code: R113
 semestre: 1
 heures_formation: 30
 heures_tp: 6
+coeffs:
+  RT1: 5
+  RT2: 8
 acs:
   RT1:
   - AC0111
   RT2:
   - AC0211
   - AC0212
-  RT3: []
 sae:
 - SAÉ13
 - SAÉ22

@@ -5,6 +5,7 @@
 % \affichageSAE{code_semestre} avec code_semestre=A pour le S1, B pour le S2
 \newcounter{nosae}
 \newcounter{noexemple}
+\newcounter{noac}
 \newcommand{\affichageSAE}[1]{
     \xdef\sem{#1}
 
@@ -21,11 +22,13 @@
 
         \forLoop{1}{\value{cptSexemple\currentSAE}}{noexemple}{
             \tableauExempleSAE{\currentSAE}{\Alph{noexemple}}
-        }
         \newpage
+        }
+
     }
 }
 
+% Tableau listant toutes les SAé et leur exemple en guise d'introduction au semestre
 \newcommand{\listeTitreSAE}[1]{
     \setlength{\tabcolsep}{0.125cm} % Marge des colonnes
     \setlength{\extrarowheight}{2pt} % Marge des lignes
@@ -37,23 +40,23 @@
             %A\Alph{noressource}
             \xdef\currentSAE{\sem\Alph{nosae}} % code de la SAE
             \xdef\saecode{\csname Scode\currentSAE\endcsname}
+            \xdef\saelink{\csname Slinkcode\currentSAE\endcsname}
             \xdef\saetitre{\csname Sname\currentSAE\endcsname}
-            {\bfseries \saecode}
+            {\bfseries \hyperlink{sae:\saecode}{\saecode}}
             &
-            {\bfseries \hyperlink{res:\saecode}{\saetitre}}
+            {\bfseries {\saetitre}}
             \tabularnewline
-
-            \forLoop{1}{\value{cptSexemple\currentSAE}}{noexemple}{
-                \xdef\exemplecode{\currentSAE\Alph{noexemple}}
-                \xdef\titreexemple{\csname ESname\exemplecode\endcsname}
-                & {\itshape Exemple \arabic{noexemple}~: \titreexemple}
-                \ifthenelse{%
-                    \equal{\thenoexemple}{\value{cptSexemple\currentSAE}}}{ %
-                    \tabularnewline\hline
-                }{%
+            &
+            \begin{tabular}{p{13cm}}
+                \forLoop{1}{\value{cptSexemple\currentSAE}}{noexemple}{
+                    \xdef\exemplecode{\currentSAE\Alph{noexemple}}
+                    \xdef\titreexemple{\csname ESname\exemplecode\endcsname}
+                    \itshape \hyperlink{exemple:\exemplecode}{Exemple \arabic{noexemple}}~: \titreexemple
                     \tabularnewline
                 }
-            }
+            \end{tabular}
+            \tabularnewline
+            \hline
         }
     \end{tabular}
 }
@@ -71,9 +74,9 @@
             \def\CODE{\sem\Alph{noressource}} % code de la SAE
             \xdef\rescode{\csname Rcode\CODE\endcsname}
             \xdef\resnom{\csname Rname\CODE\endcsname}
-            {\bfseries \rescode}
+            {\bfseries \hyperlink{res:\rescode}{\rescode}}
             &
-            \hyperlink{res:\rescode}{\resnom}
+                {\resnom}
             \tabularnewline
             \hline
         }

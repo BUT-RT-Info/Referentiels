@@ -13,8 +13,8 @@
 \begin{tabular}[t]{|P|Q|V|}
 \hline % 1ère ligne
 	\xdef\rescode{\csname Rcode\CODE\endcsname}
-	{\bfseries Ressource \rescode}
-	& \multicolumn{2}{l|}{\hypertarget{res:\rescode}{\bfseries \csname Rname\CODE\endcsname}}
+	{\bfseries \hypertarget{res:\rescode}{Ressource \rescode}}
+	& \multicolumn{2}{l|}{\bfseries \csname Rname\CODE\endcsname}
 	\\
 \hline % 2ème ligne
 	%{\bfseries Code}
@@ -40,7 +40,7 @@
 % 2ème tableau : compétences et apprentissages critiques
 \begin{tabular}[t]{|C|C|C|}
 \hline
-\multicolumn{3}{|c|}{\bfseries Compétence(s) ciblées et apprentissage(s) critique(s) couvert(s)} \\
+\multicolumn{3}{|c|}{\bfseries Compétence(s) ciblées, coefficient(s) et apprentissage(s) critique(s) couvert(s)} \\
 \hline
 	\textit{\csname Rcomp\CODE A\endcsname} | {\csname Rniveau\CODE A\endcsname}
 	&
@@ -48,14 +48,19 @@
 	&
 	\textit{\csname Rcomp\CODE C\endcsname} | {\csname Rniveau\CODE C\endcsname}
 \\
+\hline
+	\ifcsdef{Rcoeff\CODE A}{coeff. {\csname Rcoeff\CODE A\endcsname}}{} &
+	\ifcsdef{Rcoeff\CODE B}{coeff. {\csname Rcoeff\CODE B\endcsname}}{} &
+	\ifcsdef{Rcoeff\CODE C}{coeff. {\csname Rcoeff\CODE C\endcsname}}{}
+\\
 \hline % AC de RT1
-{\listeAC{R}{\CODE}{A}
+{\listeAC{R}{\CODE}{A}{RT1}
 }
 & % AC de RT2
-{\listeAC{R}{\CODE}{B}
+{\listeAC{R}{\CODE}{B}{RT2}
 }
 & % AC de RT3
-{\listeAC{R}{\CODE}{C}
+{\listeAC{R}{\CODE}{C}{RT3}
 }
 \\
 \hline
@@ -71,7 +76,7 @@
 % {\bfseries Descriptif } & \tableauDescriptif{\CODE} \\
 {\bfseries Descriptif } & \tableauChampLong{\csname Rancrage\CODE\endcsname} \\
 \hline
-{\bfseries Contenus } & {\csname Rcontenu\CODE\endcsname}
+{\bfseries Contenus } & \tableauChampLong{\csname Rcontenu\CODE\endcsname}
 \\
 \hline
 {\bfseries Mots-clés} & {\csname Rmotscles\CODE\endcsname} \\

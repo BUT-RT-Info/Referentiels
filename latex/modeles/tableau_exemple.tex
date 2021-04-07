@@ -12,16 +12,21 @@
 \xdef\exemplecode{\csname EScodeE\EXEMPLE\endcsname}
 % 1er tableau : Nom/Code/Semestre
 
+\def\gris{0.9} % La profondeur du gris
+
 % 3ème tableau : descriptif
 \begin{tabular}[t]{|P|T|}
 \hline
-	{\bfseries Titre} &
-	\multicolumn{1}{l|}{ \hypertarget{exemple:\exemplecode}{\bfseries \csname ESname\EXEMPLE\endcsname} }
-	\\
+	%\cellcolor[gray]{\gris}
+    \xdef\saecode{\csname EScode\EXEMPLE\endcsname}
+	{\bfseries Exemple {\csname ESnumero\EXEMPLE\endcsname}} &
+		\hyperlink{sae:\saecode}{\saecode}~| {\csname ESsae\EXEMPLE\endcsname} \\
 \hline
-	\xdef\saecode{\csname EScode\EXEMPLE\endcsname}
-	{\bfseries Exemple de la \saecode} &
-		\hyperlink{sae:\saecode}{\csname ESsae\EXEMPLE\endcsname} \\
+\hline
+	%\cellcolor[gray]{\gris}
+	\hypertarget{exemple:\exemplecode}{\bfseries Titre} &
+	\tableauChampLong{\bfseries \csname ESname\EXEMPLE\endcsname} \\
+\hline
 \hline
 	{ \setlength{\extrarowheight}{0pt}
 	\begin{tabular}[t]{@{}P@{}}
@@ -35,6 +40,10 @@
 	{\bfseries Description} &
 	\tableauChampLong{\csname ESdescription\EXEMPLE\endcsname} \\
 \hline
+\end{tabular}
+
+\begin{tabular}[t]{|P|T|}
+	\hline
 { \setlength{\extrarowheight}{0pt}
 	\begin{tabular}[t]{@{}P@{}}
 	{\bfseries Formes} \\

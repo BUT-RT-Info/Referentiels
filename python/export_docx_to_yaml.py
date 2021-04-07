@@ -1,5 +1,7 @@
 
 import docx2python
+
+from ressource import get_matrices_ac_ressource
 from ressourcedocx import *
 import tools
 
@@ -10,7 +12,7 @@ from tools import get_indice, get_indice_sans_accent_ni_espace
 __LOGGER = logging.getLogger(__name__)
 
 REPERTOIRE = "import"
-DOCUMENT = "ressources_v0"
+DOCUMENT = "ressources_v1"
 
 # Ouverture du document
 docu = docx2python.docx2python(REPERTOIRE + "/" + DOCUMENT + ".docx")
@@ -57,6 +59,7 @@ for i in range(2, len(docu)): # A priori un tableau
         # Parsing des données brute de la ressource
         data = [None for i in range(len(ENTETES))] # les données attendues Nom, Code, ..., Mots clés
         apprentissages = [None for i in range(3)] # les apprentissages des 3 compétences
+        coeffs = [None for i in range(3)]
 
         non_interprete = []
         for j in range(len(res)): # parcours des entêtes du tableau décrivant la ressource
@@ -78,7 +81,9 @@ for i in range(2, len(docu)): # A priori un tableau
                     acs = res[j+2]
                     for k in range(len(acs)):
                         apprentissages[k] = tools.caracteres_recalcitrants("\n".join(acs[k])) # fusionne les ACS (généralement sur plusieurs lignes)
-
+                elif "Compétence(s) ciblée(s)" in champ:
+                    les_coeffs = res[j+2]
+                    coeffs = [elmt[0] for elmt in les_coeffs]
         if non_interprete: # souvent Heures de formation (incluant les TP)
 
             try:
@@ -109,6 +114,8 @@ for i in range(2, len(docu)): # A priori un tableau
         info = tuple(data[1:])
         r.charge_informations(*info)
         r.charge_ac(apprentissages)
+        r.charge_coeffs(coeffs)
+
 # fin du parsing
 print(f"{nbre_ressources} ressources")
 
@@ -147,10 +154,6 @@ for sem in ressources: # parcours des semestres
 matrices = {}
 les_codes_acs = [code for comp in DATA_ACS for code in DATA_ACS[comp]]
 nbre_acs = len(les_codes_acs)
-
-for sem in ressources:
-    # print("Matrice du semestre " + sem)
-    (matrices[sem], chaine) = get_matrices_ac_ressource(ressources, sem)
 
 # Export yaml
 WITH_EXPORT = True

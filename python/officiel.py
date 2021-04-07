@@ -11,7 +11,8 @@ with open("pn/acs.yml", 'r', encoding="utf8") as fid:
     DATA_ACS = yaml.load(fid.read(), Loader=yaml.Loader)
 with open("pn/saes.yml", 'r', encoding="utf8") as fid:
     DATA_SAES = yaml.load(fid.read(), Loader=yaml.Loader)
-
+with open("../yaml/competences/RT123.yml", 'r', encoding="utf8") as fid:
+    DATA_COMPETENCES = yaml.load(fid.read(), Loader=yaml.Loader)
 
 def supprime_accent_espace(chaine):
     """Met en minuscule, supprime les accents, les ponctuations et les espaces"""
@@ -34,41 +35,6 @@ def devine_code_by_nom_from_dict(champ, dico):
                 acs += [code]
     return sorted(list(set(acs)))
 
-
-def get_matrices_ac_ressource(ressources, sem):
-    """Calcul la matrice AC vs ressource pour un sem donné et renvoie la
-    chaine pour affichage dans un .txt"""
-    les_codes_acs = [code for comp in DATA_ACS for code in DATA_ACS[comp]]
-    nbre_acs = len(les_codes_acs)
-
-    ressem = ressources[sem]  # les ressources du semestre
-    nbre_ressources_semestre = len(DATA_RESSOURCES[sem])
-    if len(ressem) != nbre_ressources_semestre:
-        __LOGGER.warning(f"Pb => il manque des ressources au {sem}")
-
-    matrice = [[False] * nbre_ressources_semestre for i in range(nbre_acs)]
-
-    for (i, r) in enumerate(ressem):  # pour chaque ressource
-        for comp in r.apprentissages:  # pour chaque comp
-            for (j, ac) in enumerate(les_codes_acs):  # pour chaque ac
-                if ac in r.apprentissages[comp]:  # si l'ac est prévue dans la ressource
-                    matrice[j][i] = True
-
-    chaine = ""
-    ligne = "{:20s} | " + "{:4s} | " * nbre_ressources_semestre
-    valeurs = ("" for i in range(nbre_ressources_semestre + 1))
-    trait = "-" * len(ligne.format(*valeurs))
-
-    valeurs = [""] + [r.code if r.code else "????" for r in ressem] + [""] * (
-                    nbre_ressources_semestre - len(ressem))
-    valeurs = tuple(valeurs)
-    chaine += ligne.format(*valeurs) + "\n" + trait + "\n"
-    for (j, ac) in enumerate(les_codes_acs):
-        valeurs = [ac] + [("X" if matrice[j][i] == True else "") for i in range(nbre_ressources_semestre)]
-        valeurs = tuple(valeurs)
-        chaine += ligne.format(*valeurs) + "\n"
-    chaine += trait + "\n"
-    return (matrice, chaine)
 
 def affiche_bilan_heures(ressources, sem):
     """Renvoie une chaine décrivant un bilan des heures pour un sem donné"""
@@ -125,3 +91,6 @@ def get_officiel_sem_sae_by_code(sae):
     for sem in DATA_SAES:
         if sae in DATA_SAES[sem]:
             return sem
+
+if __name__=="__main__":
+    print(DATA_COMPETENCES)

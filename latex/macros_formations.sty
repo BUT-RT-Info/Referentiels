@@ -119,6 +119,13 @@
 }
 
 % ****************************
+% Ajout d'un coeff éventuel aux compétences
+\def\ajoutRcoeff#1{
+	\expandafter\xdef\csname Rcoeff\currentRressource\currentRcomp\endcsname{#1} % le nom de la comp
+}
+
+
+% ****************************
 % Ajout d'AC aux compétences
 \def\ajoutRac#1#2{
 	\addtocounter{cptRac\currentRressource\currentRcomp}{1} % le compteur de l'ac pour la comp dans la ressource
@@ -133,7 +140,8 @@
 \def\ajoutRsae#1#2{
 	\addtocounter{cptRsae\currentRressource}{1} % le compteur de la sae dans la ressource
 	\xdef\currentRsae{\Alph{cptRsae\currentRressource}} % La lettre
-	
+
+	%\expandafter\xdef\csname Rlinkcode\currentRressource\currentRsae\endcsname{#1}
 	\expandafter\xdef\csname Rsaecode\currentRressource\currentRsae\endcsname{#1} %
 	\expandafter\xdef\csname Rsaename\currentRressource\currentRsae\endcsname{#2} %
 }
@@ -168,6 +176,7 @@
 	\addtocounter{cptS\currentsemestre}{1} % Ajoute une ressource au semestre
 	\def\currentSsae{\currentsemestre\Alph{cptsae}} % Ressource RAA = A pour semestre 1 puis A pour ressource n°1
 
+	%\expandafter\xdef\csname Slinkcode\currentSsae\endcsname{\currentSsae}
 	\expandafter\xdef\csname Scode\currentSsae\endcsname{#1} % code
 	\expandafter\xdef\csname Sname\currentSsae\endcsname{#2} % nom/intitule
 	\expandafter\xdef\csname Ssem\currentSsae\endcsname{\csname semestrenumero\currentsemestre\endcsname} % nom du semestre
@@ -211,6 +220,12 @@
 }
 
 % ****************************
+% Ajout d'un coeff éventuel aux compétences
+\def\ajoutScoeff#1{
+	\expandafter\xdef\csname Scoeff\currentSsae\currentScomp\endcsname{#1} % le nom de la comp
+}
+
+% ****************************
 % Ajout d'AC aux compétences
 \def\ajoutSac#1#2{
 	\addtocounter{cptSac\currentSsae\currentScomp}{1} % le compteur de l'ac pour la comp dans la ressource
@@ -224,7 +239,7 @@
 % Ajout des ressources mobilisées par l'étudiant
 \def\ajoutSressources#1#2{
 	\addtocounter{cptSressource\currentSsae}{1} % le compteur de la sae dans la ressource
-	\xdef\currentSressource{\Alph{cptSressource\currentSsae}} % La lettre
+	\xdef\currentSressource{\Roman{cptSressource\currentSsae}} % La lettre
 
 	\expandafter\xdef\csname Sressourcecode\currentSsae\currentSressource\endcsname{#1} %
 	\expandafter\xdef\csname Sressourcename\currentSsae\currentSressource\endcsname{#2} %
@@ -255,6 +270,7 @@
 	\expandafter\xdef\csname ESname\currentESsae\endcsname{#1} % nom/intitule
 	\expandafter\xdef\csname EScode\currentESsae\endcsname{\csname Scode\currentSsae\endcsname} % le code de la SAE
 	\expandafter\xdef\csname EScodeE\currentESsae\endcsname{\currentESsae} % le code de l'exemple
+	\expandafter\xdef\csname ESnumero\currentESsae\endcsname{\arabic{cptSexemple\currentSsae}} % le code de l'exemple
 
 	% \expandafter\xdef\csname ESsem\currentESsae\endcsname{\csname semestrenumero\currentsemestre\endcsname} % nom du semestre
 }

@@ -11,10 +11,11 @@
 \begin{tabular}[t]{|P|Q|V|}
 \hline % 1ère ligne
 	\xdef\saecode{\csname Scode\CODE\endcsname}
+	\xdef\saelink{\csname Slinkcode\CODE\endcsname}
 	{\bfseries % SAÉ
-	\saecode}
+	\hypertarget{sae:\saecode}{\saecode}}
 	& \multicolumn{2}{l|}{
-	\hypertarget{sae:\saecode}{\bfseries \csname Sname\CODE\endcsname}
+	\bfseries \csname Sname\CODE\endcsname
 	} \\
 \hline % 2ème ligne
 	% {\bfseries Code}
@@ -69,7 +70,7 @@
 % 3ème tableau : compétences et apprentissages critiques
 \begin{tabular}[t]{|C|C|C|}
 \hline
-\multicolumn{3}{|c|}{\bfseries Compétence(s) ciblées et apprentissage(s) critique(s) couvert(s)} \\
+\multicolumn{3}{|c|}{\bfseries Compétence(s) ciblée(s), coefficient(s) et apprentissage(s) critique(s) couvert(s)} \\
 \hline
 	\textit{\csname Scomp\CODE A\endcsname} | {\csname Sniveau\CODE A\endcsname}
 	&
@@ -77,14 +78,19 @@
 	&
 	\textit{\csname Scomp\CODE C\endcsname} | {\csname Sniveau\CODE C\endcsname}
 \\
+\hline
+	\ifcsdef{Scoeff\CODE A}{coeff. {\csname Scoeff\CODE A\endcsname}}{} &
+	\ifcsdef{Scoeff\CODE B}{coeff. {\csname Scoeff\CODE B\endcsname}}{} &
+	\ifcsdef{Scoeff\CODE C}{coeff. {\csname Scoeff\CODE C\endcsname}}{}
+\\
 \hline % AC de RT1
-{\listeAC{S}{\CODE}{A}
+{\listeAC{S}{\CODE}{A}{RT1}
 }
 & % AC de RT2
-{\listeAC{S}{\CODE}{B}
+{\listeAC{S}{\CODE}{B}{RT2}
 }
 & % AC de RT3
-{\listeAC{S}{\CODE}{C}
+{\listeAC{S}{\CODE}{C}{RT3}
 }
 \\
 \hline

@@ -1,7 +1,7 @@
+import ressource
 from ressource import *
 import os
-import pypandoc
-
+import officiel
 
 import logging
 __LOGGER = logging.getLogger(__name__)
@@ -27,6 +27,9 @@ for fichieryaml in fichiers_ressources:
     r = Ressource(fichieryaml) # lecture du fichier
     sem = "S" + str(r.ressource["semestre"])
     ressources[sem].append(r)
+# tri par code croissant
+for sem in ressources:
+    ressources[sem] = sorted(ressources[sem], key=lambda r: r.ressource["code"])
 
 # Chargement des saé et des exemples
 fichiers_definitifs = os.listdir(REPERTOIRE_SAE_DEFINITIVES)
@@ -48,6 +51,8 @@ for fichieryaml in fichiers_saes:
     sem = "S" + str(s.sae["semestre"])
     saes[sem].append(s)
 
+for sem in saes:
+    saes[sem] = sorted(saes[sem], key=lambda s: s.sae["code"])
 
 exemples = {"S1" : {}, "S2" : {} }
 
@@ -60,9 +65,31 @@ for fichieryaml in fichiers_exemples:
     exemples[sem][sae].append(e)
 
 
-print("ici")
-# Export latex des ressources
+## Bilan des acs
+for sem in ["S1", "S2"]:
+    M1 = ressource.get_matrices_ac_ressource(saes, ressources, sem)
+    chaine = ressource.str_matrice(M1, saes, ressources, sem)
+    #print(chaine)
+
+    chaine = ressource.to_latex_matrice_acs(M1, saes, ressources, sem)
+    REPERTOIRE_SYNTHESE = "../latex/synthese"
+    fichierlatex = REPERTOIRE_SYNTHESE + "/" + f"{sem}_acs_vs_saes_ressources.tex"
+    with open(fichierlatex, "w", encoding="utf8") as fid:
+        fid.write(chaine)
+    print(f"Export de {fichierlatex}")
+
+    coeff1 = ressource.get_matrices_coeffs(saes, ressources, sem)
+    vol1 = ressource.get_matrices_volumes(saes, ressources, sem)
+    chaine = ressource.to_latex_matrice_coeffs(vol1, coeff1, saes, ressources, sem)
+
+    fichierlatex = REPERTOIRE_SYNTHESE + "/" + f"{sem}_coeffs_saes_ressources.tex"
+    with open(fichierlatex, "w", encoding="utf8") as fid:
+        fid.write(chaine)
+    print(f"Export de {fichierlatex}")
+
+## Export latex divers
 if True:
+    # Export latex des ressources
     for sem in ressources:
         for r in ressources[sem]:
 
@@ -72,8 +99,7 @@ if True:
                 fid.write(contenu)
             print(f"Export de {fichierlatex} ")
 
-# Export latex des sae
-if True:
+    # Export latex des sae
     for sem in saes:
         for s in saes[sem]:
 
@@ -83,12 +109,12 @@ if True:
                 fid.write(contenu)
             print(f"Export de {fichierlatex} ")
 
-# Export latex des exemples
-for sem in exemples:
-    for s in exemples[sem]:
-        for (i, e) in enumerate(exemples[sem][s]):
-            fichierlatex = REPERTOIRE_LATEX_SAES + "/" + "{}_exemple{}.tex".format(e.exemple["code"].replace("É", "E"), i+1)
-            contenu = e.to_latex()
-            with open(fichierlatex, "w", encoding="utf8") as fid:
-                fid.write(contenu)
-            print(f"Export de {fichierlatex} ")
+    # Export latex des exemples
+    for sem in exemples:
+        for s in exemples[sem]:
+            for (i, e) in enumerate(exemples[sem][s]):
+                fichierlatex = REPERTOIRE_LATEX_SAES + "/" + "{}_exemple{}.tex".format(e.exemple["code"].replace("É", "E"), i+1)
+                contenu = e.to_latex()
+                with open(fichierlatex, "w", encoding="utf8") as fid:
+                    fid.write(contenu)
+                print(f"Export de {fichierlatex} ")
