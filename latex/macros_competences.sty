@@ -1,0 +1,275 @@
+
+\NeedsTeXFormat{LaTeX2e}[1999/01/01]
+\ProvidesPackage{macros}[2020/11/04]
+
+% Déclaration des options
+% *********************************************************************
+%% Option noir et blanc
+%\newif\if@noiretblanc \@noiretblancfalse	
+%\DeclareOption{noiretblanc}{\@noiretblanctrue}
+
+% Option mots-cles (affichage des mots-cles)
+\newif\if@motscles \@motsclesfalse	
+\DeclareOption{motscles}{\@motsclestrue}
+
+\DeclareOption*{}%% Ne rien faire quand une option est inconnue
+\ProcessOptions
+
+% ******************************************
+% Intitulés standards des niveaux
+% ******************************************
+\def\niveauA{Niveau 1} % Novice
+\def\niveauB{Niveau 2} % Interm\'{e}diaire}
+\def\niveauC{Niveau 3} % Comp\'{e}tent}
+
+
+% **************************************
+% Variables globales
+% **************************************
+% \newcounter{cptressource} % domaines de ressources (ex. domains)
+\newcounter{cptparcours} % compteur de parcours
+\newcounter{cptcomp} % compteur de compétences tout parcours confondu
+\newcounter{cptcompspe} % compteur de compétences spécifiques à un parcours confondu
+\newcounter{cptcompcommune} % compteur de compétences communes
+\newcounter{cptmetier}
+
+\xdef\compoloop{A,B,C,D,E,F} % Composantes essentielles : Maxi 6 composantes 
+\xdef\situloop{A,B,C,D} % Situation professionnelle : Maxi 4
+\xdef\apploop{A,B,C,D,E,F} % Apprentissages critiques : Maxi 6
+\xdef\nivloop{A,B,C} % La boucle sur les niveaux : Maxi 3
+
+
+% ****************************************
+% La spécialité
+% ****************************************
+\def\specialite#1{\def\specialitename{#1}}
+
+% *****************************************
+% Domaine de ressources
+% *****************************************
+\def\nouveaudomaine#1{
+	\addtocounter{domains}{1}
+	\expandafter\def\csname domaine\Alph{domains}\endcsname{#1}
+	\ifnum\value{domains}=1\xdef\domainsloop{\Alph{domains}}
+	\else\xdef\domainsloop{\domainsloop,\Alph{domains}}
+\fi}
+
+% ****************************************
+% Parcours (numéroté avec \parcours)
+% ****************************************
+% \nouveauparcours{Nom du parcours}{Abbréviation}
+\def\nouveauparcours#1#2{
+	\addtocounter{cptparcours}{1} % Incrémente le compteur de parcours
+	\setcounter{cptmetier}{0} % RAZ du compteur de métiers
+	\xdef\currentparcours{#2} % L'abbréviation du parcours courant
+	\setcounter{cptcompspe}{0} % RAZ du compteur de competences spécifiques
+	
+	\expandafter\def\csname parcoursname\currentparcours\endcsname{#1}
+	\expandafter\def\csname parcoursabbr\currentparcours\endcsname{#2}
+	
+	% Incrémente la boucle sur les parcours
+	\ifnum\value{cptparcours}=1\relax 
+		\xdef\loopabbrparcours{\currentparcours}
+	\else
+		\xdef\loopabbrparcours{\loopabbrparcours,\currentparcours}
+	\fi
+	%\expandafter\xdef\newcounter{\csname cptcomp#2\endcsname} %cptcompt#1#2}
+	
+	% Compétences du parcours => ajout des comp communes
+	\newcounter{cptcompparcours\currentparcours} % compteur
+	%\expandafter\xdef\csname loopcompparcours#2\endcsname{} % Boucle sur les compétences du parcours
+	\addtocounter{cptcompparcours\currentparcours}{\value{cptcompcommune}} % Ajoute les comp communes
+	\ifnum\value{cptcompparcours\currentparcours}=0\relax % Ajoute la comp à la boucle de compétences du parcours
+		\expandafter\xdef\csname loopcompparcours\currentparcours\endcsname{} % CyberA/S/A
+	\else
+		\expandafter\xdef\csname loopcompparcours\currentparcours\endcsname{\loopcompcommune} %
+	\fi
+	
+	\expandafter\xdef\csname loopmetier#1\endcsname{} % Boucle métier
+}
+
+%% Attendu ParcourSup
+%%%% général
+%\def\nouvelattendugeneral#1{
+	%\addtocounter{attenduG}{1}
+	%\expandafter\def\csname attenduG\Alph{attenduG}\endcsname{#1}
+	%\ifnum\value{attenduG}=1\xdef\attenduGloop{\Alph{attenduG}}
+	%\else\xdef\attenduGloop{\attenduGloop,\Alph{attenduG}}\fi}
+%%%% technique
+%\def\nouvelattendutech#1{\addtocounter{attenduTS}{1}\expandafter\def\csname attenduTS\Alph{attenduTS}\endcsname{#1}\ifnum\value{attenduTS}=1\xdef\attenduTSloop{\Alph{attenduTS}}\else\xdef\attenduTSloop{\attenduTSloop,\Alph{attenduTS}}\fi}
+%%%% humain
+%\def\nouvelattenduhumain#1{
+%\addtocounter{attenduH}{1}\expandafter\def\csname attenduH\Alph{attenduH}\endcsname{#1}\ifnum\value{attenduH}=1\xdef\attenduHloop{\Alph{attenduH}}\else\xdef\attenduHloop{\attenduHloop,\Alph{attenduH}}\fi
+%}
+
+%*****************************
+% Métiers accessibles via parcours
+%*****************************
+% \ajoutmetier{desc métier} au parcours courant
+\def\ajoutmetier#1{
+	\addtocounter{cptmetier}{1}
+	\begingroup\let\+\relax
+	\expandafter\gdef\csname metier\currentparcours\Alph{cptmetier}\endcsname{#1}
+	\endgroup
+	\expandafter\xdef\csname metiermark\currentparcours\Alph{cptmetier}\endcsname{$\bullet$}
+	
+	\ifnum\value{cptmetier}=1\relax % Incrémente les éléments des boucles de parcours
+		\expandafter\xdef\csname loopmetier\currentparcours\endcsname{\Alph{cptmetier}} % loopmetierCyber{A, B, C...}
+	\else
+		\expandafter\xdef\csname loopmetier\currentparcours\endcsname{\csname loopmetier\currentparcours\endcsname,\Alph{cptmetier}}
+	\fi
+}
+
+
+%*****************************
+% Bloc de compétences
+% ****************************
+
+% Bloc de compétences spécifique d'un parcours : 
+% \nouvellecompetence{nom_de_la_compétence}{lettre_numerotant_la_competence}{intitule_competence}{definition_competence}{type_competence}{code_referentiel}
+% avec nom_de_la_compétence = CC pour compétence commune et type_competence = C (commune) ou S (spécifique)
+%
+\def\nouvellecompetence#1#2#3#4#5#6{
+	\addtocounter{cptcomp}{1} % Ajoute une compétence
+	
+	\def\currentcomp{#1#2} % Compétence courante CCA ou CyberB
+	\expandafter\def\csname compname\currentcomp\endcsname{#3} % compSA + nomduparcours
+	\expandafter\def\csname compdef\currentcomp\endcsname{#4} % la définition
+	\expandafter\def\csname compcoderef\currentcomp\endcsname{#6} % le code référentiel
+	
+	\newcounter{cptniveau\currentcomp}  % le compteur de niveaux pour la compétence, mis à 0
+	\newcounter{cptcompo\currentcomp}   % le compteur pour les composantes essentielles
+	\newcounter{cptsitupro\currentcomp} % le compteur de situations professionnelles par compétence
+	%\newcounter{compdef#1}\addtocounter{compdef#1}{1}\newcounter{compapp#1A}\newcounter{compapp#1B}\newcounter{compapp#1C}
+	
+	% Incrémente la boucle de parcours sur toutes les compétences 
+	\ifnum\value{cptcomp}=1\relax 
+		\expandafter\xdef\csname loopcomp\endcsname{\currentcomp/#5/#2} % CCA/C/A
+	\else
+		\expandafter\xdef\csname loopcomp\endcsname{\loopcomp,\currentcomp/#5/#2} %
+	\fi
+}
+
+
+% Ajoute une compétence commune existante à un parcours en l'intégrant à la boucle des compétences (par ex: loopcompparcoursCyber)
+%\ajoutcompetencecommune{code}{intitule}{description}
+\def\ajoutcompetencecommune#1#2#3{
+	\addtocounter{cptcompcommune}{1} % Incrémente le compteur de compétences spécifiques du parcours
+	\xdef\lettrecomp{\Alph{cptcompcommune}} % La lettre de la compétence 
+	\xdef\abbrcomp{CC\lettrecomp} % L'abbréviation de la compétence  : CCA
+	\nouvellecompetence{CC}{\lettrecomp}{#2}{#3}{C}{#1} % Crée la compétence commune
+	
+	\ifnum\value{cptcompcommune}=1\relax
+		\expandafter\xdef\csname loopcompcommune\endcsname{\abbrcomp/C/\lettrecomp} % boucle composante d'un parcours : nom/type/lettre
+	\else
+		\expandafter\xdef\csname loopcompcommune\endcsname{\csname loopcompcommune\endcsname,\abbrcomp/C/\lettrecomp} %
+	\fi
+}
+
+% Ajoute une compétence (spécifique) au parcours courant en l'intégrant à la boucle des compétences (par ex: loopcompparcoursCyber)
+%\ajoutcompetence{code}{intitule}{description}
+\def\ajoutcompetence#1#2#3{
+
+	\addtocounter{cptcompspe}{1} % Incrémente le compteur de compétences spécifiques du parcours
+	\xdef\lettrecomp{\Alph{cptcompspe}} % La lettre de la compétence 
+	\xdef\abbrcomp{\currentparcours\lettrecomp} % L'abbréviation de la compétence  : CyberA
+	\nouvellecompetence{\currentparcours}{\lettrecomp}{#2}{#3}{S}{#1} % Créé la compétence spécifique
+		
+	\addtocounter{cptcompparcours\currentparcours}{1} % Incrémente le compteur de compétences du parcours
+	
+	\ifnum\csname thecptcompparcours\currentparcours\endcsname=1\relax % Ajoute la comp à la boucle de compétences du parcours
+		\expandafter\xdef\csname loopcompparcours\currentparcours\endcsname{\abbrcomp/S/\lettrecomp} % CyberA/S/A
+	\else
+		\expandafter\xdef\csname loopcompparcours\currentparcours\endcsname{\csname loopcompparcours\currentparcours\endcsname,\abbrcomp/S/\lettrecomp} %
+	\fi
+}
+
+% *************************************
+% Niveaux d'un bloc de compétences
+% *************************************
+% \ajout_niveau{numero_niveau_pas_utilise}{description}
+\def\ajoutniveau#1#2{
+
+	\addtocounter{cptniveau\currentcomp}{1} % Incrémente le compteur de niveau dans la compétence courante
+	\def\currentniveau{\Alph{cptniveau\currentcomp}} % La lettre du niveau courant : A,B,C
+	% \def\currentniveauarabic{}
+	\newcounter{cptappr\currentcomp\Alph{cptniveau\currentcomp}} % Compteur d'apprentissages critiques
+	
+  \expandafter\xdef\csname niveaudesc\currentcomp\Alph{cptniveau\currentcomp}\endcsname{#2}%
+  \ifx#1\relax\relax % Si le titre court n'est pas fourni : novice/intermédiaire/expet
+  \expandafter\xdef\csname niveauname\currentcomp\Alph{cptniveau\currentcomp}\endcsname{\csname niveau\Alph{cptniveau\currentcomp}\endcsname}%
+  \else%
+  \expandafter\xdef\csname niveauname\currentcomp\Alph{cptniveau\currentcomp}\endcsname{#1}%
+  \fi
+}
+
+% ***************************************
+% Composantes essentielles
+% ***************************************
+% \ajoutcompo{description_composante_essentielle_sans_En} à la compétence currente
+\def\ajoutcompo#1{
+	\addtocounter{cptcompo\currentcomp}{1} % compteur cptcompoCCA
+	\expandafter\def\csname componame\currentcomp\Alph{cptcompo\currentcomp}\endcsname{#1}
+}
+
+% ***************************************
+% Situations professionnelles
+% ***************************************
+% \ajoutsitupro{description_situation_professionnelle} à la compétence courant
+\def\ajoutsitupro#1{
+	\addtocounter{cptsitupro\currentcomp}{1} % compteur de situations professionnelles par compétence incrémenté
+	\expandafter\def\csname situproname\currentcomp\Alph{cptsitupro\currentcomp}\endcsname{#1}
+}
+
+
+
+% ***************************************
+% Apprentissages critiques
+% ***************************************
+% \ajoutapprentissage{description_apprentissage} à la compétence courante et au niveau courant
+\def\ajoutapprentissage#1#2{
+	\addtocounter{cptappr\currentcomp\currentniveau}{1} % compteur cptapprCCAA % comp A, niveau A
+	\expandafter\xdef\csname apprdesc\currentcomp\currentniveau\Alph{cptappr\currentcomp\currentniveau}\endcsname{#2}%
+	\expandafter \xdef\csname apprcoderef\currentcomp\currentniveau\Alph{cptappr\currentcomp\currentniveau}\endcsname{#1}
+	%\ifx\currentcomp\codeA\relax % Les 3 premières compétences communces
+	%\expandafter \xdef\csname apprcoderef\currentcomp\currentniveau\Alph{cptappr\currentcomp\currentniveau}\endcsname{
+	%		AC\arabic{cptcomp}\arabic{cptniveau\currentcomp}\arabic{cptappr\currentcomp\currentniveau}}
+	%\else
+		%\expandafter \xdef\csname apprcoderef\currentcomp\currentniveau\Alph{cptappr\currentcomp\currentniveau}\endcsname{
+	%	X\arabic{\currentniveau}0\arabic{cptniveau\currentcomp}.\arabic{cptappr\currentcomp\currentniveau}} % Le code du référentiel
+	%\fi
+	
+	
+  %\setcounter{domainsl}{0}
+  %\xdef\varloop{#4}
+  %\ifx#4\relax\relax\xdef\varloop{0}\else\relax\fi
+  %\foreach \matrixpoint in \varloop {
+    %\addtocounter{domainsl}{1}
+    %\setcounter{matrix}{\matrixpoint}
+    %\ifnum\value{matrix}=1\relax
+    %\expandafter\xdef\csname comp#1niv#2app\Alph{compapp#1#2}dom\Alph{domainsl}\endcsname{\matrixpoint}%
+    %\else\relax\fi
+  %}
+}
+
+% *************************************
+% Ressource
+% #1 = Le nom de la ressource
+% #2 = le code de la ressource
+% #3 = Le semestre de la ressource
+
+\def\nouvelleressource#1#2#3{
+	\expandafter\def\csname ressourcename\currentparcours\endcsname{#1}
+	\expandafter\def\csname ressourcecode\currentparcours\endcsname{#2}
+	\expandafter\def\csname ressourcesem\currentparcours\endcsname{#3}
+}
+
+
+% *************************************
+\definecolor{colormotscle}{RGB}{120, 185, 235}
+
+\def\motscles#1{
+	\if@motscles 
+		\small \textcolor{colormotscle}{(#1)}
+	\fi
+}

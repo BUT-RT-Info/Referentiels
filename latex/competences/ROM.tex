@@ -1,0 +1,104 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Parcours ROM
+% (Parcours B)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\nouveauparcours{Réseaux Opérateurs et Multimédia}{ROM}
+%{Ce parcours forme aux métiers des opérateurs de télécommunication fixe qui fournissent l'accès au réseau pour les entreprises ou les particuliers (fibres optiques, ADSL, cœur de réseaux) et aux métiers d'intégrateur de solutions de communication pour l'entreprise (téléphonie sur IP, visio-conférence, vidéo-protection).}
+
+%% Métiers accessibles
+\ajoutmetier{\Technicien/ d’intervention client, boucle locale, FTTH -- Superviseur/euse ADSL ou FTTH}
+\ajoutmetier{\Chargé/ de support technique -- \Technicien/ service client SAV} % support réseau fixe
+\ajoutmetier{\Technicien/ réseaux IP et transmission, production et d'intégration de solutions complexes}
+\ajoutmetier{Pilote boucle locale optique -- \Technicien/ déploiement de la fibre optique}
+\ajoutmetier{Pilote de production -- \Chargé/ d’exploitation plateformes VoIP Entreprise}
+\ajoutmetier{\Chargé/ d'ingénierie réseau structurant, Gestionnaire des ressources réseaux}
+\ajoutmetier{\Administrateur/ de réseaux ToIP et de solutions de communication unifiées}
+\ajoutmetier{\Technicien/ d’intervention ToIP -- \Technicien/ service clients voix}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% COMPETENCE SPECIFIQUE n°1 
+% (compétence SA)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ajoutcompetence{ROM1}{Gérer les infrastructures et les services des réseaux opérateurs}{%
+Les opérateurs de télécommunication fournissent des services pour le marché des particuliers et des entreprises, mais aussi pour les autres opérateurs. Ces services sont principalement l’accès à Internet via différents supports (fibres optiques, ADSL, 5G ...), les services voix (téléphonie fixe ou mobile), les services vidéo (IPTV, VoD, …) et les services d’interconnexion (VPN, transit, peering). Le professionnel ROM, qu'il soit salarié de l'opérateur de télécommunication ou correspondant de son entreprise auprès de l'opérateur, doit comprendre l'infrastructure des réseaux opérateur, savoir administrer les principaux éléments de l’infrastructure ou les services proposés aux clients. 
+%Les particuliers comme les entreprises (par exemple, celles multi-sites) s'appuient sur les opérateurs de télécommunication fixe : ils fournissent un accès à leur réseau via différents supports (fibres optiques, ADSL, ...) et offrent de nombreux services allant de la location d'équipements réseaux (box Internet, ...) à des solutions de communication sécurisées clé en main. Le professionnel ROM, qu'il soit salarié de l'opérateur de télécommunication ou correspondant de son entreprise auprès de l'opérateur, doit comprendre l'infrastructure des réseaux opérateurs et savoir en administrer les principaux éléments. 
+} % <--- proposition Willy puis CB
+
+
+% Composantes essentielles => mot-clé En
+\ajoutcompo{respectant les règles métiers et les délais}
+\ajoutcompo{assurant une communication optimale avec le client}
+\ajoutcompo{mettant en place des processus opérationnels de gestion d'incidents}
+\ajoutcompo{pilotant les acteurs terrain}
+
+% Situations professionnelles
+\ajoutsitupro{Gestion des services d’un ensemble de clients entreprises d’un opérateur}
+\ajoutsitupro{Suivi des évolutions des procédures et des infrastructures réseaux}
+\ajoutsitupro{Gestion du déploiement de nouvelles infrastructures}
+
+
+% Niveaux de développement de la compétence commune
+
+%% Niveau 1
+% \ajout_niveau{nom_de_la_competence}{lettre_competence}{titre_court}{description}
+\ajoutniveau{}{%
+Gérer les infrastructures des réseaux opérateurs}
+
+\ajoutapprentissage{}{Administrer les réseaux d’accès fixes et mobiles}
+\ajoutapprentissage{}{Virtualiser des services réseaux}
+\ajoutapprentissage{}{Décrire/comprendre l’architecture et les offres des opérateurs \motscles{services voix, vpn, wholesale, ...}}
+\ajoutapprentissage{}{Gérer le routage/commutation et les interconnexions \motscles{MPLS, MPLS-TE, VxLAN, Segment Routing,  BGP, peering, transit}}
+\ajoutapprentissage{}{Automatiser la gestion des équipements réseaux \motscles{scripting, interfacing web}}
+
+
+%% Niveau 2
+\ajoutniveau{}{%
+Administrer les services des opérateurs de télécommunication}
+
+\ajoutapprentissage{}{Administrer/superviser les services voix et vidéos d’un opérateur de télécommunication \motscles{Centrex, multicast, Interconnecter une offre multimédia au réseau IP Multimedia Subsystem (IMS)}}
+\ajoutapprentissage{}{Administrer/superviser les services de VPN d’un opérateur de télécommunication \motscles{MP-BGP, VRF, wholesale, retail, CE-LAN}}
+\ajoutapprentissage{}{Administrer et déployer des fonctions réseau virtualisées et programmer le réseau \motscles{NFV, SDN, SD-WAN}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% COMPETENCE SPECIFIQUE n°2 
+% (compétence SB)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\ajoutcompetence{ROM2}{Gérer les communications unifiées et la vidéo sur internet}{%
+Pour faciliter les échanges et la communication en temps réel des usagers, nombre d'entreprises se tournent vers les communications unifiées qui centralisent téléphone/voix (avec numéro unique sur différents terminaux), messagerie (instantanée) ou visioconférence. Le professionnel doit être capable de déployer ses solutions avec une supervision globale assurant la qualité et la fluidité des échanges. 
+}
+
+% Composantes essentielles => mot-clé En
+\ajoutcompo{automatisant la gestion réseau des communications}
+\ajoutcompo{sécurisant les infrastructures}
+\ajoutcompo{gérant les interconnexions et signalisations}
+\ajoutcompo{assurant une communication optimale avec le client}
+\ajoutcompo{respectant les règles métiers et les délais}
+
+% Situations professionnelles
+\ajoutsitupro{Déploiement et administration des services de communication}
+\ajoutsitupro{Administration des services vidéos}
+
+
+% Niveaux de développement de la compétence commune
+
+%% Niveau 1
+\ajoutniveau{}{%
+Mettre en oeuvre le système de téléphonie de l'entreprise
+} % <--- propositon CB
+
+\ajoutapprentissage{}{Choisir une architecture et déployer des services de ToIP \motscles{Centrex, multi-sites, IPBX, Cloud, SIP, Infra centralisée ou distribuée ou hébergée, WebRTC...}}
+\ajoutapprentissage{}{Administrer un service de téléphonie pour l’entreprise \motscles{Configuration simple d’IPBX}}
+\ajoutapprentissage{}{Mettre en place une politique de QoS pour les applications \motscles{Contrainte des applications en terme de QoS, Classification, Marquage, Ordonnanceur, ...}}
+
+
+%% Niveau 2
+\ajoutniveau{}{%
+Administrer les communications unifiées et les services vidéo de l’entreprise
+} % <--- propositon CB
+
+\ajoutapprentissage{}{Administrer des services de visioconférence, de vidéo-surveillance, d’IPTV ou de VoD pour une entreprise} 
+\ajoutapprentissage{}{Administrer des services de communication pour l'entreprise \motscles{Configuration avancée d’IPBX, certification éventuelle, communications unifiées}}
+

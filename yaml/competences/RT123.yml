@@ -1,0 +1,135 @@
+RT1:
+  nom: Administrer les réseaux et l'Internet
+  diminutif: Administrer
+  description: >-
+    A l'ère du numérique, la gestion des réseaux informatiques ou de télécommunications,
+    essentielle au bon fonctionnement de l'entreprise, suppose de concevoir le réseau,
+    le déployer, l'administrer et le superviser. Le gestionnaire doit être réactif en
+    cas d'incident et savoir communiquer avec les employés/clients pour comprendre et
+    résoudre leurs problématiques. Il exploite des équipements complexes (routeurs,
+    commutateurs...) et met en œuvre des liaisons (fibres optiques, câbles ou sans fils).
+    Il doit être au fait des évolutions du domaine et de la sécurité en s'autoformant.
+    Travaillant typiquement au sein d'équipes souvent internationales, il doit savoir
+    s'intégrer dans un groupe, définir des procédures pour garantir le bon fonctionnement
+    du réseau et documenter son travail. Il assure également la supervision des systèmes
+    et réseaux pour prévenir tout dysfonctionnement ou cyberattaque.
+  composantes:
+    - choisissant les solutions et technologies réseaux adaptées
+    - respectant les principes fondamentaux de la sécurité informatique
+    - utilisant une approche rigoureuse pour la résolution des dysfonctionnements
+    - respectant les règles métiers
+    - assurant une veille technologique
+  situations:
+    - Conception et administration de l'infrastructure du réseau informatique d'une entreprise
+    - Installation et administration des services réseau informatique d'une entreprise
+    - Déploiement et administration des solutions fixes pour les clients d'un opérateur de télécommunication
+  niveaux:
+    Assister l'administrateur du réseau:
+      AC0111: Maîtriser les lois fondamentales de l'électricité afin d'intervenir sur des équipements de réseaux et télécommunications
+      AC0112: Comprendre l'architecture des systèmes numériques et les principes du codage de l'information
+      AC0113: Configurer les fonctions de base du réseau local
+      AC0114: Maîtriser les rôles et les principes fondamentaux des systèmes d'exploitation afin d'interagir avec ceux-ci pour la configuration et administration des réseaux et services fournis
+      AC0115: Identifier les dysfonctionnements du réseau local
+      AC0116: Installer un poste client
+    Administrer un réseau:
+      AC0121: Configurer et dépanner le routage dynamique dans un réseau
+      AC0122: Configurer une politique simple de QoS et les fonctions de base de la sécurité d'un réseau
+      AC0123: Déployer des postes clients et des solutions virtualisées
+      AC0124: Déployer des services réseaux avancés et systèmes de supervision
+      AC0125: Identifier les réseaux opérateurs et l'architecture d'Internet
+      AC0126: Travailler en équipe
+    Concevoir un réseau:
+      AC0131: Concevoir un projet de réseau informatique d'une entreprise en intégrant les problématiques de haute disponibilité, de QoS et de sécurité
+      AC0132: Réaliser la documentation technique de ce projet
+      AC0133: Réaliser une maquette de démonstration du projet
+      AC0134: Défendre/argumenter un projet
+      AC0135: Communiquer avec les acteurs du projet
+      AC0136: Gérer le projet et les différentes étapes de sa mise en œuvre en respectant les délais
+RT2:
+  nom: Connecter les entreprises et les usagers
+  diminutif: Connecter
+  description: >-
+    Les réseaux informatiques ou de télécommunications s'appuient sur des infrastructures 
+    de transmission pour l'acheminement des données entre les différents équipements du réseau. 
+    L'installation et l'administration de ces infrastructures demandent de bonnes connaissances 
+    dans certains domaines de la physique, du traitement du signal et des communications numériques. 
+    L'installation et la gestion de ces systèmes sont généralement faites par des équipes 
+    spécialisées qui doivent donc rendre compte de leur travail aux différents acteurs qui 
+    vont utiliser ces systèmes. Les phénomènes rencontrés en cas de problèmes peuvent être 
+    très complexes et il est donc essentiel de respecter les règles métiers pour éviter tout 
+    dysfonctionnement et de savoir adopter une démarche scientifique pour la gestion des incidents. 
+    Une culture scientifique est nécessaire pour comprendre et s'adapter aux rapides évolutions 
+    technologiques du secteur.
+  composantes:
+    - communiquant avec le client et les différents acteurs impliqués, parfois en anglais
+    - faisant preuve d'une démarche scientifique
+    - choisissant les solutions et technologies adaptées
+    - proposant des solutions respectueuses de l'environnement
+  situations:
+    - Déploiement des supports et systèmes de transmission
+    - Mise en service et administration des équipements d'accès fixe ou mobile d'un opérateur de télécommunication
+    - Déploiement et administration des accès sans fil pour l'entreprise
+    - Déploiement des systèmes de communications
+  niveaux:
+    Découvrir les transmissions et la ToIP:
+      AC0211: Mesurer et analyser les signaux
+      AC0212: Caractériser des systèmes de transmissions élémentaires et découvrir la modélisation mathématique de leur fonctionnement
+      AC0213: Déployer des supports de transmission
+      AC0214: Connecter les systèmes de ToIP
+      AC0215: Communiquer avec un client ou un collaborateur
+    Maîtriser les différentes composantes des solutions de connexion des entreprises et des usagers:
+      - Déployer et caractériser des systèmes de transmissions complexes
+      - Mettre en place un accès distant sécurisé 
+      - Mettre en place une connexion multi-site via un réseau opérateur
+      - Administrer les réseaux d'accès des opérateurs
+      - boucle locale, visions et développements en télécom ou en réseau possibles
+      - Organiser un projet pour répondre au cahier des charges
+    Déployer une solution de connexion ou de communication sur IP:
+      - Déployer un système de communication pour l'entreprise
+      - Déployer un réseau d'accès sans fil pour le réseau d'entreprise en intégrant les enjeux de la sécurité
+      - Déployer un réseau d'accès fixes ou mobile pour un opérateur de télécommunications en intégrant la sécurité
+      - Permettre aux collaborateurs de se connecter de manière sécurisée au système d'information de l'entreprise
+      - Collaborer en mode projet en français et en anglais
+RT3:
+  nom: Créer des outils et applications informatiques pour les R&T
+  diminutif: Programmer
+  description: >-
+    L'administrateur de réseaux informatiques ou de télécommunications a un besoin grandissant de compétences 
+    en développement informatique. Il peut être amené à développer des applications spécifiques pour son réseau 
+    (par exemple, pour remonter et analyser des informations sur ses équipements, développer une sonde pour un 
+    logiciel de supervision ou une interface pour les objets connectés). Il peut également intervenir sur les 
+    sites Web et sur la gestion des données de l'entreprise. Parce que l'administration des systèmes et des 
+    réseaux s'oriente de plus en plus vers la programmation notamment dans le cadre de la virtualisation en 
+    général et du SDN (*Software Defined Network*) en particulier, il doit être en capacité de suivre les 
+    évolutions de son métier.
+  composantes:
+    - étant à l'écoute des besoins du client
+    - documentant le travail réalisé
+    - utilisant les outils numériques à bon escient
+    - choisissant les outils de développement adaptés
+    - intégrant les problématiques de sécurité
+  situations:
+    - Conception, déploiement et maintenance du système d'information d'une entreprise
+    - Automatisation du déploiement et de la maintenance des outils logiciels
+    - Développement d'outils informatiques à usage interne d'une équipe
+  niveaux:
+    S'intégrer dans un service informatique:
+      AC0311: Utiliser un système informatique et ses outils
+      AC0312: Lire, exécuter, corriger et modifier un programme
+      AC0313: Traduire un algorithme, dans un langage et pour un environnement donné
+      AC0314: Connaître l'architecture et les technologies d'un site Web
+      AC0315: Choisir les mécanismes de gestion de données adaptés au développement de l'outil
+      AC0316: S'intégrer dans un environnement propice au développement et au travail collaboratif
+    Développer une application R&T:
+      - Automatiser l'administration système avec des scripts
+      - Développer une application à partir d'un cahier des charges donné, pour le Web ou les périphériques mobiles
+      - Utiliser un protocole réseau pour programmer une application client/serveur
+      - Installer, administrer un système de gestion de données
+      - Accéder à un ensemble de données depuis une application et/ou un site web 
+    Piloter un projet de développement d'une application R&T:
+      - Élaborer les spécifications techniques et le cahier des charges d'une application informatique
+      - Mettre en place un environnement de travail collaboratif
+      - Participer à la formation des utilisateurs
+      - Déployer et maintenir une solution informatique
+      - S'informer sur les évolutions et les nouveautés technologiques
+      - Sécuriser l'environnement numérique d'une application

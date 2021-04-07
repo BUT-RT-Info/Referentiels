@@ -1,0 +1,28 @@
+titre: Se sensibiliser à l'hygiène informatique et à la cybersécurité
+code: SAÉ11
+semestre: 1
+heures_encadrees: 7
+tp: 5
+projet: 12
+description: >-
+  Il s'agit, pour les étudiants, de faire prendre conscience daux étudiants desles risques potentiels
+  pris par l'usager d'un environnement numérique et de leur fournir les réflexes afin de devenir un usager
+  conscient, averti et responsable. L'hygiène informatique et les bonnes pratiques de l'usage du numérique
+  sont des connaissances que doivent maîtriser et appliquer les étudiants avant d'aller en stage/alternance
+  en entreprise, où ils devront respecter la charte informatique imposée par la DSI. A plus long terme,
+  en tant que professionnels des services informatiques de l'entreprise,  ils auront à leur tour à charge
+  de sensibiliser les utilisateurs  et de leur faire  connaître et accepter la charte de bon usage des
+  moyens informatiques. 
+coeffs:
+  RT1: 16
+acs:
+  RT1:
+  - AC0112
+  - AC0114
+  - AC0115
+ressources:
+- R101
+livrables: >-
+  Rapport d'analyse des risques numériques et présentation diaporama ou conception d'une courte vidéo
+  de sensibilisation (style 180'')  à destination des proches ou de la famille de l'étudiant.
+motscles: Sécurité numérique, utilisation d'internet, menaces communes et remédiations

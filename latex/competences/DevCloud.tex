@@ -1,0 +1,94 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Parcours DevCloud
+% (Parcours B)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\nouveauparcours{Développement système et Cloud}{DevCloud}
+
+% Métiers accessibles 
+\ajoutmetier{\Technicien/ réseaux Cloud -- \Technicien/ sécurité des systèmes Cloud (DevSecOps)}
+\ajoutmetier{\Administrateur/ Cloud}
+\ajoutmetier{\Intégrateur/ Cloud, intégrateur DevOps}
+\ajoutmetier{\Administrateur/ Réseaux Programmables (\textit{Software Defined Network})}
+\ajoutmetier{\Administrateur/ Système \& Réseaux (DevOps, NetDevOps: serveurs dédiés, stockage)}
+\ajoutmetier{\Administrateur/ de serveurs et de réseaux virtualisés}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% COMPETENCE SPECIFIQUE n°1 
+% (compétence SA)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ajoutcompetence{DevCloud1}{Coordonner des infrastructures modulaires}{
+L’internet demande une adaptation rapide et permanente des logiciels et des infrastructures qui les supportent. Il faut réduire le temps de commercialisation afin de délivrer toujours plus rapidement de nouvelles fonctionnalités aux utilisateurs ou améliorer en continue les services intra et inter-entreprises. Il faut également s’adapter à des variations de charges et répondre rapidement aux crises provoquées par des incidents de sécurité ou de production. Le professionnel en charge de l’infrastructure doit alors travailler de façon agile et en collaboration avec des développeurs d’applications pour maintenir un environnement Cloud adapté aux besoins métiers et en automatiser la production.}
+
+
+% Composantes essentielles => mot-clé En
+\ajoutcompo{respectant un cahier des charges}
+\ajoutcompo{documentant le travail réalisé}
+\ajoutcompo{intégrant les problématiques de sécurité}
+\ajoutcompo{assurant une  veille technologique}
+\ajoutcompo{respectant les pratiques d’équipes et des méthodes de production}
+
+% Situations professionnelles
+\ajoutsitupro{Industrialisation du déploiement des infrastructures systèmes, réseaux et sécurité en sauvegardant et en restaurant ses configurations}
+\ajoutsitupro{Maintenance des outils pour l’intégration et la mise en production du code logiciel}
+\ajoutsitupro{Administration d’un cluster de containers}
+\ajoutsitupro{Analyse des performances d’un système pour améliorer les processus de production}
+
+%% Niveaux
+
+%% Niveau 1
+\ajoutniveau{}{Assister l’administrateur infrastructure et Cloud}
+
+\ajoutapprentissage{}{Proposer une solution Cloud adaptée à l’entreprise \motscles{connaissance des solutions Cloud public et/ou privé, 
+des atouts des MV \& des container}}
+\ajoutapprentissage{}{Virtualiser un environnement \motscles{avec MV, container / environnement ou routeurs}}
+\ajoutapprentissage{}{Utiliser les services du Cloud \motscles{AWS, Google, public ou privé, voire même des services internes à l’entreprise au besoin}}
+\ajoutapprentissage{}{Analyser un service Cloud au travers des métriques \motscles{utilisation des métriques fournies par un fournisseur de services, avec possibilité d’évoquer le pb de métrologie, de montée en charge, ou d’analyse de l’offre pour justifier ou diminuer son coût}}
+
+
+\ajoutniveau{}{Administrer une infrastructure Cloud}
+
+\ajoutapprentissage{}{Concevoir, administrer et superviser une infrastructure Cloud \motscles{AWS, OpenStack,  collecte de métriques pour aider à la supervision avec Grafana par ex.}}
+\ajoutapprentissage{}{Orchestrer les ressources Cloud \motscles{équilibrage de charges avec Kubernetes}}
+\ajoutapprentissage{}{Investiguer sur les incidents et les résoudre afin d’améliorer la qualité et la fiabilité des infrastructures}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% COMPETENCE SPECIFIQUE n°2 
+% (compétence SB)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ajoutcompetence{DevCloud1}{Accompagner le développement d’applications}{%
+Que ce soit pour automatiser le déploiement d’outils logiciels sur le réseau ou pour mettre en place les services et les ressources nécessaires à une équipe de développeurs, le professionnel DevCloud doit posséder de solides compétences en programmation : il doit comprendre les besoins des développeurs et des utilisateurs, aider à la résolution de bugs à la fois sur l’infrastructure de développement que sur le code informatique et mettre en place des solutions évolutives visant l’amélioration continue du réseau et des produits de l’entreprise. 
+}
+
+% Composantes essentielles
+\ajoutcompo{respectant un cahier des charges}
+\ajoutcompo{documentant le travail réalisé}
+\ajoutcompo{respectant les bonnes pratiques de développement et de production}
+\ajoutcompo{visant l’amélioration continue}
+
+% Situations professionnelles
+\ajoutsitupro{Déploiement d'une application}
+\ajoutsitupro{Intervention sur la chaîne de développement dans une optique DevOps}
+\ajoutsitupro{Surveillance de la qualité de la production}
+\ajoutsitupro{Mise en place les services réseau nécessaires au développement}
+
+
+% Niveau 1
+\ajoutniveau{}{Développer pour le Cloud}
+
+\ajoutapprentissage{}{Développer un microservice}
+\ajoutapprentissage{}{Mettre en production une application \motscles{incluant le build \& run, développement de tests}}
+\ajoutapprentissage{}{Programmer son réseau par le code \motscles{programmation soit réseau / soit de l’infra avec SDN donc orienté NetOps ; autres outils possibles = Ansible, Napalm, Nornir, Pyats,..}}
+\ajoutapprentissage{}{Gérer une chaîne d’intégration et/ou de déploiement continu \motscles{GitLab + éventuellement écriture de tests pour le code et l‘infrastructure}}
+
+%% Niveau 2
+
+\ajoutniveau{}{S'intégrer dans une équipe DevOps}
+
+\ajoutapprentissage{}{Adopter les pratiques de pilotage de projet \motscles{méthode AGILE SCRUM/Kanban, Twelve factors, DevOps, GitOps.. incluant la communication avec tous les intervenants d’une équipe DevOps}}
+\ajoutapprentissage{}{Concevoir, gérer et sécuriser un environnement de microservices \motscles{Docker + Kubernetes, avec possibilité de certification Kubernetes de la certification C.N.C.F, + apprendre à éprouver l’environnement}}
+\ajoutapprentissage{}{Gérer son infrastructure comme du code \motscles{peut aller de la simple programmation du système à des outils comme terraform, pulumi… et pour le CLOUD : les API d’AWS, celles de Docker / Podman / github / gitlab / mattermost / Slack…. Ex de projet : containérisation et virtualisation de routeurs pour de tests réseaux}}

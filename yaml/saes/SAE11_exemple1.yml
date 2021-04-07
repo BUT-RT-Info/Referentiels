@@ -1,0 +1,54 @@
+titre: Sensibilisation aux risques numériques
+code: SAÉ11
+semestre: 1
+problematique: >-
+  Il s'agit de faire prendre conscience aux étudiants des risques qu'ils peuvent encourir sans considérer
+  avec attention l'usage de leur environnement numérique.
+description: >-
+  On pourra faire un focus particulier sur les points suivants:
+
+  * Protégez vos accès avec des mots de passe solides; en TP on peut mettre en place l'usage d'un gestionnaire
+    de mot de passe tel que Keepass (multi-plateformes windows, linux, mac, android, iphone/ipad)
+
+  * Sécurité numérique : sauvegardez vos données régulièrement
+
+  * Appliquez les mises à jour de sécurité sur tous vos appareils (PC, tablettes, téléphones…), et ce,
+    dès qu'elles vous sont proposées
+
+  * Utilisez un antivirus
+
+  * Téléchargez vos applications uniquement sur les sites officiels
+
+  * Sécurité numérique : méfiez-vous des messages inattendus
+
+  * Vérifiez les sites sur lesquels vous faites des achats
+
+  * Maîtrisez vos réseaux sociaux
+
+  * Séparez vos usages personnels et professionnels
+
+  * Sécurité numérique : évitez les réseaux WiFi publics ou inconnus; il est possible de faire un TP (démo)
+    sur l'usage d'un faux point d'accès WiFi et de collecter des identifiants de réseaux sociaux, ….
+
+  * Analysez les trames non chiffrées des protocoles (telnet, ftp, smtp, pop, imap, rtp, …) avec wireshark,
+    en extraire des champs significatifs avec Analyse/Follow/TCP Stream (ou HTTP Stream). On peut utiliser
+    un site web (création personnelle ou sur Internet) contenant un formulaire d'enregistrement
+    (ex: [http://www.supportduweb.com/signup.html](http://www.supportduweb.com/signup.html))
+
+  * Utilisez des outils de codage de l'information (ex: [https://www.dcode.fr/fr](https://www.dcode.fr/fr))
+
+  On pourra également utiliser les supports:
+
+  * Cybermalveillance: [https://www.cybermalveillance.gouv.fr/bonnes-pratiques](https://www.cybermalveillance.gouv.fr/bonnes-pratiques)
+
+  * MOOC ANSSI: [https://secnumacademie.gouv.fr/](https://secnumacademie.gouv.fr/)
+formes: >-
+  TP, projet
+modalite: >-
+  L'étudiant doit démontrer qu'il est capable de présenter de façon claire, concise et vulgarisée les
+  risques et les bons usages des outils numériques tel que pourrait le faire un responsable d'un service
+  informatique à un collaborateur néo-entrant dans son entreprise. Cette démonstration devra s'accompagner
+  d'exemples concrets.
+
+  Cette démonstration pourra se faire sous la forme de présentation orale ou écrite et accompagnée de
+  différents média (infographie, affiche, vidéo...).

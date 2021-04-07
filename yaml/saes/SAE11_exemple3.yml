@@ -1,0 +1,57 @@
+titre: Catalogue des vulnérabilités
+code: SAÉ11
+semestre: 1
+problematique: >-
+  Il s'agit de faire découvrir aux étudiants les différents types de vulnérabilités pouvant exister dans
+  un système informatique, ainsi que les conséquences qu'elles peuvent engendrer.
+description: >+
+  Cette étude commencera par une recherche documentaire permettant d'établir un glossaire des termes désignant
+  les différents types de vulnérabilités et de proposer pour chacun une définition vulgarisée.
+
+  Sans toutefois entrer dans une technique très poussée, il sera demandé que chaque type de vulnérabilité
+  soit illustré par un exemple concret d'attaque qu'il rend possible.
+
+  Enfin, les conséquences de ces attaques seront décrites en termes de gravité d'atteinte à la disponibilité,
+  à l'intégrité et/ou à la confidentialité des biens impactés.
+
+  L'étudiant, dès la fin du S1, prendra ainsi conscience de la nécessité d'une bonne hygiène informatique,
+  en découvrant :
+
+  * l'intérêt des bons mots de passe (nb de caractères, complexité de l'alphabet);
+
+  * les sauvegardes de données (risque des supports, de la non duplication, …);
+
+  * la faiblesse du facteur humain (ingénierie sociale, …);
+
+  * les types de logiciels malveillants (chevaux de troyes, bombes logiques, virus, vers, …);
+
+  * les sites web malveillants;
+
+  * les sites web mal écrits;
+
+  * les dépassement de tampon;
+
+  * les usurpations diverses (ARP, DNS, …);
+
+  * les écoutes de réseau.
+
+  Cette liste n'est évidemment pas limitative.
+
+  On pourra également utiliser les supports:
+
+  * Cybermalveillance: [https://www.cybermalveillance.gouv.fr/bonnes-pratiques](https://www.cybermalveillance.gouv.fr/bonnes-pratiques)
+
+  * MOOC ANSSI: [https://secnumacademie.gouv.fr/](https://secnumacademie.gouv.fr/)
+
+  * Malette CyberEdu: [https://www.ssi.gouv.fr/entreprise/formations/secnumedu/contenu-pedagogique-cyberedu/](https://www.ssi.gouv.fr/entreprise/formations/secnumedu/contenu-pedagogique-cyberedu/)
+
+  * et d'autres ressources aisément disponibles sur le Web.
+
+formes: >-
+  TP, projet.
+modalite: >-
+  Chaque étudiant ou groupe d'étudiant doit produire un rapport sous forme de catalogue de vulnérabilités
+  que l'on pourrait destiner à une campagne de sensibilisation pour “grand public”. Le format de “1 vulnérabilité,
+  1 (ou 2) page.s” doit être le format à viser pour imposer une description synthétique et éviter les
+  copier/coller compulsifs avec détails techniques superflus. Les exemples d'attaques présentés doivent
+  être réalistes et compréhensibles par des non spécialistes.
