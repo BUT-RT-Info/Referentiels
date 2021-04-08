@@ -34,7 +34,7 @@
 	\xdef\targetcomp{#4}
   \forLoop{1}{\value{cpt\TYPE ac\CODE\COMP}}{noligne}{
   		\xdef\accode{\csname \TYPE accode\CODE\COMP\Alph{noligne}\endcsname}
-		\hyperlink{comp:\targetcomp}{\accode} | {\csname \TYPE acname\CODE\COMP\Alph{noligne}\endcsname}
+		\hyperlink{comp:\targetcomp}{\textcolor{compC\COMP}{\accode}} | {\csname \TYPE acname\CODE\COMP\Alph{noligne}\endcsname}
    \tabularnewline %
    }
 \end{tabular}%
@@ -50,7 +50,7 @@
 		\begin{tabular}[t]{@{}T@{}}%
 			\forLoop{1}{\value{cptRsae\CODE}}{noligne}{
 				\xdef\saecode{\csname Rsaecode\CODE\Alph{noligne}\endcsname}
-				\hyperlink{sae:\saecode}{\saecode}~|
+				\hyperlink{sae:\saecode}{\textcolor{saeC}{\saecode}}~|
 						{\csname Rsaename\CODE\Alph{noligne}\endcsname}
 			 \tabularnewline %
 			 }
@@ -69,7 +69,7 @@ Aucun
 
   \forLoop{1}{\value{cptRprerequis\CODE}}{noligne}{
   		\xdef\rescode{\csname Rprerequiscode\CODE\Alph{noligne}\endcsname}
-		\hyperlink{res:\rescode}{\rescode}~| {\csname Rprerequisname\CODE\Alph{noligne}\endcsname}
+		\hyperlink{res:\rescode}{\textcolor{ressourceC}{\rescode}}~| {\csname Rprerequisname\CODE\Alph{noligne}\endcsname}
    \tabularnewline %
    }
 \end{tabular}%
@@ -115,7 +115,7 @@ Aucun
 		\begin{tabular}[t]{@{}T@{}}%
 			\forLoop{1}{\value{cptSressource\CODE}}{noligne}{
 					\xdef\rescode{\csname Sressourcecode\CODE\Roman{noligne}\endcsname}
-				\hyperlink{res:\rescode}{\rescode} |
+				\hyperlink{res:\rescode}{\textcolor{ressourceC}{\rescode}} |
 						{\csname Sressourcename\CODE\Roman{noligne}\endcsname}
 			 \tabularnewline %
 			 }
@@ -133,7 +133,7 @@ Aucun
 		\xdef\exemplecode{\csname EScodeE\CODE\Alph{noligne}\endcsname}
 		\xdef\titreexemple{\csname ESname\exemplecode\endcsname}
 		\xdef\contenu{\titreexemple}
-        \hyperlink{exemple:\exemplecode}{Exemple \arabic{noligne}}~: \contenu
+        \hyperlink{exemple:\exemplecode}{\textcolor{exempleC}{Exemple \arabic{noligne}}}~: \contenu
         \tabularnewline
 	}
 	\end{tabular}

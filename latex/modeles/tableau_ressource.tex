@@ -9,27 +9,30 @@
 \setlength{\tabcolsep}{0.125cm} % Marge des colonnes
 \setlength{\extrarowheight}{2pt} % Marge des lignes
 
+\arrayrulecolor{ressourceC}
+
+% \cellcolor{exempleC}\hypertarget{exemple:\exemplecode}{\textcolor{compCAp!20!white}
 % 1er tableau : Nom/Code/Heures
 \begin{tabular}[t]{|P|Q|V|}
 \hline % 1ère ligne
-	\xdef\rescode{\csname Rcode\CODE\endcsname}
-	{\bfseries \hypertarget{res:\rescode}{Ressource \rescode}}
-	& \multicolumn{2}{l|}{\bfseries \csname Rname\CODE\endcsname}
+	\cellcolor{ressourceC} \xdef\rescode{\csname Rcode\CODE\endcsname}
+	\textcolor{compCAp!20!white}{\bfseries \hypertarget{res:\rescode}{Ressource \rescode}}
+	& \multicolumn{2}{l|}{\cellcolor{ressourceC} \textcolor{compCAp!20!white}{\bfseries \csname Rname\CODE\endcsname}}
 	\\
 \hline % 2ème ligne
 	%{\bfseries Code}
 	%& \csname Rcode\CODE\endcsname
 	%&
-	{\bfseries Semestre}
+	\textcolor{ressourceC}{\bfseries Semestre}
 	& \multicolumn{2}{l|}{\csname Rsem\CODE\endcsname} \\
 \hline % 3ème ligne Heures
 %{ \setlength{\extrarowheight}{0pt}
 %	\begin{tabular}[t]{@{}Q@{}} \bfseries Heures de formation \\ \bfseries encadrées \end{tabular}
 %}
 \hline
-{\bfseries Heures}
+\textcolor{ressourceC}{\bfseries Heures}
 &
-{\bfseries Formation encadrée}
+\textcolor{ressourceC}{\bfseries Formation encadrée}
 & {\csname Rtraining\CODE\endcsname}h, dont {\csname Rtp\CODE\endcsname}h de TP \\
 %& % {\bfseries dont heures de TP}
 %	{\bfseries dont TP}
@@ -40,13 +43,13 @@
 % 2ème tableau : compétences et apprentissages critiques
 \begin{tabular}[t]{|C|C|C|}
 \hline
-\multicolumn{3}{|c|}{\bfseries Compétence(s) ciblées, coefficient(s) et apprentissage(s) critique(s) couvert(s)} \\
+\multicolumn{3}{|c|}{\textcolor{ressourceC}{\bfseries Compétence(s) ciblées, coefficient(s) et apprentissage(s) critique(s) couvert(s)}} \\
 \hline
-	\textit{\csname Rcomp\CODE A\endcsname} | {\csname Rniveau\CODE A\endcsname}
+	\textcolor{ressourceC}{\textit{\csname Rcomp\CODE A\endcsname} | {\csname Rniveau\CODE A\endcsname}}
 	&
-	\textit{\csname Rcomp\CODE B\endcsname} | {\csname Rniveau\CODE B\endcsname}
+	\textcolor{ressourceC}{\textit{\csname Rcomp\CODE B\endcsname} | {\csname Rniveau\CODE B\endcsname}}
 	&
-	\textit{\csname Rcomp\CODE C\endcsname} | {\csname Rniveau\CODE C\endcsname}
+	\textcolor{ressourceC}{\textit{\csname Rcomp\CODE C\endcsname} | {\csname Rniveau\CODE C\endcsname}}
 \\
 \hline
 	\ifcsdef{Rcoeff\CODE A}{coeff. {\csname Rcoeff\CODE A\endcsname}}{} &
@@ -69,17 +72,17 @@
 % 3ème tableau : SAE, descriptif
 \begin{tabular}[t]{|P|T|}
 \hline
-{\bfseries SAÉ concernée(s) } & \listeSAE{\CODE} \\
+\textcolor{ressourceC}{\bfseries SAÉ concernée(s) } & \listeSAE{\CODE} \\
 \hline
-{\bfseries Prérequis} & \listePrerequis{\CODE} \\
+\textcolor{ressourceC}{\bfseries Prérequis} & \listePrerequis{\CODE} \\
 \hline
 % {\bfseries Descriptif } & \tableauDescriptif{\CODE} \\
-{\bfseries Descriptif } & \tableauChampLong{\csname Rancrage\CODE\endcsname} \\
+\textcolor{ressourceC}{\bfseries Descriptif } & \tableauChampLong{\csname Rancrage\CODE\endcsname} \\
 \hline
-{\bfseries Contenus } & \tableauChampLong{\csname Rcontenu\CODE\endcsname}
+\textcolor{ressourceC}{\bfseries Contenus } & \tableauChampLong{\csname Rcontenu\CODE\endcsname}
 \\
 \hline
-{\bfseries Mots-clés} & {\csname Rmotscles\CODE\endcsname} \\
+\textcolor{ressourceC}{\bfseries Mots-clés} & {\csname Rmotscles\CODE\endcsname} \\
 \hline
 
 \end{tabular}

@@ -14,30 +14,33 @@
 
 \def\gris{0.9} % La profondeur du gris
 
+\arrayrulecolor{exempleC}
+
 % 3ème tableau : descriptif
 \begin{tabular}[t]{|P|T|}
+
 \hline
 	%\cellcolor[gray]{\gris}
-    \xdef\saecode{\csname EScode\EXEMPLE\endcsname}
-	{\bfseries Exemple {\csname ESnumero\EXEMPLE\endcsname}} &
-		\hyperlink{sae:\saecode}{\saecode}~| {\csname ESsae\EXEMPLE\endcsname} \\
+    \xdef\exempleCode{\csname EScode\EXEMPLE\endcsname}
+	  \textcolor{exempleC}{\bfseries Exemple {\csname ESnumero\EXEMPLE\endcsname}} &
+		\hyperlink{sae:\exempleCode}{\textcolor{saeC}{\exempleCode}}~| {\csname ESsae\EXEMPLE\endcsname} \\
 \hline
 \hline
 	%\cellcolor[gray]{\gris}
-	\hypertarget{exemple:\exemplecode}{\bfseries Titre} &
-	\tableauChampLong{\bfseries \csname ESname\EXEMPLE\endcsname} \\
+	\cellcolor{exempleC}\hypertarget{exemple:\exemplecode}{\textcolor{compCAp!20!white}{\bfseries Titre}} &
+	\cellcolor{exempleC} \tableauChampLong{\textcolor{compCAp!20!white}{\bfseries \csname ESname\EXEMPLE\endcsname}} \\
 \hline
 \hline
 	{ \setlength{\extrarowheight}{0pt}
 	\begin{tabular}[t]{@{}P@{}}
-	{\bfseries Problématique} \\
-	{\bfseries professionnelle} \\
-	{\bfseries posée} \\
+	\textcolor{exempleC}{\bfseries Problématique} \\
+	\textcolor{exempleC}{\bfseries professionnelle} \\
+	\textcolor{exempleC}{\bfseries posée} \\
 	\end{tabular}
 } &
 	\tableauChampLong{\csname ESproblematique\EXEMPLE\endcsname} \\
 \hline
-	{\bfseries Description} &
+	\textcolor{exempleC}{\bfseries Description} &
 	\tableauChampLong{\csname ESdescription\EXEMPLE\endcsname} \\
 \hline
 \end{tabular}
@@ -46,19 +49,19 @@
 	\hline
 { \setlength{\extrarowheight}{0pt}
 	\begin{tabular}[t]{@{}P@{}}
-	{\bfseries Formes} \\
-	{\bfseries pédagogiques} \\
+	\textcolor{exempleC}{\bfseries Formes} \\
+	\textcolor{exempleC}{\bfseries pédagogiques} \\
 	\end{tabular}
 }
 & \tableauChampLong{\csname ESformes\EXEMPLE\endcsname} \\
 \hline
 { \setlength{\extrarowheight}{0pt}
 	\begin{tabular}[t]{@{}P@{}}
-	{\bfseries Modalités} \\
-	{\bfseries d'évaluation} \\
-	{\bfseries assurant l'acquisition} \\
-	{\bfseries du niveau de} \\
-	{\bfseries compétence visée} \\
+	\textcolor{exempleC}{\bfseries Modalités} \\
+	\textcolor{exempleC}{\bfseries d'évaluation} \\
+	\textcolor{exempleC}{\bfseries assurant l'acquisition} \\
+	\textcolor{exempleC}{\bfseries du niveau de} \\
+	\textcolor{exempleC}{\bfseries compétence visée} \\
 	\end{tabular}
 }
 & \tableauChampLong{\csname ESmodalite\EXEMPLE\endcsname} \\

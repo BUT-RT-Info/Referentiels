@@ -42,7 +42,7 @@
             \xdef\saecode{\csname Scode\currentSAE\endcsname}
             \xdef\saelink{\csname Slinkcode\currentSAE\endcsname}
             \xdef\saetitre{\csname Sname\currentSAE\endcsname}
-            {\bfseries \hyperlink{sae:\saecode}{\saecode}}
+            {\bfseries \hyperlink{sae:\saecode}{\textcolor{saeC}{\saecode}}}
             &
             {\bfseries {\saetitre}}
             \tabularnewline
@@ -51,7 +51,7 @@
                 \forLoop{1}{\value{cptSexemple\currentSAE}}{noexemple}{
                     \xdef\exemplecode{\currentSAE\Alph{noexemple}}
                     \xdef\titreexemple{\csname ESname\exemplecode\endcsname}
-                    \itshape \hyperlink{exemple:\exemplecode}{Exemple \arabic{noexemple}}~: \titreexemple
+                    \itshape \hyperlink{exemple:\exemplecode}{\textcolor{exempleC}{Exemple \arabic{noexemple}}}~: \titreexemple
                     \tabularnewline
                 }
             \end{tabular}
@@ -74,7 +74,7 @@
             \def\CODE{\sem\Alph{noressource}} % code de la SAE
             \xdef\rescode{\csname Rcode\CODE\endcsname}
             \xdef\resnom{\csname Rname\CODE\endcsname}
-            {\bfseries \hyperlink{res:\rescode}{\rescode}}
+            {\bfseries \hyperlink{res:\rescode}{\textcolor{ressourceC}{\rescode}}}
             &
                 {\resnom}
             \tabularnewline

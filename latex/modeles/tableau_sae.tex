@@ -6,33 +6,33 @@
 
 \setlength{\tabcolsep}{0.125cm} % Marge des colonnes
 \setlength{\extrarowheight}{2pt} % Marge des lignes
+\arrayrulecolor{saeC}
 
 % 1er tableau : Nom/Code/Semestre
 \begin{tabular}[t]{|P|Q|V|}
 \hline % 1ère ligne
 	\xdef\saecode{\csname Scode\CODE\endcsname}
 	\xdef\saelink{\csname Slinkcode\CODE\endcsname}
-	{\bfseries % SAÉ
+	\cellcolor{saeC} \textcolor{compCAp!20!white}{\bfseries % SAÉ
 	\hypertarget{sae:\saecode}{\saecode}}
 	& \multicolumn{2}{l|}{
-	\bfseries \csname Sname\CODE\endcsname
-	} \\
-\hline % 2ème ligne
+	\cellcolor{saeC}\textcolor{compCAp!20!white}{\bfseries \csname Sname\CODE\endcsname}} \\
+\hline \hline % 2ème ligne
 	% {\bfseries Code}
 	% & \csname Scode\CODE\endcsname
 	% &
-	{\bfseries Semestre}
+	\textcolor{saeC}{\bfseries Semestre}
 	& \multicolumn{2}{l|}{\csname Ssem\CODE\endcsname} \\
 	% & \csname Ssem\CODE\endcsname \\
 \hline
 \hline
-	{\bfseries Heures }
+	\textcolor{saeC}{\bfseries Heures }
 	&
-	{\bfseries Formation encadrée}
+	\textcolor{saeC}{\bfseries Formation encadrée}
 		& {\csname Straining\CODE\endcsname}h,
 			dont {\csname Stp\CODE\endcsname}h de TP \\
 \cline{2-3}
-	& {\bfseries Projet}
+	& \textcolor{saeC}{\bfseries Projet}
 		& {\csname Sprojet\CODE\endcsname}h \\
 %	{\bfseries Formation encadrée}
 %	& {\csname Straining\CODE\endcsname}h
@@ -58,9 +58,9 @@
 \hline
 { \setlength{\extrarowheight}{0pt}
 	\begin{tabular}[t]{@{}P@{}}
-	{\bfseries Objectifs et} \\
-	{\bfseries problématique} \\
-	{\bfseries professionnelle}
+	\textcolor{saeC}{\bfseries Objectifs et} \\
+	\textcolor{saeC}{\bfseries problématique} \\
+	\textcolor{saeC}{\bfseries professionnelle}
 	\end{tabular}
 }
 & \tableauChampLong{\csname Sdescriptif\CODE\endcsname} \\
@@ -70,13 +70,13 @@
 % 3ème tableau : compétences et apprentissages critiques
 \begin{tabular}[t]{|C|C|C|}
 \hline
-\multicolumn{3}{|c|}{\bfseries Compétence(s) ciblée(s), coefficient(s) et apprentissage(s) critique(s) couvert(s)} \\
+\multicolumn{3}{|c|}{\textcolor{saeC}{\bfseries Compétence(s) ciblée(s), coefficient(s) et apprentissage(s) critique(s) couvert(s)}} \\
 \hline
-	\textit{\csname Scomp\CODE A\endcsname} | {\csname Sniveau\CODE A\endcsname}
+	\hyperlink{comp:RT1}{\textcolor{compCA}{\textit{\csname Scomp\CODE A\endcsname}}} | {\csname Sniveau\CODE A\endcsname}
 	&
-	\textit{\csname Scomp\CODE B\endcsname} | {\csname Sniveau\CODE B\endcsname}
+	\hyperlink{comp:RT2}{\textcolor{compCB}{\textit{\csname Scomp\CODE B\endcsname}}} | {\csname Sniveau\CODE B\endcsname}
 	&
-	\textit{\csname Scomp\CODE C\endcsname} | {\csname Sniveau\CODE C\endcsname}
+	\hyperlink{comp:RT3}{\textcolor{compCC}{\textit{\csname Scomp\CODE C\endcsname}}} | {\csname Sniveau\CODE C\endcsname}
 \\
 \hline
 	\ifcsdef{Scoeff\CODE A}{coeff. {\csname Scoeff\CODE A\endcsname}}{} &
@@ -101,29 +101,29 @@
 \hline
 { \setlength{\extrarowheight}{0pt}
 	\begin{tabular}[t]{@{}P@{}}
-	{\bfseries Ressources mobilisées} \\
-	{\bfseries et combinées} \\
+	\textcolor{saeC}{\bfseries Ressources mobilisées} \\
+	\textcolor{saeC}{\bfseries et combinées} \\
 	\end{tabular}
 }
 & \listeRessources{\CODE} \\
 \hline
 { \setlength{\extrarowheight}{0pt}
 	\begin{tabular}[t]{@{}P@{}}
-	{\bfseries Type de livrable ou} \\
-	{\bfseries de production} \\
-	{\itshape (traces pour le} \\
-	{\itshape portfolio)} \\
+	\textcolor{saeC}{\bfseries Type de livrable ou} \\
+	\textcolor{saeC}{\bfseries de production} \\
+	\textcolor{saeC}{\itshape (traces pour le} \\
+	\textcolor{saeC}{\itshape portfolio)} \\
 	\end{tabular}
 }
 & \tableauChampLong{\csname Slivrables\CODE\endcsname} \\
 \hline
-{\bfseries Mots-clés} & {\csname Smotscles\CODE\endcsname} \\
+\textcolor{saeC}{\bfseries Mots-clés} & {\csname Smotscles\CODE\endcsname} \\
 \hline
 \hline
 { \setlength{\extrarowheight}{0pt}
 	\begin{tabular}[t]{@{}P@{}}
-	{\bfseries Exemples de} \\
-	{\bfseries mise en oeuvre} \\
+	\textcolor{saeC}{\bfseries Exemples de} \\
+	\textcolor{saeC}{\bfseries mise en oeuvre} \\
 	\end{tabular}
 }
 	&

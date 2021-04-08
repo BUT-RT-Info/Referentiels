@@ -1,0 +1,89 @@
+\newcommand\tableauCompetence[3]{
+
+\xdef\CNOM{#1} % Abbr de la compétence : CCA/CyberA
+\xdef\CTYPE{#2} % Type : C pour commun, S pour spécifique
+\xdef\CLETTRE{#3} % Letter
+
+\xdef\colorcomp{comp\CTYPE\CLETTRE}
+\xdef\textcolorcomp{comp\CTYPE\CLETTRE p}
+
+\arrayrulecolor{\colorcomp}
+\xdef\codecomp{\csname compcoderef\CNOM\endcsname}
+
+\begin{tabular}[t]{|P|T|}
+\hline
+{ \cellcolor{\colorcomp}\setlength{\extrarowheight}{0pt}
+	\begin{tabular}[t]{@{}P@{}}
+	\textcolor{\textcolorcomp}{\bfseries Compétence \hypertarget{comp:\codecomp}{\csname compcoderef\CNOM\endcsname}}
+	\end{tabular}
+}
+%& {\bfseries \csname compname\CNOM\endcsname} \\
+%\hline % Les composantes essentielles
+%{ \setlength{\extrarowheight}{0pt}
+	%\begin{tabular}[t]{@{}P@{}}
+	%{\bfseries Composantes} \\
+	%{\bfseries essentielles} \\
+	%\end{tabular}
+%}
+&
+{\setlength{\extrarowheight}{0pt}
+	\begin{tabular}[t]{@{}T@{}}
+	{\bfseries \csname compname\CNOM\endcsname} \\
+		\forLoop{1}{6}{noligne}{
+			\ifcsdef{componame\CNOM\Alph{noligne}}{
+					$\bullet$ en {\csname componame\CNOM\Alph{noligne}\endcsname} \tabularnewline
+				}{}%
+			}
+\end{tabular}%
+}
+\\
+\hline
+\hline
+{\cellcolor{\colorcomp!70!white}\textcolor{\textcolorcomp}{\bfseries Définition}}
+&
+\tableauChampLong{\csname compdef\CNOM\endcsname} 
+\\
+\hline
+\hline
+	{ \cellcolor{\colorcomp!70!white}\setlength{\extrarowheight}{0pt}
+		\begin{tabular}[t]{@{}P@{}}
+		\textcolor{\textcolorcomp}{\bfseries Situations} \\
+		\textcolor{\textcolorcomp}{\bfseries professionnelles} \\
+		\end{tabular}
+	}
+& 
+	{\setlength{\extrarowheight}{0pt}
+		\begin{tabular}[t]{@{}T@{}}
+			\forLoop{1}{6}{noligne}{
+				\ifcsdef{situproname\CNOM\Alph{noligne}}{
+						$\checkmark$ {\csname situproname\CNOM\Alph{noligne}\endcsname} \tabularnewline
+					}{}%
+				}
+		\end{tabular}%
+	}
+\\
+\hline\hline
+\forLoop{1}{3}{noligne}{
+	%{\bfseries Niveau } 
+		{ \cellcolor{\colorcomp!\csname niveaufill\Alph{noligne}\endcsname!white}\setlength{\extrarowheight}{0pt}
+		\begin{tabular}[t]{@{}P@{}}
+		\textcolor{\textcolorcomp}{\bfseries Niveau de} \\
+		\textcolor{\textcolorcomp}{\bfseries développement \arabic{noligne}} \\
+		\end{tabular}
+	  }
+		&
+		{ \setlength{\extrarowheight}{0pt}
+			\begin{tabular}[t]{@{}T@{}}
+			{\bfseries \csname niveaudesc\CNOM\Alph{noligne}\endcsname} \\
+				\forLoop{1}{6}{noac}{
+           			\ifcsdef{apprdesc\CNOM\Alph{noligne}\Alph{noac}}{
+							{\csname apprcoderef\CNOM\Alph{noligne}\Alph{noac}\endcsname}~| \csname apprdesc\CNOM\Alph{noligne}\Alph{noac}\endcsname \tabularnewline
+					}{}
+				}			
+			\end{tabular}
+		}
+	\tabularnewline \hline\hline
+}
+\end{tabular}
+
+}
