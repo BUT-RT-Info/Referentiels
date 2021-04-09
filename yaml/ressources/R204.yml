@@ -1,0 +1,50 @@
+nom: Initiation à la téléphonie d'entreprise
+code: R204
+semestre: 2
+heures_formation: 30
+heures_tp: 15
+coeffs:
+  RT1: 8
+  RT2: 4
+  RT3: 0
+acs:
+  RT1:
+  - AC0113
+  - AC0115
+  - AC0116
+  RT2:
+  - AC0213
+  RT3:
+  - AC0311
+sae:
+- SAÉ24
+prerequis:
+- R101
+- R103
+contexte: >-
+  Cette ressource a pour objectif de donner aux étudiants les compétences de mise en œuvre d'un système
+  téléphonique d'entreprise. Il permettra d'aborder les différents types de téléphonie (hors téléphonie
+  mobile) utilisés de nos jours, que ce soit sur un réseau dédié (téléphonie analogique, numérique) ou
+  un réseau partagé (ToIP). Une découverte des services téléphoniques utiles à la communication dans l'entreprise
+  sera réalisée, ainsi qu'une première approche des réseaux publics existants.
+
+  En fonction du contexte local, on pourra orienter l'étude vers un réseau téléphonique mixte (TDM/IP)
+  ou ToIP.
+contenu: >-
+  * Présentation des principes généraux de la téléphonie.
+
+  * Numérisation, utilisation de codecs en téléphonie, et transport de la voix.
+
+  * Scénario d'un appel de base.
+
+  * Architectures des réseaux publics et privés (commutation, signalisation, services, normes de câblage,
+    PoE).
+
+  * Installation d'un système téléphonique d'entreprise (insertion/raccordement de postes, connexion au
+    réseau de l'opérateur).
+
+  * Configuration d'un système téléphonique d'entreprise et de ses services associés.
+
+  On veillera à relier chaque contenu à des problématiques de sécurité informatique.
+motscles: IPBX, PABX, TDM/IP, Postes et services téléphoniques, Visiophonie, Plan de numérotation, Réseaux
+  téléphoniques publics

@@ -70,6 +70,7 @@ for sem in ["S1", "S2"]:
     M1 = ressource.get_matrices_ac_ressource(saes, ressources, sem)
     chaine = ressource.str_matrice(M1, saes, ressources, sem)
     #print(chaine)
+    print(str_matrice(M1, saes, ressources, sem))
 
     chaine = ressource.to_latex_matrice_acs(M1, saes, ressources, sem)
     REPERTOIRE_SYNTHESE = "../latex/synthese"

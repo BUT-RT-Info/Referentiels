@@ -3,16 +3,22 @@ import unicodedata
 
 __LOGGER = logging.getLogger(__name__)
 
-# Récupère les informations officielles sur les ressources (code/nom)
+# Récupère les informations officielles
+## Les ressources
 with open("pn/ressources.yml", 'r', encoding="utf8") as fid:
     DATA_RESSOURCES = yaml.load(fid.read(), Loader=yaml.Loader)
-# Récupère les données officielles des ACs
+## Les ACS
 with open("pn/acs.yml", 'r', encoding="utf8") as fid:
     DATA_ACS = yaml.load(fid.read(), Loader=yaml.Loader)
+## Les SAEs
 with open("pn/saes.yml", 'r', encoding="utf8") as fid:
     DATA_SAES = yaml.load(fid.read(), Loader=yaml.Loader)
+## Les compétences
 with open("../yaml/competences/RT123.yml", 'r', encoding="utf8") as fid:
     DATA_COMPETENCES = yaml.load(fid.read(), Loader=yaml.Loader)
+## Les abbréviations
+with open("../yaml/abbreviations.yml", "r", encoding="utf8") as fid:
+    DATA_ABBREVIATIONS = yaml.load(fid.read(), Loader=yaml.Loader)
 
 def supprime_accent_espace(chaine):
     """Met en minuscule, supprime les accents, les ponctuations et les espaces"""

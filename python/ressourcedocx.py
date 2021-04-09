@@ -74,7 +74,7 @@ class Docx():
         mots = self.mots  # .encode('utf8', 'ignore').decode('utf8')
         mots = mots.replace(".", "").replace(";", ",")
         liste_mots = mots.split(",")
-        liste_mots = [l.strip() for l in liste_mots] # supprime les espaces inutiles
+        liste_mots = [l.strip() for l in liste_mots if l.strip()] # supprime les espaces inutiles et les lignes vides
         mots = ", ".join(liste_mots)
         self.mots = mots
 

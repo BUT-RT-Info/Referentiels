@@ -14,7 +14,7 @@
 \hline
 { \cellcolor{\colorcomp}\setlength{\extrarowheight}{0pt}
 	\begin{tabular}[t]{@{}P@{}}
-	\textcolor{\textcolorcomp}{\bfseries Compétence \hypertarget{comp:\codecomp}{\csname compcoderef\CNOM\endcsname}}
+	\textcolor{\textcolorcomp}{\bfseries Compétence \hypertarget{comp:\codecomp}{\codecomp}}
 	\end{tabular}
 }
 %& {\bfseries \csname compname\CNOM\endcsname} \\
@@ -39,13 +39,13 @@
 \\
 \hline
 \hline
-{\cellcolor{\colorcomp!70!white}\textcolor{\textcolorcomp}{\bfseries Définition}}
+{\cellcolor{\colorcomp}\textcolor{\textcolorcomp}{\bfseries Définition}}
 &
 \tableauChampLong{\csname compdef\CNOM\endcsname} 
 \\
 \hline
 \hline
-	{ \cellcolor{\colorcomp!70!white}\setlength{\extrarowheight}{0pt}
+	{ \cellcolor{\colorcomp}\setlength{\extrarowheight}{0pt}
 		\begin{tabular}[t]{@{}P@{}}
 		\textcolor{\textcolorcomp}{\bfseries Situations} \\
 		\textcolor{\textcolorcomp}{\bfseries professionnelles} \\
@@ -77,12 +77,12 @@
 			{\bfseries \csname niveaudesc\CNOM\Alph{noligne}\endcsname} \\
 				\forLoop{1}{6}{noac}{
            			\ifcsdef{apprdesc\CNOM\Alph{noligne}\Alph{noac}}{
-							{\csname apprcoderef\CNOM\Alph{noligne}\Alph{noac}\endcsname}~| \csname apprdesc\CNOM\Alph{noligne}\Alph{noac}\endcsname \tabularnewline
+							{\textcolor{\colorcomp}{\csname apprcoderef\CNOM\Alph{noligne}\Alph{noac}\endcsname}}~| \csname apprdesc\CNOM\Alph{noligne}\Alph{noac}\endcsname \tabularnewline
 					}{}
 				}			
 			\end{tabular}
 		}
-	\tabularnewline \hline\hline
+	\tabularnewline \hline
 }
 \end{tabular}
 

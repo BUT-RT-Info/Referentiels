@@ -1,0 +1,34 @@
+A:
+  ACL: Access Control List
+  ANSSI: Agence nationale de la sécurité des systèmes d'information
+C:
+  CIDR: Classless Inter-Domain Routing
+D:
+  DHCP: Dynamic Host Configuration Protocol
+  DNS: Domain Name System
+F:
+  FTP: File Transfer Protocol
+H:
+  HTTP: Hypertext Transfer Protocol
+I:
+  IP: Internet Protocol
+  IPBX: Internet Protocol Private Branch eXchange
+N:
+  NAT: Network Address Translation
+  NDP: Neighbor Discovery Protocol
+  NTP: Network Time Protocol
+O:
+  OSPF: Open Shortest Path First
+P:
+  PABX: Private Automatic Branch Exchange
+  PAT: Port Address Translation
+  PoE: Power over Ethernet
+T:
+  TCP: Transmission Control Protocol
+  TDM: Time Division Multiplexing
+  TFTP: Trivial File Transfer Protocol
+  ToIP: Telephony over Internet Protocol
+U:
+  UDP: User Datagram Protocol
+V:
+  VLSM: Variable-Length Subnet Masking
