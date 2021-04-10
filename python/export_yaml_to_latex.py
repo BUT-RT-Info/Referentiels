@@ -1,16 +1,38 @@
-import ressource
-from ressource import *
 import os
-import officiel
-
+import argparse
 import logging
+
+from config import Config
+
 __LOGGER = logging.getLogger(__name__)
 
-REPERTOIRE_TEMP = "export"
-REPERTOIRE_RESSOURCES_DEFINITIVES = "../yaml/ressources"
-REPERTOIRE_SAE_DEFINITIVES = "../yaml/saes"
-REPERTOIRE_LATEX_RESSOURCES = "../latex/ressources"
-REPERTOIRE_LATEX_SAES = "../latex/saes"
+
+parser = argparse.ArgumentParser(description="Conversion des YAML en LaTeX")
+parser.add_argument(
+    "-a", 
+    "--all", 
+    action="store_true", 
+    help="exporte le LaTeX complet"
+    )
+parser.add_argument(
+    "-r", 
+    "--root", 
+    default="..", 
+    help="repertoire de base (racine) pour chercher les fichiers de données"
+    )
+args = parser.parse_args()
+Config.ROOT = args.root
+
+import ressource
+from ressource import *
+import officiel
+
+REPERTOIRE_TEMP = Config.ROOT + "/python/export"
+REPERTOIRE_RESSOURCES_DEFINITIVES = Config.ROOT + "/yaml/ressources"
+REPERTOIRE_SAE_DEFINITIVES = Config.ROOT + "/yaml/saes"
+REPERTOIRE_LATEX_RESSOURCES = Config.ROOT + "/latex/ressources"
+REPERTOIRE_LATEX_SAES = Config.ROOT + "/latex/saes"
+REPERTOIRE_SYNTHESE = Config.ROOT + "/latex/synthese"
 
 # Chargement des ressources : depuis les versions définitives du répertoire yaml d'abord,
 # puis dans python/export si manquantes
@@ -73,7 +95,6 @@ for sem in ["S1", "S2"]:
     print(str_matrice(M1, saes, ressources, sem))
 
     chaine = ressource.to_latex_matrice_acs(M1, saes, ressources, sem)
-    REPERTOIRE_SYNTHESE = "../latex/synthese"
     fichierlatex = REPERTOIRE_SYNTHESE + "/" + f"{sem}_acs_vs_saes_ressources.tex"
     with open(fichierlatex, "w", encoding="utf8") as fid:
         fid.write(chaine)
@@ -94,8 +115,10 @@ for sem in ["S1", "S2"]:
         fid.write(chaine)
     print(f"Export de {fichierlatex}")
 
-## Export latex divers
-if False:
+## Export latex divers (désactivé par défaut pour gagner du temps)
+if not args.all:
+    __LOGGER.warning(f"{sys.argv[0]}: reduced version (use -a to get full docs)")
+else:
     # Export latex des ressources
     for sem in ressources:
         for r in ressources[sem]:

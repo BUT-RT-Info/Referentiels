@@ -1,16 +1,47 @@
 
-import docx2python
-from ressourcedocx import *
-from tools import *
-
+import sys
+import argparse
 import logging
-__LOGGER = logging.getLogger(__name__)
+import docx2python
 
+from config import Config
+
+__LOGGER = logging.getLogger(__name__)
 REPERTOIRE = "import"
-DOCUMENT = "sae_v1"
+
+parser = argparse.ArgumentParser(
+    description="Parse doc ressources et crée SAE", 
+    usage='%(prog)s [options]'
+    )
+parser.add_argument(
+    "DOCUMENT", 
+    nargs="?", 
+    default=REPERTOIRE + "/" + "ressources_v0" + ".docx"
+    )
+parser.add_argument(
+    "-o", 
+    "--outdir", 
+    default="export", 
+    help="repertoire resultat, defaut: export"
+    )
+parser.add_argument(
+    "-r", 
+    "--root", 
+    default="..", 
+    help="repertoire de base (racine) pour chercher les fichiers de données"
+    )
+args = parser.parse_args()
+Config.ROOT = args.root
+
+__LOGGER.warning(f"{sys.argv[0]} processing {args.DOCUMENT}")
+__LOGGER.warning(f"{sys.argv[0]} outputs to {args.outdir}")
+
+# Ces imports doivent être faits après la config
+from tools import *
+from ressourcedocx import *
 
 # Ouverture du document
-docu = docx2python.docx2python(REPERTOIRE + "/" + DOCUMENT + ".docx")
+docu = docx2python.docx2python(args.DOCUMENT)
 
 docu = docu.body
 docu[0] # Titre général
@@ -200,7 +231,8 @@ for sem in saes:
      for s in saes[sem]:
          output = s.to_yaml()
          if s.code:
-             fichier = "export/{}.yml".format(s.code.replace("É", "E"))
+             code_clean = s.code.replace("É", "E")
+             fichier = f"{args.outdir}/{code_clean}.yml"
              with open(fichier, "w", encoding="utf8") as fid:
                  fid.write(output)
 
@@ -208,7 +240,8 @@ for sem in exemples:
      for s in exemples[sem]:
          for (i, e) in enumerate(exemples[sem][s]):
             output = e.to_yaml()
-            fichier = "export/{}_exemple{}.yml".format(s.replace("É", "E"), i+1)
+            code_clean = s.replace("É", "E")
+            fichier = f"{args.outdir}/{code_clean}_exemple{i+1}.yml"
             with open(fichier, "w", encoding="utf8") as fid:
                 fid.write(output)
 

@@ -3,6 +3,8 @@ import string
 import pypandoc
 import ruamel.yaml
 
+from config import Config
+
 from modeles import get_modele, TemplateLatex
 from officiel import *
 from ressourcedocx import remove_ligne_vide
@@ -22,7 +24,7 @@ class Ressource():
             except:
                 Ressource.__LOGGER.warning(f"Pb de chargement de {fichieryaml}")
 
-    def to_latex(self, modele="pn/modele_ressource.tex"):
+    def to_latex(self, modele=Config.ROOT+"/python/pn/modele_ressource.tex"):
         """Génère le code latex décrivant la ressource"""
         modlatex = get_modele(modele) #"pn/modele_ressource.tex")
 
@@ -149,7 +151,7 @@ class SAE():
 
 
 
-    def to_latex(self, modele="pn/modele_sae.tex"):
+    def to_latex(self, modele=Config.ROOT+"/python/pn/modele_sae.tex"):
         """Génère le code latex décrivant la ressource"""
         modlatex = get_modele(modele) #"pn/modele_ressource.tex")
 
@@ -233,7 +235,7 @@ class ExempleSAE():
             except:
                 Ressource.__LOGGER.warning(f"Pb de chargement de {fichieryaml}")
 
-    def to_latex(self, modele="pn/modele_exemple_sae.tex"):
+    def to_latex(self, modele=Config.ROOT+"/python/pn/modele_exemple_sae.tex"):
         """Génère le code latex décrivant la ressource"""
         modlatex = get_modele(modele) #"pn/modele_ressource.tex")
 
