@@ -7,33 +7,33 @@ problematique: >-
 description: >-
   On pourra faire un focus particulier sur les points suivants:
 
-  * L'arnaque au faux support technique
+  * L'arnaque au faux support technique;
 
-  * Les attaques en déni de service (DDoS)
+  * Les attaques en déni de service (DDoS);
 
-  * Chantage à l'ordinateur ou à la webcam prétendus piratés
+  * Chantage à l'ordinateur ou à la webcam prétendus piratés;
 
-  * L'escroquerie aux faux ordres de virement (FOVI)
+  * L'escroquerie aux faux ordres de virement (FOVI);
 
-  * La défiguration de site internet
+  * La défiguration de site Internet;
 
-  * Les fausses offres d'emploi créées par des fraudeurs
+  * Les fausses offres d'emploi créées par des fraudeurs;
 
-  * La fraude à la carte bancaire
+  * La fraude à la carte bancaire;
 
-  * L'hameçonnage (phishing en anglais)
+  * L'hameçonnage (*phishing* en anglais);
 
-  * Le piratage de compte
+  * Le piratage de compte;
 
-  * Le piratage de compte de l'espace d'un recruteur
+  * Le piratage de compte de l'espace d'un recruteur;
 
-  * Les propositions d'emploi non sollicitées
+  * Les propositions d'emploi non sollicitées;
 
-  * Les rançongiciels (ransomwares en anglais)
+  * Les rançongiciels (*ransomwares* en anglais);
 
-  * Le spam électronique
+  * Le spam électronique;
 
-  * Le spam téléphonique
+  * Le spam téléphonique.
 
   On pourra également utiliser les supports: 
 
@@ -41,7 +41,10 @@ description: >-
 
   * MOOC ANSSI: [https://secnumacademie.gouv.fr/](https://secnumacademie.gouv.fr/)
 formes: >-
-  TP, projet
+  * TP, projet;
+
+  * Appropriation du portfolio par l'étudiant, avec temps prévus pour qu'il y synthétise sa production technique
+    et son analyse argumentée.
 modalite: >-
   L'étudiant doit démontrer qu'il est capable de présenter de façon claire, concise et vulgarisée les
   menaces et attaques employées communément sur les réseaux numériques. L'étudiant doit illustrer par

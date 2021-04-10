@@ -131,10 +131,10 @@ Aucun
 	% {\bfseries Ancrage et contexte professionnel :} \\
 	\forLoop{1}{\value{cptSexemple\CODE}}{noligne}{
 		\xdef\exemplecode{\csname EScodeE\CODE\Alph{noligne}\endcsname}
-		\xdef\titreexemple{\csname ESname\exemplecode\endcsname}
-		\xdef\contenu{\titreexemple}
-        \hyperlink{exemple:\exemplecode}{\textcolor{exempleC}{Exemple \arabic{noligne}}}~: \contenu
-        \tabularnewline
+		%\xdef\titreexemple
+		%\xdef\contenu{\titreexemple}
+    \hyperlink{exemple:\exemplecode}{\textcolor{exempleC}{Exemple \arabic{noligne}}}~: {\csname ESname\exemplecode\endcsname}
+    \tabularnewline
 	}
 	\end{tabular}
 }

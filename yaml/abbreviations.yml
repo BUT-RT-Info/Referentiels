@@ -1,34 +1,116 @@
 A:
   ACL: Access Control List
+  ADSL: Asymmetric Digital Subscriber Line
+  ALU: Arithmetic and Logic Unit
   ANSSI: Agence nationale de la sécurité des systèmes d'information
+  API: Application Programming Interface
+  APC: Approche Par Compétence
+  ARP: Address Resolution Protocol
+B:
+  BDD: Base De Données
 C:
+  CAN: Convertisseur Analogique-Numérique
+  CC: Copie Carbone
+  CCi: Copie Carbone invisible
+  CEM: Compatibilité ÉlectroMagnétique
+  CNA: Convertisseur Numérique-Analogique
+  CNIL: Commission Nationale de l'Informatique et des Libertés
   CIDR: Classless Inter-Domain Routing
+  CSS: Cascading Style Sheets
+  CSV: Comma-Separated Values
+  CV: Curriculum Vitae
 D:
+  DDoS: Distributed Denial of Service
   DHCP: Dynamic Host Configuration Protocol
+  DMZ: DeMilitarized Zone
   DNS: Domain Name System
+  DOM: Document Object Model
+  DSI: Direction des Systèmes d'Information
+  DSP: Densité Spectrale de Puissance
+  DAB: Digital Audio Broadcasting
+  DVB-S: Digital Video Broadcasting Satellite
+  DVB-T: Digital Video Broadcasting Terrestre
+E:
+  EMILE: Enseignement d'une Matière par l'Intégration d'une Langue Etrangère
 F:
+  FFT: Fast Fourier Transform
+  FM: Frequency Modulation
+  FO: Fibre Optique
+  FOVI: Faux Ordres de Virements Internationaux
   FTP: File Transfer Protocol
+G:
+  GBF: Générateur de Basses Fréquences
+  GPIO: General Purpose Input/Output
 H:
+  HiFi: High Fidelity
+  HTML: HyperText Markup Language
   HTTP: Hypertext Transfer Protocol
 I:
+  ICMP: Internet Control Message Protocol
+  IMAP: Internet Message Access Protocol
   IP: Internet Protocol
   IPBX: Internet Protocol Private Branch eXchange
+J:
+  JSON: JavaScript Object Notation
+L:
+  LAN: Local Area Network
+  LED: Light-Emitting Diode
+M:
+  MAC: Media Access Control
+  MOOC: Massive Open Online Course
 N:
+  NAS: Network Attached Storage
   NAT: Network Address Translation
   NDP: Neighbor Discovery Protocol
   NTP: Network Time Protocol
 O:
+  OS: Operating System
   OSPF: Open Shortest Path First
 P:
   PABX: Private Automatic Branch Exchange
   PAT: Port Address Translation
+  PC: Personnal Computer
+  PERT: Program Evaluation and Review Technology
+  PME: Petite et Moyenne Entreprise
   PoE: Power over Ethernet
+  POP: Post Office Protocol
+  PPP: Projet Professionnel et Personnel
+  PXE: Pre-boot eXecution Environment
+Q:
+  QCM: Questionnaire à Choix Multiples
+R:
+  RGPD: Règlement Général pour la Protection des Données
+  RSTP: Rapid Spanning Tree Protocol
+  RTP: Real-Time Transport Protocol
+S:
+  SGBD: Système de Gestion de Bases de Données
+  SMTP: Simple Mail Transfer Protocol
+  SQL: Structured Query Language
+  SSH: Secure SHell
+  STP: Spanning Tree Protocol
 T:
+  TELNET: TELecommunication NETwork
   TCP: Transmission Control Protocol
   TDM: Time Division Multiplexing
   TFTP: Trivial File Transfer Protocol
   ToIP: Telephony over Internet Protocol
+  TV: TéléVision
 U:
   UDP: User Datagram Protocol
+  UML: Unified Modeling Language
+  URL: Uniform Resource Locator
+  USB: Universal Serial Bus
 V:
+  VLAN: Virtual Local Area Network
   VLSM: Variable-Length Subnet Masking
+  VM: Virtual Machine
+  VRF: Virtual Routing Forwarding
+  VTP: VLAN Trunking Protocol
+X:
+  xDSL: x Digital Subscriber Line
+  XML: eXtensible Markup Language
+  XSS: cross-Site Scripting
+digits:
+  2D: deux Dimensions
+  3D: trois Dimensions
+  4G: 4th Generation

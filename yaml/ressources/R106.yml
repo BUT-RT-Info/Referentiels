@@ -1,0 +1,34 @@
+nom: Architecture des systèmes numériques et informatiques
+code: R106
+semestre: 1
+heures_formation: 24
+heures_tp: 12
+coeffs:
+  RT1: 10
+acs:
+  RT1:
+  - AC0112
+  RT3:
+  - AC0311
+sae:
+- SAÉ12
+- SAÉ15
+prerequis: Aucun
+contexte: >-
+  Cette ressource apporte le socle de connaissances et savoir-faire pour les compétences de cœur de métier
+  "Administrer les réseaux et l'Internet" (RT1) et " Créer des outils et applications informatiques pour
+  les R&T" (RT3).
+
+  Les systèmes informatiques et numériques sont au cœur de la spécialité Réseaux et Télécoms. Cette ressource
+  vise tout d'abord à permettre la compréhension du codage et du stockage des données. Puis elle permet
+  de comprendre de façon très fine le comportement interne des systèmes numériques avec notamment des
+  notions de temps d'exécution. Enfin elle permettra aux étudiants de relier ces systèmes au monde extérieur.
+contenu: >-
+  * Codage des nombres, des caractères, des images.
+
+  * Fonctions logiques - Logique combinatoire et séquentielle  - Notion d'ALU.
+
+  * Structure d'un processeur - Différents types de mémoires.
+
+  * Périphériques et entrées-sorties (par ex : GPIO, liaison série).
+motscles: Nombres binaires, Codage, Fonctions logiques, Processeur, ALU

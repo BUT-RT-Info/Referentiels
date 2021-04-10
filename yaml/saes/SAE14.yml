@@ -1,0 +1,37 @@
+titre: Se présenter sur Internet
+code: SAÉ14
+semestre: 1
+heures_encadrees: 10
+tp: 8
+projet: 12
+description: >-
+  L'identité numérique professionnelle prend une place de plus en plus importante dans la carrière d'un
+  professionnel R&T : elle  joue un rôle dans sa recherche d'emploi avec la valorisation de ses expériences
+  professionnelles comme personnelles. Elle peut également intervenir en entreprise : certaines prévoient
+  - dans un annuaire sur l'intranet - des “pages personnelles” renseignées par les salariés pour y présenter
+  leurs activités et dynamiser les interactions entre collaborateurs. Elle contribue également à développer
+  son réseau professionnel et social, avec lequel il peut partager ses centres d'intérêt. 
+
+  Le professionnel R&T doit donc savoir se présenter sur Internet, tout en mesurant l'importance et la
+  portée des contenus qu'il diffuse (e-réputation, segmentation vie privée/vie publique, …).
+coeffs:
+  RT3: 16
+acs:
+  RT3:
+  - AC0311
+  - AC0314
+ressources:
+- R108
+- R109
+- R110
+- R111
+- R112
+- R115
+livrables: >+
+  * Dossier ou rapport d'étude
+
+  * Prototype
+
+  * Grille de suivi
+
+motscles: Identité numérique, site Web

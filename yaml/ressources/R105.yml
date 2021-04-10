@@ -1,0 +1,29 @@
+nom: Supports de transmission pour les réseaux locaux
+code: R105
+semestre: 1
+heures_formation: 12
+heures_tp: 6
+coeffs:
+  RT2: 5
+acs:
+  RT2:
+  - AC0211
+  - AC0213
+sae:
+- SAÉ13
+prerequis: Aucun
+contexte: >-
+  Cette ressource apporte les bases de connaissances et savoir-faire techniques pour la compétence "connecter
+  les entreprises et les usagers"  à travers les apprentissages critiques "mesurer et analyser les signaux"  et
+  "déployer des supports de transmission".
+
+  Il s'agit d'étudier les concepts fondamentaux des supports de transmission.  
+contenu: >-
+  * Types de support de transmission (réseau d'entreprise, réseau opérateur)
+
+  * Caractéristiques d'un ou plusieurs types de supports (par ex : retard de propagation, atténuation,
+    continuité, échos, bruit, perturbations, identifier un défaut, bande passante,... ) à partir de mesures
+    et d'analyse des signaux
+
+  * Prolongement possible : recettage, certification LAN.
+motscles: Supports de transmission (fibre optique, cuivre, radio), Mesures

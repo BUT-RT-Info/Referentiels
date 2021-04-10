@@ -105,9 +105,34 @@ class Ressource():
                                                        contenu=contenu,
                                                    )
         # chaine = chaine.replace("&", "\&")
-
+        # Supprime les \\tighlist ajoutés par pypandoc
         chaine = chaine.replace("\\tightlist\n", "")
+        chaine = ajoute_abbr_latex(chaine)
+
+        # Insère les abbréviations
         return chaine
+
+
+def contient_abbr(chaine):
+    mots = []
+    for lettre in DATA_ABBREVIATIONS:
+        for mot in DATA_ABBREVIATIONS[lettre]:
+            if mot in chaine:
+                mots.append(mot)
+    mots = sorted(mots, key=lambda m: len(m), reverse=True) # les mots triés par nbre de carac décroissant
+    return mots
+
+def ajoute_abbr_latex(chaine):
+    """Parse la chaine latex pour ajouter les abbréviations"""
+    mots = chaine.split(" ")
+    for (i, mot) in enumerate(mots):
+        abbrs = contient_abbr(mot)
+        if abbrs:
+            mots[i] = mots[i].replace(abbrs[0], "\\texttt{" + abbrs[0] + "}")
+    chaine = " ".join(mots)
+    if "/IP" in chaine:
+        chaine = chaine.replace("/IP", "/\\texttt{IP}")
+    return chaine
 
 
 class SAE():
@@ -193,6 +218,7 @@ class SAE():
         # chaine = chaine.replace("&", "\&")
 
         chaine = chaine.replace("\\tightlist\n", "")
+        chaine = ajoute_abbr_latex(chaine)
         return chaine
 
 class ExempleSAE():
@@ -229,7 +255,7 @@ class ExempleSAE():
 
         # préparation de la problématique
         problematique = self.exemple["problematique"]
-        if not formes:
+        if not problematique:
             problematique = ""
             ExempleSAE.__LOGGER.warning(f"{self.exemple['titre']} n'a pas de problematique")
         else:
@@ -237,7 +263,7 @@ class ExempleSAE():
 
         # préparation des modalites
         modalite = self.exemple["modalite"]
-        if not formes:
+        if not modalite:
             modalite = ""
             ExempleSAE.__LOGGER.warning(f"{self.exemple['titre']} n'a pas de modalite")
         else:
@@ -253,6 +279,7 @@ class ExempleSAE():
         # chaine = chaine.replace("&", "\&")
 
         chaine = chaine.replace("\\tightlist\n", "")
+        chaine = ajoute_abbr_latex(chaine)
         return chaine
 
 def md_to_latex(contenu):

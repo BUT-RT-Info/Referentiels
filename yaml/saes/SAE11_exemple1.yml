@@ -8,42 +8,45 @@ description: >-
   On pourra faire un focus particulier sur les points suivants:
 
   * Protégez vos accès avec des mots de passe solides; en TP on peut mettre en place l'usage d'un gestionnaire
-    de mot de passe tel que Keepass (multi-plateformes windows, linux, mac, android, iphone/ipad)
+    de mot de passe tel que Keepass (multi-plateformes Windows, Linux, Mac, Android, iPhone/iPad);
 
-  * Sécurité numérique : sauvegardez vos données régulièrement
+  * Sécurité numérique : sauvegardez vos données régulièrement;
 
   * Appliquez les mises à jour de sécurité sur tous vos appareils (PC, tablettes, téléphones…), et ce,
-    dès qu'elles vous sont proposées
+    dès qu'elles vous sont proposées;
 
-  * Utilisez un antivirus
+  * Utilisez un antivirus;
 
-  * Téléchargez vos applications uniquement sur les sites officiels
+  * Téléchargez vos applications uniquement sur les sites officiels;
 
-  * Sécurité numérique : méfiez-vous des messages inattendus
+  * Sécurité numérique : méfiez-vous des messages inattendus;
 
-  * Vérifiez les sites sur lesquels vous faites des achats
+  * Vérifiez les sites sur lesquels vous faites des achats;
 
-  * Maîtrisez vos réseaux sociaux
+  * Maîtrisez vos réseaux sociaux;
 
-  * Séparez vos usages personnels et professionnels
+  * Séparez vos usages personnels et professionnels;
 
   * Sécurité numérique : évitez les réseaux WiFi publics ou inconnus; il est possible de faire un TP (démo)
-    sur l'usage d'un faux point d'accès WiFi et de collecter des identifiants de réseaux sociaux, ….
+    sur l'usage d'un faux point d'accès WiFi et de collecter des identifiants de réseaux sociaux, …;
 
-  * Analysez les trames non chiffrées des protocoles (telnet, ftp, smtp, pop, imap, rtp, …) avec wireshark,
+  * Analysez les trames non chiffrées des protocoles (TELNET, FTP, SMTP, POP, IMAP, RTP, …) avec Wireshark,
     en extraire des champs significatifs avec Analyse/Follow/TCP Stream (ou HTTP Stream). On peut utiliser
-    un site web (création personnelle ou sur Internet) contenant un formulaire d'enregistrement
-    (ex: [http://www.supportduweb.com/signup.html](http://www.supportduweb.com/signup.html))
+    un site Web (création personnelle ou sur Internet) contenant un formulaire d'enregistrement
+    (ex: [http://www.supportduweb.com/signup.html](http://www.supportduweb.com/signup.html));
 
-  * Utilisez des outils de codage de l'information (ex: [https://www.dcode.fr/fr](https://www.dcode.fr/fr))
+  * Utilisez des outils de codage de l'information (ex: [https://www.dcode.fr/fr](https://www.dcode.fr/fr)).
 
-  On pourra également utiliser les supports:
+  On pourra également utiliser les supports :
 
   * Cybermalveillance: [https://www.cybermalveillance.gouv.fr/bonnes-pratiques](https://www.cybermalveillance.gouv.fr/bonnes-pratiques)
 
   * MOOC ANSSI: [https://secnumacademie.gouv.fr/](https://secnumacademie.gouv.fr/)
 formes: >-
-  TP, projet
+  * TP, projet;
+
+  * Appropriation du portfolio par l'étudiant, avec temps prévus pour qu'il y synthétise sa production technique
+    et son analyse argumentée.
 modalite: >-
   L'étudiant doit démontrer qu'il est capable de présenter de façon claire, concise et vulgarisée les
   risques et les bons usages des outils numériques tel que pourrait le faire un responsable d'un service

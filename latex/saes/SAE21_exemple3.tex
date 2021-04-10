@@ -1,0 +1,81 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Exemple de SAE
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\nouvelexemple{Installation automatisée de postes clients}
+
+\ajoutESproblematique{Les entreprises qui proposent des formations sont contraintes de
+réinstaller les ordinateurs ayant servis lors de ces stages
+(applications spécifiques d'une formation à une autre\ldots). Le service
+informatique de l'entreprise confie à l'étudiant qui endosse le rôle d'
+``Assistant administrateur réseau'' la mission d'automatiser le
+déploiement des systèmes d'exploitation sur les postes clients de la
+salle de formation.}
+
+\ajoutESdescription{
+Il s'agit d'explorer les techniques classiques d'installation système.
+Ces techniques peuvent se décliner avec plusieurs systèmes
+d'exploitation différents (GNU/Linux, Solaris, Aix, OpenBSD, NetBSD,
+FreeBSD, GNU-Hurd) et peuvent s'adapter à l'installation de matériel
+embarqué quand le bootloader (U-boot) est accessible. La mise en oeuvre
+comprend :
+\begin{itemize}
+\item
+  Démarrage réseau (\texttt{PXE}) pour charger un bootloader (\texttt{PXE} Linux).
+\item
+  Configuration d'un serveur \texttt{TFTP} (\texttt{tftpd-hpa}).
+\item
+  Modification du fichier de configuration pour choisir le mode
+  (utilisation normale / installation).
+\item
+  Installation manuelle pour créer le fichier de réponses.
+\item
+  Installation du fichier de réponses sur un serveur web (disponible ou
+  installé).
+\item
+  Utiliser des stratégies pour partitionner le disque dur.
+\item
+  Adaptation des clés d'identifications des ordinateurs.
+\end{itemize}
+A minima, deux ordinateurs (physiques et/ou virtuels) sont nécessaires :
+un serveur et un client.
+}
+
+\ajoutESformes{De façon individuelle ou collective, sur des heures encadrées et non
+encadrées, l'étudiant ou l'équipe, sera confronté aux formes
+pédagogiques suivantes :
+\begin{itemize}
+\item
+  Mise en place un serveur \texttt{TFTP} et permettre aux machines clientes de
+  démarrer sur le réseau (\texttt{PXE}) pour
+  récupérer une image du système d'exploitation.
+\item
+  Élaboration d'une méthode efficace pour tester progressivement la
+  configuration réalisée.
+\item
+  Utilisation d'outils de diagnostics.
+\item
+  Rédaction de fiches opératoires (notice d'utilisation).
+\end{itemize}}
+
+
+
+\ajoutESmodalite{\vspace{-5pt}
+\begin{itemize}
+\item
+  Déploiement opérationnel et répondant aux problématiques suivantes :
+  \begin{itemize}
+  \item
+    Le stagiaire peut-il ouvrir une session sur le système
+    d'exploitation ?
+  \item
+    Le stagiaire bénéficie t-il d'un environnement informatique conforme
+    aux besoins de sa formation ?
+  \end{itemize}
+\item
+  Documentation : les procédures sont-elles applicables par une autre
+  équipe ?
+\item
+  Réunions : présentation finale (soutenance) de la solution mise en
+  place.
+\end{itemize}}

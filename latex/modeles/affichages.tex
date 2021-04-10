@@ -7,6 +7,7 @@
 \newcounter{noexemple}
 \newcounter{noac}
 \newcommand{\affichageSAE}[1]{
+		% \addcontentsline{toc}{subsection}{Fiches SAÉs}
     \xdef\sem{#1}
 
     \forLoop{1}{\value{cptS\sem}}{nosae}{ % Pour chaque SAE
@@ -50,8 +51,9 @@
             \begin{tabular}{p{13cm}}
                 \forLoop{1}{\value{cptSexemple\currentSAE}}{noexemple}{
                     \xdef\exemplecode{\currentSAE\Alph{noexemple}}
-                    \xdef\titreexemple{\csname ESname\exemplecode\endcsname}
-                    \itshape \hyperlink{exemple:\exemplecode}{\textcolor{exempleC}{Exemple \arabic{noexemple}}}~: \titreexemple
+                    %\xdef\titreexemple{\csname ESname\exemplecode\endcsname}
+                    \itshape \hyperlink{exemple:\exemplecode}{\textcolor{exempleC}{Exemple \arabic{noexemple}}}~: 
+										{\csname ESname\exemplecode\endcsname}
                     \tabularnewline
                 }
             \end{tabular}

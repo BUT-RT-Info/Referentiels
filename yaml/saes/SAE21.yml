@@ -1,0 +1,39 @@
+titre: Construire un réseau informatique pour une petite structure
+code: SAÉ21
+semestre: 2
+heures_encadrees: 10
+tp: 8
+projet: 12
+description: >-
+  Le professionnel R&T peut être sollicité pour construire et mettre en place le réseau informatique d'une
+  entreprise. L'objectif de cette SAE est d'amener l'étudiant à répondre aux besoins de commutation, de
+  routage, de services réseaux de base et de sécurité formulés par une petite structure multisite. Ce
+  réseau s'appuie sur des équipements et des services informatiques incontournables mais fondamentaux
+  pour fournir à la structure un réseau fonctionnel et structuré.
+coeffs:
+  RT1: 23
+acs:
+  RT1:
+  - AC0112
+  - AC0113
+  - AC0114
+  - AC0115
+  - AC0116
+ressources:
+- R101
+- R102
+- R103
+- R108
+- R201
+- R202
+- R203
+livrables: >-
+  * Maquette du projet
+
+  * Dossier ou rapport décrivant l'architecture physique, les VLAN, l'adressage IP, les principaux points
+    de vérification du projet, des captures de trafic et différents scénarios permettant de valider les
+    contraintes du cahier des charges (scénarios de routage, d'accès aux ressources publiques de l'entreprise...)
+
+  * Vidéo de démonstration du fonctionnement
+motscles: Adressage IP, VLAN, VTP, routage inter-VLAN, NAT, PAT, ACL, DNS, HTTP, SSH, routage (vecteur
+  de distance / état de lien), PXE, TFTP

@@ -1,0 +1,73 @@
+titre: Application Web pour un prestataire
+code: SAÉ23
+semestre: 2
+problematique: >-
+  Le professionnel R&T peut être amené à développer des applications Web, sous forme de sites Web manipulables
+  grâce à un navigateur Web : elles peuvent être destinées à ses collaborateurs pour mettre facilement
+  à leur disposition un outil informatique ; elles peuvent aussi être le cœur de métier de son entreprise
+  avec des applications destinées à des clients/commanditaires.
+
+  Cette SAÉ propose à l'étudiant de s'initier au développement d'une application Web en le plaçant dans
+  un contexte de réponse à un appel d'offres : un client cherche un prestataire pour développer une application
+  remplissant un cahier des charges précis : par exemple, une solution pour cartographier son matériel
+  de réseau local sous la forme d'un site web.
+description: >-
+  Partant des spécifications fournies par le client, l'étudiant devra proposer, développer un prototype
+  de l'application puis présenter le travail réalisé devant le jury de sélection du prestataire. L'étudiant devra mettre en place de son environnement de travail, choisir et utiliser
+  les technologies Web adéquates pour produire son site Web, mettre en place
+  la gestion des données du site et programmer leur traitement.
+
+  La SAÉ pourra être réalisée par un groupe de 2 étudiants. 
+
+  Partant d'un cahier des charges fourni, et pour un binôme d'étudiants, la SAé pourra être mise en oeuvre
+  avec différentes étapes :
+
+  * Phase 1 : mise en place de l'environnement de développement
+
+    * Utilisation d'une machine virtuelle ou accès à distance aux ressources (par ex : ferme ESX,
+      Proxmox, Guacamole, Docker, ...), partage par clés USB
+
+    * Installation ou utilisation d'un serveur web non chiffré (type Nginx ou Apache)
+
+    * Utilisation possible d'un framework python (Django, Flask) ou JavaScript (jQuery), java (play), etc…
+
+  * Phase 2 : réalisation documentée incluant :
+
+    * Algorithmique (script serveur, dépôt de codes)
+
+    * Technologie Web (HTML, CSS)
+
+    * Base de données avec manipulation de données (ajout, suppression, modification)
+
+  * Phase 3 : présentation du prototype devant le jury de sélection avec rédaction d'un rapport
+
+  Le travail demandé pourra inclure *a minima* un livrable en anglais (commentaires des codes, vidéo, présentation
+  ou documentation).
+
+  Transformations attendues chez l'étudiant :
+
+  * Apprendre en autonomie
+
+  * Apprendre à apprendre
+
+  * Initiation et découverte des architectures applicatives
+
+  * Apprendre à valoriser son travail
+formes: >-
+  TP, Projet, Serious game
+modalite: >+
+  * Site fonctionnel et dynamique
+
+  * Documentation technique, informative
+
+  * Tutoriel d'installation, d'utilisation
+
+  * Dépôt du code
+
+  * Démonstration
+
+  * Présentation de l'outil utilisé pour le développement
+
+  * Méthode de validation (exemple : cahier de tests, tests unitaires)
+
+...

@@ -27,11 +27,11 @@ contexte: >-
   numériques.
 contenu: >-
   * Comprendre la notion de signal numérique, et le principe de la numérisation et de la restitution de
-    signaux analogique
+    signaux analogique.
 
-  * Échantillonnage des signaux : choix d'une fréquence adéquate d'échantillonnage
+  * Échantillonnage des signaux : choix d'une fréquence adéquate d'échantillonnage.
 
-  * Quantification des signaux – Erreur de quantification
+  * Quantification des signaux – Erreur de quantification.
 
   * Filtre Anti-repliement et filtre de restitution.
-motscles: Numérisation, échantillonnage, quantification, acquisition/restitution, CAN et CNA
+motscles: Numérisation, Échantillonnage, Quantification, Acquisition/restitution, CAN et CNA

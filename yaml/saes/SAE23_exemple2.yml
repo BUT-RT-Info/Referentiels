@@ -1,0 +1,65 @@
+titre: Application Web à usage interne de l'entreprise
+code: SAÉ23
+semestre: 2
+problematique: >-
+  Le professionnel R&T peut être sollicité pour développer un outil informatique répondant aux besoins
+  de ses collaborateurs (par ex: une solution de cartographie du matériel de l'entreprise, une interface
+  de gestion des informations sur le personnel pour les ressources humaines, …). Il peut choisir de concevoir
+  cet outil sous forme d'un site Web ; l'outil sera ainsi facilement accessible des utilisateurs, grâce
+  à un simple navigateur Web. Le professionnel doit alors - en plus du développement - documenter les
+  fonctionnalités de son outil et former les utilisateurs à son utilisation.
+description: >+
+  Cette SAÉ propose à l'étudiant de s'initier au développement d'une telle application Web. Partant des
+  besoins utilisateurs, l'étudiant devra :
+
+  * mettre en place de son environnement de travail;
+
+  * choisir et utiliser les technologies Web adéquates pour produire son site Web,
+    mettre en place la gestion des données du site et programmer leur traitement;
+
+  * présenter le travail réalisé aux utilisateurs pour les former à son utilisation, certains utilisateurs
+    pouvant être anglophones.
+
+  La SAÉ pourra être réalisée par un groupe de 2 étudiants. 
+
+  Partant d'un cahier des charges fourni, et pour un binôme d'étudiants, la SAÉ pourra être mise en oeuvre
+  avec différentes étapes :
+
+  * Phase 1 : mise en place de l'environnement de développement
+
+    * Utilisation d'une machine virtuelle ou accès à distance aux ressources (par ex : ferme ESX,
+      Proxmox, Guacamole, Docker, ...), partage par clés USB
+
+    * Installation ou utilisation d'un serveur web non chiffré (type Nginx ou Apache)
+
+    * Utilisation possible d'un *framework* python (Django, Flask) ou JavaScript (jQuery), Java (play), etc…
+
+  * Phase 2 : réalisation documentée incluant :
+
+    * Algorithmique (script serveur, dépôt de codes)
+
+    * Technologie Web (HTML, CSS)
+
+    * Base de données avec manipulation de données (ajout, suppression, modification)
+
+  * Phase 3 : organisation d'une session de formation en anglais à l'application Web auprès des collaborateurs
+    de la société, avec documentation de l'application en anglais
+formes: TP, projet
+modalite: >+
+  * Site fonctionnel et dynamique
+
+  * Données manipulées dans une BDD (ajout, suppression, modification)
+
+  * Documentation technique, informative
+
+  * Tutoriel d'installation, d'utilisation
+
+  * Dépôt du code
+
+  * Démonstration
+
+  * Présentation de l'outil utilisé pour le développement
+
+  * Méthode de validation (exemple : cahier de tests, tests unitaires)
+
+...

@@ -1,0 +1,47 @@
+nom: Principes et architecture des réseaux
+code: R102
+semestre: 1
+heures_formation: 27
+heures_tp: 15
+coeffs:
+  RT1: 12
+acs:
+  RT1:
+  - AC0114
+  - AC0115
+sae:
+- SAÉ11
+- SAÉ12
+prerequis:
+- R101
+- R106
+contexte: >-
+  Cette ressource a pour objectif de donner à l'étudiant un cadre commun et intégratif de l'ensemble des
+  mécanismes nécessaires au fonctionnement des réseaux informatiques. Ce cadre général est essentiel,
+  et sert de référence à l'ensemble des autres ressources réseaux. 
+
+  Elle participe principalement à la compétence RT1 "Administrer les réseaux et l'Internet" à travers la
+  compréhension et l'utilisation de la partie réseau des systèmes d'exploitation, la compréhension de
+  l'interopérabilité des systèmes via les protocoles réseaux, ainsi que les notions de services rendus
+  et de performance du réseau.
+contenu: >-
+  * Approche en couches et encapsulation.
+
+  * Étude détaillée des protocoles Ethernet, ARP, ICMP.
+
+  * Découverte des protocoles IPv4, IPv6, ICMPv6, TCP, UDP et des protocoles applicatifs.
+
+  * Topologies de réseaux.
+
+  * Principes de normalisation des technologies de l'Internet.
+
+  * Notions sur les métriques de performances: débit, fiabilité, gigue, taux de pertes.
+
+  Outils préconisés : logiciels du type Wireshark, GNS3, Packet Tracer, `scapy`, Marionnet.
+
+  Des éléments relatifs à la sécurité et aux risques informatiques et réseaux seront progressivement introduits
+  au travers des différents contenus étudiés afin que ces éléments deviennent une préoccupation routinière.
+  Les éléments de cybersécurité pourront être abordés via des exemples tels que l'*arp-spoofing*, la prise
+  d'empreintes via ICMP, des captures, la génération et analyse de trames. Des liens avec les aspects sécurité
+  informatique et réseaux mentionnés en R101 seront également faits.
+motscles: Architecture en couches, Topologies, Protocoles, Modèle TCP/IP

@@ -1,0 +1,46 @@
+titre: Déployer le système d'information d'une petite entreprise, filiale d'une entreprise internationale
+code: SAÉ24
+semestre: 2
+problematique: >-
+  L'étudiant se met dans le rôle d'agent d'une société locale de services du numérique. Il est contacté
+  par une entreprise qui lui passe une commande : refaire une partie du système et réseau.
+
+  Sa mission consiste à :
+
+  * Déployer le réseau d'une petite entreprise;
+
+  * Donner l'accès au système d'information de l'entreprise aux nouveaux utilisateurs;
+
+  * Partager les documents de l'entreprise sur le réseau local;
+
+  * Former les employés de l'entreprise à l'utilisation du système et à l'hygiène informatique.
+description: >-
+  L'étudiant devra installer des équipements réseaux, déployer un serveur d'entreprise et les postes clients.
+
+  Il devra ensuite créer une dizaine de comptes utilisateurs ainsi que les accès aux fichiers partagés
+  pour quelques postes d'un réseau local. Il devra en assurer le bon fonctionnement et la maintenance.
+
+  Il devra également maîtriser le vocabulaire technique en anglais et savoir communiquer avec les autres
+  filiales de l'entreprise internationale.
+formes: >-
+  De façon individuelle ou collective, sur des heures encadrées et non encadrées,  l'étudiant ou l'équipe,
+  sera confronté aux  formes pédagogiques suivantes  :
+
+  * Création d'un réseau et l'administration du système de manière physique et/ou virtuelle;
+
+  * Entretiens oraux en anglais avec les utilisateurs de la maison mère pour résoudre un problème simple
+    d'utilisation;
+
+  * Rédaction de fiches opératoires (notice d'utilisation) en français et en anglais;
+
+  * Audit d'évaluation par les pairs en aveugle;
+
+  * Organisation de réunions en français et en anglais (présentations et formation, dont les bonnes pratiques
+    en matière de sécurité).
+modalite: >-
+  * Réseau entreprise : opérationnel (un utilisateur lambda peut-il se connecter et accéder aux applications
+    et documents de l'entreprise ?).
+
+  * Notices : les procédures sont-elles applicables par une autre équipe ?
+
+  * Réunions : présentation finale (soutenance) du système mis en place, en français et/ou en anglais.

@@ -1,0 +1,30 @@
+titre: Mesurer et caractériser un signal ou un système
+code: SAÉ22
+semestre: 2
+heures_encadrees: 10
+tp: 10
+projet: 12
+description: >-
+  Dans cette SAÉ, l'étudiant saura mobiliser les compétences pour analyser des signaux d'un système de
+  transmission, les exploiter, et les présenter sous forme d'un bilan à un client ou un collaborateur.
+coeffs:
+  RT2: 19
+acs:
+  RT2:
+  - AC0211
+  - AC0212
+  - AC0213
+  - AC0215
+ressources:
+- R104
+- R113
+- R114
+- R205
+- R206
+- R213
+- R214
+livrables: >-
+  * Rapport écrit;
+
+  * Présentation orale des performances mesurées.
+motscles: Spectre, Puissance, Décibels, Sensibilité, Atténuation, Gain

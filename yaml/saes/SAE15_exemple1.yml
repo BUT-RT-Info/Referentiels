@@ -1,0 +1,81 @@
+titre: Collecter, traiter, présenter et publier des données
+code: SAÉ15
+semestre: 1
+problematique: >-
+  Cette SAÉ place l'étudiant dans le contexte d'un premier projet de développement informatique. Le projet
+  traite d'une activité fréquemment demandée au professionnel R&T : mettre à disposition de ses collaborateurs
+  une information extraite de différentes sources de données, par exemple :
+
+  * le recensement des équipements informatiques, des services, des personnels;
+
+  * l'état de réservations des salles mutualisées dans un bâtiment;
+
+  * une synthèse de l'utilisation du réseau ou d'un de ses services, en travaillant sur des fichiers journaux
+    (logs);
+
+  * la visibilité de l'entreprise sur différents sites ou pages Web.
+
+  Dans ce contexte, le professionnel R&T est amené à collecter des données, les traiter pour en extraire
+  une représentation exploitable/parlante, puis en publier la présentation. L'objectif global est d'automatiser
+  au mieux les différentes étapes de son travail.
+description: >-
+  L'étudiant s'initiera aux différentes étapes d'un projet informatique : la mise en place de son environnement
+  de travail pour un système d'exploitation donné, la programmation du traitement des données (en s'appuyant
+  sur les fondamentaux de programmation voire en explorant des bibliothèques spécifiques éventuellement
+  en anglais) et la présentation de ses résultats via un site Web. Il pourra s'appuyer sur les techniques
+  de gestion de projet..
+
+  Il sera demandé à l'étudiant (individuellement ou en petit groupe) de traiter des données simples (ne
+  nécessitant pas une structuration complexe dans le code informatique ni une base de données), avec différentes
+  étapes : 
+
+  * Préparer l'environnement de travail pour accès à distance aux ressources :
+
+    * mise en place de l'arborescence;
+
+    * installation/configuration des outils pour le développement;
+
+    * vérification de la connectivité, des droits d'accès;
+
+    * mise en place et configuration d'un système de versionnement (par ex: git, svn), etc.
+
+  * Acquérir des données (locales ou distantes) en les enregistrant dans un fichier texte (en se focalisant
+    sur des données relativement simples à traiter). Les données pourront par exemple provenir :
+
+    * de sites web ;
+
+    * d'API, par exemple l'API Google pour cartographie permettant de traiter des données de géolocalisation,
+      ou des sources ouvertes;
+
+    * de commandes locales (état de la machine) ou réseaux (état du réseau).
+
+  * Traiter les données pour préparer les éléments nécessaires à leur publication en se documentant (au
+    besoin sur des bibliothèques spécifiques). Le traitement pourra par exemple consister à :
+
+    * isoler/choisir/organiser les informations pertinentes;
+
+    * extraire des statistiques (moyennes, histogrammes);
+
+    * produire des représentations “graphiques” (nuage de mots, tableaux comparatifs);
+
+  * Générer un document pour présenter les données collectées et le publier :
+
+    * le document pourra être un fichier texte simple ou structuré (page Markdown voire page Web statique);
+
+    * le document sera ensuite publié sur un serveur distant (en utilisant par exemple un serveur web non
+      sécurisé);
+
+    * la publication (c'est-à-dire l'action de déposer le document lui-même) pourra être automatisée par
+      un script, par exemple en déployant une archive dans le dossier public d'un serveur web. (Remarque :
+      il ne s'agit pas ici de créer une présentation/une page Web dynamique dépendant d'une requête).
+formes: >-
+  Travaux pratiques, projet.
+modalite: >-
+  * Codes informatiques développés : l’étudiant devra fournir l’ensemble de scripts et de codes
+    informatiques, permettant la réalisation fonctionnelle du travail demandé. Sa production devra
+    être documentée, dans le code et dans un compte rendu des étapes d’installation et de configuration
+    qu’il aura réalisé.
+
+  * Démonstration de l’installation, de l’accès, de la validité et de la cohérence des données présentées.
+    Il devra également y expliquer sa démarche, ses choix d’implémentation, les analyses et outils
+    mathématiques et scientifiques utilisés pour présenter les données et interpréter les résultats obtenus.

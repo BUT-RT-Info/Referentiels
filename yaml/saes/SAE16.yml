@@ -1,0 +1,77 @@
+titre: Portfolio
+code: SAÉ16
+semestre: 1
+heures_encadrees: 3
+tp: 3
+projet: 0
+description: >+
+  Au sein d'un dossier et quels qu'en soient la forme, l'outil ou le support, l'objectif d'un portfolio
+  est de permettre à l'apprenant d'adopter une posture qui, loin d'être déclarative, est fondamentalement
+  réflexive et critique vis-à-vis des compétences acquises ou en voie d'acquisition. Autrement dit, au
+  sein du portfolio, l'apprenant documente et analyse sa trajectoire de développement en mobilisant des
+  traces, des preuves issues de l'ensemble des mises en situation professionnelle (SAÉ) qu'il a vécues.
+
+  Le portfolio est un élément structurant des formations en Approche Par Compétence (APC). En effet, le
+  portfolio :
+
+  * soutient l'apprentissage par la constitution d'un dossier de traces (échantillon de preuves, sélectionnées
+    par l'étudiant dans le but de de rendre compte d'apprentissages aboutissant à la maîtrise progressive
+    d'un domaine de compétences);
+
+  * permet la validation et la certification de savoir-agir complexes tout au long du parcours de formation;
+
+  * favorise l'auto-détermination du parcours de formation de l'étudiant et qu'il accompagne son parcours
+    d'insertion professionnelle (permet également de cultiver son identité numérique à savoir la présentation
+    et le choix de rendre public des documents sur soi.
+
+  En outre, en tant qu'il suppose un engagement de la part de l'apprenant lui-même, le portfolio soutient
+  le développement des compétences et l'individualisation du cursus de formation.
+
+  Aussi le portfolio est-il fondamentalement à penser comme un processus continu porté par chaque apprenant
+  au cours duquel il prend pleinement conscience de ce qu'il a ou non acquis, et des ajustements nécessaires
+  à opérer au regard du référentiel de compétences et des objectifs de la formation.
+
+  La SAÉ s'appuiera sur les outils portfolio mis en place par l'établissement: carnet papier, document bureautique
+  ou logiciel dédié.
+
+  Consistant en une analyse réflexive des mises en situation professionnelle vécues (SAÉ), le portfolio nécessite
+  la mobilisation et la combinaison de ressources telles que l’expression et la communication. Et parce que cette
+  démarche portfolio repose sur une démonstration par l’apprenant de sa professionnalisation, le portfolio s’appuie
+  nécessairement sur le PPP en tant que ressource.
+
+  Aussi, parallèlement à ses objectifs traditionnels issus de l’expérience acquise dans le cadre du DUT, le PPP
+  devra, tel un fil conducteur, permettre à l’étudiant d’être guidé dans la compréhension et l’appropriation de
+  son cursus de formation, ainsi que dans la méthodologie d’écriture du portfolio.
+
+  L'étudiant consacrera du temps dans chaque SAÉ à la mise à jour de son portfolio.
+coeffs:
+  RT1: 0
+  RT2: 0
+  RT3: 0
+acs:
+  RT1:
+    - AC0111
+    - AC0112
+    - AC0113
+    - AC0114
+    - AC0115
+    - AC0116
+  RT2:
+    - AC0211
+    - AC0212
+    - AC0213
+    - AC0214
+    - AC0215
+  RT3:
+    - AC0311
+    - AC0312
+    - AC0313
+    - AC0314
+    - AC0315
+    - AC0316
+ressources:
+- R111
+- R112
+livrables: >+
+  Portfolio : *ensembles de traces et de preuves de l'acquisition des compétences*.
+motscles: Portfolio, Compétences

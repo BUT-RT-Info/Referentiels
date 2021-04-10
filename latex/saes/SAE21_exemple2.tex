@@ -1,0 +1,117 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Exemple de SAE
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\nouvelexemple{Construire un réseau d'entreprise avec des services de base et des règles de sécurité}
+
+\ajoutESproblematique{L'étudiant se met dans le rôle d'une société locale de services du
+numérique, il est contacté par une entreprise qui lui passe une commande
+: déployer un réseau d'entreprise dans le nouveau siège de la société.\\
+Sa mission consiste à :
+\begin{itemize}
+\item
+  Proposer et mettre en place une infrastructure de réseau d'entreprise
+  dotée de services réseaux et
+  de règles de sécurité.
+\item
+  Mettre en place une \texttt{DMZ} pour héberger les serveurs publics de
+  l'entreprise.
+\item
+  Configurer l'accès à Internet.
+\item
+  Mettre en place des règles de sécurité.
+\item
+  Produire une documentation technique sur la solution déployée.
+\end{itemize}}
+
+\ajoutESdescription{
+L'objectif de cette SAÉ est de mettre en œuvre un réseau d'entreprise
+basé sur une architecture segmentée en \texttt{VLAN} qui intègre différents
+services réseaux. Certaines applications serveur (\texttt{HTTP}, \texttt{DHCP}, \texttt{SSH})
+seront à installer et à configurer par l'étudiant et d'autres seront
+préalablement configurées (\texttt{DNS} notamment).\\
+Le concept de \texttt{DMZ} sera abordé et les mécanismes de translation d'adresse
+statique et dynamique seront traités. L'initiation au filtrage de flux
+sera également amenée au travers de cette séquence d'apprentissage.\\
+Un outil d'émulation est préférable à une solution matérielle afin que
+l'exercice puisse être construit progressivement au fur et à mesure des
+séances. Les logiciels d'émulation comme GNS3, VIRL, EVE-NG peuvent être
+utilisés et complétés avec VirtualBox ou \texttt{VM}ware. Il faut aussi que ces
+outils soient mis à disposition des étudiants pour qu'ils puissent
+continuer le projet en dehors des heures encadrées.\\
+L'étudiant doit adopter une approche de type projet et découper son
+travail en tâches. Il devra valider chaque étape par des tests adaptés
+avant de passer à la suivante. Les résultats (fichiers de logs,
+résultats de commandes, acquisition de trames\ldots) obtenus devront
+être justifiés.\\
+L'infrastructure réseau est volontairement simple afin que l'étudiant
+puisse se concentrer sur des concepts fondamentaux. Cette architecture
+est constituée de 2 commutateurs d'accès (L2), d'un commutateur de
+distribution (L3) qui assure le routage inter-\texttt{VLAN} et d'un routeur
+passerelle qui fait office de pare-feu. Les services réseaux \texttt{HTTP}, DNS,
+\texttt{DHCP} et \texttt{SSH} sont installés sur des machines virtuelles.\\
+A partir du cahier des charges fourni, l'étudiant sera amené à réaliser
+différentes activités dont voici quelques exemples :
+\begin{itemize}
+\item
+  Plan d'adressage.
+\item
+  Création des \texttt{VLAN}.
+\item
+  Routage inter-\texttt{VLAN}.
+\item
+  Mise en place de \texttt{VM}.
+\item
+  Accès à Internet.
+\item
+  Configuration du serveur \texttt{DHCP}, \texttt{SSH} et \texttt{HTTP}.
+\item
+  Ajout d'entrées au serveur \texttt{DNS}.
+\item
+  Configuration du pare-feu (une règle de filtrage).
+\end{itemize}
+}
+
+\ajoutESformes{De façon individuelle ou collective, sur des heures encadrées et non
+encadrées, l'étudiant ou l'équipe, sera confronté aux formes
+pédagogiques suivantes :
+\begin{itemize}
+\item
+  Création d'un réseau segmenté en \texttt{VLAN} avec mise en place d'une \texttt{DMZ} et
+  de services réseaux
+\item
+  Élaboration d'une méthode efficace pour tester progressivement la
+  configuration réalisée.
+\item
+  Utilisation d'outils de diagnostics et analyse des résultats
+\item
+  Rédaction de fiches opératoires (notice d'utilisation).
+\end{itemize}}
+
+
+
+\ajoutESmodalite{\vspace{-5pt}
+\begin{itemize}
+\item
+  Réseau d'entreprise opérationnel répondant aux problématiques
+  suivantes :
+  \begin{itemize}
+  \item
+    un utilisateur interne à l'entreprise peut-il bénéficier des
+    services \texttt{HTTP}, \texttt{DNS} et \texttt{DHCP} internes et
+    se connecter à Internet.
+  \item
+    un utilisateur lambda peut-il accéder au serveur \texttt{HTTP} de
+    l'entreprise depuis Internet ?
+  \item
+    l'administrateur réseau de l'entreprise peut-il gérer les
+    équipements à l'aide d'une connexion \texttt{SSH}
+    dans l'entreprise et hors de l'entreprise ?
+  \end{itemize}
+\item
+  Documentation : les procédures sont-elles applicables par une autre
+  équipe ?
+\item
+  Réunions : présentation finale (soutenance) de la solution mise en
+  place.
+\end{itemize}}

@@ -1,0 +1,51 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Exemple de SAE
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\nouvelexemple{Configuration d'un RaspberryPi connecté}
+
+\ajoutESproblematique{Il s'agit de configurer un RaspberryPI pour que l'on puisse le
+programmer sans avoir à toujours y brancher un écran et un clavier mais
+en y accédant simplement en \texttt{SSH}, peu important le réseau sur lequel il
+est connecté. On peut placer sur le Raspberry une \texttt{LED} qui s'allumerait
+et pour les plus avancés une photoRésistance (avec un pont diviseur
+entre photorésistance et une résistance de 10kOhms) pour récupérer la
+valeur de la luminosité ambiante.}
+
+\ajoutESdescription{
+La SAÉ va servir de base pour de futures SAE plus poussées en IoT ou en
+réseaux.\\
+Les étapes à réaliser seraient les suivantes :
+\begin{itemize}
+\item
+  Connecter un Raspberry PI avec un clavier un écran et récupérer son
+  adresse \texttt{MAC}.
+\item
+  Changer le login et le mot de passe par défaut.
+\item
+  Activer \texttt{SSH} sur le Raspberry PI. Récupérer l'adresse \texttt{IP} en \texttt{DHCP}. Voir
+  comment accéder en \texttt{SSH}.
+\item
+  Débrancher le Raspberry PI et le brancher sur un autre réseau
+  ailleurs. Puis utiliser les commandes
+  \texttt{SSH} pour retrouver l'adresse de la carte sur le nouveau réseau et
+  communiquer avec elle.
+\item
+  Utiliser via \texttt{SSH} le Raspberry PI pour allumer la \texttt{LED} qui est connectée
+  et pour les plus avancés récupérer
+  la valeur du capteur (Photorésistance) pour évaluer la luminosité dans
+  la pièce où on a placé la carte.
+\end{itemize}
+}
+
+\ajoutESformes{}
+
+
+
+\ajoutESmodalite{\vspace{-5pt}
+\begin{itemize}
+\item
+  Compte-rendu;
+\item
+  et/ou vidéo de démonstration.
+\end{itemize}}

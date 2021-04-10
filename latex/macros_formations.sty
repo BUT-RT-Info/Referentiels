@@ -132,7 +132,9 @@
 	\xdef\currentRac{\Alph{cptRac\currentRressource\currentRcomp}} % La lettre de l'ac pour la comp dans la ressource
 	
 	\expandafter\xdef\csname Raccode\currentRressource\currentRcomp\currentRac\endcsname{#1} % le nom de la comp
-	\expandafter\xdef\csname Racname\currentRressource\currentRcomp\currentRac\endcsname{#2} % le nom de la comp
+	\begingroup\let\+\relax
+	\expandafter\gdef\csname Racname\currentRressource\currentRcomp\currentRac\endcsname{#2} % le nom de la comp
+	\endgroup
 }
 
 % ****************************
@@ -159,7 +161,9 @@
 % ****************************
 % Ajout des mots-clés
 \def\ajoutRmotscles#1{
-	\expandafter\xdef\csname Rmotscles\currentRressource\endcsname{#1} % descriptif
+	\begingroup\let\+\relax
+	\expandafter\gdef\csname Rmotscles\currentRressource\endcsname{#1} % descriptif
+	\endgroup
 }
 
 
@@ -232,7 +236,9 @@
 	\xdef\currentSac{\Alph{cptSac\currentSsae\currentScomp}} % La lettre de l'ac pour la comp dans la ressource
 
 	\expandafter\xdef\csname Saccode\currentSsae\currentScomp\currentSac\endcsname{#1} % le nom de la comp
-	\expandafter\xdef\csname Sacname\currentSsae\currentScomp\currentSac\endcsname{#2} % le nom de la comp
+	\begingroup\let\+\relax
+	\expandafter\gdef\csname Sacname\currentSsae\currentScomp\currentSac\endcsname{#2} % le nom de la comp
+	\endgroup
 }
 
 % ****************************
@@ -256,7 +262,9 @@
 % ****************************
 % Ajout des mots-clés
 \def\ajoutSmotscles#1{
-	\expandafter\xdef\csname Smotscles\currentSsae\endcsname{#1} % mots-clés
+	\begingroup\let\+\relax
+	\expandafter\gdef\csname Smotscles\currentSsae\endcsname{#1} % mots-clés
+	\endgroup
 }
 
 % *********************************************
@@ -267,7 +275,9 @@
 	\def\currentESsae{\currentSsae\Alph{cptSexemple\currentSsae}} %
 
 	\expandafter\xdef\csname ESsae\currentESsae\endcsname{\csname Sname\currentSsae\endcsname} % nom de la SAE
-	\expandafter\xdef\csname ESname\currentESsae\endcsname{#1} % nom/intitule
+	\begingroup\let\+\relax
+	\expandafter\gdef\csname ESname\currentESsae\endcsname{#1} % nom/intitule
+	\endgroup
 	\expandafter\xdef\csname EScode\currentESsae\endcsname{\csname Scode\currentSsae\endcsname} % le code de la SAE
 	\expandafter\xdef\csname EScodeE\currentESsae\endcsname{\currentESsae} % le code de l'exemple
 	\expandafter\xdef\csname ESnumero\currentESsae\endcsname{\arabic{cptSexemple\currentSsae}} % le code de l'exemple

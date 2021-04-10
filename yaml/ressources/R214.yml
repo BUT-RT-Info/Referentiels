@@ -1,0 +1,59 @@
+nom: Analyse mathématique des signaux
+code: R214
+semestre: 2
+heures_formation: 30
+heures_tp: 6
+coeffs:
+  RT1: 3
+  RT2: 9
+acs:
+  RT1:
+  - AC0111
+  RT2:
+  - AC0211
+  - AC0212
+sae:
+- SAÉ22
+- SAÉ24
+prerequis:
+- R113
+- R114
+contexte: >-
+  L'étude des signaux de transmission nécessite l'usage d'outils mathématiques de base, en particulier
+  la dérivation, l'intégration (calcul de puissance, de valeur efficace, de valeur moyenne). Les systèmes
+  sont souvent étudiés en régime linéaire, d'où l'intérêt de définir des équivalents. On veillera à montrer
+  l'intérêt des concepts présentés pour modéliser les systèmes électroniques et on choisira de préférence
+  des exercices en lien avec l'électronique et les télécommunications.
+contenu: >-
+  * Dérivée :
+
+    * Définition;
+
+    * Notation $s'(t)=\frac{\operatorname{d}s}{\operatorname{d}t}$;
+
+    * Équation de la tangente;
+
+    * Dérivée des fonctions usuelles;
+
+    * Opérations sur les dérivées (somme, produit, quotient, composition);
+
+    * Sens de variation;
+
+    * Application à la recherche d'optimum local.
+
+  * Comportement local et asymptotique :
+
+    * Limites (opérations, formes indéterminées);
+
+    * Fonctions négligeables, équivalents.
+
+  * Intégration :
+
+    * Définition d'une intégrale comme une surface;
+
+    * Primitive;
+
+    * Calcul d'une intégrale à l'aide d'une primitive;
+
+    * Intégration par parties et changement de variable.
+motscles: Dérivées, Intégrales, Limites
