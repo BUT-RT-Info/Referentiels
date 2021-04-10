@@ -99,7 +99,7 @@ class Ressource():
                                                        compRT2=compRT[1],
                                                        compRT3=compRT[2],
                                                        saes=saes,
-                                                       motscles=self.ressource["motscles"],
+                                                       motscles=self.ressource["motscles"] + ".",
                                                        prerequis=prerequis,
                                                        contexte=contexte,
                                                        contenu=contenu,
@@ -213,7 +213,7 @@ class SAE():
                                                     description=descriptif,
                                                     ressources=ressources,
                                                     livrables= livrables,
-                                                    motscles = self.sae["motscles"],
+                                                    motscles = self.sae["motscles"] + ".",
                                                    )
         # chaine = chaine.replace("&", "\&")
 
