@@ -9,7 +9,7 @@
 \newcommand{\affichageSAE}[1]{
 		% \addcontentsline{toc}{subsection}{Fiches SAÉs}
     \xdef\sem{#1}
-
+    
     \forLoop{1}{\value{cptS\sem}}{nosae}{ % Pour chaque SAE
         %A\Alph{noressource}
         \xdef\currentSAE{\sem\Alph{nosae}}
@@ -18,7 +18,7 @@
 	    \xdef\saenom{\csname Sname\currentSAE\endcsname}
         %\addtocontents{toc}{hihi} %\saecode : \saenom}
         % \addcontentsline{toc}{subsubsection}{{\saenom}}
-
+        \phantomsection\label{lab\currentSAE}
         \tableauSAE{\currentSAE}
 
         \forLoop{1}{\value{cptSexemple\currentSAE}}{noexemple}{
@@ -37,9 +37,9 @@
     \begin{tabular}[t]{|P|T|}
         \hline {\bfseries Codes des SAÉ} & {\bfseries Titre} \\ \hline
 
-        \forLoop{1}{\value{cptS\sem}}{nosae}{ % Pour chaque SAE
+        \forLoop{1}{\value{cptS#1}}{nosae}{ % Pour chaque SAE
             %A\Alph{noressource}
-            \xdef\currentSAE{\sem\Alph{nosae}} % code de la SAE
+            \xdef\currentSAE{#1\Alph{nosae}} % code de la SAE
             \xdef\saecode{\csname Scode\currentSAE\endcsname}
             \xdef\saelink{\csname Slinkcode\currentSAE\endcsname}
             \xdef\saetitre{\csname Sname\currentSAE\endcsname}
@@ -68,12 +68,12 @@
     \setlength{\extrarowheight}{2pt} % Marge des lignes
 
     \begin{tabular}[t]{|P|T|}
-        \hline {\bfseries Codes des ressources} & {\bfseries Nom} \\
+        \hline {\bfseries Code} & {\bfseries Nom} \\
         \hline
 
-        \forLoop{1}{\value{cptR\sem}}{noressource}{ % Pour chaque SAE
+        \forLoop{1}{\value{cptR#1}}{noressource}{ % Pour chaque SAE
             %A\Alph{noressource}
-            \def\CODE{\sem\Alph{noressource}} % code de la SAE
+            \def\CODE{#1\Alph{noressource}} % code de la SAE
             \xdef\rescode{\csname Rcode\CODE\endcsname}
             \xdef\resnom{\csname Rname\CODE\endcsname}
             {\bfseries \hyperlink{res:\rescode}{\textcolor{ressourceC}{\rescode}}}
@@ -85,6 +85,61 @@
     \end{tabular}
 }
 
+% Table des ressources pour index début document
+\newcommand{\listeTitreRessourceIndex}[1]{
+    \setlength{\tabcolsep}{0.125cm} % Marge des colonnes
+    \setlength{\extrarowheight}{2pt} % Marge des lignes
+    \begin{center}
+    \begin{tabular}[t]{|l|l|l|}
+        \hline {\bfseries Code} & {\bfseries Nom} & {\bfseries Page} \\
+        \hline
+
+        \forLoop{1}{\value{cptR#1}}{noressource}{ % Pour chaque SAE
+            %A\Alph{noressource}
+            \xdef\CODE{#1\Alph{noressource}} % code de la SAE
+            \xdef\rescode{\csname Rcode\CODE\endcsname}
+            \xdef\resnom{\csname Rname\CODE\endcsname}
+            {\bfseries \hyperlink{res:\rescode}{\textcolor{ressourceC}{\rescode}}}
+            &
+                {\resnom}
+            &
+                \pageref{res\CODE}
+            \tabularnewline
+            \hline
+        }
+    \end{tabular}
+    \end{center}
+}
+
+% Tableau listant toutes les SAé du semestre (sans les exemples), 
+% avec numéros de page pour tableau index
+\newcommand{\listeTitreSAEIndex}[1]{
+    \setlength{\tabcolsep}{0.125cm} % Marge des colonnes
+    \setlength{\extrarowheight}{2pt} % Marge des lignes
+    \begin{center}
+    \begin{tabular}[t]{|l|l|l|}
+        \hline {\bfseries Code} & {\bfseries Titre} & {\bfseries Page} \\ \hline
+
+        \forLoop{1}{\value{cptS#1}}{nosae}{ % Pour chaque SAE
+            %A\Alph{noressource}
+            \xdef\currentSAE{#1\Alph{nosae}} % code de la SAE
+            \xdef\saecode{\csname Scode\currentSAE\endcsname}
+            \xdef\saelink{\csname Slinkcode\currentSAE\endcsname}
+            \xdef\saetitre{\csname Sname\currentSAE\endcsname}
+            {\bfseries \hyperlink{sae:\saecode}{\textcolor{saeC}{\saecode}}}
+            &
+            {\saetitre}
+            &
+            \pageref{lab\currentSAE}
+
+            \tabularnewline
+            \hline
+        }
+    \end{tabular}
+    \end{center}
+}
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Affichage des ressources %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -93,7 +148,8 @@
     \xdef\sem{#1}
     \forLoop{1}{\value{cptR\sem}}{noressource}{
         %A\Alph{noressource}
-        \tableauRessource{\sem\Alph{noressource}}
+        \phantomsection\label{res#1\Alph{noressource}}
+        \tableauRessource{#1\Alph{noressource}}
         \newpage
 }
 
