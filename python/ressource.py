@@ -688,17 +688,9 @@ def str_latex_abbreviations():
     """Renvoie le code latex d'un tableau pour les abbréviations"""
     liste = [ [cle, DATA_ABBREVIATIONS[lettre][cle]] for lettre in DATA_ABBREVIATIONS for cle in DATA_ABBREVIATIONS[lettre]]
     nbre_abbreviations = len(liste)
-    moitie = nbre_abbreviations // 2
-    if nbre_abbreviations % 2 == 1:
-        moitie += 1
-    chaine = "\\begin{tabular}{rp{6.5cm}p{0.5cm}rp{6.5cm}} \n"
-    for i in range(moitie):
-        chaine += "\\texttt{" + liste[i][0] + "} & " + liste[i][1] + "\n"
-        chaine += " & & \n"
-        if moitie + i < len(liste):
-            chaine += "\\texttt{" + liste[moitie + i][0] + "} & " + liste[moitie + i][1] + "\n"
-        else:
-            chaine += " & \n"
-        chaine += "\\\\ \n"
-    chaine += "\\end{tabular}"
+    chaine = ""
+    for i in range(nbre_abbreviations):
+        chaine += "\\begin{tabular}{rp{6.5cm}} \n"
+        chaine += "\makebox[1.5cm][r]{\\texttt{" + liste[i][0] + "}} & " + liste[i][1] + "\\\\ \n"
+        chaine += "\\end{tabular}\n\n"
     return chaine

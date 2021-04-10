@@ -95,7 +95,7 @@ for sem in ["S1", "S2"]:
     print(f"Export de {fichierlatex}")
 
 ## Export latex divers
-if True:
+if False:
     # Export latex des ressources
     for sem in ressources:
         for r in ressources[sem]:
