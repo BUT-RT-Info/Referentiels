@@ -34,7 +34,7 @@
 	\xdef\targetcomp{#4}
   \forLoop{1}{\value{cpt\TYPE ac\CODE\COMP}}{noligne}{
   		\xdef\accode{\csname \TYPE accode\CODE\COMP\Alph{noligne}\endcsname}
-		\hyperlink{comp:\targetcomp}{\textcolor{compC\COMP}{\accode}} | {\csname \TYPE acname\CODE\COMP\Alph{noligne}\endcsname}
+		\hyperlink{comp:\targetcomp}{\textcolor{compC\COMP}{\accode}} {\csname \TYPE acname\CODE\COMP\Alph{noligne}\endcsname}
    \tabularnewline %
    }
 \end{tabular}%
@@ -115,7 +115,7 @@ Aucun
 		\begin{tabular}[t]{@{}T@{}}%
 			\forLoop{1}{\value{cptSressource\CODE}}{noligne}{
 					\xdef\rescode{\csname Sressourcecode\CODE\Roman{noligne}\endcsname}
-				\hyperlink{res:\rescode}{\textcolor{ressourceC}{\rescode}} |
+				\hyperlink{res:\rescode}{\textcolor{ressourceC}{\rescode}}
 						{\csname Sressourcename\CODE\Roman{noligne}\endcsname}
 			 \tabularnewline %
 			 }

@@ -490,13 +490,13 @@ def to_latex_matrice_acs(matrice, saes, ressources, sem):
     noms_saes = []
     chaine += " & & \n"
     for (i, s) in enumerate(saesem):  # pour chaque SAE
-        contenu = "~\\textcolor{saeC}{" + s.sae["code"] + "}~|"
+        contenu = "~\\textcolor{saeC}{" + s.sae["code"] + "}"
         noms_saes.append(rotation_entete_colonne(contenu, pos="r") + "\n")
     chaine += " & ".join(noms_saes) + "\n"
     chaine += " & "
     noms_ressources = []
     for (i, r) in enumerate(ressem):  # pour chaque SAE
-        contenu = "~\\textcolor{ressourceC}{" + r.ressource["code"] + "}~|"
+        contenu = "~\\textcolor{ressourceC}{" + r.ressource["code"] + "}"
         noms_ressources.append(rotation_entete_colonne(contenu, pos="r") + "\n")
     chaine += " & ".join(noms_ressources) + "\n"
     chaine += "\\\\ \n"
@@ -511,7 +511,7 @@ def to_latex_matrice_acs(matrice, saes, ressources, sem):
         chaine += "\\multicolumn{%d}{|l|}{\small Niveau 1 - %s} \\\\" % (nbre_colonnes, niveau.replace("&", "\&"))
         chaine += "\\hline \n"
         for (k, ac) in enumerate(DATA_ACS[comp]):
-            chaine += couleur + "{" + ac + "}" + " | & " + "\n"
+            chaine += couleur + "{" + ac + "}" + " & " + "\n"
             chaine += "\\begin{tabular}{p{%scm}} " % (str(longueur-0.2))
             chaine += "\\tiny{" + DATA_ACS[comp][ac] + "}"
             chaine += "\\end{tabular} & \n"
@@ -557,17 +557,17 @@ def to_latex_matrice_coeffs(matrice_vols, matrice_coeffs, saes, ressources, sem)
     ressem = ressources[sem]  # les ressources du semestre
     
     nbre_saes = len(saesem)
-    nbre_colonnes = len(comps) + 3
+    nbre_colonnes = len(comps) + 2
 
 
-    chaine = "\\begin{tabular}[c]{|rcp{6cm}|" + "c|" * 2 + "c|" + "c|"*(len(comps)) + "}" + "\n"
+    chaine = "\\begin{tabular}[c]{|rp{6cm}|" + "c|" * 2 + "c|" + "c|"*(len(comps)) + "}" + "\n"
     chaine += "\\hline \n" # % (nbre_saes + nbre_ressources+1)+ "\n"
     # le début
-    chaine += " & & & " + "\\multicolumn{3}{c|}{\\bfseries Volumes} \n"
+    chaine += " & & " + "\\multicolumn{3}{c|}{\\bfseries Volumes} \n"
     chaine += " & " + "\\multicolumn{3}{c|}{\\bfseries Coefficients} \n"
     chaine += " \\\\ \\hline \n"
     # l'entete
-    chaine += " & & & "
+    chaine += " & & "
     # Volume
     chaine += rotation_entete_colonne("\\bfseries Heures de formation encadrée") + " & "
     chaine += rotation_entete_colonne("\\bfseries Heures de TPs") + " & "
@@ -593,7 +593,7 @@ def to_latex_matrice_coeffs(matrice_vols, matrice_coeffs, saes, ressources, sem)
     chaine += "\\hline "
     # le nom des SAE
     for (i, s) in enumerate(saesem):  # pour chaque SAE
-        chaine += "\\textcolor{saeC}{" + s.sae["code"] + "} & | & " + "\n"
+        chaine += "\\textcolor{saeC}{" + s.sae["code"] + "} & " + "\n"
         chaine += "\\begin{tabular}{p{5.7cm}} \\tiny{" + s.sae["titre"] + "} \\end{tabular} & \n"
         chaine += str_volume(matrice_vols[i][0]) + " & "
         chaine += str_volume(matrice_vols[i][1]) + " & "
@@ -607,7 +607,7 @@ def to_latex_matrice_coeffs(matrice_vols, matrice_coeffs, saes, ressources, sem)
     chaine += "\\hline "
 
     for (i, r) in enumerate(ressem):  # pour chaque SAE
-        chaine += "\\textcolor{ressourceC}{" + r.ressource["code"] + "} & | & " + "\n"
+        chaine += "\\textcolor{ressourceC}{" + r.ressource["code"] + "} & " + "\n"
         chaine += "\\begin{tabular}{p{5.7cm}}"
         chaine += "\\tiny{" + r.ressource["nom"] + "} \\end{tabular} & \n"
         chaine += str_volume(matrice_vols[i + nbre_saes][0]) + " & "
@@ -631,19 +631,19 @@ def to_latex_matrice_coeffs(matrice_vols, matrice_coeffs, saes, ressources, sem)
     chaine += "\\\\ \n"
     chaine += "\\hline "
     # sous-total SAE
-    chaine += "\multicolumn{3}{|r|}{\\textit{SAÉs}} "
+    chaine += "\multicolumn{2}{|r|}{\\textit{SAÉs}} "
     for i in range(3):
         chaine += " & \\textit{" + str(total_heures_sae[i]) + "h}"
     for i in range(3):
         chaine += " & \\textit{" + str(total_coeffs_sae[i]) + "}"
     chaine += "\\\\ \hline "
-    chaine += "\multicolumn{3}{|r|}{\\textit{Ressources}} "
+    chaine += "\multicolumn{2}{|r|}{\\textit{Ressources}} "
     for i in range(3):
         chaine += " & \\textit{" + str(total_heures_ressources[i]) + "h}"
     for i in range(3):
         chaine += " & \\textit{" + str(total_coeffs_ressources[i]) + "}"
     chaine += "\\\\ \hline "
-    chaine += "\multicolumn{3}{|r|}{\\bfseries SAÉs + Ressources}"
+    chaine += "\multicolumn{2}{|r|}{\\bfseries SAÉs + Ressources}"
     for i in range(3):
         chaine += " & {\\bfseries "  + str(total_heures[i]) + "h}"
     for i in range(3):
