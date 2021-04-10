@@ -65,7 +65,7 @@ for fichieryaml in fichiers_exemples:
     exemples[sem][sae].append(e)
 
 
-## Bilan des acs
+## Bilan : acs, volume, coefficient, abbréviations
 for sem in ["S1", "S2"]:
     M1 = ressource.get_matrices_ac_ressource(saes, ressources, sem)
     chaine = ressource.str_matrice(M1, saes, ressources, sem)
@@ -88,8 +88,14 @@ for sem in ["S1", "S2"]:
         fid.write(chaine)
     print(f"Export de {fichierlatex}")
 
+    chaine = ressource.str_latex_abbreviations()
+    fichierlatex = REPERTOIRE_SYNTHESE + "/" + "abbreviations.tex"
+    with open(fichierlatex, "w", encoding="utf8") as fid:
+        fid.write(chaine)
+    print(f"Export de {fichierlatex}")
+
 ## Export latex divers
-if True:
+if False:
     # Export latex des ressources
     for sem in ressources:
         for r in ressources[sem]:

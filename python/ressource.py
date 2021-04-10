@@ -457,8 +457,8 @@ def to_latex_matrice_acs(matrice, saes, ressources, sem):
     nbre_saes = len(DATA_SAES[sem])
     nbre_ressources = len(DATA_RESSOURCES[sem])
     nbre_colonnes = nbre_saes + nbre_ressources + 2
-
-    chaine = "\\begin{tabular}[c]{|lp{3.5cm}||" + "c|"*(nbre_saes) + "|" + "c|"*(nbre_ressources) + "}" + "\n"
+    longueur = 4
+    chaine = "\\begin{tabular}[c]{|lp{%scm}||" % str(longueur) + "c|"*(nbre_saes) + "|" + "c|"*(nbre_ressources) + "}" + "\n"
     chaine += "\\hline \n" # % (nbre_saes + nbre_ressources+1)+ "\n"
     # l'entete
     chaine += " & & "
@@ -512,7 +512,7 @@ def to_latex_matrice_acs(matrice, saes, ressources, sem):
         chaine += "\\hline \n"
         for (k, ac) in enumerate(DATA_ACS[comp]):
             chaine += couleur + "{" + ac + "}" + " | & " + "\n"
-            chaine += "\\begin{tabular}{p{3.2cm}} "
+            chaine += "\\begin{tabular}{p{%scm}} " % (str(longueur-0.2))
             chaine += "\\tiny{" + DATA_ACS[comp][ac] + "}"
             chaine += "\\end{tabular} & \n"
 
@@ -601,8 +601,6 @@ def to_latex_matrice_coeffs(matrice_vols, matrice_coeffs, saes, ressources, sem)
         chaine += " & ".join([str_coeff(matrice_coeffs[i][j]) for j in range(len(comp))])
         chaine += "\\\\ \n"
         chaine += "\\hline "
-    chaine += "\\hline "
-
     # Les ressources et les coeff
     chaine += "\multicolumn{%d}{|l}{\\textcolor{ressourceC}{\\bfseries Ressources}}" % (nbre_colonnes) + "\n"
     chaine += "\\\\ \n"
@@ -621,17 +619,31 @@ def to_latex_matrice_coeffs(matrice_vols, matrice_coeffs, saes, ressources, sem)
 
     # Total
     total_heures = get_total_nbre_heures(matrice_vols)
-    # total_heures_sae = get_total_nbre_heures(matrice_vols[0:nbre_saes][:])
-    # total_heures_ressources = get_total_nbre_heures(matrice_vols[nbre_saes+1:][:])
+    total_heures_sae = get_total_nbre_heures_saes(matrice_vols, sem)
+    total_heures_ressources = get_total_nbre_heures_ressources(matrice_vols, sem)
     total_coeffs = get_total_coeffs(matrice_coeffs)
+    total_coeffs_sae = get_total_coeffs_saes(matrice_coeffs, sem)
+    total_coeffs_ressources = get_total_coeffs_ressources(matrice_coeffs, sem)
+
 
     chaine += "\\hline "
     chaine += "\multicolumn{%d}{|l}{\\bfseries Total}" % (nbre_colonnes) + "\n"
     chaine += "\\\\ \n"
     chaine += "\\hline "
-
-
-    chaine += " & & "
+    # sous-total SAE
+    chaine += "\multicolumn{3}{|r|}{\\textit{SAÉs}} "
+    for i in range(3):
+        chaine += " & \\textit{" + str(total_heures_sae[i]) + "h}"
+    for i in range(3):
+        chaine += " & \\textit{" + str(total_coeffs_sae[i]) + "h}"
+    chaine += "\\\\ \hline "
+    chaine += "\multicolumn{3}{|r|}{\\textit{Ressources}} "
+    for i in range(3):
+        chaine += " & \\textit{" + str(total_heures_ressources[i]) + "h}"
+    for i in range(3):
+        chaine += " & \\textit{" + str(total_coeffs_ressources[i]) + "}"
+    chaine += "\\\\ \hline "
+    chaine += "\multicolumn{3}{|r|}{\\bfseries SAÉs + Ressources}"
     for i in range(3):
         chaine += " & {\\bfseries "  + str(total_heures[i]) + "h}"
     for i in range(3):
@@ -646,6 +658,47 @@ def get_total_nbre_heures(matrice_heures):
     sommes = [sum([matrice_heures[i][j] for i in range(len(matrice_heures)) if matrice_heures[i][j]]) for j in range(3)]
     return sommes
 
+def get_total_nbre_heures_saes(matrice_heures, sem):
+    """Calcul le nombre d'heures total des SAé d'après la matrice"""
+    nbre_sae = len(DATA_SAES[sem])
+    sommes = [sum([matrice_heures[i][j] for i in range(nbre_sae) if matrice_heures[i][j]]) for j in range(3)]
+    return sommes
+
+def get_total_nbre_heures_ressources(matrice_heures, sem):
+    """Calcul le nombre d'heures total des SAé d'après la matrice"""
+    nbre_sae = len(DATA_SAES[sem])
+    sommes = [sum([matrice_heures[i][j] for i in range(nbre_sae, len(matrice_heures)) if matrice_heures[i][j]]) for j in range(3)]
+    return sommes
+
 def get_total_coeffs(matrice_coeffs):
     sommes = [sum([matrice_coeffs[i][j] for i in range(len(matrice_coeffs)) if matrice_coeffs[i][j]]) for j in range(3)]
     return sommes
+
+def get_total_coeffs_saes(matrice_coeffs, sem):
+    nbre_sae = len(DATA_SAES[sem])
+    sommes = [sum([matrice_coeffs[i][j] for i in range(nbre_sae) if matrice_coeffs[i][j]]) for j in range(3)]
+    return sommes
+
+def get_total_coeffs_ressources(matrice_coeffs, sem):
+    nbre_sae = len(DATA_SAES[sem])
+    sommes = [sum([matrice_coeffs[i][j] for i in range(nbre_sae, len(matrice_coeffs)) if matrice_coeffs[i][j]]) for j in range(3)]
+    return sommes
+
+def str_latex_abbreviations():
+    """Renvoie le code latex d'un tableau pour les abbréviations"""
+    liste = [ [cle, DATA_ABBREVIATIONS[lettre][cle]] for lettre in DATA_ABBREVIATIONS for cle in DATA_ABBREVIATIONS[lettre]]
+    nbre_abbreviations = len(liste)
+    moitie = nbre_abbreviations // 2
+    if nbre_abbreviations % 2 == 1:
+        moitie += 1
+    chaine = "\\begin{tabular}{rp{6.5cm}p{0.5cm}rp{6.5cm}} \n"
+    for i in range(moitie):
+        chaine += "\\texttt{" + liste[i][0] + "} & " + liste[i][1] + "\n"
+        chaine += " & & \n"
+        if moitie + i < len(liste):
+            chaine += "\\texttt{" + liste[moitie + i][0] + "} & " + liste[moitie + i][1] + "\n"
+        else:
+            chaine += " & \n"
+        chaine += "\\\\ \n"
+    chaine += "\\end{tabular}"
+    return chaine
