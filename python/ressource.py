@@ -458,11 +458,11 @@ def to_latex_matrice_acs(matrice, saes, ressources, sem):
     nbre_ressources = len(DATA_RESSOURCES[sem])
     nbre_colonnes = nbre_saes + nbre_ressources + 2
     longueur = 4
-    chaine = "\\begin{tabular}[c]{|lp{%scm}||" % str(longueur) + "c|"*(nbre_saes) + "|" + "c|"*(nbre_ressources) + "}" + "\n"
+    chaine = "\\begin{tabular}[c]{|lp{%scm}|" % str(longueur) + "c|"*(nbre_saes) + "c|"*(nbre_ressources) + "}" + "\n"
     chaine += "\\hline \n" # % (nbre_saes + nbre_ressources+1)+ "\n"
     # l'entete
     chaine += " & & "
-    chaine += "\multicolumn{%d}{c||}{\\textcolor{saeC}{\\bfseries SAÉs}}" % (nbre_saes) + "\n"
+    chaine += "\multicolumn{%d}{c|}{\\textcolor{saeC}{\\bfseries SAÉs}}" % (nbre_saes) + "\n"
     chaine += " & "
     chaine += "\multicolumn{%d}{c|}{\\textcolor{ressourceC}{\\bfseries Ressources}}" % (nbre_ressources) + "\\\\ \n"
     chaine += "\\cline{3-%d}" % (nbre_colonnes)
@@ -560,10 +560,10 @@ def to_latex_matrice_coeffs(matrice_vols, matrice_coeffs, saes, ressources, sem)
     nbre_colonnes = len(comps) + 3
 
 
-    chaine = "\\begin{tabular}[c]{|rcp{6cm}||" + "c|" * 2 + "|c|" + "|" + "c|"*(len(comps)) + "}" + "\n"
+    chaine = "\\begin{tabular}[c]{|rcp{6cm}|" + "c|" * 2 + "c|" + "c|"*(len(comps)) + "}" + "\n"
     chaine += "\\hline \n" # % (nbre_saes + nbre_ressources+1)+ "\n"
     # le début
-    chaine += " & & & " + "\\multicolumn{3}{c||}{\\bfseries Volumes} \n"
+    chaine += " & & & " + "\\multicolumn{3}{c|}{\\bfseries Volumes} \n"
     chaine += " & " + "\\multicolumn{3}{c|}{\\bfseries Coefficients} \n"
     chaine += " \\\\ \\hline \n"
     # l'entete
@@ -635,7 +635,7 @@ def to_latex_matrice_coeffs(matrice_vols, matrice_coeffs, saes, ressources, sem)
     for i in range(3):
         chaine += " & \\textit{" + str(total_heures_sae[i]) + "h}"
     for i in range(3):
-        chaine += " & \\textit{" + str(total_coeffs_sae[i]) + "h}"
+        chaine += " & \\textit{" + str(total_coeffs_sae[i]) + "}"
     chaine += "\\\\ \hline "
     chaine += "\multicolumn{3}{|r|}{\\textit{Ressources}} "
     for i in range(3):
