@@ -1,21 +1,49 @@
 
+import sys
+import argparse
+import logging
 import docx2python
 
-from ressource import get_matrices_ac_ressource
-from ressourcedocx import *
-import tools
-
-import logging
-
-from tools import get_indice, get_indice_sans_accent_ni_espace
+from config import Config
 
 __LOGGER = logging.getLogger(__name__)
-
 REPERTOIRE = "import"
-DOCUMENT = "ressources_v1"
+
+parser = argparse.ArgumentParser(
+    description="Parse doc ressources et crée yaml", 
+    usage='%(prog)s [options]'
+    )
+parser.add_argument(
+    "DOCUMENT", 
+    nargs="?", 
+    default=REPERTOIRE + "/" + "ressources_v0" + ".docx"
+    )
+parser.add_argument(
+    "-o", 
+    "--outdir", 
+    default="export", 
+    help="repertoire resultat, defaut: export"
+    )
+parser.add_argument(
+    "-r", 
+    "--root", 
+    default="..", 
+    help="repertoire de base (racine) pour chercher les fichiers de données"
+    )
+args = parser.parse_args()
+Config.ROOT = args.root
+
+__LOGGER.warning(f"{sys.argv[0]} processing {args.DOCUMENT}")
+__LOGGER.warning(f"{sys.argv[0]} outputs to {args.outdir}")
+
+# Ces imports doivent être faits après la config
+import tools
+from tools import get_indice, get_indice_sans_accent_ni_espace
+from ressource import get_matrices_ac_ressource
+from ressourcedocx import *
 
 # Ouverture du document
-docu = docx2python.docx2python(REPERTOIRE + "/" + DOCUMENT + ".docx")
+docu = docx2python.docx2python(args.DOCUMENT)
 
 docu = docu.body
 docu[0] # Titre général
@@ -161,7 +189,8 @@ for sem in ressources:
     for r in ressources[sem]:
         output = r.to_yaml()
         if WITH_EXPORT and r.code:
-            fichier = "export/{}.yml".format(r.code)
+            fichier = f"{args.outdir}/{r.code}.yml"
+            __LOGGER.warning(f"writing '{fichier}")
             with open(fichier, "w", encoding="utf8") as fid:
                 fid.write(output)
 

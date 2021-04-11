@@ -17,6 +17,11 @@
 
 \newcolumntype{V}{>{}p{8.45cm}<{}} % 12.825cm
 
+% Pour les tables d'index
+\newcolumntype{X}{>{}m{1.2cm}<{}} % Code
+\newcolumntype{Y}{>{}p{10.50cm}<{}} % Nom
+\newcolumntype{Z}{>{}w{c}{1.0cm}<{}} % No page
+
 % Compteur de ligne pour les tableaux
 \newcounter{noligne}
 
@@ -50,7 +55,7 @@
 		\begin{tabular}[t]{@{}T@{}}%
 			\forLoop{1}{\value{cptRsae\CODE}}{noligne}{
 				\xdef\saecode{\csname Rsaecode\CODE\Alph{noligne}\endcsname}
-				\hyperlink{sae:\saecode}{\textcolor{saeC}{\saecode}}~|
+				\hyperlink{sae:\saecode}{\textcolor{saeC}{\saecode}}~
 						{\csname Rsaename\CODE\Alph{noligne}\endcsname}
 			 \tabularnewline %
 			 }
@@ -69,7 +74,7 @@ Aucun
 
   \forLoop{1}{\value{cptRprerequis\CODE}}{noligne}{
   		\xdef\rescode{\csname Rprerequiscode\CODE\Alph{noligne}\endcsname}
-		\hyperlink{res:\rescode}{\textcolor{ressourceC}{\rescode}}~| {\csname Rprerequisname\CODE\Alph{noligne}\endcsname}
+		\hyperlink{res:\rescode}{\textcolor{ressourceC}{\rescode}} {\csname Rprerequisname\CODE\Alph{noligne}\endcsname}
    \tabularnewline %
    }
 \end{tabular}%
