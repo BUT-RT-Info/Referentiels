@@ -190,6 +190,7 @@ for sem in ressources:
         output = r.to_yaml()
         if WITH_EXPORT and r.code:
             fichier = f"{args.outdir}/{r.code}.yml"
+            __LOGGER.warning(f"writing '{fichier}")
             with open(fichier, "w", encoding="utf8") as fid:
                 fid.write(output)
 

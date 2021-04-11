@@ -150,6 +150,14 @@ class Docx():
 
         output = "\n".join(lignes_finales)
 
+        # Remplace http(s) URLs pour markdown
+        output = re.sub( r"(http(s)?://[\w\d:#@%/;~_?\+-=\\\.&]*)", r"[\1](\1)", output )
+        # Remplace les guillemets
+        # ne traite pas tous les cas, mais arrange la majorité
+        output = re.sub( r"\"(.*?)\"", r"«\1»", output, flags=re.DOTALL)
+        # On utilise les guillements français (ajout automatique des bons espaces)
+        output = output.replace("«", r"\og ").replace("»", r"\fg{}")
+        
         return output
 
 class RessourceDocx(Docx):
@@ -284,6 +292,7 @@ class RessourceDocx(Docx):
         # Remet en forme le descriptif
         self.split_description()
         self.nettoie_contenu()
+        print(f"{self.code} {self.semestre}")
 
     def to_yaml(self):
         """Exporte la ressource en yaml"""
