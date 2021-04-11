@@ -25,17 +25,17 @@ Les fichiers `.docx` sont analysés pour créer les documents `yaml`. On a un sc
 
 par exemple:
 
-    python export_docx_to_yaml.py import/compilation-ressources\ 2021-04-10T07_38_45.782Z.docx
+    python export_docx_to_yaml.py import/compilation-ressources.docx
 
 #### SAÉs
 
-    python export_sae_docx_to_yaml.py import/compilation-saes\ 2021-04-10T07_37_48.302Z.docx 
+    python export_sae_docx_to_yaml.py import/compilation-saes.docx 
 
 
 ### Génération du LaTeX
 
     cd python
-    python export_yaml_to_latex.py --full
+    python export_yaml_to_latex.py -a
 
 ### Génération de PDF
 
@@ -45,3 +45,9 @@ par exemple:
 
 Le résultat est `pn_formation.pdf`.
 
+## Organisation des fichiers
+
+    python/import   fichiers docx à traiter
+    python/export   fichier yaml générés par export_docx_to_yaml.py à partir des docx
+    yaml/ressources versions éditées manuellement ??
+    latex/ressources    fiches au format LaTeX générées par export_yaml_to_latex.py
