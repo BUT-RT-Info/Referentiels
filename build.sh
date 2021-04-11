@@ -23,7 +23,7 @@ python python/export_docx_to_yaml.py "$ressources" -o "python/export" -r . || di
 python python/export_sae_docx_to_yaml.py "$saes" -o "python/export" -r . || die "echec de export_sae_docx_to_yaml.py"
 python python/export_yaml_to_latex.py -a -r . || die "echec de export_yaml_to_latex.py"
 
-cd latex
+cd latex || die "repertoire manquant: latex"
 pdflatex pn_formation
 pdflatex pn_formation
 
