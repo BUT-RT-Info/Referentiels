@@ -1,0 +1,23 @@
+logiciels:
+  - ArpChacheWatch
+  - Kali
+  - Lucidchart
+  - Microsoft Visio
+  - WiFi Analyser
+  - Wireshark
+  - Tcpdump
+commandes:
+  - arp-scan
+  - arp
+  - ipconfig
+  - ifconfig
+  - ip
+  - ping
+  - traceroute
+  - nmap
+anglais:
+  - data
+  - datasheet
+  - firewall
+  - management
+  - switch

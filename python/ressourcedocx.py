@@ -149,6 +149,8 @@ class Docx():
         output = "\n".join(lignes_finales)
 
         # Remplace http(s) URLs pour markdown
+        if "11" in self.code:
+            print("ici")
         output = re.sub( r"(http(s)?://[\w\d:#@%/;~_?\+-=\\\.&]*)", r"[\1](\1)", output )
         # Remplace les guillemets
         # ne traite pas tous les cas, mais arrange la majorité
@@ -268,6 +270,7 @@ class RessourceDocx(Docx):
         # suppression des lignes vides
         contexte = "\n".join(remove_ligne_vide(contexte))
         # suppression des liens
+
         contexte = remove_link(contexte)
         if not contexte:
             contexte = "Aucun"
@@ -626,10 +629,13 @@ class ExempleSAEDocx(Docx):
 
     def nettoie_modalite(self):
         """Nettoie les modalités (d'évaluation) d'un exemple de SAE"""
+        if "12" in self.code:
+            print("ici")
+
         if self.modalite:
             self.modalite = convert_to_markdown(self.modalite)
         else:
-            self.modalite = f"Les même que les livrables et les productions de la {self.code}"
+            self.modalite = ""
 
     def nettoie_formes(self):
         """Nettoie les modalités (d'évaluation) d'un exemple de SAE"""

@@ -6,8 +6,9 @@
 
 \ajoutESproblematique{L'étudiant se met dans le rôle d'une société locale de services du
 numérique, il est contacté par une entreprise qui lui passe une commande
-: déployer un réseau d'entreprise dans le nouveau siège de la société.\\
-Sa mission consiste à :
+: vous devez déployer un réseau d'entreprise dans le nouveau siège de la
+société.\\
+Votre mission consiste à :
 \begin{itemize}
 \item
   Proposer et mettre en place une infrastructure de réseau d'entreprise
@@ -15,17 +16,17 @@ Sa mission consiste à :
   de règles de sécurité.
 \item
   Mettre en place une \textabbrv{DMZ} pour héberger les serveurs publics de
-  l'entreprise.
+  l'entreprise
 \item
-  Configurer l'accès à Internet.
+  Configurer l'accès à Internet
 \item
-  Mettre en place des règles de sécurité.
+  Mettre en place des règles de sécurité
 \item
   Produire une documentation technique sur la solution déployée.
 \end{itemize}}
 
 \ajoutESdescription{
-L'objectif de cette SAÉ est de mettre en œuvre un réseau d'entreprise
+L'objectif de cette SAE est de mettre en œuvre un réseau d'entreprise
 basé sur une architecture segmentée en \textabbrv{VLAN} qui intègre différents
 services réseaux. Certaines applications serveur (\textabbrv{HTTP}, \textabbrv{DHCP}, \textabbrv{SSH})
 seront à installer et à configurer par l'étudiant et d'autres seront
@@ -47,28 +48,49 @@ résultats de commandes, acquisition de trames\ldots) obtenus devront
 L'infrastructure réseau est volontairement simple afin que l'étudiant
 puisse se concentrer sur des concepts fondamentaux. Cette architecture
 est constituée de 2 commutateurs d'accès (L2), d'un commutateur de
-distribution (L3) qui assure le routage inter-\textabbrv{VLAN} et d'un routeur
+distribution (L3) qui assure le routage inter-vlan et d'un routeur
 passerelle qui fait office de pare-feu. Les services réseaux \textabbrv{HTTP}, DNS,
 \textabbrv{DHCP} et \textabbrv{SSH} sont installés sur des machines virtuelles.\\
 A partir du cahier des charges fourni, l'étudiant sera amené à réaliser
 différentes activités dont voici quelques exemples :
 \begin{itemize}
 \item
-  Plan d'adressage.
+  Plan d'adressage
 \item
-  Création des \textabbrv{VLAN}.
+  Création des Vlan
 \item
-  Routage inter-\textabbrv{VLAN}.
+  Routage inter-vlan
 \item
-  Mise en place de \textabbrv{VM}.
+  Mise en place de \textabbrv{VM}
 \item
-  Accès à Internet.
+  Accès à Internet
 \item
-  Configuration du serveur \textabbrv{DHCP}, \textabbrv{SSH} et \textabbrv{HTTP}.
+  Configuration du serveur \textabbrv{DHCP}, \textabbrv{SSH} et \textabbrv{HTTP}
 \item
-  Ajout d'entrées au serveur \textabbrv{DNS}.
+  Ajout d'entrées au serveur \textabbrv{DNS}
 \item
-  Configuration du pare-feu (une règle de filtrage).
+  Configuration du pare-feu (une règle de filtrage)
+\end{itemize}
+L'étudiant devra mobiliser ses connaissances en :
+\begin{itemize}
+\item
+  Initiation au réseau informatique
+\item
+  Principes et architecture des réseaux
+\item
+  Réseaux locaux et équipements actifs
+\item
+  Technologie de l'Internet
+\item
+  Administration système
+\item
+  Base des services réseaux
+\item
+  Expression-communication : recherche documentaire, rédaction, exposé.
+\item
+  Vocabulaire anglais en réseau
+\item
+  Outils d'émulation réseau
 \end{itemize}
 }
 
@@ -90,28 +112,22 @@ pédagogiques suivantes :
 
 
 
-\ajoutESmodalite{\vspace{-5pt}
+\ajoutESmodalite{Réseau entreprise : opérationnel répondant aux problématiques suivantes
+:
 \begin{itemize}
 \item
-  Réseau d'entreprise opérationnel répondant aux problématiques
-  suivantes :
-  \begin{itemize}
-  \item
-    un utilisateur interne à l'entreprise peut-il bénéficier des
-    services \textabbrv{HTTP}, \textabbrv{DNS} et \textabbrv{DHCP} internes et
-    se connecter à Internet.
-  \item
-    un utilisateur lambda peut-il accéder au serveur \textabbrv{HTTP} de
-    l'entreprise depuis Internet ?
-  \item
-    l'administrateur réseau de l'entreprise peut-il gérer les
-    équipements à l'aide d'une connexion \textabbrv{SSH}
-    dans l'entreprise et hors de l'entreprise ?
-  \end{itemize}
+  un utilisateur interne à l'entreprise peut-il bénéficier des services
+  \textabbrv{HTTP}, \textabbrv{DNS} et \textabbrv{DHCP} internes et
+  se connecter à Internet.
 \item
-  Documentation : les procédures sont-elles applicables par une autre
-  équipe ?
+  un utilisateur lambda peut-il accéder au serveur \textabbrv{HTTP} de l'entreprise
+  depuis Internet ?
 \item
-  Réunions : présentation finale (soutenance) de la solution mise en
-  place.
-\end{itemize}}
+  l'administrateur réseau de l'entreprise peut-il gérer les équipements
+  à l'aide d'une connexion \textabbrv{SSH}
+  dans l'entreprise et hors de l'entreprise ?
+\end{itemize}
+Documentation : les procédures sont-elles applicables par une autre
+équipe ?\\
+Réunions : présentation finale (soutenance) de la solution mise en
+place.}

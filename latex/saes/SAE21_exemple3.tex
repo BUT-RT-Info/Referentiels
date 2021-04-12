@@ -7,38 +7,56 @@
 \ajoutESproblematique{Les entreprises qui proposent des formations sont contraintes de
 réinstaller les ordinateurs ayant servis lors de ces stages
 (applications spécifiques d'une formation à une autre\ldots). Le service
-informatique de l'entreprise confie à l'étudiant qui endosse le rôle d'
-``Assistant administrateur réseau'' la mission d'automatiser le
+informatique de l'entreprise confie à l'étudiant qui a endossé le rôle
+d' ``Assistant administrateur réseau'' la mission d'automatiser le
 déploiement des systèmes d'exploitation sur les postes clients de la
 salle de formation.}
 
 \ajoutESdescription{
 Il s'agit d'explorer les techniques classiques d'installation système.
-Ces techniques peuvent se décliner avec plusieurs systèmes
-d'exploitation différents (GNU/Linux, Solaris, Aix, OpenBSD, NetBSD,
-FreeBSD, GNU-Hurd) et peuvent s'adapter à l'installation de matériel
-embarqué quand le bootloader (U-boot) est accessible. La mise en oeuvre
-comprend :
+Cette méthode peut se décliner avec plusieurs systèmes d'exploitation
+différents (GNU/Linux, Solaris, Aix, OpenBSD, NetBSD, FreeBSD, GNU-Hurd)
+et peut s'adapter sur l'installation de matériel embarqué quand le
+bootloader (U-boot) est accessible.
 \begin{itemize}
 \item
-  Démarrage réseau (\textabbrv{PXE}) pour charger un bootloader (\textabbrv{PXE} Linux).
+  démarrage réseau (\textabbrv{PXE}) pour charger un bootloader (\textabbrv{PXE}linux);
 \item
-  Configuration d'un serveur \textabbrv{TFTP} (\texttt{tftpd-hpa}).
+  configuration d'un serveur tftp (hpa-tftpd)
 \item
-  Modification du fichier de configuration pour choisir le mode
-  (utilisation normale / installation).
+  modification du fichier de configuration pour choisir le mode
+  (utilisation normale / installation)
 \item
-  Installation manuelle pour créer le fichier de réponses.
+  Installation manuelle pour créer le fichier de réponses
 \item
   Installation du fichier de réponses sur un serveur web (disponible ou
-  installé).
+  installé)
 \item
-  Utiliser des stratégies pour partitionner le disque dur.
+  utiliser des stratégies pour partitionner le disque dur
 \item
-  Adaptation des clés d'identifications des ordinateurs.
+  adaptation des clés d'identifications des ordinateurs
 \end{itemize}
 A minima, deux ordinateurs (physiques et/ou virtuels) sont nécessaires :
-un serveur et un client.
+un serveur et un client.\\
+L'étudiant devra mobiliser ses connaissances en :
+\begin{itemize}
+\item
+  Initiation au réseau informatique
+\item
+  Principes et architecture des réseaux
+\item
+  Réseaux locaux et équipements actifs
+\item
+  Technologie de l'Internet
+\item
+  Administration système
+\item
+  Base des services réseaux
+\item
+  Expression-communication : recherche documentaire, rédaction, exposé.
+\item
+  Vocabulaire anglais en réseau
+\end{itemize}
 }
 
 \ajoutESformes{De façon individuelle ou collective, sur des heures encadrées et non
@@ -53,29 +71,23 @@ pédagogiques suivantes :
   Élaboration d'une méthode efficace pour tester progressivement la
   configuration réalisée.
 \item
-  Utilisation d'outils de diagnostics.
+  Utilisation d'outils de diagnostics
 \item
   Rédaction de fiches opératoires (notice d'utilisation).
 \end{itemize}}
 
 
 
-\ajoutESmodalite{\vspace{-5pt}
+\ajoutESmodalite{Déploiement : opérationnel et répondant aux problématiques suivantes :
 \begin{itemize}
 \item
-  Déploiement opérationnel et répondant aux problématiques suivantes :
-  \begin{itemize}
-  \item
-    Le stagiaire peut-il ouvrir une session sur le système
-    d'exploitation ?
-  \item
-    Le stagiaire bénéficie t-il d'un environnement informatique conforme
-    aux besoins de sa formation ?
-  \end{itemize}
+  Le stagiaire peut-il ouvrir une session sur le système d'exploitation
+  ?
 \item
-  Documentation : les procédures sont-elles applicables par une autre
-  équipe ?
-\item
-  Réunions : présentation finale (soutenance) de la solution mise en
-  place.
-\end{itemize}}
+  Le stagiaire bénéficie t-il d'un environnement informatique conforme
+  aux besoins de sa formation
+  ?
+\end{itemize}
+Documentation : les procédures sont-elles applicables par une autre
+équipe ?\\
+Réunions : présentation finale (soutenance) de la solution mise en place}
