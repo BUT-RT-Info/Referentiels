@@ -243,6 +243,8 @@ class RessourceDocx(Docx):
 
     def split_description(self):
         """Découpe le champ description en un contexte+un contenu ; si pas possible """
+        if self.code == "R110":
+            print("ici")
         champs = self.description.split("\n")
         champs = [c for c in champs if c]  # supprime les lignes vides
 
