@@ -5,7 +5,6 @@ from officiel import supprime_accent_espace, get_code_from_nom_using_dict
 import ruamel.yaml
 from ruamel.yaml.scalarstring import FoldedScalarString as folded
 
-from tools import caracteres_recalcitrants
 
 __LOGGER = logging.getLogger(__name__)
 
@@ -15,6 +14,7 @@ class Docx():
 
     def __init__(self, nom, brut):
         self.nom = nom
+        self.code = None # chargé ultérieurement
         self.brut = brut  # les données brutes de la ressource/saé
         self.semestre = None # le semestre de la ressource/saé (chargé ultérieurement)
         self.apprentissages = None # les acs (chargés ultérieurement)
@@ -224,7 +224,7 @@ class RessourceDocx(Docx):
         """Nettoie le champ (horaire) (de la forme 46h ou 33...) pour en extraire la valeur numérique :
         le champ peut contenir 2 volumes (heures formation puis heures tp), auquel cas les 2 valeurs sont renvoyées
         dans un tuple"""
-
+        volumes = None
         if self.heures_encadrees:  # si les heures encadrées sont renseignées
             volumes = nettoie_champ_heure(self.heures_encadrees)
         if self.tp:
@@ -243,6 +243,8 @@ class RessourceDocx(Docx):
 
     def split_description(self):
         """Découpe le champ description en un contexte+un contenu ; si pas possible """
+        if self.code == "R110":
+            print("ici")
         champs = self.description.split("\n")
         champs = [c for c in champs if c]  # supprime les lignes vides
 
@@ -252,8 +254,13 @@ class RessourceDocx(Docx):
 
         indicec = 0
         contexte = []
-        if True in [ligne.startswith("Contenus") for ligne in champs]:  # la ligne commençant par Contenus
-            indicec = [ligne.startswith("Contenus") for ligne in champs].index(True)
+        marqueur = False
+        identifiants = ["Contenus", "Objectifs visés"] # Identifiant marquant la ligne des contenus
+        for id in identifiants:
+            presence = [ligne.startswith(id) for ligne in champs]
+            if True in presence and not marqueur: # la ligne commençant par l'identifiant
+                indicec = presence.index(True)
+                marqueur = True
         if True in [ligne.startswith("Contexte et ") for ligne in champs]:
             contexte = champs[indicea + 1:indicec]
         else:
