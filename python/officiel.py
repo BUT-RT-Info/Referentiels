@@ -21,6 +21,8 @@ with open(Config.ROOT+"/yaml/competences/RT123.yml", 'r', encoding="utf8") as fi
 with open(Config.ROOT+"/yaml/abbreviations.yml", "r", encoding="utf8") as fid:
     DATA_ABBREVIATIONS = yaml.load(fid.read(), Loader=yaml.Loader)
 
+AUCUN_PREREQUIS = "Aucun"
+
 def supprime_accent_espace(chaine):
     """Met en minuscule, supprime les accents, les ponctuations et les espaces"""
     purge = chaine.lower().replace("'", "").replace("’", "")

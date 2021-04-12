@@ -150,6 +150,13 @@
 
 % ****************************
 % Ajout des prerequis
+%% pré-requis autre qu'une ressource (ex: A2-B1 en anglais)
+\def\ajoutRprerequislycee#1{
+	\begingroup\let\+\relax
+	\expandafter\gdef\csname Rprerequislycee\currentRressource\endcsname{#1} % descriptif
+	\endgroup
+}
+
 \def\ajoutRprerequis#1#2{
 	\addtocounter{cptRprerequis\currentRressource}{1} % le compteur du prerequis dans la ressource
 	\xdef\currentprerequis{\Alph{cptRprerequis\currentRressource}} % La lettre

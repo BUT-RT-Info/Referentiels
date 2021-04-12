@@ -1,6 +1,8 @@
 import os
+import glob
 import argparse
 import logging
+import sys
 
 from config import Config
 
@@ -36,8 +38,8 @@ REPERTOIRE_SYNTHESE = Config.ROOT + "/latex/synthese"
 
 # Chargement des ressources : depuis les versions définitives du répertoire yaml d'abord,
 # puis dans python/export si manquantes
-fichiers_definitifs = os.listdir(REPERTOIRE_RESSOURCES_DEFINITIVES)
-fichiers_temp = os.listdir(REPERTOIRE_TEMP)
+fichiers_definitifs = [ os.path.split(x)[1] for x in glob.glob(REPERTOIRE_RESSOURCES_DEFINITIVES+'/*.yml') ]
+fichiers_temp = [ os.path.split(x)[1] for x in glob.glob(REPERTOIRE_TEMP+'/*.yml') ]
 fichiers_ressources = [REPERTOIRE_RESSOURCES_DEFINITIVES + "/" + f for f in fichiers_definitifs]
 for f in fichiers_temp:
     if f not in fichiers_definitifs and f.startswith("R"):

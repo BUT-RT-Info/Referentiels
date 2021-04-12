@@ -67,18 +67,23 @@
 % Liste des pré-requis
 \newcommand*{\listePrerequis}[1]{%
 	\xdef\CODE{#1} % le code de la ressource sous la forme AA
-	\ifthenelse{\equal{\value{cptRprerequis\CODE}}{0}}{ % Si pas de prérequis
-Aucun
-}{ % Si des pré-requis
-\begin{tabular}[t]{@{}T@{}}%
+	\ifcsdef{Rprerequislycee\CODE}{ % si pre-requis simple
+		{\csname Rprerequislycee\CODE\endcsname}
+	}
+	{
+		\ifthenelse{\equal{\value{cptRprerequis\CODE}}{0}}{ % Si pas de prérequis
+		Aucun
+		}{ % Si des pré-requis
+		\begin{tabular}[t]{@{}T@{}}%
 
-  \forLoop{1}{\value{cptRprerequis\CODE}}{noligne}{
-  		\xdef\rescode{\csname Rprerequiscode\CODE\Alph{noligne}\endcsname}
-		\hyperlink{res:\rescode}{\textcolor{ressourceC}{\rescode}} {\csname Rprerequisname\CODE\Alph{noligne}\endcsname}
-   \tabularnewline %
-   }
-\end{tabular}%
-}
+		  \forLoop{1}{\value{cptRprerequis\CODE}}{noligne}{
+				\xdef\rescode{\csname Rprerequiscode\CODE\Alph{noligne}\endcsname}
+				\hyperlink{res:\rescode}{\textcolor{ressourceC}{\rescode}} {\csname Rprerequisname\CODE\Alph{noligne}\endcsname}
+		   \tabularnewline %
+		  }
+		\end{tabular}%
+		}
+	}
 }%
 
 

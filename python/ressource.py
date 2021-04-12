@@ -70,17 +70,23 @@ class Ressource:
             )  # , code_latex))
         saes = "\n".join(saesRT)
 
-        ajoutprerequis = "\\ajoutRprerequis{%s}{%s}"
+        if self.ressource["code"] == "R110":
+            print("ici")
         prerequis = ""
-        if self.ressource["prerequis"] == "Aucun":
+        if self.ressource["prerequis"] == AUCUN_PREREQUIS:
             prerequis = ""
         else:
-            liste = []
-            for (no, mod) in enumerate(self.ressource["prerequis"]):
-                liste.append(
-                    ajoutprerequis % (mod, get_officiel_ressource_name_by_code(mod))
-                )
-            prerequis = "\n".join(liste)
+            # est-une liste de ressources
+            if not self.ressource["prerequis"][0].startswith("R"):
+                prerequis = "\\ajoutRprerequislycee{%s}" % (self.ressource["prerequis"])
+            else:
+                ajoutprerequis = "\\ajoutRprerequis{%s}{%s}"
+                liste = []
+                for (no, mod) in enumerate(self.ressource["prerequis"]):
+                    liste.append(
+                        ajoutprerequis % (mod, get_officiel_ressource_name_by_code(mod))
+                    )
+                prerequis = "\n".join(liste)
 
         # préparation du contexte
         contexte = self.ressource["contexte"]
