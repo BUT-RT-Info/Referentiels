@@ -1,11 +1,23 @@
 logiciels:
+  - Aix
   - ArpChacheWatch
+  - EVE-NG
+  - FreeBSD
+  - GNU/Linux
+  - GNU/Hurd
+  - GNS3
   - Kali
   - Lucidchart
   - Microsoft Visio
+  - NetBSD
+  - OpenBSD
   - WiFi Analyser
   - Wireshark
+  - Solaris
   - Tcpdump
+  - VirtualBox
+  - VIRL
+  - VMWare
 commandes:
   - arp-scan
   - arp

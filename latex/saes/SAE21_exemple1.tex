@@ -2,53 +2,48 @@
 % Exemple de SAE
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\nouvelexemple{Construction de réseau routé (statique/dynamique), routage inter-vlan :  approche matérielle ou virtuelle}
+\nouvelexemple{Construction de réseau routé (statique/dynamique), routage inter-\textabbrv{VLAN}:  approche matérielle ou virtuelle}
 
-\ajoutESproblematique{Comprendre et construire une architecture de réseaux d'entreprise et
-d'Internet.\\
-Élaborer une méthode efficace pour tester progressivement la
-configuration réalisée.\\
-Construire un réseau local virtuel \textabbrv{VLAN}\\
-Intercepter un trafic entre 2 ordinateurs et identifier le chemin
-utilisé.\\
-Construire une passerelle entre un réseau émulé et un réseau réel}
+\ajoutESproblematique{\vspace{-5pt}
+\begin{itemize}
+\item
+  Comprendre et construire une architecture de réseaux d'entreprise et
+  d'Internet.
+\item
+  Élaborer une méthode efficace pour tester progressivement la
+  configuration réalisée.
+\item
+  Construire un réseau local virtuel \textabbrv{VLAN}.
+\item
+  Intercepter un trafic entre 2 ordinateurs et identifier le chemin
+  utilisé.
+\item
+  Construire une passerelle entre un réseau émulé et un réseau réel.
+\end{itemize}}
 
 \ajoutESdescription{
 L'objectif est de construire un réseau local de niveau 2 (commutation)
 et 3 (routage) en introduisant le concept de réseau local virtuel
-(\textabbrv{VLAN}). Un outil d'émulation est utilisé avec production d'un projet
-enregistrable pour que l'exercice puisse être construit progressivement
-au fur et à mesure des séances. L'étudiant doit s'organiser pour
-construire par étapes son réseau et surtout vérifier à chaque étape que
-l'ajout qu'il vient d'effectuer permet au réseau de toujours
-fonctionner.\\
+(\textabbrv{VLAN}). Le réseau répondra à un besoin d'entreprise ``simple'', par ex:
+le réseau d'une entreprise localisée dans 3 villes différentes. Un outil
+d'émulation est utilisé avec production d'un projet enregistrable pour
+que l'exercice puisse être construit progressivement au fur et à mesure
+des séances. L'étudiant doit s'organiser pour construire par étapes son
+réseau et surtout vérifier à chaque étape que l'ajout qu'il vient
+d'effectuer permet au réseau de toujours fonctionner.\\
 Développement et configuration d'une architecture de réseau d'entreprise
 simple composée de 6 \textabbrv{VLAN} et 3 routeurs.\\
 Équipements réseau : 4 switches et 3 routeurs.\\
-Extensions possible : effectuer du \textabbrv{VRF}, ajouter des tunnels, introduire
-un \textabbrv{NAT}, effectuer du filtrage sur un \textabbrv{VLAN} spécifique\\
-Il faut de toute façon définir un besoin d'entreprise \og  simple \fg{}.
-L'exemple consiste à élaborer un réseau d'une entreprise localisée dans
-3 villes différentes.\\
-Préconisations :\\
-Fourniture d'un cahier des charges pour 2 étudiants Utilisation d'un
-logiciel d'émulation type gns\textgreater packetracer/EVE-NG/Marionnet
-pour que le projet puisse être travaillé dans une salle de TP ou à la
-maison.\\
-L'étudiant devra mobiliser ses connaissances en :
+Extensions possibles : effectuer du \textabbrv{VRF}, ajouter des tunnels, introduire
+un \textabbrv{NAT}, effectuer du filtrage sur un \textabbrv{VLAN} spécifique.\\
+Préconisations :
 \begin{itemize}
 \item
-  Initiation au réseau informatique
+  Fourniture d'un cahier des charges pour 2 étudiants
 \item
-  Principes et architecture des réseaux
-\item
-  Réseaux locaux et équipements actifs
-\item
-  Technologie de l'Internet
-\item
-  Administration système
-\item
-  E\textabbrv{CC}
+  Utilisation d'un logiciel d'émulation type GNS Packet Tracer / EVE-NG
+  / Marionnet pour que le projet
+  puisse être travaillé dans une salle de TP ou à la maison.
 \end{itemize}
 }
 
@@ -59,17 +54,18 @@ L'étudiant devra mobiliser ses connaissances en :
 \ajoutESmodalite{Tout ou partie des éléments suivants :
 \begin{itemize}
 \item
-  Projet réseau fonctionnel
+  Projet réseau fonctionnel;
 \item
-  Vérification d'une interconnexion complète
+  Vérification d'une interconnexion complète;
 \item
   Vérification de la sécurisation/isolement d'un \textabbrv{VLAN} vis à vis des
-  autres postes clients
+  autres postes clients;
 \item
-  Démontrer à l'aide d'un document le respect du cahier des charges,
-  effectuer une démonstration filmée
-  incluant des scénarios de test. On évaluera la qualité de la
-  démonstration et la pédagogie de la vidéo.
+  Démontrer à l'aide d'un document le respect du cahier des charges. Il
+  pourra être effectué une démonstration
+  filmée incluant des scénarios de test. On évaluera la qualité de la
+  démonstration et la pédagogie de
+  la vidéo;
 \item
   Présentation orale avec diaporama ou entretien.
 \end{itemize}}

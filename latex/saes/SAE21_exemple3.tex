@@ -7,56 +7,38 @@
 \ajoutESproblematique{Les entreprises qui proposent des formations sont contraintes de
 réinstaller les ordinateurs ayant servis lors de ces stages
 (applications spécifiques d'une formation à une autre\ldots). Le service
-informatique de l'entreprise confie à l'étudiant qui a endossé le rôle
-d' ``Assistant administrateur réseau'' la mission d'automatiser le
+informatique de l'entreprise confie à l'étudiant qui endosse le rôle d'
+``Assistant administrateur réseau'' la mission d'automatiser le
 déploiement des systèmes d'exploitation sur les postes clients de la
 salle de formation.}
 
 \ajoutESdescription{
 Il s'agit d'explorer les techniques classiques d'installation système.
-Cette méthode peut se décliner avec plusieurs systèmes d'exploitation
-différents (GNU/Linux, Solaris, Aix, OpenBSD, NetBSD, FreeBSD, GNU-Hurd)
-et peut s'adapter sur l'installation de matériel embarqué quand le
-bootloader (U-boot) est accessible.
+Ces techniques peuvent se décliner avec plusieurs systèmes
+d'exploitation différents (GNU/Linux, Solaris, Aix, OpenBSD, NetBSD,
+FreeBSD, GNU/Hurd) et peuvent s'adapter à l'installation de matériel
+embarqué quand le bootloader (U-boot) est accessible. La mise en oeuvre
+comprend :
 \begin{itemize}
 \item
-  démarrage réseau (\textabbrv{PXE}) pour charger un bootloader (\textabbrv{PXE}linux);
+  Démarrage réseau (\textabbrv{PXE}) pour charger un bootloader (\textabbrv{PXE} Linux);
 \item
-  configuration d'un serveur tftp (hpa-tftpd)
+  Configuration d'un serveur \textabbrv{TFTP} (hpa-tftpd);
 \item
-  modification du fichier de configuration pour choisir le mode
-  (utilisation normale / installation)
+  Modification du fichier de configuration pour choisir le mode
+  (utilisation normale / installation);
 \item
-  Installation manuelle pour créer le fichier de réponses
+  Installation manuelle pour créer le fichier de réponses;
 \item
-  Installation du fichier de réponses sur un serveur web (disponible ou
-  installé)
+  Installation du fichier de réponses sur un serveur Web (disponible ou
+  installé);
 \item
-  utiliser des stratégies pour partitionner le disque dur
+  Utilisation de stratégies pour partitionner le disque dur;
 \item
-  adaptation des clés d'identifications des ordinateurs
+  Adaptation des clés d'identifications des ordinateurs.
 \end{itemize}
 A minima, deux ordinateurs (physiques et/ou virtuels) sont nécessaires :
-un serveur et un client.\\
-L'étudiant devra mobiliser ses connaissances en :
-\begin{itemize}
-\item
-  Initiation au réseau informatique
-\item
-  Principes et architecture des réseaux
-\item
-  Réseaux locaux et équipements actifs
-\item
-  Technologie de l'Internet
-\item
-  Administration système
-\item
-  Base des services réseaux
-\item
-  Expression-communication : recherche documentaire, rédaction, exposé.
-\item
-  Vocabulaire anglais en réseau
-\end{itemize}
+un serveur et un client.
 }
 
 \ajoutESformes{De façon individuelle ou collective, sur des heures encadrées et non
@@ -64,30 +46,37 @@ encadrées, l'étudiant ou l'équipe, sera confronté aux formes
 pédagogiques suivantes :
 \begin{itemize}
 \item
-  Mise en place un serveur \textabbrv{TFTP} et permettre aux machines clientes de
-  démarrer sur le réseau (\textabbrv{PXE}) pour
-  récupérer une image du système d'exploitation.
+  Mise en place un serveur \textabbrv{TFTP} et permettre aux machines. clientes de
+  démarrer sur le réseau (\textabbrv{PXE})
+  pour récupérer une image du système d'exploitation;
 \item
   Élaboration d'une méthode efficace pour tester progressivement la
-  configuration réalisée.
+  configuration réalisée;
 \item
-  Utilisation d'outils de diagnostics
+  Utilisation d'outils de diagnostic;
 \item
   Rédaction de fiches opératoires (notice d'utilisation).
 \end{itemize}}
 
 
 
-\ajoutESmodalite{Déploiement : opérationnel et répondant aux problématiques suivantes :
+\ajoutESmodalite{\vspace{-5pt}
 \begin{itemize}
 \item
-  Le stagiaire peut-il ouvrir une session sur le système d'exploitation
-  ?
+  Déploiement : opérationnel et répondant aux problématiques suivantes :
+  \begin{itemize}
+  \item
+    Le stagiaire peut-il ouvrir une session sur le système
+    d'exploitation ?
+  \item
+    Le stagiaire bénéficie t-il d'un environnement informatique conforme
+    aux besoins de sa formation
+    ?
+  \end{itemize}
 \item
-  Le stagiaire bénéficie t-il d'un environnement informatique conforme
-  aux besoins de sa formation
-  ?
-\end{itemize}
-Documentation : les procédures sont-elles applicables par une autre
-équipe ?\\
-Réunions : présentation finale (soutenance) de la solution mise en place}
+  Documentation : les procédures sont-elles applicables par une autre
+  équipe ?
+\item
+  Réunions : présentation finale (soutenance) de la solution mise en
+  place.
+\end{itemize}}

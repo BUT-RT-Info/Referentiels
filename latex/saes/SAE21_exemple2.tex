@@ -6,21 +6,20 @@
 
 \ajoutESproblematique{L'étudiant se met dans le rôle d'une société locale de services du
 numérique, il est contacté par une entreprise qui lui passe une commande
-: vous devez déployer un réseau d'entreprise dans le nouveau siège de la
-société.\\
-Votre mission consiste à :
+: déployer un réseau d'entreprise dans le nouveau siège de la société.\\
+Sa mission consiste à :
 \begin{itemize}
 \item
   Proposer et mettre en place une infrastructure de réseau d'entreprise
   dotée de services réseaux et
-  de règles de sécurité.
+  de règles de sécurité;
 \item
   Mettre en place une \textabbrv{DMZ} pour héberger les serveurs publics de
-  l'entreprise
+  l'entreprise;
 \item
-  Configurer l'accès à Internet
+  Configurer l'accès à Internet;
 \item
-  Mettre en place des règles de sécurité
+  Mettre en place des règles de sécurité;
 \item
   Produire une documentation technique sur la solution déployée.
 \end{itemize}}
@@ -57,9 +56,9 @@ différentes activités dont voici quelques exemples :
 \item
   Plan d'adressage
 \item
-  Création des Vlan
+  Création des \textabbrv{VLAN}
 \item
-  Routage inter-vlan
+  Routage inter-\textabbrv{VLAN}
 \item
   Mise en place de \textabbrv{VM}
 \item
@@ -71,27 +70,6 @@ différentes activités dont voici quelques exemples :
 \item
   Configuration du pare-feu (une règle de filtrage)
 \end{itemize}
-L'étudiant devra mobiliser ses connaissances en :
-\begin{itemize}
-\item
-  Initiation au réseau informatique
-\item
-  Principes et architecture des réseaux
-\item
-  Réseaux locaux et équipements actifs
-\item
-  Technologie de l'Internet
-\item
-  Administration système
-\item
-  Base des services réseaux
-\item
-  Expression-communication : recherche documentaire, rédaction, exposé.
-\item
-  Vocabulaire anglais en réseau
-\item
-  Outils d'émulation réseau
-\end{itemize}
 }
 
 \ajoutESformes{De façon individuelle ou collective, sur des heures encadrées et non
@@ -100,34 +78,40 @@ pédagogiques suivantes :
 \begin{itemize}
 \item
   Création d'un réseau segmenté en \textabbrv{VLAN} avec mise en place d'une \textabbrv{DMZ} et
-  de services réseaux
+  de services réseaux;
 \item
   Élaboration d'une méthode efficace pour tester progressivement la
-  configuration réalisée.
+  configuration réalisée;
 \item
-  Utilisation d'outils de diagnostics et analyse des résultats
+  Utilisation d'outils de diagnostics et analyse des résultats;
 \item
   Rédaction de fiches opératoires (notice d'utilisation).
 \end{itemize}}
 
 
 
-\ajoutESmodalite{Réseau entreprise : opérationnel répondant aux problématiques suivantes
-:
+\ajoutESmodalite{\vspace{-5pt}
 \begin{itemize}
 \item
-  un utilisateur interne à l'entreprise peut-il bénéficier des services
-  \textabbrv{HTTP}, \textabbrv{DNS} et \textabbrv{DHCP} internes et
-  se connecter à Internet.
+  Réseau entreprise : opérationnel répondant aux problématiques
+  suivantes :
+  \begin{itemize}
+  \item
+    un utilisateur interne à l'entreprise peut-il bénéficier des
+    services \textabbrv{HTTP}, \textabbrv{DNS} et \textabbrv{DHCP} internes
+    et se connecter à Internet.
+  \item
+    un utilisateur lambda peut-il accéder au serveur \textabbrv{HTTP} de
+    l'entreprise depuis Internet ?
+  \item
+    l'administrateur réseau de l'entreprise peut-il gérer les
+    équipements à l'aide d'une connexion \textabbrv{SSH}
+    dans l'entreprise et hors de l'entreprise ?
+  \end{itemize}
 \item
-  un utilisateur lambda peut-il accéder au serveur \textabbrv{HTTP} de l'entreprise
-  depuis Internet ?
+  Documentation : les procédures sont-elles applicables par une autre
+  équipe ?
 \item
-  l'administrateur réseau de l'entreprise peut-il gérer les équipements
-  à l'aide d'une connexion \textabbrv{SSH}
-  dans l'entreprise et hors de l'entreprise ?
-\end{itemize}
-Documentation : les procédures sont-elles applicables par une autre
-équipe ?\\
-Réunions : présentation finale (soutenance) de la solution mise en
-place.}
+  Réunions : présentation finale (soutenance) de la solution mise en
+  place.
+\end{itemize}}

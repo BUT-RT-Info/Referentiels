@@ -542,7 +542,10 @@ class SAEDocx(Docx):
             self.tp = "???"
 
         if self.projet:
-            self.projet = nettoie_champ_heure(self.projet)
+            if self.code == "SAÉ16":
+                self.projet = 0
+            else:
+                self.projet = nettoie_champ_heure(self.projet)
         else:
             SAEDocx.__LOGGER.warning(f"nettoie_heures_sae: dans {self.nom}, manque les heures de projet")
             self.projet = "???"
@@ -589,7 +592,7 @@ class SAEDocx(Docx):
                 "semestre": int(self.semestre[1]),
                 "heures_encadrees": self.heures_encadrees if self.heures_encadrees else "???",
                 "tp": self.tp if self.tp else "???",
-                "projet": self.projet if self.projet else "???",
+                "projet": self.projet if self.projet != "" else "???",
                 "description": folded(self.description),
                 "coeffs": self.coeffs,
                 "acs": self.apprentissages,
