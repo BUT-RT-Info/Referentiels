@@ -2,6 +2,7 @@ import os
 import glob
 import argparse
 import logging
+import sys
 
 from config import Config
 
