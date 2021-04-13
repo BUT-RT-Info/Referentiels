@@ -118,16 +118,21 @@ Référentiel de formation}
 \fancyhf{}
 \fancypagestyle{BO}{%
   \fancyhf{}%
-  \fancyfoot[L]{\textcopyright~Ministère de l'Enseignement supérieur, de la Recherche et de l'Innovation\\http://www.enseignementsup-recherche.gouv.fr}
+  \fancyfoot[L]{\textcopyright~Ministère de l'Enseignement supérieur, de la Recherche et de l'Innovation\\\url{http://www.enseignementsup-recherche.gouv.fr}}
   \fancyfoot[R]{2021\\Réseaux \& Télécommunications}
 }
 
-
+\usepackage[verbose]{newunicodechar}
+\makeatletter
+\newunicodechar{«}{\fontspec{Arial}\char"00AB\FB@guillspace\ignorespaces}
+\newunicodechar{»}{\unskip\FB@guillspace\fontspec{Arial}\char"00BB}
+\newunicodechar{©}{\fontspec{Arial}\char"00A9\unskip\,}
+\makeatother
 
 \begin{document}
 \setmainfont{Arial}
-\newcommand{\og}{«~}
-\newcommand{\fg}{~»\xspace}
+%\newcommand{\og}{\guillemotleft~}
+%\newcommand{\fg}{~\guillemotright\xspace}
 % Les listes
 \renewcommand{\labelitemi}{$\bullet$}
 \renewcommand{\labelitemii}{$\circ$}

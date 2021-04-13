@@ -24,8 +24,8 @@ python python/export_sae_docx_to_yaml.py "$saes" -o "python/export" -r . || die 
 python python/export_yaml_to_latex.py -a -r . || die "echec de export_yaml_to_latex.py"
 
 cd latex || die "repertoire manquant: latex"
-pdflatex pn_formation
-pdflatex pn_formation
+lualatex pn_formation
+lualatex pn_formation
 
 echo "Done."
 echo "Resultat: latex/pn_formation.pdf"
