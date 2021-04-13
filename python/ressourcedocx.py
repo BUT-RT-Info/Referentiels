@@ -156,7 +156,7 @@ class Docx():
         # ne traite pas tous les cas, mais arrange la majorité
         output = re.sub( r"\"(.*?)\"", r"«\1»", output, flags=re.DOTALL)
         # On utilise les guillements français (ajout automatique des bons espaces)
-        output = output.replace("«", r"\og ").replace("»", r"\fg{}")
+        #output = output.replace("«", r"\og ").replace("»", r"\fg{}")
         
         return output
 
