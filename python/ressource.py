@@ -42,7 +42,7 @@ def nettoie_latex(chaine):
     for (i, ligne) in enumerate(lignes):
         if "\\begin{itemize}" in ligne:  # on rencontre un itemize
             nbre_itemize += 1
-            if nbre_itemize == 1: # si c'est le 1er
+            if nbre_itemize == 1 and i != 0: # si c'est le 1er itemize et que ce n'est pas la 1ère ligne
                 lignes[i] = lignes[i].replace("\\begin{itemize}", "\\begin{itemize}[topsep=5pt]")
         elif "\\end{itemize}" in ligne:
             nbre_itemize -= 1
@@ -380,7 +380,7 @@ def md_to_latex(contenu):
 
     if contenu.startswith("\\begin{itemize}"):
         contenu = (
-            "\\vspace{-5pt}\n" + contenu
+            "\\vspace{-10pt}\n" + contenu
         )  # ajout d'un offset en cas de liste à puces
     contenu = contenu.replace("\\\\" * 2, "\\\\")
     return contenu
