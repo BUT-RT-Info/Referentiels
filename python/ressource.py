@@ -35,6 +35,19 @@ def nettoie_latex(chaine):
     m += re.findall(r"(\);)", chaine)
     for marq in m:
         chaine = chaine.replace(marq, marq[0] + "\,;")
+
+    # Ajoute les topsep
+    lignes = chaine.split("\n")
+    nbre_itemize = 0
+    for (i, ligne) in enumerate(lignes):
+        if "\\begin{itemize}" in ligne:  # on rencontre un itemize
+            nbre_itemize += 1
+            if nbre_itemize == 1: # si c'est le 1er
+                lignes[i] = lignes[i].replace("\\begin{itemize}", "\\begin{itemize}[topsep=5pt]")
+        elif "\\end{itemize}" in ligne:
+            nbre_itemize -= 1
+    chaine = "\n".join(lignes)
+
     return chaine
 
 
