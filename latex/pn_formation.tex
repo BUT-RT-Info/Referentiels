@@ -1,10 +1,11 @@
-\documentclass[10pt,lualatex,french]{article} % mathserif
+\documentclass[10pt,lualatex,french]{article} 
+\usepackage{helvet}
 
-\usepackage{fontspec}
-\setmainfont[Path=fonts/,
-    BoldItalicFont=ArialBoldItalic.ttf,
-    BoldFont      =ArialBold.ttf,
-    ItalicFont    =ArialItalic.ttf]{ArialRegular.ttf}
+%\usepackage{fontspec}
+%\setmainfont[Path=fonts/,
+%    BoldItalicFont=ArialBoldItalic.ttf,
+%    BoldFont      =ArialBold.ttf,
+%    ItalicFont    =ArialItalic.ttf]{ArialRegular.ttf}
 
 
 %\usepackage[LUC,T2A,T1]{fontenc}%
@@ -47,10 +48,10 @@
  \geometry{
  a4paper,
  % total={170mm,257mm},
-	left=10mm,
+	left=15mm, % 10mm ?
 	right=20mm,
 	top=15mm,
-	bottom=15mm
+	bottom=25mm
  }
 
 \usepackage{tikz}%
@@ -116,12 +117,24 @@ Référentiel de formation}
 \lfoot{ACD R\&T - Référentiel de Formation}
 \rfoot{\thepage}
 
+\fancyhf{}
+\fancypagestyle{BO}{%
+  \fancyhf{}%
+  \fancyfoot[L]{\textcopyright~Ministère de l'Enseignement supérieur, de la Recherche et de l'Innovation\\http://www.enseignementsup-recherche.gouv.fr}
+  \fancyfoot[R]{2021\\Réseaux \& Télécommunications}
+}
+
+
+
 \begin{document}
+\setmainfont{Arial}
 \newcommand{\og}{«~}
 \newcommand{\fg}{~»\xspace}
 % Les listes
 \renewcommand{\labelitemi}{$\bullet$}
 \renewcommand{\labelitemii}{$\circ$}
+%\thispagestyle{BO}
+\pagestyle{BO}
 
 % \maketitle
 \thispagestyle{empty}
