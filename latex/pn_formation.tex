@@ -118,10 +118,12 @@ Référentiel de formation}
 \rfoot{\thepage}
 
 \fancyhf{}
+\renewcommand{\footrulewidth}{1pt}
 \fancypagestyle{BO}{%
   \fancyhf{}%
-  \fancyfoot[L]{\textcopyright~Ministère de l'Enseignement supérieur, de la Recherche et de l'Innovation\\\url{http://www.enseignementsup-recherche.gouv.fr}}
-  \fancyfoot[R]{2021\\Réseaux \& Télécommunications}
+  \fancyfoot[L]{\textcopyright~Ministère de l'Enseignement supérieur, de la Recherche et de l'Innovation 2021\\\url{http://www.enseignementsup-recherche.gouv.fr}}
+  \fancyfoot[C]{~\\}
+  \fancyfoot[R]{~\\Réseaux \& Télécommunications\hspace*{4cm}\thepage}
 }
 
 \usepackage[verbose]{newunicodechar}
@@ -194,11 +196,11 @@ Document de travail formulant les propositions de l'ACD R\&T pour l'ensemble de 
 \clearpage
 \section*{Index des ressources et SAE}
 \subsection*{Semestre 1}
-\listeTitreRessourceIndex{A}
 \listeTitreSAEIndex{A}
+\listeTitreRessourceIndex{A}
 \subsection*{Semestre 2}
-\listeTitreRessourceIndex{B}
 \listeTitreSAEIndex{B}
+\listeTitreRessourceIndex{B}
 
 
 \section{Compétences du tronc commun}
