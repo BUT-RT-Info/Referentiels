@@ -1,4 +1,5 @@
 import logging
+import re
 import string
 import pypandoc
 import ruamel.yaml
@@ -11,6 +12,30 @@ from ressourcedocx import remove_ligne_vide
 from tools import caracteres_recalcitrants
 
 __LOGGER = logging.getLogger(__name__)
+
+
+def nettoie_latex(chaine):
+    """Purge certains éléments de la chaine latex générée par pypandoc"""
+    chaine = chaine.replace("\\tightlist\n", "")
+    chaine = ajoute_abbr_latex(chaine)
+
+    # detecte les espaces insécables
+    chaine = chaine.replace(" :", "~:")
+    m = re.findall(r"(\w\w:)", chaine)
+    m += re.findall(r"(\w}:)", chaine)
+    for marq in m:
+        if marq != "ex:" and marq != "ps:" and marq != "tp:": # les ex et les liens
+            chaine = chaine.replace(marq, marq[0:2] + "~:")
+    m = re.findall(r"(:\w)", chaine) # les : suivis d'une lettre
+    m += re.findall(r"(:\\)", chaine)
+    for marq in m:
+        chaine = chaine.replace(marq, ": " + marq[-1])
+    chaine = chaine.replace(" ;", "\,;")
+    m = re.findall(r"(\w;)", chaine)
+    m += re.findall(r"(\);)", chaine)
+    for marq in m:
+        chaine = chaine.replace(marq, marq[0] + "\,;")
+    return chaine
 
 
 class Ressource:
@@ -126,9 +151,7 @@ class Ressource:
             contenu=contenu,
         )
         # chaine = chaine.replace("&", "\&")
-        # Supprime les \\tighlist ajoutés par pypandoc
-        chaine = chaine.replace("\\tightlist\n", "")
-        chaine = ajoute_abbr_latex(chaine)
+        chaine = nettoie_latex(chaine)
 
         # Insère les abbréviations
         return chaine
@@ -244,8 +267,7 @@ class SAE:
         )
         # chaine = chaine.replace("&", "\&")
 
-        chaine = chaine.replace("\\tightlist\n", "")
-        chaine = ajoute_abbr_latex(chaine)
+        chaine = nettoie_latex(chaine)
         return chaine
 
 
@@ -311,9 +333,8 @@ class ExempleSAE:
             modalite=modalite,
         )
         # chaine = chaine.replace("&", "\&")
+        chaine = nettoie_latex(chaine)
 
-        chaine = chaine.replace("\\tightlist\n", "")
-        chaine = ajoute_abbr_latex(chaine)
         return chaine
 
 
