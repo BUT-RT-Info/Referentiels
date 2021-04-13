@@ -116,10 +116,12 @@ Référentiel de formation}
 \rfoot{\thepage}
 
 \fancyhf{}
+\renewcommand{\footrulewidth}{1pt}
 \fancypagestyle{BO}{%
   \fancyhf{}%
-  \fancyfoot[L]{\textcopyright~Ministère de l'Enseignement supérieur, de la Recherche et de l'Innovation\\\url{http://www.enseignementsup-recherche.gouv.fr}}
-  \fancyfoot[R]{2021\\Réseaux \& Télécommunications}
+  \fancyfoot[L]{\textcopyright~Ministère de l'Enseignement supérieur, de la Recherche et de l'Innovation 2021\\\url{http://www.enseignementsup-recherche.gouv.fr}}
+  \fancyfoot[C]{~\\}
+  \fancyfoot[R]{~\\Réseaux \& Télécommunications\hspace*{4cm}\thepage}
 }
 
 \usepackage[verbose]{newunicodechar}
