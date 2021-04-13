@@ -56,8 +56,8 @@ for sem in ressources:
     ressources[sem] = sorted(ressources[sem], key=lambda r: r.ressource["code"])
 
 # Chargement des saé et des exemples
-fichiers_definitifs = os.listdir(REPERTOIRE_SAE_DEFINITIVES)
-fichiers_temp = os.listdir(REPERTOIRE_TEMP)
+fichiers_definitifs = [ os.path.split(x)[1] for x in glob.glob(REPERTOIRE_SAE_DEFINITIVES+'/*.yml') ]
+fichiers_temp = [ os.path.split(x)[1] for x in glob.glob(REPERTOIRE_TEMP+'/*.yml') ]
 fichiers_saes = [REPERTOIRE_SAE_DEFINITIVES + "/" + f for f in fichiers_definitifs if "exemple" not in f]
 fichiers_exemples = [REPERTOIRE_SAE_DEFINITIVES + "/" + f for f in fichiers_definitifs if "exemple" in f]
 for f in fichiers_temp:
