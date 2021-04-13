@@ -29,13 +29,15 @@
     }
 }
 
-% Tableau listant toutes les SAé et leur exemple en guise d'introduction au semestre
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% %
+% Tableau listant toutes les SAé et leur exemple en guise d'introduction au semestre  %
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% %
 \newcommand{\listeTitreSAE}[1]{
     \setlength{\tabcolsep}{0.125cm} % Marge des colonnes
     \setlength{\extrarowheight}{2pt} % Marge des lignes
-
-    \begin{tabular}[t]{|P|T|}
-        \hline {\bfseries Codes des SAÉ} & {\bfseries Titre} \\ \hline
+\begin{center}\small
+    \begin{tabular}[t]{|X|Y|Z|}
+        \hline {\bfseries Code} & {\bfseries Titre} & {\bfseries Pages} \\ \hline
 
         \forLoop{1}{\value{cptS#1}}{nosae}{ % Pour chaque SAE
             %A\Alph{noressource}
@@ -46,21 +48,28 @@
             {\bfseries \hyperlink{sae:\saecode}{\textcolor{saeC}{\saecode}}}
             &
             {\bfseries {\saetitre}}
-            \tabularnewline
-            &
-            \begin{tabular}{p{13cm}}
-                \forLoop{1}{\value{cptSexemple\currentSAE}}{noexemple}{
-                    \xdef\exemplecode{\currentSAE\Alph{noexemple}}
-                    %\xdef\titreexemple{\csname ESname\exemplecode\endcsname}
-                    \itshape \hyperlink{exemple:\exemplecode}{\textcolor{exempleC}{Exemple \arabic{noexemple}}}~: 
-										{\csname ESname\exemplecode\endcsname}
-                    \tabularnewline
-                }
-            \end{tabular}
+						&
+						\pageref{lab\currentSAE}
+						
+            
+            \ifthenelse{\value{cptSexemple\currentSAE}>0}{
+							\forLoop{1}{\value{cptSexemple\currentSAE}}{noexemple}{
+										\tabularnewline
+											\xdef\exemplecode{\currentSAE\Alph{noexemple}}
+											%\xdef\titreexemple{\csname ESname\exemplecode\endcsname}
+											& 
+											\itshape \hyperlink{exemple:\exemplecode}{\textcolor{exempleC}{Exemple \arabic{noexemple}}}~: 
+											{\csname ESname\exemplecode\endcsname}
+											&
+											% \tabularnewline
+							}
+						}{}
+            %\end{tabular}
             \tabularnewline
             \hline
         }
     \end{tabular}
+		\end{center}
 }
 
 \newcommand{\listeTitreRessource}[1]{
