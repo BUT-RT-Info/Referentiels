@@ -22,6 +22,7 @@
         \tableauSAE{\currentSAE}
 				\newpage
         \forLoop{1}{\value{cptSexemple\currentSAE}}{noexemple}{
+            \phantomsection\label{lab\currentSAE\Alph{noexemple}}
             \tableauExempleSAE{\currentSAE}{\Alph{noexemple}}
         \newpage
         }
@@ -37,7 +38,7 @@
     \setlength{\extrarowheight}{2pt} % Marge des lignes
 \begin{center}\small
     \begin{tabular}[t]{|X|Y|Z|}
-        \hline {\bfseries Code} & {\bfseries Titre} & {\bfseries Pages} \\ \hline
+        \hline {\bfseries Code} & {\bfseries Titre} & {\bfseries Page} \\ \hline
 
         \forLoop{1}{\value{cptS#1}}{nosae}{ % Pour chaque SAE
             %A\Alph{noressource}
@@ -61,6 +62,7 @@
 											\itshape \hyperlink{exemple:\exemplecode}{\textcolor{exempleC}{Exemple \arabic{noexemple}}}~: 
 											{\csname ESname\exemplecode\endcsname}
 											&
+                                        \pageref{lab\currentSAE\Alph{noexemple}}
 											% \tabularnewline
 							}
 						}{}
