@@ -149,9 +149,9 @@ class Docx():
         output = "\n".join(lignes_finales)
 
         # Remplace http(s) URLs pour markdown
-        if "11" in self.code:
+        if "12" in self.code:
             print("ici")
-        output = re.sub( r"(http(s)?://[\w\d:#@%/;~_?\+-=\\\.&]*)", r"[\1](\1)", output )
+        output = re.sub( r"(http(s)?://[\w\d:#@%/;~_?\+-=\\\.&]*[\w/])", r"[\1](\1)", output )
         # Remplace les guillemets
         # ne traite pas tous les cas, mais arrange la majorité
         output = re.sub( r"\"(.*?)\"", r"«\1»", output, flags=re.DOTALL)
