@@ -396,7 +396,8 @@ def devine_sae_by_code(donnees):
     return sorted(list(set(codes)))
 
 def remove_link(contenu):
-    liens = re.findall("(<a\s.*\">)", contenu)
+    #liens = re.findall("(<a\s.*\">)", contenu)
+    liens = re.findall(r"(<a\shref=\"[\w\./:-]*\">)", contenu)
     for m in liens:
         contenu = contenu.replace(m, "")
     contenu = contenu.replace("</a>", "")
@@ -544,6 +545,7 @@ class SAEDocx(Docx):
         if self.projet:
             if self.code == "SAÉ16":
                 self.projet = 0
+                SAEDocx.__LOGGER.warning("SAÉ16 : heures projet mise à 0")
             else:
                 self.projet = nettoie_champ_heure(self.projet)
         else:
@@ -632,9 +634,6 @@ class ExempleSAEDocx(Docx):
 
     def nettoie_modalite(self):
         """Nettoie les modalités (d'évaluation) d'un exemple de SAE"""
-        if "12" in self.code:
-            print("ici")
-
         if self.modalite:
             self.modalite = convert_to_markdown(self.modalite)
         else:

@@ -216,9 +216,10 @@ for s in liste_exemples: # la sae
 
     sem = get_officiel_sem_sae_by_code(s)
     exemples[sem][s] = []
+
     for e in liste_exemples[s]:
         print(f"{s} : {e.nom}")
-        if e.nom.startswith("Caractériser un support radio"):
+        if e.nom.startswith("Catalogue des vulnérabilités"):
             print("ici")
         e.nettoie_champs()
 
