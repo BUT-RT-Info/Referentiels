@@ -16,7 +16,7 @@ parser = argparse.ArgumentParser(
 parser.add_argument(
     "DOCUMENT", 
     nargs="?", 
-    default=REPERTOIRE + "/" + "ressources_v4" + ".docx"
+    default=REPERTOIRE + "/" + "ressources_v0" + ".docx"
     )
 parser.add_argument(
     "-o", 
