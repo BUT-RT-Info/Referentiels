@@ -134,7 +134,6 @@ else:
     # Export latex des sae
     for sem in saes:
         for s in saes[sem]:
-
             fichierlatex = REPERTOIRE_LATEX_SAES + "/" + "{}.tex".format(s.sae["code"].replace("É", "E"))
             contenu = s.to_latex()
             with open(fichierlatex, "w", encoding="utf8") as fid:

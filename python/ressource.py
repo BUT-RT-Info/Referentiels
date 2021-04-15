@@ -17,7 +17,7 @@ __LOGGER = logging.getLogger(__name__)
 def nettoie_latex(chaine):
     """Purge certains éléments de la chaine latex générée par pypandoc"""
     chaine = chaine.replace("\\tightlist\n", "")
-    chaine = ajoute_abbr_latex(chaine)
+    chaine = ajoute_abbr_latex(chaine) # détecte les abréviations
 
     # detecte les espaces insécables
     chaine = chaine.replace(" :", "~:")
@@ -171,6 +171,9 @@ class Ressource:
 
 
 def contient_abbr(chaine):
+    """Détecte les abréviations présentes dans la chaine
+    (dont la liste est fournie par DATA_ABBREVIATIONS lues depuis le .yml) et
+    les renvoie sous forme d'une liste par abréviations de nombre de caractères décroissants"""
     mots = []
     for lettre in DATA_ABBREVIATIONS:
         for mot in DATA_ABBREVIATIONS[lettre]:
@@ -183,7 +186,10 @@ def contient_abbr(chaine):
 
 
 def ajoute_abbr_latex(chaine):
-    """Parse la chaine latex pour ajouter les abbréviations"""
+    """
+    Parse la chaine latex pour ajouter les abbréviations et les remplacer par
+    \\textabbrv{abreviation}
+    """
     mots = chaine.split(" ")
     for (i, mot) in enumerate(mots):
         abbrs = contient_abbr(mot)
@@ -194,6 +200,34 @@ def ajoute_abbr_latex(chaine):
         chaine = chaine.replace("/IP", "/\\textabbrv{IP}")
     return chaine
 
+def contient_commandes(chaine):
+    """Détecte si la chaine est une commande (éventuellement avec un caractère
+    de ponctuation final)"""
+    chaine_texte = ""
+    for car in chaine:
+        if car in string.ascii_lowercase:
+            chaine_texte += car
+    if "ipc" in chaine:
+        print("ici")
+    if chaine_texte in DATA_MOTSCLES["commandes"]:
+        return chaine_texte
+    return None
+
+def ajoute_cmd_latex(chaine):
+    """
+    Parse la chaine latex pour ajouter les abbréviations et les remplacer par
+    \\textabbrv{abreviation}
+    """
+    mots = chaine.split(" ")
+    for (i, mot) in enumerate(mots):
+        champs = mot.split("\n")
+        for (j, champ) in enumerate(champs):
+            cmd = contient_commandes(champ)
+            if cmd:
+                champs[j] = champs[j].replace(cmd, "\\texttt{" + cmd + "}")
+        mots[i] = "\n".join(champs)
+    chaine = " ".join(mots)
+    return chaine
 
 class SAE:
     """Modélise une saé (chapeau) lorsqu'elle est extraite d'un yaml"""
@@ -385,6 +419,9 @@ def md_to_latex(contenu):
     contenu = contenu.replace("\\\\" * 2, "\\\\[25pt]")
     if not contenu.endswith("\\end{itemize}"):
         contenu += "\\\\[3pt]"
+
+    contenu = ajoute_cmd_latex(contenu)  # détecte les commandes
+
     return contenu
 
 
@@ -759,7 +796,10 @@ def to_latex_matrice_coeffs(matrice_vols, matrice_coeffs, saes, ressources, sem)
     for (i, r) in enumerate(ressem):  # pour chaque SAE
         chaine += "\\textcolor{ressourceC}{" + r.ressource["code"] + "} & " + "\n"
         chaine += "\\begin{tabular}{p{5.7cm}}"
-        chaine += "\\tiny{" + r.ressource["nom"] + "} \\end{tabular} & \n"
+        # chaine += "\hyperlink{res:" + r.ressource["code"] + "}{"
+        chaine += "\\tiny{" + r.ressource["nom"] + "}"
+        # chaine += "}"
+        chaine += " \\end{tabular} & \n"
         chaine += str_volume(matrice_vols[i + nbre_saes][0]) + " & "
         chaine += str_volume(matrice_vols[i + nbre_saes][1]) + " & "
         chaine += " & "

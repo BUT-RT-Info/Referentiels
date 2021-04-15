@@ -17,9 +17,12 @@ with open(Config.ROOT+"/python/pn/saes.yml", 'r', encoding="utf8") as fid:
 ## Les compétences
 with open(Config.ROOT+"/yaml/competences/RT123.yml", 'r', encoding="utf8") as fid:
     DATA_COMPETENCES = yaml.load(fid.read(), Loader=yaml.Loader)
-## Les abbréviations
+## Les abréviations
 with open(Config.ROOT+"/yaml/abbreviations.yml", "r", encoding="utf8") as fid:
     DATA_ABBREVIATIONS = yaml.load(fid.read(), Loader=yaml.Loader)
+## Les mostcles (commandes, logiciels, etc...)
+with open(Config.ROOT+"/yaml/motscles.yml", "r", encoding="utf8") as fid:
+    DATA_MOTSCLES = yaml.load(fid.read(), Loader=yaml.Loader)
 
 AUCUN_PREREQUIS = "Aucun"
 
