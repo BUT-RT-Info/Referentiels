@@ -50,7 +50,7 @@
  % total={170mm,257mm},
 	left=15mm, % 10mm ?
 	right=20mm,
-	top=15mm,
+	top=20mm,
 	bottom=25mm
  }
 
@@ -155,7 +155,7 @@ Réseaux et Télécommunications
 }
 \vskip 2cm
 {\em Proposition de}
-
+\vskip 2mm
 {\huge
 Référentiel de formation
 }
@@ -173,10 +173,12 @@ ACD R\&T
 \vskip 2cm
 \begin{boitepagetitre}
 Document de travail formulant les propositions de l'ACD R\&T pour l'ensemble de la formation pour les deux premiers semestres (S1 et S2) de l'année universitaire 2021-2022.
-
 \medskip
-Élaboré par les enseignants des départements Réseaux et Télécommunications, sous la direction du groupe de travail constitué de~: Cléo Baras, Jean-Jacques Bascou, Christine Bolou-Chiaravalli, Anne-Sophie Capelle, Michel Gautero, Denis Genon-Catalot, Willy Guillemin, Said Hoceini, Fabrice Peyrard, Marie-Bernadette Piel et Emmanuel Viennet (Président de l'ACD).
 
+Élaboré par les enseignants des départements Réseaux et Télécommunications, sous la direction du groupe de travail constitué de~:
+{\em Cléo Baras, Jean-Jacques Bascou,\\
+Christine Bolou-Chiaravalli, Anne-Sophie Capelle, Michel Gautero, Denis\\Genon-Catalot, Willy Guillemin, Said Hoceini, Fabrice Peyrard, Marie-Bernadette Piel} \\
+et {\em Emmanuel Viennet} (Président de l'ACD).
 \end{boitepagetitre}
 
 \end{center}
@@ -192,9 +194,11 @@ Document de travail formulant les propositions de l'ACD R\&T pour l'ensemble de 
 % \newpage
 %}
 
-% Tables d'index:
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% TABLES D'INDEX             %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \clearpage
-\section*{Index des ressources et SAE}
+\section*{Index des SAÉs et ressources}
 \subsection*{Semestre 1}
 \listeTitreSAEIndex{A}
 \listeTitreRessourceIndex{A}
@@ -202,15 +206,47 @@ Document de travail formulant les propositions de l'ACD R\&T pour l'ensemble de 
 \listeTitreSAEIndex{B}
 \listeTitreRessourceIndex{B}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% PRESENTATION FORMATION     %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{La formation BUT Réseaux \& Télécommunications et ses parcours}
+La formation de Bachelor Universitaire de Technologie en Réseaux \& Télécommunications  (BUT R\&T) répond à la demande toujours croissante de compétences dans les secteurs  de l'information et de la communication. Les réseaux informatiques sont au cœur de nombreuses activités dont l'importance pour la vie sociale et économique est chaque jour plus présente : télétravail, communications mobiles, réseaux à très haut débit, transport et accès à l'information. Ces technologies, en pleine évolution, impliquent des objets communicants  de plus en plus répandus tant chez les particuliers que dans les entreprises ({\em Internet des objets}). Elles génèrent d'importants flux de données et posent de nouveaux problèmes de {\em cybersécurité}. La plupart des entreprises déportent tout ou partie de leurs données et traitements vers des {\em data centers} et mobilisent des solutions de {\em cloud computing}. Le déploiement d’infrastructures et de services réseaux ou le suivi de leur évolution sont au cœur de projets d’envergure à gérer et {\em piloter}.  Le BUT R\&T forme en trois ans des techniciens supérieurs capables de comprendre, de mettre en œuvre, de  configurer et de maintenir des équipements et systèmes d'information, tout en assurant leur sécurité physique et logicielle. 
 
+\subsection*{Cinq parcours de spécialité}
+La formation repose sur un socle commun de compétences dans les domaines réseaux, informatiques et télécommunications. Ce socle, représentant plus de 80\% de la formation, couvre l'administration des réseaux IP (Internet), la connexion des entreprises et des usagers, la création d'outils et d'applications informatiques pour les réseaux et télécommunications. Il est complété par une spécialisation sous forme de compétences complémentaires dispensées au cours des deux dernières années ; cette spécialisation est à choisir parmi les cinq orientations professionnelles en R\&T : Cybersécurité, Développement système et cloud, Internet des objets et mobilité, Pilotage de projets réseaux, Réseaux opérateurs et multimédia. En plus des compétences scientifiques et techniques, le BUT R\&T met l'accent sur les savoir-être, l'éthique, la capacité à travailler en équipe dans un environnement international et la compréhension des enjeux des technologies modernes.
+
+\subsection*{Les fonctions du diplômé de BUT Réseaux \& Télécommunications}
+La formation dispensée dans les départements de la spécialité "Réseaux \& Télécommunications" permet au ou à la future diplômée d’exercer différentes activités professionnelles :
+
+\medskip
+\begin{itemize}[leftmargin=5ex]
+\item conception, installation, administration d'infrastructures et de services réseaux informatiques ;
+\item déploiement et administration de  solutions de télécommunications fixes ou mobiles et de systèmes de communi\-cations (ToIP, téléconférence, visio, chat, ...) ;
+\item analyse, suivi, coordination des projets et leur valorisation ;
+déploiement et maintenance d’un système d'infor\-mation et de solutions logicielles, développement d'outils informatiques.
+\end{itemize}
+
+\medskip
+Ces activités peuvent être élargies, avec une  spécialisation vers : 
+
+\medskip
+\begin{itemize}[leftmargin=5ex]
+	\item la coordination de la cybersécurité des systèmes d'information (Cybersécurité) ;
+	\item l’administration de réseaux programmables, pour le Cloud ou le DevOps (DevCloud) ;
+	\item la communication entre objets mobiles et communicants, l'Internet des objets (IOM ) ;
+	\item le pilotage et la direction d’activités réseaux et télécoms (PilPro) ;
+	\item les opérateurs de télécommunication fixe et intégrateurs de solutions de communication pour l'entreprise (ROM).
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% RAPPEL DES COMPETENCES     %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Compétences du tronc commun}
 
 \foreach \CNOM/\CTYPE/\CLETTRE [count=\COUXX] in {CCA/C/A, CCB/C/B, CCC/C/C} {
 	\subsection{ {\csname compcoderef\CNOM\endcsname} - {\csname compname\CNOM\endcsname} }
 		\tableauCompetence{\CNOM}{\CTYPE}{\CLETTRE}
 }
-
-
 
 %%%%%%%%%%%%%%%%
 %% SEMESTRE 1 %%
@@ -231,7 +267,7 @@ Document de travail formulant les propositions de l'ACD R\&T pour l'ensemble de 
 
 \scalebox{0.95}{\input{synthese/S1_acs_vs_saes_ressources.tex}}
 
-\subsection{Volumes horaires et coefficients du semestre 1}
+\subsection{Volumes horaires, coefficients et ECTS du semestre 1}
 
 \input{synthese/S1_coeffs_saes_ressources.tex}
 
@@ -265,7 +301,7 @@ Document de travail formulant les propositions de l'ACD R\&T pour l'ensemble de 
 
 \scalebox{0.95}{\input{synthese/S2_acs_vs_saes_ressources.tex}}
 
-\subsection{Volumes horaires et coefficients du semestre 2}
+\subsection{Volumes horaires, coefficients et ECTS du semestre 2}
 
 \input{synthese/S2_coeffs_saes_ressources.tex}
 

@@ -676,7 +676,7 @@ def to_latex_matrice_coeffs(matrice_vols, matrice_coeffs, saes, ressources, sem)
 
     comps = ["RT1", "RT2", "RT3"]
     lettresem = "A" if sem == "S1" else "B"
-
+    sem_id = int(sem[1:])
     saesem = saes[sem]  # les saé du semestre
     ressem = ressources[sem]  # les ressources du semestre
 
@@ -778,7 +778,7 @@ def to_latex_matrice_coeffs(matrice_vols, matrice_coeffs, saes, ressources, sem)
     total_coeffs_ressources = get_total_coeffs_ressources(matrice_coeffs, sem)
 
     chaine += "\\hline "
-    chaine += "\multicolumn{%d}{|l}{\\bfseries Total}" % (nbre_colonnes) + "\n"
+    chaine += "\multicolumn{%d}{|l|}{\\bfseries Total}" % (nbre_colonnes) + "\n"
     chaine += "\\\\ \n"
     chaine += "\\hline "
     # sous-total SAE
@@ -800,6 +800,16 @@ def to_latex_matrice_coeffs(matrice_vols, matrice_coeffs, saes, ressources, sem)
     for i in range(3):
         chaine += " & {\\bfseries " + str(total_coeffs[i]) + "}"
     chaine += "\\\\ \\hline"
+
+    # ECTS
+    chaine += r"""\multicolumn{5}{l}{~}\\
+\multicolumn{5}{l}{\bfseries Crédits ECTS}\\
+\hline
+\multicolumn{5}{|l|}{} & RT1 & RT2 & \multicolumn{1}{c|}{RT3} \\
+    \hline
+\multicolumn{5}{|l|}{} & %d & %d & %d \\
+    \hline
+    """ % tuple(Config.ECTS[sem_id][ue] for ue in Config.ECTS[sem_id])
     chaine += "\\end{tabular}"
     return chaine
 
