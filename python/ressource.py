@@ -205,7 +205,7 @@ def contient_commandes(chaine):
     de ponctuation final)"""
     chaine_texte = ""
     for car in chaine:
-        if car in string.ascii_lowercase:
+        if car in string.ascii_lowercase + "-":
             chaine_texte += car
     if "ipc" in chaine:
         print("ici")
@@ -643,13 +643,17 @@ def to_latex_matrice_acs(matrice, saes, ressources, sem):
     noms_saes = []
     chaine += " & & \n"
     for (i, s) in enumerate(saesem):  # pour chaque SAE
-        contenu = "~\\textcolor{saeC}{" + s.sae["code"] + "}"
+        contenu = "~\\hyperlink{sae:" + s.sae["code"] + "}{"
+        contenu += "\\textcolor{saeC}{" + s.sae["code"] + "}"
+        contenu += "}"
         noms_saes.append(rotation_entete_colonne(contenu, pos="r") + "\n")
     chaine += " & ".join(noms_saes) + "\n"
     chaine += " & "
     noms_ressources = []
     for (i, r) in enumerate(ressem):  # pour chaque SAE
-        contenu = "~\\textcolor{ressourceC}{" + r.ressource["code"] + "}"
+        contenu = "~\\hyperlink{res:" + r.ressource["code"] + "}{"
+        contenu += "\\textcolor{ressourceC}{" + r.ressource["code"] + "}"
+        contenu += "}"
         noms_ressources.append(rotation_entete_colonne(contenu, pos="r") + "\n")
     chaine += " & ".join(noms_ressources) + "\n"
     chaine += "\\\\ \n"
@@ -741,14 +745,15 @@ def to_latex_matrice_coeffs(matrice_vols, matrice_coeffs, saes, ressources, sem)
     chaine += rotation_entete_colonne("\\bfseries Heures de projets") + " & "
     # les noms des comps
     noms = []
-    for (i, comp) in enumerate(comps):  # pour chaque SAE
+    for (i, comp) in enumerate(comps):  # pour chaque compétence
         contenu = "\\begin{tabular}{p{5cm}}\n"
         couleur = "\\textcolor{compC" + string.ascii_uppercase[i] + "}"
         contenu += (
-            couleur
+            "\\hyperlink{comp:" + comp + "}{"
+            + couleur
             + "{\\bfseries "
             + comp
-            + "} - "
+            + "}} - "
             + DATA_COMPETENCES[comp]["nom"].replace("&", "\&")
             + "\\\\ \n"
         )
@@ -770,7 +775,10 @@ def to_latex_matrice_coeffs(matrice_vols, matrice_coeffs, saes, ressources, sem)
     chaine += "\\hline "
     # le nom des SAE
     for (i, s) in enumerate(saesem):  # pour chaque SAE
-        chaine += "\\textcolor{saeC}{" + s.sae["code"] + "} & " + "\n"
+        chaine += "\\hyperlink{sae:" + s.sae["code"] + "}{"
+        chaine += "\\textcolor{saeC}{" + s.sae["code"] + "}"
+        chaine += "}"
+        chaine += " & " + "\n"
         chaine += (
             "\\begin{tabular}{p{5.7cm}} \\tiny{"
             + s.sae["titre"]
@@ -794,11 +802,13 @@ def to_latex_matrice_coeffs(matrice_vols, matrice_coeffs, saes, ressources, sem)
     chaine += "\\hline "
 
     for (i, r) in enumerate(ressem):  # pour chaque SAE
-        chaine += "\\textcolor{ressourceC}{" + r.ressource["code"] + "} & " + "\n"
+        chaine += "\hyperlink{res:" + r.ressource["code"] + "}{"
+        chaine += "\\textcolor{ressourceC}{" + r.ressource["code"] + "}"
+        chaine += "}"
+        chaine += " & " + "\n"
+
         chaine += "\\begin{tabular}{p{5.7cm}}"
-        # chaine += "\hyperlink{res:" + r.ressource["code"] + "}{"
         chaine += "\\tiny{" + r.ressource["nom"] + "}"
-        # chaine += "}"
         chaine += " \\end{tabular} & \n"
         chaine += str_volume(matrice_vols[i + nbre_saes][0]) + " & "
         chaine += str_volume(matrice_vols[i + nbre_saes][1]) + " & "
