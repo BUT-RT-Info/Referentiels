@@ -345,6 +345,7 @@ class ExempleSAE:
         else:
             description = md_to_latex(description)
 
+
         # préparation de la forme
         formes = self.exemple["formes"]
         if not formes:
@@ -362,6 +363,9 @@ class ExempleSAE:
             )
         else:
             problematique = md_to_latex(problematique)
+            if "15" in self.exemple["code"]:
+                # supprime le \\[3pt]
+                problematique = problematique[:-7]
 
         # préparation des modalites
         modalite = self.exemple["modalite"]
