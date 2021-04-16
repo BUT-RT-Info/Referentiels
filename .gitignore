@@ -317,3 +317,8 @@ __pycache__/
 # VS Code
 .vscode/
 *.code-workspace
+
+# Specifique:
+latex/saes/*.tex
+latex/ressources/*.tex
+__latexindent_temp.tex
