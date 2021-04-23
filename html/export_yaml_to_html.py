@@ -120,8 +120,11 @@ template = env.from_string("""
                         <th>{{categorie.capitalize()}}</th>
                         <td>
                             {#- Gestion des tableaux #}
-                        {% if categorie == "motscles" or categorie == "sae" or categorie == "ressources" -%}   
+                        {% if categorie == "motscles" or categorie == "ressources" -%}   
                         <div class="tags">{% for mot in valeur %}<span class="tag is-info">{{mot}}</span>{% endfor %}</div>
+                            {#- Gestion des saes #}
+                        {% elif categorie == "sae" %}
+                        <div class="tags">{% for sae in valeur %}<a class="tag is-info" href="{{sae.replace("É","E")}}.html">{{sae}}</a>{% endfor %}</div>
                             {#- Gestion des ACS #}
                         {% elif categorie == "acs" -%}  
                         <div class="tags">{% for rt,acs in valeur.items() %}{% for ac in acs %}<span class="tag is-info">{{ac}}</span>{% endfor %}{% endfor %}</div>
