@@ -91,30 +91,26 @@ template = env.from_string("""
     {% extends "base.html" %}
     {% block title %}{{data.code}} - {{data.nom}}{{data.titre}}{% endblock %}
     {% block content %}
-            <nav class="level">
+            <nav class="level is-mobile">
                 <div class="level-left">
-                {% if precedent %}
                     <div class="level-item">
-                        <a class="button" href="{{precedent}}">
+                        <a class="button is-primary is-outlined{% if not precedent %} is-static"{% else %}" href="{{precedent}}"{% endif %}>
                             <span class="icon is-small">
                                 <i class="fas fa-arrow-left"></i>
                             </span>
                             <span>Précédent</span>
                         </a>
                     </div>
-                {% endif %}
                 </div>
                 <div class="level-right">
-                {% if suivant %}
                     <div class="level-item">
-                        <a class="button" href="{{suivant}}">
+                        <a class="button is-primary is-outlined{% if not suivant %} is-static"{% else %}" href="{{suivant}}"{% endif %}>
                             <span>Suivant</span>
                             <span class="icon is-small">
                                 <i class="fas fa-arrow-right"></i>
                             </span>
                         </a>
-                    </div>
-                {% endif %}    
+                    </div>   
                 </div>
             </nav>
             <table class="table is-bordered is-hoverable is-fullwidth">
@@ -148,30 +144,26 @@ template = env.from_string("""
                     {% endfor %}
                 </tbody>
             </table>
-            <nav class="level">
+            <nav class="level is-mobile">
                 <div class="level-left">
-                {% if precedent %}
                     <div class="level-item">
-                        <a class="button" href="{{precedent}}">
+                        <a class="button is-primary is-outlined{% if not precedent %} is-static"{% else %}" href="{{precedent}}"{% endif %}>
                             <span class="icon is-small">
                                 <i class="fas fa-arrow-left"></i>
                             </span>
                             <span>Précédent</span>
                         </a>
                     </div>
-                {% endif %}
                 </div>
                 <div class="level-right">
-                {% if suivant %}
                     <div class="level-item">
-                        <a class="button" href="{{suivant}}">
+                        <a class="button is-primary is-outlined{% if not suivant %} is-static"{% else %}" href="{{suivant}}"{% endif %}>
                             <span>Suivant</span>
                             <span class="icon is-small">
                                 <i class="fas fa-arrow-right"></i>
                             </span>
                         </a>
-                    </div>
-                {% endif %}    
+                    </div>   
                 </div>
             </nav>
     {% endblock %}
