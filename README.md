@@ -37,7 +37,7 @@ par exemple:
     cd python
     python export_yaml_to_latex.py -a
 
-### Génération du LaTeX
+### Génération du Html
 
     cd html
     python export_yaml_to_html.py
