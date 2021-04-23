@@ -37,6 +37,11 @@ par exemple:
     cd python
     python export_yaml_to_latex.py -a
 
+### Génération du LaTeX
+
+    cd html
+    python export_yaml_to_html.py
+
 ### Génération de PDF
 
     cd latex
