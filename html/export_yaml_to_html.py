@@ -27,6 +27,10 @@ REPERTOIRE_RESSOURCES_DEFINITIVES = Config.ROOT + "/yaml/ressources"
 REPERTOIRE_SAE_DEFINITIVES = Config.ROOT + "/yaml/saes"
 REPERTOIRE_HTML = Config.ROOT + "/html/export"
 
+# Créer le dossier html/export s'il n'existe pas
+if not os.path.exists(REPERTOIRE_HTML):
+    os.makedirs(REPERTOIRE_HTML)
+
 # Chargement des ressources : depuis les versions définitives du répertoire yaml d'abord,
 # puis dans python/export si manquantes
 fichiers_definitifs = [ os.path.split(x)[1] for x in glob.glob(REPERTOIRE_RESSOURCES_DEFINITIVES+'/*.yml') ] #nom fichier dans yaml/ressources
