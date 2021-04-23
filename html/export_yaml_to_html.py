@@ -83,10 +83,25 @@ for fichieryaml in fichiers_exemples:
         exemples[sem][sae] = []
     exemples[sem][sae].append(e)
 
+#Liste de string pour renommer certains catégories (les autres qui n'ont pas besoins ont la première lettre en majuscule)
+rename = {
+    "heures_encadrees": "Heures encadrées",
+    "heures_formation": "Heures formation",
+           "heures_tp": "Heures TP",
+                  "tp": "Heures TP",
+              "coeffs": "Coef.",
+                 "acs": "ACs",
+            "motscles": "Mots clés",
+                 "sae": "SAÉ",
+           "prerequis": "Prérequis",
+       "problematique": "Problématique",
+            "modalite": "Modalité"
+}
+
 CHEMIN_TEMPLATE = Config.ROOT + "/html"
 # Création de l'environnement pour charger les templates
 env = Environment(trim_blocks=True, lstrip_blocks=True, loader=FileSystemLoader(CHEMIN_TEMPLATE))
-# Template de chaque pages ressources, saes, exemples
+# Template de chaque pages ressources, saes, exemples (doit contenir datas,rename,precedent,suivant)
 template = env.from_string("""
     {% extends "base.html" %}
     {% block title %}{{data.code}} - {{data.nom}}{{data.titre}}{% endblock %}
@@ -117,7 +132,7 @@ template = env.from_string("""
                 <tbody>
                     {% for categorie, valeur in data.items() %}
                     <tr>
-                        <th>{{categorie.capitalize()}}</th>
+                        <th>{% if rename[categorie] %}{{rename[categorie]}}{% else %}{{categorie.capitalize()}}{% endif %}</th>
                         <td>
                             {#- Gestion des tableaux #}
                         {% if categorie == "motscles"  -%}   
@@ -172,7 +187,7 @@ template = env.from_string("""
     {% endblock %}
 """)
 
-# Template de la liste des ressources par semestre
+# Template de la liste des ressources par semestre (doit contenir data,sem)
 template_List_Ressource = env.from_string("""
         {% extends "base.html" %}
         {% block title %}Liste des Ressources du semestre {{sem}}{% endblock %}
@@ -187,7 +202,7 @@ template_List_Ressource = env.from_string("""
         {% endblock %}
 """)
 
-# Template de la liste des saes ou ressources
+# Template de la liste des saes ou ressources (doit contenir data,titre)
 template_List = env.from_string("""
         {% extends "base.html" %}
         {% block title %}Liste des {{title}}{% endblock %}
@@ -243,7 +258,7 @@ for indexSem, sem in enumerate(ressources):
         # Sépare les motclés pour former des tags
         data["motscles"] = motscles(data["motscles"])
         # Ajoute les liens pour les boutons "Suivant" et "Précédent"
-        datas = {"data":data}
+        datas = {"data":data, "rename": rename}
         if(i > 0): datas["precedent"] = "R" + str(int(ressource.ressource["code"][1:])-1) + ".html"
         elif(indexSem > 0): datas["precedent"] = "R" + ressources[list(ressources.keys())[indexSem - 1]][-1].ressource["code"][1:] + ".html"
         if(i < len(ressources[sem]) - 1): datas["suivant"] = "R" + str(int(ressource.ressource["code"][1:])+1) + ".html"
@@ -265,7 +280,7 @@ for indexSem, sem in enumerate(ressources):
         data["description"] = data["description"].replace("\n","<br><br>")
         data["livrables"] = data["livrables"].replace("\n","<br><br>")
         data["motscles"] = motscles(data["motscles"])
-        datas = {"data":data}
+        datas = {"data":data, "rename": rename}
         if(i > 0): datas["precedent"] = "SAE" + str(int(sae.sae["code"][3:])-1) + ".html"
         elif(indexSem > 0): datas["precedent"] = "SAE" + saes[list(saes.keys())[indexSem - 1]][-1].sae["code"][3:] + ".html" # saes[list(saes.keys())[indexSem - 1]][-1].sae["code"][3:] -> "code" du dernier sae du semestre précédent
         if(i < len(saes[sem]) - 1): datas["suivant"] = "SAE" + str(int(sae.sae["code"][3:])+1) + ".html"
@@ -280,7 +295,7 @@ for indexSem, sem in enumerate(ressources):
                 data[categorie] = valeur
                 if (isinstance(valeur,str)):
                     data[categorie] = data[categorie].replace("\n","<br><br>")
-            datas = {"data":data}
+            datas = {"data":data, "rename": rename}
             if(j > 0): datas["precedent"] = "SAE" + data["code"][-2:] + "_exemple" + str(i-1) + ".html"
             if(j < len(exemples[sem][sae]) - 1): datas["suivant"] = "SAE" + data["code"][-2:] + "_exemple" + str(i+1) + ".html"
             template.stream(datas).dump(REPERTOIRE_HTML + "/" + data["code"].replace("É","E") + "_exemple" + str(i) + ".html")
