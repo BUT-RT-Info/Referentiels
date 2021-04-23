@@ -169,6 +169,9 @@ class Ressource:
         # Insère les abbréviations
         return chaine
 
+    def getInfo(self):
+        return self.ressource
+
 
 def contient_abbr(chaine):
     """Détecte les abréviations présentes dans la chaine
@@ -316,6 +319,9 @@ class SAE:
 
         chaine = nettoie_latex(chaine)
         return chaine
+
+    def getInfo(self):
+        return self.sae
 
 
 class ExempleSAE:

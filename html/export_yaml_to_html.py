@@ -184,17 +184,17 @@ template_List_Ressource = env.from_string("""
         {% endblock %}
 """)
 
-# Template de la liste des saes
-template_List_SAE = env.from_string("""
+# Template de la liste des saes ou ressources
+template_List = env.from_string("""
         {% extends "base.html" %}
-        {% block title %}Liste des SAE{% endblock %}
+        {% block title %}Liste des {{title}}{% endblock %}
         {% block content %}
             <div class="content">
-                <ul><h1>Liste des SAE</h1>
-                    {% for sem, saes in data.items() %}
-                    {% for sae in saes %}
-                    <li><a href="{{sae.sae["code"].replace("É","E") + ".html"}}">{{sae.sae["code"]}} - {{sae.sae["titre"]}}</a></li>
-                    {% endfor %}
+                <ul><h1>Liste des {{title}}</h1>
+                    {% for sem, liste in data.items() %}
+                        {% for page in liste %}
+                    <li><a href="{{page.getInfo()["code"].replace("É","E") + ".html"}}">{{page.getInfo()["code"]}} - {{page.getInfo()["titre"]}}{{page.getInfo()["nom"]}}</a></li>
+                        {% endfor %}
                     {% endfor %}
                 </ul>
             </div>
@@ -221,8 +221,12 @@ def motscles(mc):
     return motscles
 
 #Créer un fichier contenant la liste des saes
-data = {"data" : saes} # "data" contient un tableau des saes
-template_List_SAE.stream(data).dump(REPERTOIRE_HTML + "/SAE.html")
+datas = {"data" : saes, "title": "SAE"} # "data" contient un tableau des saes
+template_List.stream(datas).dump(REPERTOIRE_HTML + "/SAE.html")
+
+#Créer un fichier contenant la liste des ressources
+datas = {"data" : ressources, "title": "Ressources"}
+template_List.stream(datas).dump(REPERTOIRE_HTML + "/ressources.html")
 
 # Création des pages individuelles ressources, saes, exemples
 for indexSem, sem in enumerate(ressources):
@@ -278,4 +282,3 @@ for indexSem, sem in enumerate(ressources):
             if(j < len(exemples[sem][sae]) - 1): datas["suivant"] = "SAE" + data["code"][-2:] + "_exemple" + str(i+1) + ".html"
             template.stream(datas).dump(REPERTOIRE_HTML + "/" + data["code"].replace("É","E") + "_exemple" + str(i) + ".html")
             i+=1
-
