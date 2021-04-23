@@ -94,7 +94,7 @@ template = env.from_string("""
             <nav class="level is-mobile">
                 <div class="level-left">
                     <div class="level-item">
-                        <a class="button is-primary is-outlined{% if not precedent %} is-static"{% else %}" href="{{precedent}}"{% endif %}>
+                        <a class="button is-primary{% if not precedent %} is-static"{% else %} is-outlined" href="{{precedent}}"{% endif %}>
                             <span class="icon is-small">
                                 <i class="fas fa-arrow-left"></i>
                             </span>
@@ -104,7 +104,7 @@ template = env.from_string("""
                 </div>
                 <div class="level-right">
                     <div class="level-item">
-                        <a class="button is-primary is-outlined{% if not suivant %} is-static"{% else %}" href="{{suivant}}"{% endif %}>
+                        <a class="button is-primary{% if not suivant %} is-static"{% else %} is-outlined" href="{{suivant}}"{% endif %}>
                             <span>Suivant</span>
                             <span class="icon is-small">
                                 <i class="fas fa-arrow-right"></i>
@@ -147,7 +147,7 @@ template = env.from_string("""
             <nav class="level is-mobile">
                 <div class="level-left">
                     <div class="level-item">
-                        <a class="button is-primary is-outlined{% if not precedent %} is-static"{% else %}" href="{{precedent}}"{% endif %}>
+                        <a class="button is-primary{% if not precedent %} is-static"{% else %} is-outlined" href="{{precedent}}"{% endif %}>
                             <span class="icon is-small">
                                 <i class="fas fa-arrow-left"></i>
                             </span>
@@ -157,7 +157,7 @@ template = env.from_string("""
                 </div>
                 <div class="level-right">
                     <div class="level-item">
-                        <a class="button is-primary is-outlined{% if not suivant %} is-static"{% else %}" href="{{suivant}}"{% endif %}>
+                        <a class="button is-primary{% if not suivant %} is-static"{% else %} is-outlined" href="{{suivant}}"{% endif %}>
                             <span>Suivant</span>
                             <span class="icon is-small">
                                 <i class="fas fa-arrow-right"></i>
