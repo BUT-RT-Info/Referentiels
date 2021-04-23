@@ -8,6 +8,7 @@ Avec Anaconda:
     conda install ruamel
     conda install ruamel.yaml
     pip install docx2python
+    pip install Jinja2
 
 Sans Anaconda, remplacer `conda` par `pip`.
 
