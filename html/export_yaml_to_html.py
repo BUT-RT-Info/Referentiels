@@ -135,10 +135,10 @@ template = env.from_string("""
                         <th>{% if rename[categorie] %}{{rename[categorie]}}{% else %}{{categorie.capitalize()}}{% endif %}</th>
                         <td>
                             {#- Gestion des tableaux #}
-                        {% if categorie == "motscles"  -%}   
+                        {% if categorie == "motscles"  -%}  
                         <div class="tags">{% for mot in valeur %}<span class="tag is-info">{{mot}}</span>{% endfor %}</div>
                             {#- Gestion des saes #}
-                        {% elif categorie == "sae" or categorie == "ressources" %}
+                        {% elif categorie == "sae" or categorie == "ressources" -%}
                         <div class="tags">{% for val in valeur %}<a class="tag is-info" href="{{val.replace("É","E")}}.html">{{val}}</a>{% endfor %}</div>
                             {#- Gestion des ACS #}
                         {% elif categorie == "acs" -%}  
@@ -155,7 +155,7 @@ template = env.from_string("""
                         {%- else %}{{valeur}}{% endif %}
                             {#- Gestion des autres catégories #}
                         {% else -%}   
-                        {{valeur}}
+                        <div class="content">{{valeur}}</div>
                         {%- endif -%}
                         </td>
                     </tr>
@@ -238,6 +238,44 @@ def motscles(mc):
     motscles.append(mot)
     return motscles
 
+def formatHTML(string):
+    """ Retourne un string avec les balises <ul> , <li> et <p> correctement placé, code plus compliqué pour ce qu'il fait"""
+    texte = "\n"
+    phrases = list(filter(None,string.split("\n")))
+    i = 0
+    while i < len(phrases):
+        if "*" in phrases[i]: # première balise li détecté
+            texte += "<ul>\n" # \n permet d'améliorer la lisibilité dans les fichiers html
+            while i < len(phrases) and "*" in phrases[i]: # Tant qu'il y a des * on continue de créer des balises
+                texte += "  <li>" + phrases[i][2:] + "</li>\n"
+                if i+1 < len(phrases):
+                    if phrases[i+1][:3] == "  *": # Si il y a une liste dans un li
+                        texte += "  <ul>\n"
+                        while i + 1 < len(phrases) and phrases[i+1][:2] == "  ": # Tant qu'on est dans la liste
+                            if "*" in phrases[i+1]:
+                                texte += "      <li>" + phrases[i+1][4:] + "</li>\n"
+                            else:
+                                texte = texte[:-6]
+                                while i + 1 < len(phrases) and phrases[i+1][:2] == "  ": # Si il y a des retour chariot
+                                    texte += phrases[i+1][3:]
+                                    i += 1
+                                i -= 1
+                            i += 1
+                        texte += "  </ul>\n"
+                    elif phrases[i+1][:2] == "  ": # Retour à la ligne d'un li
+                        texte = texte[:-6]
+                        while i + 1 < len(phrases) and phrases[i+1][:2] == "  ":
+                            texte += phrases[i+1][1:]
+                            i += 1
+                        texte += "</li>\n"
+                i += 1
+            texte += "</ul>\n"
+            i -= 1
+        else:
+            texte += "<p>" + phrases[i] + "</p>\n"
+        i += 1
+    return texte[:-1] # On enlève le dernier \n 
+
 #Créer un fichier contenant la liste des saes
 datas = {"data" : saes, "title": "SAE"} # "data" contient un tableau des saes
 template_List.stream(datas).dump(REPERTOIRE_HTML + "/SAE.html")
@@ -252,9 +290,9 @@ for indexSem, sem in enumerate(ressources):
         data = {}
         for categorie, valeur in ressource.ressource.items():
             data[categorie] = valeur
-        # Ajout des espaces en html
-        data["contenu"] = data["contenu"].replace("\n","<br>")
-        data["contexte"] = data["contexte"].replace("\n","<br><br>")
+        # Formatage de string en html
+        data["contenu"] = formatHTML(data["contenu"])
+        data["contexte"] = formatHTML(data["contexte"])
         # Sépare les motclés pour former des tags
         data["motscles"] = motscles(data["motscles"])
         # Ajoute les liens pour les boutons "Suivant" et "Précédent"
@@ -277,8 +315,8 @@ for indexSem, sem in enumerate(ressources):
         # On regarde si des exemples du sae existent, si True, on les ajoute dans "data"
         if(sae.sae["code"] in exemples[sem]) : 
             data["exemples"] = exemples[sem][sae.sae["code"]]
-        data["description"] = data["description"].replace("\n","<br><br>")
-        data["livrables"] = data["livrables"].replace("\n","<br><br>")
+        data["description"] = formatHTML(data["description"])
+        data["livrables"] = formatHTML(data["livrables"])
         data["motscles"] = motscles(data["motscles"])
         datas = {"data":data, "rename": rename}
         if(i > 0): datas["precedent"] = "SAE" + str(int(sae.sae["code"][3:])-1) + ".html"
@@ -293,8 +331,8 @@ for indexSem, sem in enumerate(ressources):
             data = {}
             for categorie, valeur in exemple.exemple.items():
                 data[categorie] = valeur
-                if (isinstance(valeur,str)):
-                    data[categorie] = data[categorie].replace("\n","<br><br>")
+            data["description"] = formatHTML(data["description"])
+            data["modalite"] = formatHTML(data["modalite"])
             datas = {"data":data, "rename": rename}
             if(j > 0): datas["precedent"] = "SAE" + data["code"][-2:] + "_exemple" + str(i-1) + ".html"
             if(j < len(exemples[sem][sae]) - 1): datas["suivant"] = "SAE" + data["code"][-2:] + "_exemple" + str(i+1) + ".html"
