@@ -53,6 +53,7 @@ Le résultat est `pn_formation.pdf`.
 
 ## Organisation des fichiers
 
+    html/export   fichiers html générés par export_yaml_to_html.py à partir des yaml
     python/import   fichiers docx à traiter
     python/export   fichier yaml générés par export_docx_to_yaml.py à partir des docx
     yaml/ressources versions éditées manuellement ??
