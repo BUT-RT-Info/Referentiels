@@ -25,6 +25,8 @@ from ressource import *
 REPERTOIRE_TEMP = Config.ROOT + "/python/export"
 REPERTOIRE_RESSOURCES_DEFINITIVES = Config.ROOT + "/yaml/ressources"
 REPERTOIRE_SAE_DEFINITIVES = Config.ROOT + "/yaml/saes"
+REPERTOIRE_COMPETENCES_DEFINITIVES = Config.ROOT + "/yaml/competences"
+REPERTOIRE_ACS = Config.ROOT + "/python/pn"
 REPERTOIRE_HTML = Config.ROOT + "/html/export"
 
 # Créer le dossier html/export s'il n'existe pas
@@ -83,7 +85,15 @@ for fichieryaml in fichiers_exemples:
         exemples[sem][sae] = []
     exemples[sem][sae].append(e)
 
-#Liste de string pour renommer certains catégories (les autres qui n'ont pas besoins ont la première lettre en majuscule)
+# Chargement des ACs
+fichieryaml = REPERTOIRE_ACS +'/acs.yml'
+acs = ACs(fichieryaml)
+
+# Chargement des Compétences
+fichieryaml = REPERTOIRE_COMPETENCES_DEFINITIVES + '/RT123.yml'
+competences = Competences(fichieryaml)
+
+#Liste de string pour renommer certaines catégories (les autres qui n'ont pas besoins ont la première lettre en majuscule)
 rename = {
     "heures_encadrees": "Heures encadrées",
     "heures_formation": "Heures formation",
@@ -106,46 +116,25 @@ template = env.from_string("""
     {% extends "base.html" %}
     {% block title %}{{data.code}} - {{data.nom}}{{data.titre}}{% endblock %}
     {% block content %}
-            <nav class="level is-mobile">
-                <div class="level-left">
-                    <div class="level-item">
-                        <a class="button is-primary{% if not precedent %} is-static"{% else %} is-outlined" href="{{precedent}}"{% endif %}>
-                            <span class="icon is-small">
-                                <i class="fas fa-arrow-left"></i>
-                            </span>
-                            <span>Précédent</span>
-                        </a>
-                    </div>
-                </div>
-                <div class="level-right">
-                    <div class="level-item">
-                        <a class="button is-primary{% if not suivant %} is-static"{% else %} is-outlined" href="{{suivant}}"{% endif %}>
-                            <span>Suivant</span>
-                            <span class="icon is-small">
-                                <i class="fas fa-arrow-right"></i>
-                            </span>
-                        </a>
-                    </div>   
-                </div>
-            </nav>
+    {% include "navigation.html" %}
             <table class="table is-bordered is-hoverable is-fullwidth">
                 <tbody>
                     {% for categorie, valeur in data.items() %}
                     <tr>
-                        <th>{% if rename[categorie] %}{{rename[categorie]}}{% else %}{{categorie.capitalize()}}{% endif %}</th>
+                        <th>{% if rename and rename[categorie] %}{{rename[categorie]}}{% else %}{{categorie.capitalize()}}{% endif %}</th>
                         <td>
                             {#- Gestion des tableaux #}
-                        {% if categorie == "motscles"  -%}  
+                        {% if categorie == "motscles" -%}  
                         <div class="tags">{% for mot in valeur %}<span class="tag is-info">{{mot}}</span>{% endfor %}</div>
                             {#- Gestion des saes #}
                         {% elif categorie == "sae" or categorie == "ressources" -%}
                         <div class="tags">{% for val in valeur %}<a class="tag is-info" href="{{val.replace("É","E")}}.html">{{val}}</a>{% endfor %}</div>
                             {#- Gestion des ACS #}
                         {% elif categorie == "acs" -%}  
-                        <div class="tags">{% for rt,acs in valeur.items() %}{% for ac in acs %}<span class="tag is-info">{{ac}}</span>{% endfor %}{% endfor %}</div>
+                        <div class="tags">{% for rt,acs in valeur.items() %}{% for ac in acs %}<a class="tag is-info" href="{{ac}}.html">{{ac}}</a>{% endfor %}{% endfor %}</div>
                             {#- Gestion des coeffs #}
                         {% elif categorie == "coeffs" -%}   
-                        <div class="tags">{% for rt, coeff in valeur.items() %}<span class="tag is-info">{{rt}} : {{coeff}}</span>{% endfor %}</div>
+                        <div class="tags">{% for rt, coeff in valeur.items() %}<a class="tag is-info" href="{{rt}}.html">{{rt}} : {{coeff}}</a>{% endfor %}</div>
                             {#- Gestion des exemples #}
                         {% elif categorie == "exemples" -%}   
                         {% for exemple in valeur %}<a href="{{exemple.exemple["code"].replace("É","E") + "_exemple" + loop.index|string}}.html">Exemple{{loop.index}}</a>{% if not loop.last %} - {% endif %}{% endfor %}
@@ -162,29 +151,71 @@ template = env.from_string("""
                     {% endfor %}
                 </tbody>
             </table>
-            <nav class="level is-mobile">
-                <div class="level-left">
-                    <div class="level-item">
-                        <a class="button is-primary{% if not precedent %} is-static"{% else %} is-outlined" href="{{precedent}}"{% endif %}>
-                            <span class="icon is-small">
-                                <i class="fas fa-arrow-left"></i>
-                            </span>
-                            <span>Précédent</span>
-                        </a>
-                    </div>
-                </div>
-                <div class="level-right">
-                    <div class="level-item">
-                        <a class="button is-primary{% if not suivant %} is-static"{% else %} is-outlined" href="{{suivant}}"{% endif %}>
-                            <span>Suivant</span>
-                            <span class="icon is-small">
-                                <i class="fas fa-arrow-right"></i>
-                            </span>
-                        </a>
-                    </div>   
-                </div>
-            </nav>
+    {% include "navigation.html" %}
     {% endblock %}
+""")
+
+# Template de chaque pages de compétences (doit contenir data,rt,precedent,suivant)
+template_Competence = env.from_string("""
+        {% extends "base.html" %}
+        {% block title %}{{rt}}{% endblock %}
+        {% block content %}
+        {% include "navigation.html" %}
+            <table class="table is-bordered is-hoverable is-fullwidth">
+                <tbody>
+                    {% for categorie, valeur in data.items() %}
+                    <tr>
+                        <th>{{categorie.capitalize()}}</th>
+                        <td>
+                        {%- if categorie == "composantes" or categorie == "situations" -%}
+                            <div class="content">
+                                <ul>
+                                    {% for valeur in valeur %}
+                                    <li>{{valeur}}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% elif categorie == "niveaux" %}
+                            <div class="content">
+                                <ul>
+                                    {% for nom, acs in valeur.items() %}
+                                    <li>{{nom}}</li>
+                                        <ul>
+                                            {% for ac in acs %}
+                                            {% if ac[:2] == "AC" %}
+                                            <li><a class="tag is-info" href="{{ac}}.html">{{ac}}</a> - {{acs[ac]}}</li>
+                                            {% else %}
+                                            <li>{{ac}}</li>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </ul>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% else -%}   
+                        <div class="content">{{valeur}}</div>
+                        {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% include "navigation.html" %}
+        {% endblock %}
+""")
+
+# Template de chaque pages de ACs (doit contenir data, precedent, suivant)
+template_AC = env.from_string("""
+        {% extends "base.html" %}
+        {% block title %}{{data["ac"]}}{% endblock %}
+        {% block content %}
+        {% include "navigation.html" %}
+            <div class="content">
+                <h1>{{data["ac"]}}</h1>
+                <p>{{data["titre"]}}</p>
+            </div>
+        {% include "navigation.html" %}
+        {% endblock %}
 """)
 
 # Template de la liste des ressources par semestre (doit contenir data,sem)
@@ -244,7 +275,7 @@ def formatHTML(string):
     phrases = list(filter(None,string.split("\n")))
     i = 0
     while i < len(phrases):
-        if "*" in phrases[i]: # première balise li détecté
+        if "* " in phrases[i]: # première balise li détecté
             texte += "<ul>\n" # \n permet d'améliorer la lisibilité dans les fichiers html
             while i < len(phrases) and "*" in phrases[i]: # Tant qu'il y a des * on continue de créer des balises
                 texte += "  <li>" + phrases[i][2:] + "</li>\n"
@@ -338,3 +369,28 @@ for indexSem, sem in enumerate(ressources):
             if(j < len(exemples[sem][sae]) - 1): datas["suivant"] = "SAE" + data["code"][-2:] + "_exemple" + str(i+1) + ".html"
             template.stream(datas).dump(REPERTOIRE_HTML + "/" + data["code"].replace("É","E") + "_exemple" + str(i) + ".html")
             i+=1
+
+# Création des pages individuelles ACs, Compétences
+for indexRt, rt in enumerate(acs.getInfo()):
+
+    # ACs
+    for i, (ac, desc) in enumerate(acs.getInfo()[rt].items()):
+        data = {}
+        data["ac"] = ac
+        data["titre"] = desc
+        datas = {"data":data}
+        if i > 0: datas["precedent"] = list(acs.getInfo()[rt].keys())[i-1] + ".html"
+        elif indexRt > 0: datas["precedent"] = list(acs.getInfo()["RT" + str(int(rt[-1])-1)].keys())[-1] + ".html"
+        if i < len(acs.getInfo()[rt])-1: datas["suivant"] = list(acs.getInfo()[rt].keys())[i+1] + ".html"
+        elif indexRt < len(acs.getInfo())-1: datas["suivant"] = list(acs.getInfo()["RT" + str(int(rt[-1])+1)].keys())[0] + ".html"
+        template_AC.stream(datas).dump(REPERTOIRE_HTML + "/" + ac + ".html")
+    
+    # Compétences
+    data = {}
+    for categorie, valeur in competences.getInfo()[rt].items():
+        data[categorie] = valeur
+    data["description"] = formatHTML(data["description"])
+    datas = {"data": data, "rt": rt}
+    if indexRt > 0: datas["precedent"] = "RT" + str(indexRt) + ".html"
+    if indexRt <= len(competences.getInfo()): datas["suivant"] = "RT" + str(indexRt + 2) + ".html"
+    template_Competence.stream(datas).dump(REPERTOIRE_HTML + "/" + rt + ".html")
