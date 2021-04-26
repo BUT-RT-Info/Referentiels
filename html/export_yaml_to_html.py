@@ -111,6 +111,18 @@ rename = {
 CHEMIN_TEMPLATE = Config.ROOT + "/html"
 # Création de l'environnement pour charger les templates
 env = Environment(trim_blocks=True, lstrip_blocks=True, loader=FileSystemLoader(CHEMIN_TEMPLATE))
+
+# Template de la page index
+template_index = env.from_string("""
+    {% extends "base.html" %}
+    {% block title %}Accueil{% endblock %}
+    {% block content %}
+    {% include "indexTemplate.html" %}
+    {% endblock %}
+""")
+
+template_index.stream().dump(REPERTOIRE_HTML + "/index.html")
+
 # Template de chaque pages ressources, saes, exemples (doit contenir datas,rename,precedent,suivant)
 template = env.from_string("""
     {% extends "base.html" %}
