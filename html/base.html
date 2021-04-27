@@ -8,6 +8,7 @@
     <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://unpkg.com/lunr/lunr.js"></script>
 </head>
 <body>
     <!-- Barre de navigation -->
@@ -32,17 +33,33 @@
                     <a class="navbar-item" href="ressourcesS2.html">Semestre 2</a>
                 </div>
                 <div class="navbar-end">
-                    <!-- Barre de recherche -->
-                    <div class="control has-icons-left">
-                        <input id="rechercher" class="input" type="text" placeholder="Rechercher">
-                        <span class="icon is-left">
-                            <i class="fas fa-search"></i>
-                        </span>
+                    <div class="navbar-item">
+                        <!-- Bouton pour afficher un boite de dialogue pour la recherche -->
+                        <button id="rechercheBouton" class="button is-rounded is-primary">
+                            <span class="icon">
+                                <i class="fas fa-search"></i>
+                            </span>
+                            <span>Rechercher</span>
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
     </nav>
+    <!-- Boite de dialogue pour la recherche -->
+    <div id="rechercheBoite" class="modal">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title has-text-centered">Rechercher</p>
+                <button id="rechercheBoite-fermer" class="modal-close"></button>
+            </header>
+            <section class="modal-card-body">
+                <input id="rechercher" type="text" class="input mb-4" placeholder="Rechercher..." >
+                <div id="rechercheResultats" class="content"></div>
+            </section>
+        </div>
+    </div>
     <!-- Contenu de la page -->
     <div class="container">
         <div class="box">
@@ -50,7 +67,7 @@
             {% endblock %}
         </div>
     </div>
-    <!-- Script JQuery -->>
-    <script type="text/javascript" src="../base.js"></script>
+    <!-- Script JQuery -->
+    <script type="text/javascript" src="js/base.js"></script>
 </body>
 </html>

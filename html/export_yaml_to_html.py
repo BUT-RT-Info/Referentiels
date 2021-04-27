@@ -188,6 +188,18 @@ def formatHTML(string):
         i += 1
     return texte[:-1] # On enlève le dernier \n 
 
+def defineSearchTerm(dictio, url, documents):
+    """ Retourne un dictionnaire d'une ressource compatible Lunr pour la recherche de cette élément """
+    document = {}
+    document["code"] = dictio["code"]
+    document["url"] = url
+    if "titre" in dictio: document["titre"] = dictio["titre"]
+    else: document["titre"] = dictio["nom"]
+    if "motscles" in dictio: document["motscles"] = dictio["motscles"]
+    if "diminutif" in dictio: document["diminutif"] = dictio["diminutif"]
+    documents[document["code"]] = document
+    return
+
 #Créer un fichier contenant la liste des saes
 datas = {"data" : saes, "title": "SAE"} # "data" contient un tableau des saes
 template_List.stream(datas).dump(REPERTOIRE_HTML + "/SAE.html")
@@ -195,6 +207,9 @@ template_List.stream(datas).dump(REPERTOIRE_HTML + "/SAE.html")
 #Créer un fichier contenant la liste des ressources
 datas = {"data" : ressources, "title": "Ressources"}
 template_List.stream(datas).dump(REPERTOIRE_HTML + "/ressources.html")
+
+# Définition d'un liste de document contenant les informations nécessaires pour la recherche
+documents = {}
 
 # Création des pages individuelles ressources, saes, exemples
 for indexSem, sem in enumerate(ressources):
@@ -214,7 +229,10 @@ for indexSem, sem in enumerate(ressources):
         if(i < len(ressources[sem]) - 1): datas["suivant"] = "R" + str(int(ressource.ressource["code"][1:])+1) + ".html"
         elif(indexSem < len(ressources) - 1): datas["suivant"] = "R" + str((int(sem[-1:])+1)*100+1) + ".html"
         # Créer un fichier html depuis un TemplateStream créer à partir du template et des données dans "data" qui remplace les variables
-        template.stream(datas).dump(REPERTOIRE_HTML + "/" + data["code"] + ".html")
+        url = data["code"] + ".html"
+        # Ajout des informations de ressource pour la recherche dans une liste
+        defineSearchTerm(data, url, documents)
+        template.stream(datas).dump(REPERTOIRE_HTML + "/" + url)
     
     #Créer un fichier contenant la liste des ressources du semestre
     data = {"data" : ressources[sem],"sem" : sem} # "data" contient un tableau des ressources du semestre
@@ -235,7 +253,9 @@ for indexSem, sem in enumerate(ressources):
         elif(indexSem > 0): datas["precedent"] = "SAE" + saes[list(saes.keys())[indexSem - 1]][-1].sae["code"][3:] + ".html" # saes[list(saes.keys())[indexSem - 1]][-1].sae["code"][3:] -> "code" du dernier sae du semestre précédent
         if(i < len(saes[sem]) - 1): datas["suivant"] = "SAE" + str(int(sae.sae["code"][3:])+1) + ".html"
         elif(indexSem < len(saes) - 1): datas["suivant"] = "SAE" + str((int(sem[-1:])+1)*10+1) + ".html"
-        template.stream(datas).dump(REPERTOIRE_HTML + "/" + data["code"].replace("É","E") + ".html")
+        url = data["code"].replace("É","E") + ".html"
+        defineSearchTerm(data, url, documents)
+        template.stream(datas).dump(REPERTOIRE_HTML + "/" + url)
 
     for sae in exemples[sem]:
         i = 1 # Nommage des fichiers exemple sae peut être modifier
@@ -248,7 +268,8 @@ for indexSem, sem in enumerate(ressources):
             datas = {"data":data, "rename": rename}
             if(j > 0): datas["precedent"] = "SAE" + data["code"][-2:] + "_exemple" + str(i-1) + ".html"
             if(j < len(exemples[sem][sae]) - 1): datas["suivant"] = "SAE" + data["code"][-2:] + "_exemple" + str(i+1) + ".html"
-            template.stream(datas).dump(REPERTOIRE_HTML + "/" + data["code"].replace("É","E") + "_exemple" + str(i) + ".html")
+            url = data["code"].replace("É","E") + "_exemple" + str(i) + ".html"
+            template.stream(datas).dump(REPERTOIRE_HTML + "/" + url)
             i+=1
 
 # Création des pages individuelles ACs, Compétences
@@ -257,14 +278,16 @@ for indexRt, rt in enumerate(acs.getInfo()):
     # ACs
     for i, (ac, desc) in enumerate(acs.getInfo()[rt].items()):
         data = {}
-        data["ac"] = ac
+        data["code"] = ac
         data["titre"] = desc
         datas = {"data":data}
         if i > 0: datas["precedent"] = list(acs.getInfo()[rt].keys())[i-1] + ".html"
         elif indexRt > 0: datas["precedent"] = list(acs.getInfo()["RT" + str(int(rt[-1])-1)].keys())[-1] + ".html"
         if i < len(acs.getInfo()[rt])-1: datas["suivant"] = list(acs.getInfo()[rt].keys())[i+1] + ".html"
         elif indexRt < len(acs.getInfo())-1: datas["suivant"] = list(acs.getInfo()["RT" + str(int(rt[-1])+1)].keys())[0] + ".html"
-        template_AC.stream(datas).dump(REPERTOIRE_HTML + "/" + ac + ".html")
+        url = ac + ".html"
+        defineSearchTerm(data, url, documents)
+        template_AC.stream(datas).dump(REPERTOIRE_HTML + "/" + url)
     
     # Compétences
     data = {}
@@ -274,4 +297,13 @@ for indexRt, rt in enumerate(acs.getInfo()):
     datas = {"data": data, "rt": rt}
     if indexRt > 0: datas["precedent"] = "RT" + str(indexRt) + ".html"
     if indexRt <= len(competences.getInfo()): datas["suivant"] = "RT" + str(indexRt + 2) + ".html"
-    template_Competence.stream(datas).dump(REPERTOIRE_HTML + "/" + rt + ".html")
+    url = rt + ".html"
+    template_Competence.stream(datas).dump(REPERTOIRE_HTML + "/" + url)
+    data["code"] = rt
+    defineSearchTerm(data, url, documents)
+
+# Envoie des informations des documents pour la recherche
+template_recherche = env.get_template("baseTemplate.js")
+if not os.path.exists(REPERTOIRE_HTML + "/js"):
+    os.makedirs(REPERTOIRE_HTML + "/js")
+template_recherche.stream(documents=documents).dump(REPERTOIRE_HTML + "/js/base.js")
