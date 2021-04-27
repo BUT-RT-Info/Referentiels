@@ -13,9 +13,10 @@ from tools import caracteres_recalcitrants
 
 __LOGGER = logging.getLogger(__name__)
 
+MODALITES = ["CM/TD", "TP", "Projet"]   # modalités de mise en oeuvre d'une ressource/SAE
 
 def nettoie_latex(chaine):
-    """Purge certains éléments de la chaine latex générée par pypandoc"""
+    """Purge certains éléments de la `chaine` latex générée par pypandoc"""
     chaine = chaine.replace("\\tightlist\n", "")
     chaine = ajoute_abbr_latex(chaine) # détecte les abréviations
 
@@ -51,25 +52,35 @@ def nettoie_latex(chaine):
     return chaine
 
 
-class Ressource:
-    """Modélise une ressource lorsqu'elle est extraite d'un yaml"""
+class ActivitePedagogique():
+    """Modélise les éléments de bases d'une activité pédagogique (ressource ou SAE).
+    Classe servant de base à l'héritage.
+
+    Une activité pédagogique est initialisée par lecture des données contenues dans fichier yaml (attribut yaml)
+    """
+    __LOGGER = logging.getLogger(__name__)
+
+    def __init__(self, fichieryaml):
+        """Charge les données du fichier yaml"""
+        with open(fichieryaml, "r", encoding="utf8") as fid:
+            yaml = ruamel.yaml.YAML()
+            try:
+                self.yaml = yaml.load(fid.read())
+            except:
+                ActivitePedagogique.__LOGGER.warning(f"Pb de chargement de {fichieryaml}")
+
+class Ressource(ActivitePedagogique):
+    """Modélise une ressource lorsqu'elle est extraite d'un fichier yaml"""
 
     __LOGGER = logging.getLogger(__name__)
 
     def __init__(self, fichieryaml):
-        with open(fichieryaml, "r", encoding="utf8") as fid:
-            yaml = ruamel.yaml.YAML()
-            try:
-                self.ressource = yaml.load(fid.read())
-            except:
-                Ressource.__LOGGER.warning(f"Pb de chargement de {fichieryaml}")
+        super().__init__(fichieryaml)
+        self.ressource = self.yaml
 
     def to_latex(self, modele=Config.ROOT + "/python/pn/modele_ressource.tex"):
         """Génère le code latex décrivant la ressource"""
-        modlatex = get_modele(modele)  # "pn/modele_ressource.tex")
-
-        # if self.ressource["code"] == "R107":
-        #    print("ici")
+        modlatex = get_modele(modele)
 
         # Préparation des coeffs
         ajoutcoeff = "\\ajoutRcoeff{%s}"
@@ -200,8 +211,9 @@ def ajoute_abbr_latex(chaine):
         chaine = chaine.replace("/IP", "/\\textabbrv{IP}")
     return chaine
 
+
 def contient_commandes(chaine):
-    """Détecte si la chaine est une commande (éventuellement avec un caractère
+    """Détecte si la `chaine` est une commande (éventuellement avec un caractère
     de ponctuation final)"""
     chaine_texte = ""
     for car in chaine:
@@ -212,6 +224,7 @@ def contient_commandes(chaine):
     if chaine_texte in DATA_MOTSCLES["commandes"]:
         return chaine_texte
     return None
+
 
 def ajoute_cmd_latex(chaine):
     """
@@ -229,18 +242,14 @@ def ajoute_cmd_latex(chaine):
     chaine = " ".join(mots)
     return chaine
 
-class SAE:
-    """Modélise une saé (chapeau) lorsqu'elle est extraite d'un yaml"""
+class SAE(ActivitePedagogique):
+    """Modélise une SAé (chapeau) lorsqu'elle est extraite d'un yaml"""
 
     __LOGGER = logging.getLogger(__name__)
 
     def __init__(self, fichieryaml):
-        with open(fichieryaml, "r", encoding="utf8") as fid:
-            yaml = ruamel.yaml.YAML()
-            try:
-                self.sae = yaml.load(fid.read())
-            except:
-                Ressource.__LOGGER.warning(f"Pb de chargement de {fichieryaml}")
+        super().__init__(fichieryaml)
+        self.sae = self.yaml
 
     def to_latex(self, modele=Config.ROOT + "/python/pn/modele_sae.tex"):
         """Génère le code latex décrivant la ressource"""
@@ -318,18 +327,14 @@ class SAE:
         return chaine
 
 
-class ExempleSAE:
+class ExempleSAE(ActivitePedagogique):
     """Modélise un exemple de SAE lorsqu'elle est extraite d'un yaml"""
 
     __LOGGER = logging.getLogger(__name__)
 
     def __init__(self, fichieryaml):
-        with open(fichieryaml, "r", encoding="utf8") as fid:
-            yaml = ruamel.yaml.YAML()
-            try:
-                self.exemple = yaml.load(fid.read())
-            except:
-                Ressource.__LOGGER.warning(f"Pb de chargement de {fichieryaml}")
+        super().__init__(fichieryaml)
+        self.exemple = self.yaml
 
     def to_latex(self, modele=Config.ROOT + "/python/pn/modele_exemple_sae.tex"):
         """Génère le code latex décrivant la ressource"""
@@ -490,8 +495,6 @@ def get_matrices_coeffs(saes, ressources, sem):
 
 def get_matrices_volumes(saes, ressources, sem):
     """Calcule la matrice AC vs sae + ressource pour un sem donné et la renvoie"""
-    format = ["CM/TD", "TP", "Projet"]
-
     saesem = saes[sem]  # les saé du semestre
     ressem = ressources[sem]  # les ressources du semestre
 
@@ -500,7 +503,7 @@ def get_matrices_volumes(saes, ressources, sem):
     if len(saesem) != nbre_saes or len(ressem) != nbre_ressources:
         __LOGGER.warning(f"Pb => il manque des saes/ressources au {sem}")
 
-    matrice = [[0] * (len(format)) for i in range(nbre_saes + nbre_ressources)]
+    matrice = [[0] * (len(MODALITES)) for i in range(nbre_saes + nbre_ressources)]
 
     for (i, s) in enumerate(saesem):  # pour chaque SAE
         formation = (
