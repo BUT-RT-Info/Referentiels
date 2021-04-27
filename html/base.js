@@ -16,3 +16,10 @@ $("document").ready(function() {
         if(e.keyCode == 13) {location.href = $(this).val().toUpperCase() + ".html"}
     });
 });
+
+// Permet l'affichage du LaTeX avec comme balise délimiteur "$"
+MathJax = {
+    tex: {
+      inlineMath: [['$', '$']]
+    }
+  };
