@@ -18,8 +18,12 @@ $("document").ready(function() {
 });
 
 // Permet l'affichage du LaTeX avec comme balise délimiteur "$"
+// Le menu contextuel de MathJax a été désactivé
 MathJax = {
     tex: {
       inlineMath: [['$', '$']]
-    }
+    },
+    options: {
+        enableMenu: false
+      }
   };
