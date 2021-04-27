@@ -112,155 +112,24 @@ CHEMIN_TEMPLATE = Config.ROOT + "/html"
 # Création de l'environnement pour charger les templates
 env = Environment(trim_blocks=True, lstrip_blocks=True, loader=FileSystemLoader(CHEMIN_TEMPLATE))
 
-# Template de la page index
-template_index = env.from_string("""
-    {% extends "base.html" %}
-    {% block title %}Accueil{% endblock %}
-    {% block content %}
-    {% include "indexTemplate.html" %}
-    {% endblock %}
-""")
-
+# Template de la page index et génération de la page
+template_index = env.get_template("indexTemplate.html")
 template_index.stream().dump(REPERTOIRE_HTML + "/index.html")
 
 # Template de chaque pages ressources, saes, exemples (doit contenir datas,rename,precedent,suivant)
-template = env.from_string("""
-    {% extends "base.html" %}
-    {% block title %}{{data.code}} - {{data.nom}}{{data.titre}}{% endblock %}
-    {% block content %}
-    {% include "navigation.html" %}
-            <table class="table is-bordered is-hoverable is-fullwidth">
-                <tbody>
-                    {% for categorie, valeur in data.items() %}
-                    <tr>
-                        <th>{% if rename and rename[categorie] %}{{rename[categorie]}}{% else %}{{categorie.capitalize()}}{% endif %}</th>
-                        <td>
-                            {#- Gestion des tableaux #}
-                        {% if categorie == "motscles" -%}  
-                        <div class="tags">{% for mot in valeur %}<span class="tag is-info">{{mot}}</span>{% endfor %}</div>
-                            {#- Gestion des saes #}
-                        {% elif categorie == "sae" or categorie == "ressources" -%}
-                        <div class="tags">{% for val in valeur %}<a class="tag is-info" href="{{val.replace("É","E")}}.html">{{val}}</a>{% endfor %}</div>
-                            {#- Gestion des ACS #}
-                        {% elif categorie == "acs" -%}  
-                        <div class="tags">{% for rt,acs in valeur.items() %}{% for ac in acs %}<a class="tag is-info" href="{{ac}}.html">{{ac}}</a>{% endfor %}{% endfor %}</div>
-                            {#- Gestion des coeffs #}
-                        {% elif categorie == "coeffs" -%}   
-                        <div class="tags">{% for rt, coeff in valeur.items() %}<a class="tag is-info" href="{{rt}}.html">{{rt}} : {{coeff}}</a>{% endfor %}</div>
-                            {#- Gestion des exemples #}
-                        {% elif categorie == "exemples" -%}   
-                        {% for exemple in valeur %}<a href="{{exemple.exemple["code"].replace("É","E") + "_exemple" + loop.index|string}}.html">Exemple{{loop.index}}</a>{% if not loop.last %} - {% endif %}{% endfor %}
-                            {#- Gestion des prerequis #}
-                        {% elif categorie == "prerequis" -%}   
-                        {% if valeur != "Aucun" %}<div class="tags">{% for rt in valeur %}<span class="tag is-info">{{rt}}</span>{% endfor %}</div>
-                        {%- else %}{{valeur}}{% endif %}
-                            {#- Gestion des autres catégories #}
-                        {% else -%}   
-                        <div class="content">{{valeur}}</div>
-                        {%- endif -%}
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-    {% include "navigation.html" %}
-    {% endblock %}
-""")
+template = env.get_template("InfoTemplate.html")
 
 # Template de chaque pages de compétences (doit contenir data,rt,precedent,suivant)
-template_Competence = env.from_string("""
-        {% extends "base.html" %}
-        {% block title %}{{rt}}{% endblock %}
-        {% block content %}
-        {% include "navigation.html" %}
-            <table class="table is-bordered is-hoverable is-fullwidth">
-                <tbody>
-                    {% for categorie, valeur in data.items() %}
-                    <tr>
-                        <th>{{categorie.capitalize()}}</th>
-                        <td>
-                        {%- if categorie == "composantes" or categorie == "situations" -%}
-                            <div class="content">
-                                <ul>
-                                    {% for valeur in valeur %}
-                                    <li>{{valeur}}</li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                        {% elif categorie == "niveaux" %}
-                            <div class="content">
-                                <ul>
-                                    {% for nom, acs in valeur.items() %}
-                                    <li>{{nom}}</li>
-                                        <ul>
-                                            {% for ac in acs %}
-                                            {% if ac[:2] == "AC" %}
-                                            <li><a class="tag is-info" href="{{ac}}.html">{{ac}}</a> - {{acs[ac]}}</li>
-                                            {% else %}
-                                            <li>{{ac}}</li>
-                                            {% endif %}
-                                            {% endfor %}
-                                        </ul>
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                        {% else -%}   
-                        <div class="content">{{valeur}}</div>
-                        {% endif %}
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        {% include "navigation.html" %}
-        {% endblock %}
-""")
+template_Competence = env.get_template("CompetenceTemplate.html")
 
 # Template de chaque pages de ACs (doit contenir data, precedent, suivant)
-template_AC = env.from_string("""
-        {% extends "base.html" %}
-        {% block title %}{{data["ac"]}}{% endblock %}
-        {% block content %}
-        {% include "navigation.html" %}
-            <div class="content">
-                <h1>{{data["ac"]}}</h1>
-                <p>{{data["titre"]}}</p>
-            </div>
-        {% include "navigation.html" %}
-        {% endblock %}
-""")
+template_AC = env.get_template("ACTemplate.html")
 
 # Template de la liste des ressources par semestre (doit contenir data,sem)
-template_List_Ressource = env.from_string("""
-        {% extends "base.html" %}
-        {% block title %}Liste des Ressources du semestre {{sem}}{% endblock %}
-        {% block content %}
-            <div class="content">
-                <ul><h1>Liste des ressources du semestre {{sem}}</h1>
-                    {% for ressource in data %}
-                    <li><a href="{{ressource.ressource["code"] + ".html"}}">{{ressource.ressource["code"]}} - {{ressource.ressource["nom"]}}</a></li>
-                    {% endfor %}
-                </ul>
-            </div>
-        {% endblock %}
-""")
+template_List_Ressource = env.get_template("ListRessourceTemplate.html")
 
 # Template de la liste des saes ou ressources (doit contenir data,titre)
-template_List = env.from_string("""
-        {% extends "base.html" %}
-        {% block title %}Liste des {{title}}{% endblock %}
-        {% block content %}
-            <div class="content">
-                <ul><h1>Liste des {{title}}</h1>
-                    {% for sem, liste in data.items() %}
-                        {% for page in liste %}
-                    <li><a href="{{page.getInfo()["code"].replace("É","E") + ".html"}}">{{page.getInfo()["code"]}} - {{page.getInfo()["titre"]}}{{page.getInfo()["nom"]}}</a></li>
-                        {% endfor %}
-                    {% endfor %}
-                </ul>
-            </div>
-        {% endblock %}
-""")
+template_List = env.get_template("ListTemplate.html")
 
 def motscles(mc):
     """ Retourne un tableau de mots clés en prenant compte des parenthèses """

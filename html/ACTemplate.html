@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}{{data["ac"]}}{% endblock %}
+{% block content %}
+{% include "navigation.html" %}
+
+            <div class="content">
+                <h1>{{data["ac"]}}</h1>
+                <p>{{data["titre"]}}</p>
+            </div>
+{% include "navigation.html" %}
+
+{% endblock %}

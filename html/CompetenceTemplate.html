@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}{{rt}}{% endblock %}
+{% block content %}
+{% include "navigation.html" %}
+
+            <table class="table is-bordered is-hoverable is-fullwidth">
+                <tbody>
+                    {% for categorie, valeur in data.items() %}
+                    <tr>
+                        <th>{{categorie.capitalize()}}</th>
+                        <td>
+                        {%- if categorie == "composantes" or categorie == "situations" -%}
+                            <div class="content">
+                                <ul>
+                                    {% for valeur in valeur %}
+                                    <li>{{valeur}}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% elif categorie == "niveaux" -%}
+                            <div class="content">
+                                <ul>
+                                    {% for nom, acs in valeur.items() %}
+                                    <li>{{nom}}</li>
+                                        <ul>
+                                            {% for ac in acs %}
+                                            {% if ac[:2] == "AC" %}
+                                            <li><a class="tag is-info" href="{{ac}}.html">{{ac}}</a> - {{acs[ac]}}</li>
+                                            {% else %}
+                                            <li>{{ac}}</li>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </ul>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% else -%}   
+                        <div class="content">{{valeur}}</div>
+                        {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+{% include "navigation.html" %}
+
+{% endblock %}

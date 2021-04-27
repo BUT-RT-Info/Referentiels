@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}{{data.code}} - {{data.nom}}{{data.titre}}{% endblock %}
+{% block content %}
+{% include "navigation.html" %}
+
+            <table class="table is-bordered is-hoverable is-fullwidth">
+                <tbody>
+                    {% for categorie, valeur in data.items() %}
+                    <tr>
+                        <th>{% if rename and rename[categorie] %}{{rename[categorie]}}{% else %}{{categorie.capitalize()}}{% endif %}</th>
+                        <td>
+                            {#- Gestion des tableaux #}
+                        {% if categorie == "motscles" -%}  
+                        <div class="tags">{% for mot in valeur %}<span class="tag is-info">{{mot}}</span>{% endfor %}</div>
+                            {#- Gestion des saes #}
+                        {% elif categorie == "sae" or categorie == "ressources" -%}
+                        <div class="tags">{% for val in valeur %}<a class="tag is-info" href='{{val.replace("É","E")}}.html'>{{val}}</a>{% endfor %}</div>
+                            {#- Gestion des ACS #}
+                        {% elif categorie == "acs" -%}  
+                        <div class="tags">{% for rt,acs in valeur.items() %}{% for ac in acs %}<a class="tag is-info" href="{{ac}}.html">{{ac}}</a>{% endfor %}{% endfor %}</div>
+                            {#- Gestion des coeffs #}
+                        {% elif categorie == "coeffs" -%}   
+                        <div class="tags">{% for rt, coeff in valeur.items() %}<a class="tag is-info" href="{{rt}}.html">{{rt}} : {{coeff}}</a>{% endfor %}</div>
+                            {#- Gestion des exemples #}
+                        {% elif categorie == "exemples" -%}   
+                        {% for exemple in valeur %}<a href='{{exemple.exemple["code"].replace("É","E") + "_exemple" + loop.index|string}}.html'>Exemple{{loop.index}}</a>{% if not loop.last %} - {% endif %}{% endfor %}
+                            {#- Gestion des prerequis #}
+                        {% elif categorie == "prerequis" -%}   
+                        {% if valeur != "Aucun" %}<div class="tags">{% for rt in valeur %}<span class="tag is-info">{{rt}}</span>{% endfor %}</div>
+                        {%- else %}{{valeur}}{% endif %}
+                            {#- Gestion des autres catégories #}
+                        {% else -%}   
+                        <div class="content">{{valeur}}</div>
+                        {%- endif -%}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+{% include "navigation.html" %}
+
+{% endblock %}

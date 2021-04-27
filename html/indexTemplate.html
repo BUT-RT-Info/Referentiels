@@ -1,84 +1,88 @@
-<div class="content">
-    <h1 class="has-text-centered title is-1">Titre aléatoire</h1>
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur sed nulla massa. Fusce non felis quis est volutpat volutpat vel non purus. Pellentesque dignissim vel magna eget ornare. Nulla accumsan condimentum eros non interdum. Sed at sagittis mauris, nec mollis turpis. Sed facilisis eros quis velit suscipit molestie. Aenean lobortis nulla id tristique placerat. Fusce non convallis lectus, eget interdum sapien. Fusce feugiat laoreet dui, ac laoreet elit molestie quis. Aliquam erat volutpat. Vivamus libero eros, feugiat eu dolor eget, hendrerit finibus dui. Etiam eget sapien consequat, condimentum nibh vitae, posuere velit. In at massa enim. Praesent malesuada ligula augue, non eleifend turpis molestie vel. Nam efficitur congue rhoncus.</p>
-</div>
-<div class="tile is-ancestor">
-    <div class="tile is-parent">
-        <div class="tile is-child box">
-            <a href="ressourcesS1.html"><h1 class="has-text-centered title">Semestre 1</h1></a>
-            <hr>
+{% extends "base.html" %}
+{% block title %}Accueil{% endblock %}
+{% block content %}
             <div class="content">
-                <ul>
-                    <li>UE 11: Bases de l'informatique</li>
-                    <li>UE 12: Bases de culture scientifique, sociale et humaine</li>
-                </ul>
+                <h1 class="has-text-centered title is-1">Titre aléatoire</h1>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur sed nulla massa. Fusce non felis quis est volutpat volutpat vel non purus. Pellentesque dignissim vel magna eget ornare. Nulla accumsan condimentum eros non interdum. Sed at sagittis mauris, nec mollis turpis. Sed facilisis eros quis velit suscipit molestie. Aenean lobortis nulla id tristique placerat. Fusce non convallis lectus, eget interdum sapien. Fusce feugiat laoreet dui, ac laoreet elit molestie quis. Aliquam erat volutpat. Vivamus libero eros, feugiat eu dolor eget, hendrerit finibus dui. Etiam eget sapien consequat, condimentum nibh vitae, posuere velit. In at massa enim. Praesent malesuada ligula augue, non eleifend turpis molestie vel. Nam efficitur congue rhoncus.</p>
             </div>
-        </div>
-    </div>
-    <div class="tile is-parent">
-        <div class="tile is-child box">
-            <a href="ressourcesS2.html"><h1 class="has-text-centered title">Semestre 2</h1></a>
-            <hr>
-            <div class="content">
-                <ul>
-                    <li>UE 21: Informatique</li>
-                    <li>UE 22: Culture scientifique, sociale et humaine</li>
-                </ul>
+            <div class="tile is-ancestor">
+                <div class="tile is-parent">
+                    <div class="tile is-child box">
+                        <a href="ressourcesS1.html"><h1 class="has-text-centered title">Semestre 1</h1></a>
+                        <hr>
+                        <div class="content">
+                            <ul>
+                                <li>UE 11: Bases de l'informatique</li>
+                                <li>UE 12: Bases de culture scientifique, sociale et humaine</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="tile is-parent">
+                    <div class="tile is-child box">
+                        <a href="ressourcesS2.html"><h1 class="has-text-centered title">Semestre 2</h1></a>
+                        <hr>
+                        <div class="content">
+                            <ul>
+                                <li>UE 21: Informatique</li>
+                                <li>UE 22: Culture scientifique, sociale et humaine</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-</div>
-<div class="tile is-ancestor">
-    <div class="tile is-parent">
-        <div class="tile is-child box">
-            <a href="ressourcesS3.html"><h1 class="has-text-centered title">Semestre 3</h1></a>
-            <hr>
-            <div class="content">
-                <ul>
-                    <li>UE 31: Informatique avancée</li>
-                    <li>UE 32: Culture scientifique, sociale et humaine avancées</li>
-                    <li>UE 33: Méthodologie et Projets</li>
-                </ul>
+            <div class="tile is-ancestor">
+                <div class="tile is-parent">
+                    <div class="tile is-child box">
+                        <a href="ressourcesS3.html"><h1 class="has-text-centered title">Semestre 3</h1></a>
+                        <hr>
+                        <div class="content">
+                            <ul>
+                                <li>UE 31: Informatique avancée</li>
+                                <li>UE 32: Culture scientifique, sociale et humaine avancées</li>
+                                <li>UE 33: Méthodologie et Projets</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="tile is-parent">
+                    <div class="tile is-child box">
+                        <a href="ressourcesS4.html"><h1 class="has-text-centered title">Semestre 4</h1></a>
+                        <hr>
+                        <div class="content">
+                            <ul>
+                                <li>UE 41: Compléments d'informatique</li>
+                                <li>UE 42: Compléments de culture scientifique, sociale et humaine</li>
+                                <li>UE 43: Stage</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-    <div class="tile is-parent">
-        <div class="tile is-child box">
-            <a href="ressourcesS4.html"><h1 class="has-text-centered title">Semestre 4</h1></a>
-            <hr>
-            <div class="content">
-                <ul>
-                    <li>UE 41: Compléments d'informatique</li>
-                    <li>UE 42: Compléments de culture scientifique, sociale et humaine</li>
-                    <li>UE 43: Stage</li>
-                </ul>
+            <div class="tile is-ancestor">
+                <div class="tile is-parent">
+                    <div class="tile is-child box">
+                        <a href="ressourcesS5.html"><h1 class="has-text-centered title">Semestre 5</h1></a>
+                        <hr>
+                        <div class="content">
+                            <ul>
+                                <li></li>
+                                <li></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="tile is-parent">
+                    <div class="tile is-child box">
+                        <a href="ressourcesS6.html"><h1 class="has-text-centered title">Semestre 6</h1></a>
+                        <hr>
+                        <div class="content">
+                            <ul>
+                                <li></li>
+                                <li></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-</div>
-<div class="tile is-ancestor">
-    <div class="tile is-parent">
-        <div class="tile is-child box">
-            <a href="ressourcesS5.html"><h1 class="has-text-centered title">Semestre 5</h1></a>
-            <hr>
-            <div class="content">
-                <ul>
-                    <li></li>
-                    <li></li>
-                </ul>
-            </div>
-        </div>
-    </div>
-    <div class="tile is-parent">
-        <div class="tile is-child box">
-            <a href="ressourcesS6.html"><h1 class="has-text-centered title">Semestre 6</h1></a>
-            <hr>
-            <div class="content">
-                <ul>
-                    <li></li>
-                    <li></li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</div>
+{% endblock %}
