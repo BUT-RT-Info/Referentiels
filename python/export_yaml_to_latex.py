@@ -4,6 +4,7 @@ import argparse
 import logging
 import sys
 
+import latex
 from config import Config
 
 __LOGGER = logging.getLogger(__name__)
@@ -96,7 +97,7 @@ for sem in ["S1", "S2"]:
     #print(chaine)
     print(str_matrice(M1, saes, ressources, sem))
 
-    chaine = ressource.to_latex_matrice_acs(M1, saes, ressources, sem)
+    chaine = latex.to_latex_matrice_acs(M1, saes, ressources, sem)
     fichierlatex = REPERTOIRE_SYNTHESE + "/" + f"{sem}_acs_vs_saes_ressources.tex"
     with open(fichierlatex, "w", encoding="utf8") as fid:
         fid.write(chaine)
@@ -104,14 +105,14 @@ for sem in ["S1", "S2"]:
 
     coeff1 = ressource.get_matrices_coeffs(saes, ressources, sem)
     vol1 = ressource.get_matrices_volumes(saes, ressources, sem)
-    chaine = ressource.to_latex_matrice_coeffs(vol1, coeff1, saes, ressources, sem)
+    chaine = latex.to_latex_matrice_coeffs(vol1, coeff1, saes, ressources, sem)
 
     fichierlatex = REPERTOIRE_SYNTHESE + "/" + f"{sem}_coeffs_saes_ressources.tex"
     with open(fichierlatex, "w", encoding="utf8") as fid:
         fid.write(chaine)
     print(f"Export de {fichierlatex}")
 
-    chaine = ressource.str_latex_abbreviations()
+    chaine = latex.str_latex_abbreviations()
     fichierlatex = REPERTOIRE_SYNTHESE + "/" + "abbreviations.tex"
     with open(fichierlatex, "w", encoding="utf8") as fid:
         fid.write(chaine)
