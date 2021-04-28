@@ -201,7 +201,7 @@ def defineSearchTerm(dictio, url, documents):
     return
 
 #Créer un fichier contenant la liste des saes
-datas = {"data" : saes, "title": "SAE"} # "data" contient un tableau des saes
+datas = {"data" : saes, "title": "SAEs"} # "data" contient un tableau des saes
 template_List.stream(datas).dump(REPERTOIRE_HTML + "/SAE.html")
 
 #Créer un fichier contenant la liste des ressources
