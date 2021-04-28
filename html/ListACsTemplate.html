@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Liste des {{title}}{% endblock %}
+{% block content %}
+            <div class="content">
+                <ul><h1>Liste des {{title}}</h1>
+                    {% for sem, liste in data.items() %}
+                        {% for ac in liste %}
+                    <li><a href='{{ac["code"] + ".html"}}'>{{ac["code"]}} - {{ac["titre"]}}</a></li>
+                        {% endfor %}
+                    {% endfor %}
+                </ul>
+            </div>
+{% endblock %}

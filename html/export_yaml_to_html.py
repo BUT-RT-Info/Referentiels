@@ -85,9 +85,7 @@ for fichieryaml in fichiers_exemples:
         exemples[sem][sae] = []
     exemples[sem][sae].append(e)
 
-# Chargement des ACs
-fichieryaml = REPERTOIRE_ACS +'/acs.yml'
-acs = ACs(fichieryaml)
+
 
 # Chargement des Compétences
 fichieryaml = REPERTOIRE_COMPETENCES_DEFINITIVES + '/RT123.yml'
@@ -125,10 +123,13 @@ template_Competence = env.get_template("CompetenceTemplate.html")
 # Template de chaque pages de ACs (doit contenir data, precedent, suivant)
 template_AC = env.get_template("ACTemplate.html")
 
+# Template de la liste des ACs
+template_List_ACs = env.get_template("ListACsTemplate.html")
+
 # Template de la liste des ressources par semestre (doit contenir data,sem)
 template_List_Ressource = env.get_template("ListRessourceTemplate.html")
 
-# Template de la liste des saes ou ressources (doit contenir data,titre)
+# Template de la liste des acs ou  saes ou ressources (doit contenir data,titre)
 template_List = env.get_template("ListTemplate.html")
 
 def motscles(mc):
@@ -200,16 +201,20 @@ def defineSearchTerm(dictio, url, documents):
     documents[document["code"]] = document
     return
 
-#Créer un fichier contenant la liste des saes
+
+# Créer un fichier contenant la liste des saes
 datas = {"data" : saes, "title": "SAEs"} # "data" contient un tableau des saes
 template_List.stream(datas).dump(REPERTOIRE_HTML + "/SAE.html")
 
-#Créer un fichier contenant la liste des ressources
+# Créer un fichier contenant la liste des ressources
 datas = {"data" : ressources, "title": "Ressources"}
 template_List.stream(datas).dump(REPERTOIRE_HTML + "/ressources.html")
 
 # Définition d'un liste de document contenant les informations nécessaires pour la recherche
 documents = {}
+
+# Dictionnaire de ACs contenant la liste des SAE qui les mobilisent
+SAE_mobilise_AC = {}
 
 # Création des pages individuelles ressources, saes, exemples
 for indexSem, sem in enumerate(ressources):
@@ -257,6 +262,11 @@ for indexSem, sem in enumerate(ressources):
         defineSearchTerm(data, url, documents)
         template.stream(datas).dump(REPERTOIRE_HTML + "/" + url)
 
+        for rt, acs in sae.getInfo()["acs"].items():
+            for ac in acs:
+                if ac not in SAE_mobilise_AC: SAE_mobilise_AC[ac] = []
+                SAE_mobilise_AC[ac].append(sae.getInfo())
+
     for sae in exemples[sem]:
         i = 1 # Nommage des fichiers exemple sae peut être modifier
         for j, exemple in enumerate(exemples[sem][sae]):
@@ -272,6 +282,12 @@ for indexSem, sem in enumerate(ressources):
             template.stream(datas).dump(REPERTOIRE_HTML + "/" + url)
             i+=1
 
+ListACs = {"RT1":[], "RT2":[], "RT3":[]}
+
+# Chargement des ACs
+fichieryaml = REPERTOIRE_ACS +'/acs.yml'
+acs = ACs(fichieryaml)
+
 # Création des pages individuelles ACs, Compétences
 for indexRt, rt in enumerate(acs.getInfo()):
 
@@ -280,6 +296,7 @@ for indexRt, rt in enumerate(acs.getInfo()):
         data = {}
         data["code"] = ac
         data["titre"] = desc
+        data["sae"] = SAE_mobilise_AC[ac]
         datas = {"data":data}
         if i > 0: datas["precedent"] = list(acs.getInfo()[rt].keys())[i-1] + ".html"
         elif indexRt > 0: datas["precedent"] = list(acs.getInfo()["RT" + str(int(rt[-1])-1)].keys())[-1] + ".html"
@@ -288,7 +305,8 @@ for indexRt, rt in enumerate(acs.getInfo()):
         url = ac + ".html"
         defineSearchTerm(data, url, documents)
         template_AC.stream(datas).dump(REPERTOIRE_HTML + "/" + url)
-    
+        ListACs[rt].append(data)
+
     # Compétences
     data = {}
     for categorie, valeur in competences.getInfo()[rt].items():
@@ -301,6 +319,10 @@ for indexRt, rt in enumerate(acs.getInfo()):
     template_Competence.stream(datas).dump(REPERTOIRE_HTML + "/" + url)
     data["code"] = rt
     defineSearchTerm(data, url, documents)
+
+# Créer un fichier contenant la liste des ACs
+datas = {"data": ListACs, "title": "ACs"}
+template_List_ACs.stream(datas).dump(REPERTOIRE_HTML + "/ACs.html")
 
 # Envoie des informations des documents pour la recherche
 template_recherche = env.get_template("baseTemplate.js")
