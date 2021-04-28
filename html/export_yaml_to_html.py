@@ -28,10 +28,13 @@ REPERTOIRE_SAE_DEFINITIVES = Config.ROOT + "/yaml/saes"
 REPERTOIRE_COMPETENCES_DEFINITIVES = Config.ROOT + "/yaml/competences"
 REPERTOIRE_ACS = Config.ROOT + "/python/pn"
 REPERTOIRE_HTML = Config.ROOT + "/html/export"
+REPERTOIRE_JS = REPERTOIRE_HTML + "/js"
 
-# Créer le dossier html/export s'il n'existe pas
+# Créer le dossier html/export et html/export/js s'il n'existe pas
 if not os.path.exists(REPERTOIRE_HTML):
     os.makedirs(REPERTOIRE_HTML)
+if not os.path.exists(REPERTOIRE_JS):
+    os.makedirs(REPERTOIRE_JS)
 
 # Chargement des ressources : depuis les versions définitives du répertoire yaml d'abord,
 # puis dans python/export si manquantes
@@ -198,6 +201,9 @@ def defineSearchTerm(dictio, url, documents):
     else: document["titre"] = dictio["nom"]
     if "motscles" in dictio: document["motscles"] = dictio["motscles"]
     if "diminutif" in dictio: document["diminutif"] = dictio["diminutif"]
+    if "description" in dictio: document["description"] = dictio["description"]
+    if "contexte" in dictio: document["contexte"] = dictio["contexte"]
+    if "contenu" in dictio: document["contenu"] = dictio["contenu"]
     documents[document["code"]] = document
     return
 
@@ -326,6 +332,18 @@ template_List_ACs.stream(datas).dump(REPERTOIRE_HTML + "/ACs.html")
 
 # Envoie des informations des documents pour la recherche
 template_recherche = env.get_template("baseTemplate.js")
-if not os.path.exists(REPERTOIRE_HTML + "/js"):
-    os.makedirs(REPERTOIRE_HTML + "/js")
-template_recherche.stream(documents=documents).dump(REPERTOIRE_HTML + "/js/base.js")
+template_recherche.stream(documents=documents).dump(REPERTOIRE_JS + "/base.js")
+
+# Créer un fichier contenant le graphe des relations entres les toutes les ressources
+"""
+data = []
+for sem in ressources:
+    for ressource in ressources[sem]:
+        data.append({"key": ressource.getInfo()["code"]})
+datas = {"data": data}
+"""
+datas = {"data": SAE_mobilise_AC}
+template_graph = env.get_template("graphTemplate.html")
+template_graphJS = env.get_template("graphTemplate.js")
+template_graph.stream().dump(REPERTOIRE_HTML + "/graph.html")
+template_graphJS.stream(datas).dump(REPERTOIRE_JS + "/graph.js")

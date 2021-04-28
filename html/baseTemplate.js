@@ -56,6 +56,9 @@ var idx = lunr(function() {
     this.field("motscles")
     this.field("diminutif", { boost: 10})
     this.field("titre")
+    this.field("description")
+    this.field("contenu")
+    this.field("contexte")
 
     for(var cle in documents) {
         this.add(documents[cle])
