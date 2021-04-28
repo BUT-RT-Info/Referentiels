@@ -9,6 +9,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="https://unpkg.com/lunr/lunr.js"></script>
+    {% block head %}{% endblock %}
 </head>
 <body>
     <!-- Barre de navigation -->
@@ -38,6 +39,7 @@
                     <a class="navbar-item" href="index.html">Semestre 6</a>
                 </div>
                 <div class="navbar-end">
+                    <a class="navbar-item" href="graph.html">Graphique</a>
                     <div class="navbar-item">
                         <!-- Bouton pour afficher un boite de dialogue pour la recherche -->
                         <button id="rechercheBouton" class="button is-rounded is-primary">

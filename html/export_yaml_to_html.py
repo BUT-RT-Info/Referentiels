@@ -222,6 +222,9 @@ documents = {}
 # Dictionnaire de ACs contenant la liste des SAE qui les mobilisent
 SAE_mobilise_AC = {}
 
+# Dictionnaires des relations entre les ressources pour le graph
+relations = {"nodes": [], "links": []}
+
 # Création des pages individuelles ressources, saes, exemples
 for indexSem, sem in enumerate(ressources):
     for i, ressource in enumerate(ressources[sem]):
@@ -244,6 +247,15 @@ for indexSem, sem in enumerate(ressources):
         # Ajout des informations de ressource pour la recherche dans une liste
         defineSearchTerm(data, url, documents)
         template.stream(datas).dump(REPERTOIRE_HTML + "/" + url)
+
+        relations["nodes"].append({"id": data["code"]})
+        for sae in data["sae"]:
+            if not any(sae in node["id"] for node in relations["nodes"]): relations["nodes"].append({"id": sae})
+            relations["links"].append({"source": data["code"], "target": sae, "type": "RessourceToSAE"})
+        for rt in data["acs"]:
+            for ac in data["acs"][rt]:
+                if not any(ac in node["id"] for node in relations["nodes"]): relations["nodes"].append({"id": ac})
+                relations["links"].append({"source": data["code"], "target": ac, "type": "RessourceToAC"})
     
     #Créer un fichier contenant la liste des ressources du semestre
     data = {"data" : ressources[sem],"sem" : sem} # "data" contient un tableau des ressources du semestre
@@ -270,8 +282,15 @@ for indexSem, sem in enumerate(ressources):
 
         for rt, acs in sae.getInfo()["acs"].items():
             for ac in acs:
-                if ac not in SAE_mobilise_AC: SAE_mobilise_AC[ac] = []
+                if not ac in SAE_mobilise_AC: SAE_mobilise_AC[ac] = []
                 SAE_mobilise_AC[ac].append(sae.getInfo())
+
+        if not any(data["code"] in node["id"] for node in relations["nodes"]):
+            relations["nodes"].append({"id": data["code"]})
+        for rt in data["acs"]:
+            for ac in data["acs"][rt]:
+                if not any(ac in node["id"] for node in relations["nodes"]): relations["nodes"].append({"id": ac})
+                relations["links"].append({"source": data["code"], "target": ac, "type": "SAEToAC"})
 
     for sae in exemples[sem]:
         i = 1 # Nommage des fichiers exemple sae peut être modifier
@@ -335,14 +354,7 @@ template_recherche = env.get_template("baseTemplate.js")
 template_recherche.stream(documents=documents).dump(REPERTOIRE_JS + "/base.js")
 
 # Créer un fichier contenant le graphe des relations entres les toutes les ressources
-"""
-data = []
-for sem in ressources:
-    for ressource in ressources[sem]:
-        data.append({"key": ressource.getInfo()["code"]})
-datas = {"data": data}
-"""
-datas = {"data": SAE_mobilise_AC}
+datas = {"data": relations}
 template_graph = env.get_template("graphTemplate.html")
 template_graphJS = env.get_template("graphTemplate.js")
 template_graph.stream().dump(REPERTOIRE_HTML + "/graph.html")

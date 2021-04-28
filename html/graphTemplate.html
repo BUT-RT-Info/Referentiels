@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Relation des ressources{% endblock %}
+{% block head %} 
+<script src="https://d3js.org/d3.v5.js"></script>
+{% endblock %}
+{% block content %}
+<style>
+.node {
+    stroke: #000;
+    stroke-width: 1.5px;
+}
+.link {
+    stroke: #999;
+    stroke-width: 1.5px;
+}
+</style>
+<svg width="960" height="500"></svg>
+<script src="js/graph.js"></script>
+{% endblock %}
