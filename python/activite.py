@@ -38,8 +38,9 @@ class Ressource(ActivitePedagogique):
         super().__init__(fichieryaml)
         self.ressource = self.yaml
 
-    def to_latex(self, modele=Config.ROOT + "/python/pn/modele_ressource.tex"):
-        """Génère le code latex décrivant la ressource"""
+    def to_latex(self, modele):
+        """Génère le code latex décrivant la ressource en utilisant le
+        modèle latex indiqué"""
         modlatex = get_modele(modele)
 
         # Préparation des coeffs
@@ -212,8 +213,8 @@ class SAE(ActivitePedagogique):
         super().__init__(fichieryaml)
         self.sae = self.yaml
 
-    def to_latex(self, modele=Config.ROOT + "/python/pn/modele_sae.tex"):
-        """Génère le code latex décrivant la ressource"""
+    def to_latex(self, modele):
+        """Génère le code latex décrivant la ressource en utilisant le modèle indiqué"""
         modlatex = get_modele(modele)  # "pn/modele_ressource.tex")
 
         # Préparation des coeffs
@@ -297,8 +298,8 @@ class ExempleSAE(ActivitePedagogique):
         super().__init__(fichieryaml)
         self.exemple = self.yaml
 
-    def to_latex(self, modele=Config.ROOT + "/python/pn/modele_exemple_sae.tex"):
-        """Génère le code latex décrivant la ressource"""
+    def to_latex(self, modele):
+        """Génère le code latex décrivant la ressource en utilisant le modèle latex indiqué"""
         modlatex = get_modele(modele)  # "pn/modele_ressource.tex")
 
         # préparation du descriptif

@@ -6,7 +6,7 @@ import string
 
 from config import Config
 from officiel import DATA_ACS, DATA_SAES, DATA_RESSOURCES, DATA_COMPETENCES, DATA_ABBREVIATIONS
-from ressource import *
+from activite import *
 
 
 def rotation_entete_colonne(contenu, pos="l"):

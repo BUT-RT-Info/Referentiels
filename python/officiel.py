@@ -4,24 +4,26 @@ from config import Config
 
 __LOGGER = logging.getLogger(__name__)
 
+REPERTOIRE = "yaml"
+
 # Récupère les informations officielles
 ## Les ressources
-with open(Config.ROOT+"/python/pn/ressources.yml", 'r', encoding="utf8") as fid:
+with open(Config.ROOT+"/"+REPERTOIRE+"/ressources.yml", 'r', encoding="utf8") as fid:
     DATA_RESSOURCES = yaml.load(fid.read(), Loader=yaml.Loader)
 ## Les ACS
-with open(Config.ROOT+"/python/pn/acs.yml", 'r', encoding="utf8") as fid:
+with open(Config.ROOT+"/"+REPERTOIRE+"/acs.yml", 'r', encoding="utf8") as fid:
     DATA_ACS = yaml.load(fid.read(), Loader=yaml.Loader)
 ## Les SAEs
-with open(Config.ROOT+"/python/pn/saes.yml", 'r', encoding="utf8") as fid:
+with open(Config.ROOT+"/"+REPERTOIRE+"/saes.yml", 'r', encoding="utf8") as fid:
     DATA_SAES = yaml.load(fid.read(), Loader=yaml.Loader)
 ## Les compétences
-with open(Config.ROOT+"/yaml/competences/RT123.yml", 'r', encoding="utf8") as fid:
+with open(Config.ROOT+"/"+REPERTOIRE+"/competences/RT123.yml", 'r', encoding="utf8") as fid:
     DATA_COMPETENCES = yaml.load(fid.read(), Loader=yaml.Loader)
 ## Les abréviations
-with open(Config.ROOT+"/yaml/abbreviations.yml", "r", encoding="utf8") as fid:
+with open(Config.ROOT+"/"+REPERTOIRE+"/abbreviations.yml", "r", encoding="utf8") as fid:
     DATA_ABBREVIATIONS = yaml.load(fid.read(), Loader=yaml.Loader)
 ## Les mostcles (commandes, logiciels, etc...)
-with open(Config.ROOT+"/yaml/motscles.yml", "r", encoding="utf8") as fid:
+with open(Config.ROOT+"/"+REPERTOIRE+"/motscles.yml", "r", encoding="utf8") as fid:
     DATA_MOTSCLES = yaml.load(fid.read(), Loader=yaml.Loader)
 
 AUCUN_PREREQUIS = "Aucun"
