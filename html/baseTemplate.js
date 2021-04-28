@@ -28,8 +28,10 @@ $("document").ready(function() {
     });
 
     $("#rechercher").keyup(function(e) {
-        var recherche = $(this).val();
+        var recherche = $(this).val().trim();
         if(recherche.length != 0) {
+            recherche = "+" + recherche.replace(/\s+/g," +");
+            console.log(recherche)
             var resultats = idx.search(recherche);
             if(resultats.length != 0) {
                 $("#rechercheResultats").empty();
@@ -50,9 +52,9 @@ var documents = {{documents}}
 
 var idx = lunr(function() {
     this.ref("code")
-    this.field("code")
+    this.field("code", { boost: 10})
     this.field("motscles")
-    this.field("diminutif")
+    this.field("diminutif", { boost: 10})
     this.field("titre")
 
     for(var cle in documents) {
