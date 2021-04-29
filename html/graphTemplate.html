@@ -4,16 +4,23 @@
 <script src="https://d3js.org/d3.v5.js"></script>
 {% endblock %}
 {% block content %}
-<style>
-.node {
-    stroke: #000;
-    stroke-width: 1.5px;
-}
-.link {
-    stroke: #999;
-    stroke-width: 1.5px;
-}
-</style>
-<svg width="960" height="500"></svg>
+<!--
+<div class="field is-horizontal">
+    <div class="control">
+        <label class="checkbox">
+            <input id="Ressources" class="categorie" type="checkbox" checked>
+            Ressources
+        </label>
+        <label class="checkbox">
+            <input id="SAEs" class="categorie" type="checkbox" checked>
+            SAEs
+        </label>
+        <label class="checkbox">
+            <input id="ACs" class="categorie" type="checkbox" checked>
+            ACs
+        </label>
+    </div>
+</div>-->
+<svg style="border: 1px solid black; margin: auto;"></svg>
 <script src="js/graph.js"></script>
 {% endblock %}

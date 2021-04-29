@@ -248,13 +248,13 @@ for indexSem, sem in enumerate(ressources):
         defineSearchTerm(data, url, documents)
         template.stream(datas).dump(REPERTOIRE_HTML + "/" + url)
 
-        relations["nodes"].append({"id": data["code"]})
+        relations["nodes"].append({"id": data["code"], "type": "Ressource"})
         for sae in data["sae"]:
-            if not any(sae in node["id"] for node in relations["nodes"]): relations["nodes"].append({"id": sae})
+            if not any(sae in node["id"] for node in relations["nodes"]): relations["nodes"].append({"id": sae, "type": "SAE"})
             relations["links"].append({"source": data["code"], "target": sae, "type": "RessourceToSAE"})
         for rt in data["acs"]:
             for ac in data["acs"][rt]:
-                if not any(ac in node["id"] for node in relations["nodes"]): relations["nodes"].append({"id": ac})
+                if not any(ac in node["id"] for node in relations["nodes"]): relations["nodes"].append({"id": ac, "type": "AC"})
                 relations["links"].append({"source": data["code"], "target": ac, "type": "RessourceToAC"})
     
     #Créer un fichier contenant la liste des ressources du semestre
@@ -286,10 +286,10 @@ for indexSem, sem in enumerate(ressources):
                 SAE_mobilise_AC[ac].append(sae.getInfo())
 
         if not any(data["code"] in node["id"] for node in relations["nodes"]):
-            relations["nodes"].append({"id": data["code"]})
+            relations["nodes"].append({"id": data["code"], "type": "SAE"})
         for rt in data["acs"]:
             for ac in data["acs"][rt]:
-                if not any(ac in node["id"] for node in relations["nodes"]): relations["nodes"].append({"id": ac})
+                if not any(ac in node["id"] for node in relations["nodes"]): relations["nodes"].append({"id": ac, "type": "AC"})
                 relations["links"].append({"source": data["code"], "target": ac, "type": "SAEToAC"})
 
     for sae in exemples[sem]:
