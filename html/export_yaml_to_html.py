@@ -29,6 +29,7 @@ REPERTOIRE_COMPETENCES_DEFINITIVES = Config.ROOT + "/yaml/competences"
 REPERTOIRE_ACS = Config.ROOT + "/python/pn"
 REPERTOIRE_HTML = Config.ROOT + "/html/export"
 REPERTOIRE_JS = REPERTOIRE_HTML + "/js"
+CHEMIN_TEMPLATE = Config.ROOT + "/html"
 
 # Créer le dossier html/export et html/export/js s'il n'existe pas
 if not os.path.exists(REPERTOIRE_HTML):
@@ -88,12 +89,6 @@ for fichieryaml in fichiers_exemples:
         exemples[sem][sae] = []
     exemples[sem][sae].append(e)
 
-
-
-# Chargement des Compétences
-fichieryaml = REPERTOIRE_COMPETENCES_DEFINITIVES + '/RT123.yml'
-competences = Competences(fichieryaml)
-
 #Liste de string pour renommer certaines catégories (les autres qui n'ont pas besoins ont la première lettre en majuscule)
 rename = {
     "heures_encadrees": "Heures encadrées",
@@ -109,7 +104,6 @@ rename = {
             "modalite": "Modalité"
 }
 
-CHEMIN_TEMPLATE = Config.ROOT + "/html"
 # Création de l'environnement pour charger les templates
 env = Environment(trim_blocks=True, lstrip_blocks=True, loader=FileSystemLoader(CHEMIN_TEMPLATE))
 
@@ -136,7 +130,7 @@ template_List_Ressource = env.get_template("ListRessourceTemplate.html")
 template_List = env.get_template("ListTemplate.html")
 
 def motscles(mc):
-    """ Retourne un tableau de mots clés en prenant compte des parenthèses """
+    """ Retourne un tableau de mots clés en prenant en compte les parenthèses """
     motscles = []
     mot = ""
     i = 0
@@ -156,13 +150,13 @@ def motscles(mc):
 
 def formatHTML(string):
     """ Retourne un string avec les balises <ul> , <li> et <p> correctement placé, code plus compliqué pour ce qu'il fait"""
-    texte = "\n"
+    texte = "\n" # \n permet d'améliorer la lisibilité dans les fichiers html
     phrases = list(filter(None,string.split("\n")))
     i = 0
     while i < len(phrases):
         if "* " in phrases[i]: # première balise li détecté
-            texte += "<ul>\n" # \n permet d'améliorer la lisibilité dans les fichiers html
-            while i < len(phrases) and "*" in phrases[i]: # Tant qu'il y a des * on continue de créer des balises
+            texte += "<ul>\n" 
+            while i < len(phrases) and "*" in phrases[i]: # Tant qu'il y a des * on continue de créer des balises li
                 texte += "  <li>" + phrases[i][2:] + "</li>\n"
                 if i+1 < len(phrases):
                     if phrases[i+1][:3] == "  *": # Si il y a une liste dans un li
@@ -193,7 +187,7 @@ def formatHTML(string):
     return texte[:-1] # On enlève le dernier \n 
 
 def defineSearchTerm(dictio, url, documents):
-    """ Retourne un dictionnaire d'une ressource compatible Lunr pour la recherche de cette élément """
+    """ Retourne un dictionnaire d'une ressource compatible Lunr pour la recherche de cet élément """
     document = {}
     document["code"] = dictio["code"]
     document["url"] = url
@@ -205,7 +199,6 @@ def defineSearchTerm(dictio, url, documents):
     if "contexte" in dictio: document["contexte"] = dictio["contexte"]
     if "contenu" in dictio: document["contenu"] = dictio["contenu"]
     documents[document["code"]] = document
-    return
 
 # Créer un fichier contenant la liste des saes
 datas = {"data" : saes, "title": "SAEs"} # "data" contient un tableau des saes
@@ -215,38 +208,43 @@ template_List.stream(datas).dump(REPERTOIRE_HTML + "/SAE.html")
 datas = {"data" : ressources, "title": "Ressources"}
 template_List.stream(datas).dump(REPERTOIRE_HTML + "/ressources.html")
 
-# Définition d'un liste de document contenant les informations nécessaires pour la recherche
-documents = {}
-
-# Dictionnaire de ACs contenant la liste des SAE qui les mobilisent
-SAE_mobilise_AC = {}
-
-# Dictionnaires des relations entre les ressources pour le graph
-relations = {"nodes": [], "links": []}
+documents = {} # Définition d'un liste de document contenant les informations nécessaires pour la recherche
+SAE_mobilise_AC = {} # Dictionnaire de ACs contenant la liste des SAE qui les mobilisent
+relations = {"nodes": [], "links": []} # Dictionnaires des relations entre les ressources pour le graphe
 
 # Création des pages individuelles ressources, saes, exemples
 for indexSem, sem in enumerate(ressources):
-    for i, ressource in enumerate(ressources[sem]):
+
+    # ____________________ Ressources ____________________
+    for indexRessource, ressource in enumerate(ressources[sem]):
+        
         data = {}
-        for categorie, valeur in ressource.ressource.items():
+        
+        for categorie, valeur in ressource.getInfo().items():
             data[categorie] = valeur
-        # Formatage de string en html
+        
+        # Mise en page des textes en HTML
         data["contenu"] = formatHTML(data["contenu"])
         data["contexte"] = formatHTML(data["contexte"])
+        
         # Sépare les motclés pour former des tags
         data["motscles"] = motscles(data["motscles"])
+        datas = {"data": data, "rename": rename} # Rename contient le dico pour renommer les catégories ressources[list(ressources.keys())[indexSem - 1]]
+        
         # Ajoute les liens pour les boutons "Suivant" et "Précédent"
-        datas = {"data":data, "rename": rename}
-        if(i > 0): datas["precedent"] = "R" + str(int(ressource.ressource["code"][1:])-1) + ".html"
-        elif(indexSem > 0): datas["precedent"] = "R" + ressources[list(ressources.keys())[indexSem - 1]][-1].ressource["code"][1:] + ".html"
-        if(i < len(ressources[sem]) - 1): datas["suivant"] = "R" + str(int(ressource.ressource["code"][1:])+1) + ".html"
-        elif(indexSem < len(ressources) - 1): datas["suivant"] = "R" + str((int(sem[-1:])+1)*100+1) + ".html"
-        # Créer un fichier html depuis un TemplateStream créer à partir du template et des données dans "data" qui remplace les variables
-        url = data["code"] + ".html"
-        # Ajout des informations de ressource pour la recherche dans une liste
-        defineSearchTerm(data, url, documents)
+        # On doit prendre en compte le premier ressource et la dernière ressource du dernier semestre
+        if indexRessource > 0: datas["precedent"] = "R" + str(int(data["code"][1:])-1) + ".html"
+        elif indexSem > 0: datas["precedent"] = "R" + ressources["S"+str(indexSem)][-1].getInfo()["code"][1:] + ".html"
+        if indexRessource < len(ressources[sem]) - 1: datas["suivant"] = "R" + str(int(data["code"][1:])+1) + ".html"
+        elif indexSem < len(ressources) - 1: datas["suivant"] = "R" + str((indexSem+2)*100+1) + ".html"
+
+        url = data["code"] + ".html" # Ajout de l'url pour la recherche
+        defineSearchTerm(data, url, documents) # Ajout des informations de ressource pour la recherche dans une liste
+        
+        # Créer un fichier html depuis un TemplateStream créer à partir du template et des données dans "datas" qui remplace les variables pour Jinja2
         template.stream(datas).dump(REPERTOIRE_HTML + "/" + url)
 
+        # Ajout des informations nécessaires pour créer le graphique (node et link)
         relations["nodes"].append({"id": data["code"], "sem": sem, "type": "Ressource"})
         for sae in data["sae"]:
             relations["links"].append({"source": data["code"], "target": sae, "sem": sem, "type": "RessourceToSAE"})
@@ -259,30 +257,38 @@ for indexSem, sem in enumerate(ressources):
     data = {"data" : ressources[sem],"sem" : sem} # "data" contient un tableau des ressources du semestre
     template_List_Ressource.stream(data).dump(REPERTOIRE_HTML + "/ressources" + str(sem) + ".html")
 
-    for i, sae in enumerate(saes[sem]):
+    # ____________________ SAEs ____________________
+    for indexSAE, sae in enumerate(saes[sem]):
+        
         data = {}
+
         for categorie, valeur in sae.sae.items():
             data[categorie] = valeur
         # On regarde si des exemples du sae existent, si True, on les ajoute dans "data"
         if(sae.sae["code"] in exemples[sem]) : 
             data["exemples"] = exemples[sem][sae.sae["code"]]
+
         data["description"] = formatHTML(data["description"])
         data["livrables"] = formatHTML(data["livrables"])
         data["motscles"] = motscles(data["motscles"])
         datas = {"data":data, "rename": rename}
-        if(i > 0): datas["precedent"] = "SAE" + str(int(sae.sae["code"][3:])-1) + ".html"
-        elif(indexSem > 0): datas["precedent"] = "SAE" + saes[list(saes.keys())[indexSem - 1]][-1].sae["code"][3:] + ".html" # saes[list(saes.keys())[indexSem - 1]][-1].sae["code"][3:] -> "code" du dernier sae du semestre précédent
-        if(i < len(saes[sem]) - 1): datas["suivant"] = "SAE" + str(int(sae.sae["code"][3:])+1) + ".html"
-        elif(indexSem < len(saes) - 1): datas["suivant"] = "SAE" + str((int(sem[-1:])+1)*10+1) + ".html"
+        
+        if indexSAE > 0: datas["precedent"] = "SAE" + str(int(data["code"][3:])-1) + ".html"
+        elif indexSem > 0: datas["precedent"] = "SAE" + saes["S"+str(indexSem)][-1].getInfo()["code"][3:] + ".html" # saes[list(saes.keys())[indexSem - 1]][-1].sae["code"][3:] -> "code" du dernier sae du semestre précédent        
+        if indexSAE < len(saes[sem]) - 1: datas["suivant"] = "SAE" + str(int(sae.getInfo()["code"][3:])+1) + ".html"
+        elif indexSem < len(saes) - 1: datas["suivant"] = "SAE" + str((indexSem+2)*10+1) + ".html"
+        
         url = data["code"].replace("É","E") + ".html"
         defineSearchTerm(data, url, documents)
         template.stream(datas).dump(REPERTOIRE_HTML + "/" + url)
 
+        # Créer la liste des SAEs mobilisés par des AC
         for rt, acs in sae.getInfo()["acs"].items():
             for ac in acs:
                 if not ac in SAE_mobilise_AC: SAE_mobilise_AC[ac] = []
                 SAE_mobilise_AC[ac].append(sae.getInfo())
 
+        # Ajout des informations nécessaires pour créer le graphique (node et link)
         if not any(data["code"] in node["id"] for node in relations["nodes"]):
             relations["nodes"].append({"id": data["code"], "type": "SAE"})
         for rt in data["acs"]:
@@ -290,57 +296,78 @@ for indexSem, sem in enumerate(ressources):
                 if not any(ac in node["id"] for node in relations["nodes"]): relations["nodes"].append({"id": ac, "sem": 0, "type": "AC"})
                 relations["links"].append({"source": data["code"], "target": ac, "sem": sem, "type": "SAEToAC"})
 
+    # ____________________ Exemples SAE ____________________
     for sae in exemples[sem]:
-        i = 1 # Nommage des fichiers exemple sae peut être modifier
-        for j, exemple in enumerate(exemples[sem][sae]):
+        num = 1 # Nommage des fichiers exemple sae
+        for indexExemple, exemple in enumerate(exemples[sem][sae]):
+            
             data = {}
+            
             for categorie, valeur in exemple.exemple.items():
                 data[categorie] = valeur
+
             data["description"] = formatHTML(data["description"])
             data["modalite"] = formatHTML(data["modalite"])
             datas = {"data":data, "rename": rename}
-            if(j > 0): datas["precedent"] = "SAE" + data["code"][-2:] + "_exemple" + str(i-1) + ".html"
-            if(j < len(exemples[sem][sae]) - 1): datas["suivant"] = "SAE" + data["code"][-2:] + "_exemple" + str(i+1) + ".html"
-            url = data["code"].replace("É","E") + "_exemple" + str(i) + ".html"
-            template.stream(datas).dump(REPERTOIRE_HTML + "/" + url)
-            i+=1
 
+            if indexExemple > 0: datas["precedent"] = "SAE" + data["code"][-2:] + "_exemple" + str(num-1) + ".html"
+            if indexExemple < len(exemples[sem][sae]) - 1: datas["suivant"] = "SAE" + data["code"][-2:] + "_exemple" + str(num+1) + ".html"
+            num += 1
+            
+            url = data["code"].replace("É","E") + "_exemple" + str(num) + ".html"
+            template.stream(datas).dump(REPERTOIRE_HTML + "/" + url)
+            
+# Création d'une liste de AC pour créer une page listant les ACs
 ListACs = {"RT1":[], "RT2":[], "RT3":[]}
 
 # Chargement des ACs
 fichieryaml = REPERTOIRE_ACS +'/acs.yml'
 acs = ACs(fichieryaml)
 
+# Chargement des Compétences
+fichieryaml = REPERTOIRE_COMPETENCES_DEFINITIVES + '/RT123.yml'
+competences = Competences(fichieryaml)
+
 # Création des pages individuelles ACs, Compétences
 for indexRt, rt in enumerate(acs.getInfo()):
 
-    # ACs
+    # ____________________ ACs ____________________
     for i, (ac, desc) in enumerate(acs.getInfo()[rt].items()):
+        
         data = {}
+
         data["code"] = ac
         data["titre"] = desc
         data["sae"] = SAE_mobilise_AC[ac]
         datas = {"data":data}
+
+        ListACs[rt].append(data)
+
         if i > 0: datas["precedent"] = list(acs.getInfo()[rt].keys())[i-1] + ".html"
         elif indexRt > 0: datas["precedent"] = list(acs.getInfo()["RT" + str(int(rt[-1])-1)].keys())[-1] + ".html"
-        if i < len(acs.getInfo()[rt])-1: datas["suivant"] = list(acs.getInfo()[rt].keys())[i+1] + ".html"
-        elif indexRt < len(acs.getInfo())-1: datas["suivant"] = list(acs.getInfo()["RT" + str(int(rt[-1])+1)].keys())[0] + ".html"
+        if i < len(acs.getInfo()[rt]) - 1: datas["suivant"] = list(acs.getInfo()[rt].keys())[i+1] + ".html"
+        elif indexRt < len(acs.getInfo()) - 1: datas["suivant"] = list(acs.getInfo()["RT" + str(int(rt[-1])+1)].keys())[0] + ".html"
+        
         url = ac + ".html"
         defineSearchTerm(data, url, documents)
         template_AC.stream(datas).dump(REPERTOIRE_HTML + "/" + url)
-        ListACs[rt].append(data)
+        
+    # ____________________ Compétences ____________________
 
-    # Compétences
     data = {}
+
     for categorie, valeur in competences.getInfo()[rt].items():
         data[categorie] = valeur
+
     data["description"] = formatHTML(data["description"])
     datas = {"data": data, "rt": rt}
+
     if indexRt > 0: datas["precedent"] = "RT" + str(indexRt) + ".html"
-    if indexRt <= len(competences.getInfo()): datas["suivant"] = "RT" + str(indexRt + 2) + ".html"
+    if indexRt < len(competences.getInfo()) - 1: datas["suivant"] = "RT" + str(indexRt + 2) + ".html"
+
     url = rt + ".html"
     template_Competence.stream(datas).dump(REPERTOIRE_HTML + "/" + url)
-    data["code"] = rt
+    data["code"] = rt # On le créer ici pour pas ajouter une ligne au tableau de la page mais pour la recherche
     defineSearchTerm(data, url, documents)
 
 # Créer un fichier contenant la liste des ACs

@@ -87,9 +87,10 @@ $("document").ready(function() {
       graph["nodes"].forEach(node => {if(node.type == "AC"){nodes.push(node);}});
       if(RessourceChecked) {graph["links"].forEach(link => {if(link.type == "RessourceToAC" && sem.includes(link.sem)){links.push(link);}})}
       if(SAEChecked) {graph["links"].forEach(link => {if(link.type == "SAEToAC" && sem.includes(link.sem)){links.push(link);}})}
-      
     }
+
     redraw();
+    
   });
 });
 
