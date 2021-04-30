@@ -207,7 +207,6 @@ def defineSearchTerm(dictio, url, documents):
     documents[document["code"]] = document
     return
 
-
 # Créer un fichier contenant la liste des saes
 datas = {"data" : saes, "title": "SAEs"} # "data" contient un tableau des saes
 template_List.stream(datas).dump(REPERTOIRE_HTML + "/SAE.html")
@@ -248,14 +247,13 @@ for indexSem, sem in enumerate(ressources):
         defineSearchTerm(data, url, documents)
         template.stream(datas).dump(REPERTOIRE_HTML + "/" + url)
 
-        relations["nodes"].append({"id": data["code"], "type": "Ressource"})
+        relations["nodes"].append({"id": data["code"], "sem": sem, "type": "Ressource"})
         for sae in data["sae"]:
-            if not any(sae in node["id"] for node in relations["nodes"]): relations["nodes"].append({"id": sae, "type": "SAE"})
-            relations["links"].append({"source": data["code"], "target": sae, "type": "RessourceToSAE"})
+            relations["links"].append({"source": data["code"], "target": sae, "sem": sem, "type": "RessourceToSAE"})
         for rt in data["acs"]:
             for ac in data["acs"][rt]:
-                if not any(ac in node["id"] for node in relations["nodes"]): relations["nodes"].append({"id": ac, "type": "AC"})
-                relations["links"].append({"source": data["code"], "target": ac, "type": "RessourceToAC"})
+                if not any(ac in node["id"] for node in relations["nodes"]): relations["nodes"].append({"id": ac, "sem": 0, "type": "AC"})
+                relations["links"].append({"source": data["code"], "target": ac, "sem": sem, "type": "RessourceToAC"})
     
     #Créer un fichier contenant la liste des ressources du semestre
     data = {"data" : ressources[sem],"sem" : sem} # "data" contient un tableau des ressources du semestre
@@ -289,8 +287,8 @@ for indexSem, sem in enumerate(ressources):
             relations["nodes"].append({"id": data["code"], "type": "SAE"})
         for rt in data["acs"]:
             for ac in data["acs"][rt]:
-                if not any(ac in node["id"] for node in relations["nodes"]): relations["nodes"].append({"id": ac, "type": "AC"})
-                relations["links"].append({"source": data["code"], "target": ac, "type": "SAEToAC"})
+                if not any(ac in node["id"] for node in relations["nodes"]): relations["nodes"].append({"id": ac, "sem": 0, "type": "AC"})
+                relations["links"].append({"source": data["code"], "target": ac, "sem": sem, "type": "SAEToAC"})
 
     for sae in exemples[sem]:
         i = 1 # Nommage des fichiers exemple sae peut être modifier

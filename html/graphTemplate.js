@@ -56,18 +56,38 @@ var node = svg.append("g")
 redraw();
 
 $("document").ready(function() {
-  $(".categorie").click(function() {
-    nodes = []
-    links = []
-    if($("#Ressources").prop("checked")) {graph["nodes"].map(node => {if(node.type == "Ressource"){nodes.push(node);}})}
-    if($("#SAEs").prop("checked")) {
-      if (nodes.length != 0) {graph["links"].map(link => {if(link.type == "RessourceToSAE"){links.push(link);}})}
-      nodes.concat(graph["nodes"].map(node => {if(node.type == "SAE"){nodes.push(node);}}));
+  $("input").click(function() {
+
+    var sem = ["default"];
+    $(".semestre:checked").each(function() { sem.push($(this).val()) });
+
+    var RessourceChecked = $("#Ressources").prop("checked");
+    var SAEChecked = $("#SAEs").prop("checked");
+    var ACChecked = $("#ACs").prop("checked");
+
+    nodes = [];
+    links = [];
+
+    if(RessourceChecked) {
+      graph["nodes"].forEach(node => {
+        if(node.type == "Ressource" && sem.includes(node.sem)) { nodes.push(node); }
+      });
     }
-    if($("#ACs").prop("checked")) {
-      if($("#Ressources").prop("checked")) {graph["links"].map(link => {if(link.type == "RessourceToAC"){links.push(link);}})}
-      if($("#SAEs").prop("checked")) {graph["links"].map(link => {if(link.type == "SAEToAC"){links.push(link);}})}
-      nodes.concat(graph["nodes"].map(node => {if(node.type == "AC"){nodes.push(node);}}));
+
+    if(SAEChecked) {
+      graph["nodes"].forEach(node => {
+        if(node.type == "SAE") { nodes.push(node); }
+      });
+      if (RessourceChecked) {
+        graph["links"].forEach(link => { if(link.type == "RessourceToSAE" && sem.includes(link.sem)) {links.push(link);} })
+      }
+    }
+
+    if(ACChecked) {
+      graph["nodes"].forEach(node => {if(node.type == "AC"){nodes.push(node);}});
+      if(RessourceChecked) {graph["links"].forEach(link => {if(link.type == "RessourceToAC" && sem.includes(link.sem)){links.push(link);}})}
+      if(SAEChecked) {graph["links"].forEach(link => {if(link.type == "SAEToAC" && sem.includes(link.sem)){links.push(link);}})}
+      
     }
     redraw();
   });
@@ -88,19 +108,21 @@ function redraw() {
       .call(drag(simulation))
 
   node.append("rect")
-        .attr("width", 20)
-        .attr("height", 10)
-        .attr("x", -10)
-        .attr("y", -5)
-        .attr("rx", 5)
-        .attr("ry", 5)
-        .attr("fill", function(d) { return color(d.type); })
+    .attr("width", 20)
+    .attr("height", 10)
+    .attr("x", -10)
+    .attr("y", -5)
+    .attr("rx", 5)
+    .attr("ry", 5)
+    .attr("fill", function(d) { return color(d.type); })
 
   node.append("text")
-        .attr("style", "user-select: none")
-        .text(d => d.id)
-        .attr("dx", 7)
-        .attr("dy", 12)
+    .attr("style", "user-select: none")
+    .attr("dx", 7)
+    .attr("dy", 12)
+    .append("a")
+      .attr("href", d => d.id.replace("É", "E") + ".html")
+      .text(d => d.id)
 
   simulation.nodes(nodes);
   simulation.force("links", d3.forceLink(links).id(node => node.id).distance(100));
