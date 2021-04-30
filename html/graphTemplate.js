@@ -1,5 +1,4 @@
 drag = simulation => {
-  
     function dragstarted(d) {
       if (!d3.event.active) simulation.alphaTarget(0.3).restart();
       d.fx = d.x;
@@ -27,8 +26,36 @@ const graph = {{data}}
 var nodes = graph["nodes"]
 var links = graph["links"]
 
-$("document").ready(function() {
+const nodetypes = Array.from(new Set(nodes.map(node => node.type)))
+const linktypes = Array.from(new Set(links.map(link => link.type)))
+const color = d3.scaleOrdinal(nodetypes.concat(linktypes),d3.schemeCategory10)
 
+var height = 800, width = 800;
+
+var svg = d3.select("svg")
+  .attr("viewBox",  [-width / 2, -height / 2, width, height])
+
+var simulation = d3.forceSimulation(nodes)
+    .force("charge", d3.forceManyBody().strength(-400))
+    .force("link", d3.forceLink(links).id(node => node.id).distance(50))
+    .force("x", d3.forceX())
+    .force("y", d3.forceY())
+    .on("tick", ticked);
+
+var link = svg.append("g")
+    .attr("stroke-width", 1.5)
+    .attr("class","links")
+  .selectAll("line")  
+
+var node = svg.append("g")  
+    .attr("stroke-width", 1)
+    .attr("stroke", "black")
+    .attr("class", "nodes")
+  .selectAll("g")
+
+redraw();
+
+$("document").ready(function() {
   $(".categorie").click(function() {
     nodes = []
     links = []
@@ -42,87 +69,49 @@ $("document").ready(function() {
       if($("#SAEs").prop("checked")) {graph["links"].map(link => {if(link.type == "SAEToAC"){links.push(link);}})}
       nodes.concat(graph["nodes"].map(node => {if(node.type == "AC"){nodes.push(node);}}));
     }
-    
-    redraw()
-
-    simulation.nodes(nodes);
-    simulation.force("links", d3.forceLink(links).id(node => node.id));
-    simulation.alpha(1).restart();
+    redraw();
   });
-function redraw() {
-
-  $(".nodes").children().remove();
-
-  NODE.data(nodes)
-    .remove()
-    .enter().append("rect")
-    .attr("width", 40)
-    .attr("height", 20)
-    .attr("x", -20)
-    .attr("y", -10)
-    .attr("rx", 5)
-    .attr("ry", 5)
-    .attr("fill", function(d) { return color(d.type); });
-    
-}
 });
 
-const nodetypes = Array.from(new Set(nodes.map(node => node.type)))
-const linktypes = Array.from(new Set(links.map(link => link.type)))
+function redraw() {
 
-const color = d3.scaleOrdinal(nodetypes.concat(linktypes),d3.schemeCategory10)
-
-var height = 800, width = 800;
-
-var svg = d3.select("svg")
-  .attr("viewBox", [0, 0, width, height])
-
-var simulation = d3.forceSimulation(nodes)
-    .force("charge", d3.forceManyBody().strength(-400))
-    .force("center", d3.forceCenter(width / 2, height / 2))
-    .force("link", d3.forceLink(links).id(node => node.id));
-
-var link = svg.append("g")
-    .attr("stroke-width", 1.5)
-    .attr("class","links")
-  .selectAll("line")
-    .data(links)
+  link = link.data(links)
     .join("line")
-      .attr("stroke", d => color(d.type));
+    .attr("stroke", d => color(d.type));
 
+  node.selectAll("text").remove();
+  node.selectAll("rect").remove();
 
-var NODE = svg.append("g")  
-    .attr("stroke-width", 1)
-    .attr("stroke", "black")
-    .attr("class","nodes")
-  .selectAll("g")
-    .data(nodes)
+  node = node.data(nodes)
     .join("g")
-      .call(drag(simulation));
+      .attr("class","node")
+      .call(drag(simulation))
 
-NODE.append("rect")
-  .attr("width", 40)
-  .attr("height", 20)
-  .attr("x", -20)
-  .attr("y", -10)
-  .attr("rx", 5)
-  .attr("ry", 5)
-  .attr("fill", function(d) { return color(d.type); });
+  node.append("rect")
+        .attr("width", 20)
+        .attr("height", 10)
+        .attr("x", -10)
+        .attr("y", -5)
+        .attr("rx", 5)
+        .attr("ry", 5)
+        .attr("fill", function(d) { return color(d.type); })
 
-NODE.append("text")
-  .text(d => d.id)
-  .attr("dx", 15)
-  .attr("dy", 25)
+  node.append("text")
+        .attr("style", "user-select: none")
+        .text(d => d.id)
+        .attr("dx", 7)
+        .attr("dy", 12)
 
-simulation.on("tick", ticked);
+  simulation.nodes(nodes);
+  simulation.force("links", d3.forceLink(links).id(node => node.id).distance(100));
+  simulation.alpha(0.5).restart();
+}
 
 function ticked() {
   link.attr("x1", function(d) { return d.source.x; })
       .attr("y1", function(d) { return d.source.y; })
       .attr("x2", function(d) { return d.target.x; })
       .attr("y2", function(d) { return d.target.y; });
-
-  NODE
+  node
     .attr("transform", d => `translate(${d.x},${d.y})`);
 }
-
