@@ -8,6 +8,7 @@ Avec Anaconda:
     conda install ruamel
     conda install ruamel.yaml
     pip install docx2python
+    pip install Jinja2
 
 Sans Anaconda, remplacer `conda` par `pip`.
 
@@ -37,6 +38,11 @@ par exemple:
     cd python
     python export_yaml_to_latex.py -a
 
+### Génération du Html
+
+    cd html
+    python export_yaml_to_html.py
+
 ### Génération de PDF
 
     cd latex
@@ -47,6 +53,7 @@ Le résultat est `pn_formation.pdf`.
 
 ## Organisation des fichiers
 
+    html/export   fichiers html générés par export_yaml_to_html.py à partir des yaml
     python/import   fichiers docx à traiter
     python/export   fichier yaml générés par export_docx_to_yaml.py à partir des docx
     yaml/ressources versions éditées manuellement ??

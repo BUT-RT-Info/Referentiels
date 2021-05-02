@@ -169,6 +169,9 @@ class Ressource:
         # Insère les abbréviations
         return chaine
 
+    def getInfo(self):
+        return self.ressource
+
 
 def contient_abbr(chaine):
     """Détecte les abréviations présentes dans la chaine
@@ -317,6 +320,9 @@ class SAE:
         chaine = nettoie_latex(chaine)
         return chaine
 
+    def getInfo(self):
+        return self.sae
+
 
 class ExempleSAE:
     """Modélise un exemple de SAE lorsqu'elle est extraite d'un yaml"""
@@ -388,6 +394,37 @@ class ExempleSAE:
 
         return chaine
 
+class Competences:
+    """ Modélise une liste de compétences lorsqu'elle est extraite d'un dictionnaire """
+
+    __LOGGER = logging.getLogger(__name__)
+
+    def __init__(self, fichieryaml):
+        with open(fichieryaml, "r", encoding="utf8") as fid:
+            yaml = ruamel.yaml.YAML()
+            try:
+                self.competences = yaml.load(fid.read())
+            except:
+                Competences.__LOGGER.warning(f"Pb de chargement de {fichieryaml}")
+
+    def getInfo(self):
+        return self.competences
+
+class ACs:
+    """ Modélise une liste de acs lorsqu'elle est extraite d'un fichier yaml """
+
+    __LOGGER = logging.getLogger(__name__)
+
+    def __init__(self, fichieryaml):
+        with open(fichieryaml, "r", encoding="utf8") as fid:
+            yaml = ruamel.yaml.YAML(typ="safe")
+            try:
+                self.acs = yaml.load(fid.read())
+            except:
+                ACs.__LOGGER.warning(f"Pb de chargement de {fichieryaml}")
+
+    def getInfo(self):
+        return self.acs
 
 def md_to_latex(contenu):
     """Réalise la conversion markdown to latex avec pypandoc"""

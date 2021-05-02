@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Relation des ressources{% endblock %}
+{% block head %} 
+<script src="https://d3js.org/d3.v5.js"></script>
+{% endblock %}
+{% block content %}
+<div class="field is-horizontal">
+    <div class="control">
+        <label class="checkbox">
+            <input id="Semestre1" class="semestre" value="S1" type="checkbox" checked>
+            Semestre 1
+        </label>
+        <label class="checkbox">
+            <input id="Semestre2" class="semestre" value="S2" type="checkbox" checked>
+            Semestre 2
+        </label>
+    </div>
+</div>
+<div class="field is-horizontal">
+    <div class="control">
+        <label class="checkbox">
+            <input id="Ressources" class="categorie" type="checkbox" checked>
+            Ressources
+        </label>
+        <label class="checkbox">
+            <input id="SAEs" class="categorie" type="checkbox" checked>
+            SAEs
+        </label>
+        <label class="checkbox">
+            <input id="ACs" class="categorie" type="checkbox" checked>
+            ACs
+        </label>
+    </div>
+</div>
+<svg style="border: 1px solid black; margin: auto;"></svg>
+<script src="js/graph.js"></script>
+{% endblock %}
