@@ -27,7 +27,10 @@ cd latex || die "repertoire manquant: latex"
 lualatex pn_formation
 lualatex pn_formation
 
+lualatex pn_formation_ccn
+lualatex pn_formation_ccn
+
 echo "Done."
-echo "Resultat: latex/pn_formation.pdf"
+echo "Resultat: latex/pn_formation.pdf, latex/pn_formation_ccn.pdf"
 
 

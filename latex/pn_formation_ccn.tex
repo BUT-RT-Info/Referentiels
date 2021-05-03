@@ -160,14 +160,38 @@ Référentiel de formation}
 % ------ TABLE DES MATIERES (en version draft seulement)
 %\ifdef{\draft}{
 	%\section*{Table des matières}
-\tableofcontents % [sections={1-3}]
+%\tableofcontents % [sections={1-3}]
 	
 % \newpage
 %}
 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% PRESENTATION FORMATION     %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{La formation BUT R\'eseaux \& T\'el\'ecommunications et ses parcours}
+\input{presentation_formation.tex}
+
+% CCN: Inclure référentiel de compétences (5 parcours)
+\includepdf[landscape,pages=-]{img/RT_BUT_Competences_Parcours_Cybersecurite_V.pdf}
+\includepdf[landscape,pages=-]{img/RT_BUT_Competences_Parcours_DevCloud_V.pdf}
+\includepdf[landscape,pages=-]{img/RT_BUT_Competences_Parcours_IOM_V.pdf}
+\includepdf[landscape,pages=-]{img/RT_BUT_Competences_Parcours_PilPro_V.pdf}
+\includepdf[landscape,pages=-]{img/RT_BUT_Competences_Parcours_ROM_V.pdf}
+
+
+% Annexe A: tableau du semestre 1 et semestre 2
+\includepdf[pages=1, landscape]{img/ANNEXE-A-RT-S1.pdf}
+\includepdf[pages=1, landscape]{img/ANNEXE-A-RT-S2.pdf}
+
+% Texte sur les SAE et le portfolio
+\input{intro-sae-porfolio}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% TABLES D'INDEX             %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% liste des SAE et ressources avec numéros de pages
 \clearpage
 \section*{Index des SAÉs et ressources}
 \subsection*{Semestre 1}
@@ -178,35 +202,15 @@ Référentiel de formation}
 \listeTitreRessourceIndex{B}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% PRESENTATION FORMATION     %%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{La formation BUT R\'eseaux \& T\'el\'ecommunications et ses parcours}
-\input{presentation_formation.tex}
-
-% XXX Inclure référentiel de compétences (5 parcours)
-
-% Annexe A: tableau du semestre 1 et semestre 2
-\includepdf[pages=1, landscape]{img/ANNEXE-A-RT-S1.pdf}
-\includepdf[pages=1, landscape]{img/ANNEXE-A-RT-S2.pdf}
-
-% XXX Texte sur les SAE et le portfolio
-\input{intro-sae-porfolio}
-
-% XXX liste des SAE et ressources avec numéros de pages
-
-% XXX => ajouter à la fin le réf. d'évaluation
-
-% XXX => dans les exemples de SAE, supprimer "forme pédagogique"
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% RAPPEL DES COMPETENCES     %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Compétences du tronc commun}
+% Supprimé pour version CCN
+% \section{Compétences du tronc commun}
 
-\foreach \CNOM/\CTYPE/\CLETTRE [count=\COUXX] in {CCA/C/A, CCB/C/B, CCC/C/C} {
-	\subsection{ {\csname compcoderef\CNOM\endcsname} - {\csname compname\CNOM\endcsname} }
-		\tableauCompetence{\CNOM}{\CTYPE}{\CLETTRE}
-}
+% \foreach \CNOM/\CTYPE/\CLETTRE [count=\COUXX] in {CCA/C/A, CCB/C/B, CCC/C/C} {
+% 	\subsection{ {\csname compcoderef\CNOM\endcsname} - {\csname compname\CNOM\endcsname} }
+% 		\tableauCompetence{\CNOM}{\CTYPE}{\CLETTRE}
+% }
 
 %%%%%%%%%%%%%%%%
 %% SEMESTRE 1 %%
@@ -280,5 +284,14 @@ Référentiel de formation}
 \begin{multicols}{2}\small
 \input{synthese/abbreviations.tex}
 \end{multicols}
+
+% CCN => ajouter à la fin le réf. d'évaluation
+\clearpage
+\subsection*{Référentiel d'évaluation}
+{
+    \setlength{\parindent}{0cm}
+    \setlength{\parskip}{1ex}
+Les dispositions relatives à l'évaluation sont décrites dans l'annexe 1 de l'arrêté relatif aux programmes nationaux de la licence professionnelle-bachelor universitaire de technologie.
+}
 
 \end{document}
