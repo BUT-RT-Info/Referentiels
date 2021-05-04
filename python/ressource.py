@@ -787,7 +787,7 @@ def to_latex_matrice_coeffs(matrice_vols, matrice_coeffs, saes, ressources, sem)
     # les noms des comps
     noms = []
     for (i, comp) in enumerate(comps):  # pour chaque compétence
-        contenu = "\\begin{tabular}{p{5cm}}\n"
+        contenu = "\\begin{tabular}{>{\\raggedright}p{5cm}}\n"
         couleur = "\\textcolor{compC" + string.ascii_uppercase[i] + "}"
         contenu += (
             "\\hyperlink{comp:" + comp + "}{"
