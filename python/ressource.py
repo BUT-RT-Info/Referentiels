@@ -705,9 +705,13 @@ def to_latex_matrice_acs(matrice, saes, ressources, sem):
         nom_comp = DATA_COMPETENCES[comp]["nom"]
         niveau = list(DATA_COMPETENCES[comp]["niveaux"].keys())[0]
         couleur = "\\textcolor{compC" + string.ascii_uppercase[noc] + "}"
+        if Config.ccn:
+            hlink = "\\hyperlink{comp:%s}" % comp
+        else:
+            hlink = ""
         chaine += (
-            "\\multicolumn{%d}{|l|}{\hyperlink{comp:%s}{%s{\\bfseries %s - %s }}} \\\\"
-            % (nbre_colonnes, comp, couleur, comp, nom_comp.replace("&", "\&"))
+            "\\multicolumn{%d}{|l|}{%s{%s{\\bfseries %s - %s }}} \\\\"
+            % (nbre_colonnes, hlink, couleur, comp, nom_comp.replace("&", "\&"))
         )
         chaine += "\\multicolumn{%d}{|l|}{\small Niveau 1 - %s} \\\\" % (
             nbre_colonnes,
@@ -789,8 +793,10 @@ def to_latex_matrice_coeffs(matrice_vols, matrice_coeffs, saes, ressources, sem)
     for (i, comp) in enumerate(comps):  # pour chaque compétence
         contenu = "\\begin{tabular}{>{\\raggedright}p{5cm}}\n"
         couleur = "\\textcolor{compC" + string.ascii_uppercase[i] + "}"
+        if not Config.ccn:
+            contenu += "\\hyperlink{comp:" + comp + "}"
         contenu += (
-            "\\hyperlink{comp:" + comp + "}{"
+            "{"
             + couleur
             + "{\\bfseries "
             + comp

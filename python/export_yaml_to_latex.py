@@ -22,8 +22,15 @@ parser.add_argument(
     default="..", 
     help="repertoire de base (racine) pour chercher les fichiers de données"
     )
+parser.add_argument(
+    "-c",
+    "--ccn",
+    action="store_true", 
+    help="génère éléments pour version CCN (moins de détails)"
+    )
 args = parser.parse_args()
 Config.ROOT = args.root
+Config.ccn = args.ccn
 
 import ressource
 from ressource import *
