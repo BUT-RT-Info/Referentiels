@@ -706,14 +706,14 @@ def to_latex_matrice_acs(matrice, saes, ressources, sem):
         niveau = list(DATA_COMPETENCES[comp]["niveaux"].keys())[0]
         couleur = "\\textcolor{compC" + string.ascii_uppercase[noc] + "}"
         if Config.ccn:
-            hlink = "\\hyperlink{comp:%s}" % comp
-        else:
             hlink = ""
+        else:
+            hlink = "\\hyperlink{comp:%s}" % comp
         chaine += (
             "\\multicolumn{%d}{|l|}{%s{%s{\\bfseries %s - %s }}} \\\\"
             % (nbre_colonnes, hlink, couleur, comp, nom_comp.replace("&", "\&"))
         )
-        chaine += "\\multicolumn{%d}{|l|}{\small Niveau 1 - %s} \\\\" % (
+        chaine += r"\multicolumn{%d}{|l|}{\small Niveau 1 - %s} \\\\" % (
             nbre_colonnes,
             niveau.replace("&", "\&"),
         )
