@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Liste des Ressources du semestre {{sem}}{% endblock %}
+{% block content %}
+            <div class="content">
+                <ul><h1>Liste des ressources du semestre {{sem}}</h1>
+                    {% for ressource in data %}
+                    <li><a href='{{ressource.ressource["code"] + ".html"}}'>{{ressource.ressource["code"]}} - {{ressource.ressource["nom"]}}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+{% endblock %}

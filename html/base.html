@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html class="has-navbar-fixed-top">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}{% endblock %}</title>
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css">
+    <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://unpkg.com/lunr/lunr.js"></script>
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <!-- Barre de navigation -->
+    <nav class="navbar is-primary is-spaced is-fixed-top py-0">
+        <div class="container">
+            <div class="navbar-brand">
+                <a class="navbar-item is-size-5" href="https://scodoc.org/">ScoDoc</a>
+                <!-- Menu deroulant affiché uniquement sur mobile -->
+                <div class="navbar-burger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+            <div class="navbar-menu">
+                <div class="navbar-start">
+                    <!-- Liste des catégories -->
+                    <a class="navbar-item" href="index.html">Accueil</a>
+                    <a class="navbar-item" href="ACs.html">ACs</a>
+                    <a class="navbar-item" href="SAE.html">SAÉs</a>
+                    <a class="navbar-item" href="ressources.html">Ressources</a>
+                    <a class="navbar-item" href="ressourcesS1.html">Semestre 1</a>
+                    <a class="navbar-item" href="ressourcesS2.html">Semestre 2</a>
+                    <a class="navbar-item" href="index.html">Semestre 3</a>
+                    <a class="navbar-item" href="index.html">Semestre 4</a>
+                    <a class="navbar-item" href="index.html">Semestre 5</a>
+                    <a class="navbar-item" href="index.html">Semestre 6</a>
+                </div>
+                <div class="navbar-end">
+                    <a class="navbar-item" href="graph.html">Graphique</a>
+                    <div class="navbar-item">
+                        <!-- Bouton pour afficher un boite de dialogue pour la recherche -->
+                        <button id="rechercheBouton" class="button is-rounded is-primary">
+                            <span class="icon">
+                                <i class="fas fa-search"></i>
+                            </span>
+                            <span>Rechercher</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <!-- Boite de dialogue pour la recherche -->
+    <div id="rechercheBoite" class="modal">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title has-text-centered">Rechercher</p>
+                <button id="rechercheBoite-fermer" class="modal-close"></button>
+            </header>
+            <section class="modal-card-body">
+                <input id="rechercher" type="text" class="input mb-4" placeholder="Rechercher..." >
+                <div id="rechercheResultats" class="content"></div>
+            </section>
+        </div>
+    </div>
+    <!-- Contenu de la page -->
+    <div class="container">
+        <div class="box">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </div>
+    <!-- Script JQuery -->
+    <script type="text/javascript" src="js/base.js"></script>
+</body>
+</html>

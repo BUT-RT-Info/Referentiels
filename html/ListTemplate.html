@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Liste des {{title}}{% endblock %}
+{% block content %}
+            <div class="content">
+                <ul><h1>Liste des {{title}}</h1>
+                    {% for sem, liste in data.items() %}
+                        {% for page in liste %}
+                    <li><a href='{{page.getInfo()["code"].replace("É","E") + ".html"}}'>{{page.getInfo()["code"]}} - {{page.getInfo()["titre"]}}{{page.getInfo()["nom"]}}</a></li>
+                        {% endfor %}
+                    {% endfor %}
+                </ul>
+            </div>
+{% endblock %}
