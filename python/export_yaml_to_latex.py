@@ -28,6 +28,12 @@ parser.add_argument(
     action="store_true", 
     help="génère éléments pour version CCN (moins de détails)"
     )
+parser.add_argument(
+    "-i",
+    "--acd",
+    action="store_true", 
+    help="génère éléments pour version ACD (tous les détails) (par défaut)"
+    )
 args = parser.parse_args()
 Config.ROOT = args.root
 Config.ccn = args.ccn

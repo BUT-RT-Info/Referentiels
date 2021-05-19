@@ -7,7 +7,7 @@ usage() {
   exit 1
 }
 [ $# != 2 ] || [ $# != 3 ] || usage
-CCN=""
+CCN="--acd"
 if [ "$1" == "--ccn" ]
 then
   CCN="--ccn"
