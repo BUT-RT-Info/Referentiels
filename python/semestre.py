@@ -1,6 +1,7 @@
 """Classe modélisant un semestre (ensemble de SAés et de ressources)
 """
-import os, glob, activite
+import os, glob
+import activite
 
 
 class SemestrePN():
@@ -24,7 +25,8 @@ class SemestrePN():
         self.nbre_saes = len(self.saes)
 
 
-    def get_activites_from_yaml(self, nom_semestre, type, repertoire):
+    def get_activites_from_yaml(self, nom_semestre, type,
+                                repertoire):
         """Charge les activités dont le type (ressources ou saes) est indiqué,
         rattachées au semestre `nom_semestre` dont les yaml sont dans le `repertoire`"""
         activites = {}
@@ -34,25 +36,24 @@ class SemestrePN():
         fichiers = sorted(fichiers)  # tri par ordre alphabétique
         for fichieryaml in fichiers:
             if type == "ressource":
-                a = activite.Ressource(fichieryaml)  # lecture du fichier
+                a = activite.Ressource(repertoire + "/" + fichieryaml)  # lecture du fichier
             elif type == "sae":
-                a = activite.SAE(fichieryaml)
+                a = activite.SAE(repertoire + "/" + fichieryaml)
 
             sem = "S" + str(a.yaml["semestre"])
             if sem == nom_semestre:
                 activites[a.yaml["code"]] = a
         return activites
 
-
     def get_codes_ressources_tries(self):
         """Renvoie les codes des ressources triés par code croissant"""
         ressources = list(self.ressources.keys())
-        return sorted(ressources, key=lambda r: r.yaml["code"])
+        return sorted(ressources) # , key=lambda r: r.yaml["code"])
 
     def get_codes_saes_tries(self):
         """Renvoie les codes des saés triés"""
         saes = list(self.saes.keys())
-        return sorted(saes, key=lambda r: r.yaml["code"])
+        return sorted(saes) # key=lambda r: r.yaml["code"])
 
     def get_matrices_dependances(self):
         """Renvoie la matrice traduisant les dépendances entre les saés et les ressources d'un même semestre"""
@@ -60,7 +61,10 @@ class SemestrePN():
 
         for (i, code) in enumerate(self.codes):  # pour chaque SAE ou ressources
             act = self.activites[code]
-            prerequis = act.yaml["prerequis"]
+            prerequis = []
+            if "prerequis" in act.yaml:
+                prerequis = act.yaml["prerequis"]
+
             for (j, code_prerequis) in enumerate(self.codes):
                 if code_prerequis in prerequis:
                     matrice[i][j] = 1

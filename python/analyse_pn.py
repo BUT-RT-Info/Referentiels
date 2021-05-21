@@ -23,7 +23,7 @@ parser.add_argument(
 args = parser.parse_args()
 Config.ROOT = args.root
 
-import activite, semestre
+import semestre
 import pprint
 
 REPERTOIRE_RESSOURCES_DEFINITIVES = Config.ROOT + "/yaml/ressources"

@@ -1,5 +1,5 @@
 
-import sys
+import sys, os
 import argparse
 import logging
 import docx2python
@@ -43,6 +43,10 @@ import activite
 import ressourcedocx
 
 # Ouverture du document
+if not os.path.isfile(args.DOCUMENT):
+    print(f"Le fichier {args.DOCUMENT} n'existe pas")
+    sys.exit(-1)
+
 docu = docx2python.docx2python(args.DOCUMENT)
 
 docu = docu.body
