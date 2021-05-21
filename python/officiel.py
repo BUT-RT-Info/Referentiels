@@ -1,3 +1,30 @@
+"""
+Module dédié aux éléments synthétiques (extrait des tableaux de synthèse
+maintenu par le PACD) sur les ressources, les SAés, les Compétences et les ACS.
+Parmi ces éléments, les codes et les noms officiels ; des tags pour calcul
+d'information de répartition.
+
+Les ressources sont décrites dans un fichier yaml/ressources.yml structuré par semestre
+et par code, de la forme :
+
+.. code-block:: python
+
+   S1:
+     R101:
+       nom: "Initiation aux réseaux informatiques"
+       tags-thematiques: ["réseau", "métier"]
+
+Idem pour les SAés, dans yaml/saes.yml de la forme :
+
+.. code-block:: python
+
+   S1:
+     SAE11:
+       nom: "..."
+       tags-thematiques: ["métier"]
+
+"""
+
 import logging, yaml
 import unicodedata
 from config import Config
@@ -6,25 +33,46 @@ __LOGGER = logging.getLogger(__name__)
 
 REPERTOIRE = "yaml"
 
-# Récupère les informations officielles
+# *************************************** #
+# Récupère les informations officielles  #
 ## Les ressources
-with open(Config.ROOT+"/"+REPERTOIRE+"/ressources.yml", 'r', encoding="utf8") as fid:
-    DATA_RESSOURCES = yaml.load(fid.read(), Loader=yaml.Loader)
+def get_DATA_RESSOURCES(repertoire = REPERTOIRE):
+    """Récupère les informations officielles sur les ressources (triées par semestre
+    et par nom), en extrayant les données du fichier yaml/ressources.yml"""
+    with open(Config.ROOT + "/" + REPERTOIRE + "/ressources.yml", 'r', encoding="utf8") as fid:
+        DATA_RESSOURCES = yaml.load(fid.read(), Loader=yaml.Loader)
+    return DATA_RESSOURCES
+
 ## Les ACS
-with open(Config.ROOT+"/"+REPERTOIRE+"/acs.yml", 'r', encoding="utf8") as fid:
-    DATA_ACS = yaml.load(fid.read(), Loader=yaml.Loader)
+def get_DATA_ACS():
+    """Récupère les informations officielles des SAés (triées par semestre et par nom),
+    en extrayant les données du fichier yaml/saes.yml"""
+    with open(Config.ROOT+"/"+REPERTOIRE+"/acs.yml", 'r', encoding="utf8") as fid:
+        DATA_ACS = yaml.load(fid.read(), Loader=yaml.Loader)
+    return DATA_ACS
 ## Les SAEs
-with open(Config.ROOT+"/"+REPERTOIRE+"/saes.yml", 'r', encoding="utf8") as fid:
-    DATA_SAES = yaml.load(fid.read(), Loader=yaml.Loader)
+def get_DATA_SAES():
+    with open(Config.ROOT+"/"+REPERTOIRE+"/saes.yml", 'r', encoding="utf8") as fid:
+        DATA_SAES = yaml.load(fid.read(), Loader=yaml.Loader)
+    return DATA_SAES
+
 ## Les compétences
-with open(Config.ROOT+"/"+REPERTOIRE+"/competences/RT123.yml", 'r', encoding="utf8") as fid:
-    DATA_COMPETENCES = yaml.load(fid.read(), Loader=yaml.Loader)
+def get_DATA_COMPETENCES():
+    with open(Config.ROOT+"/"+REPERTOIRE+"/competences/RT123.yml", 'r', encoding="utf8") as fid:
+        DATA_COMPETENCES = yaml.load(fid.read(), Loader=yaml.Loader)
+    return DATA_COMPETENCES
+
 ## Les abréviations
-with open(Config.ROOT+"/"+REPERTOIRE+"/abbreviations.yml", "r", encoding="utf8") as fid:
-    DATA_ABBREVIATIONS = yaml.load(fid.read(), Loader=yaml.Loader)
+def get_DATA_ABBREVIATIONS():
+    with open(Config.ROOT+"/"+REPERTOIRE+"/abbreviations.yml", "r", encoding="utf8") as fid:
+        DATA_ABBREVIATIONS = yaml.load(fid.read(), Loader=yaml.Loader)
+    return DATA_ABBREVIATIONS
+
 ## Les mostcles (commandes, logiciels, etc...)
-with open(Config.ROOT+"/"+REPERTOIRE+"/motscles.yml", "r", encoding="utf8") as fid:
-    DATA_MOTSCLES = yaml.load(fid.read(), Loader=yaml.Loader)
+def get_MOTS_CLES():
+    with open(Config.ROOT+"/"+REPERTOIRE+"/motscles.yml", "r", encoding="utf8") as fid:
+        DATA_MOTSCLES = yaml.load(fid.read(), Loader=yaml.Loader)
+    return DATA_MOTSCLES
 
 AUCUN_PREREQUIS = "Aucun"
 
@@ -41,7 +89,7 @@ def devine_code_by_nom_from_dict(champ, dico):
     Le dico officiel vient d'un .yml"""
     acs = []
     champ_purge = supprime_accent_espace(champ)
-
+    DATA_ACS = get_DATA_ACS()
     for comp in DATA_ACS:
         for code in DATA_ACS[comp]:
             acs_purge = supprime_accent_espace(DATA_ACS[comp][code])
@@ -78,14 +126,16 @@ def get_officiel_name_by_code_using_dict(code, dico):
     for sem in dico:
         for rcode in dico[sem]:
             if rcode==code:
-                return dico[sem][code]
+                return dico[sem][code]["nom"]
 
 def get_officiel_ressource_name_by_code(code):
     """Pour un code valide, fournit le nom officiel de la ressource (sans connaissance du semestre)"""
+    DATA_RESSOURCES = get_DATA_RESSOURCES()
     return get_officiel_name_by_code_using_dict(code, DATA_RESSOURCES)
 
 def get_officiel_sae_name_by_code(code):
     """Pour un code valide, fournit le nom officiel de la sae (sans connaissance du semestre)"""
+    DATA_SAES = get_DATA_SAES()
     return get_officiel_name_by_code_using_dict(code, DATA_SAES)
 
 
@@ -102,9 +152,11 @@ def get_code_from_nom_using_dict(nom, dico):
 
 def get_officiel_sem_sae_by_code(sae):
     """Récupère le semestre de la SAE d'après son code"""
+    DATA_SAES = get_DATA_SAES()
     for sem in DATA_SAES:
         if sae in DATA_SAES[sem]:
             return sem
 
 if __name__=="__main__":
+    DATA_COMPETENCES = get_DATA_COMPETENCES()
     print(DATA_COMPETENCES)

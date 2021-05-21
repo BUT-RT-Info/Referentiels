@@ -31,7 +31,8 @@ REPERTOIRE_SAE_DEFINITIVES = Config.ROOT + "/yaml/saes"
 
 pn = {}
 for sem in ["S1", "S2"]:
-    pn[sem] = semestre.SemestrePN("S1", REPERTOIRE_RESSOURCES_DEFINITIVES, REPERTOIRE_SAE_DEFINITIVES)
+    pn[sem] = semestre.SemestrePN("S1", REPERTOIRE_RESSOURCES_DEFINITIVES,
+                                        REPERTOIRE_SAE_DEFINITIVES)
     mat = pn[sem].get_matrices_dependances()
     pprint.pprint(mat)
 

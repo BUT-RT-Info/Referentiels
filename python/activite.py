@@ -1,10 +1,12 @@
-import string
+import string, logging
 import pypandoc
 import ruamel.yaml
 
 import latex
+import officiel
+
+import ressourcedocx
 from modeles import get_modele, TemplateLatex
-from ressourcedocx import *
 
 __LOGGER = logging.getLogger(__name__)
 
@@ -52,6 +54,7 @@ class Ressource(ActivitePedagogique):
                 coeffRT.append("")
 
         # Préparation des ac
+        DATA_ACS = officiel.get_DATA_ACS()
         ajoutac = "\\ajoutRac{%s}{%s}"
         compRT = []
         for accomp in ["RT1", "RT2", "RT3"]:
@@ -75,14 +78,14 @@ class Ressource(ActivitePedagogique):
                 + string.ascii_uppercase[int(sae[-1]) - 1]
             )
             saesRT.append(
-                ajoutsaes % (sae, get_officiel_sae_name_by_code(sae))
+                ajoutsaes % (sae, officiel.get_officiel_sae_name_by_code(sae))
             )  # , code_latex))
         saes = "\n".join(saesRT)
 
         if self.ressource["code"] == "R110":
             print("ici")
         prerequis = ""
-        if self.ressource["prerequis"] == AUCUN_PREREQUIS:
+        if self.ressource["prerequis"] == officiel.AUCUN_PREREQUIS:
             prerequis = ""
         else:
             # est-une liste de ressources
@@ -93,7 +96,7 @@ class Ressource(ActivitePedagogique):
                 liste = []
                 for (no, mod) in enumerate(self.ressource["prerequis"]):
                     liste.append(
-                        ajoutprerequis % (mod, get_officiel_ressource_name_by_code(mod))
+                        ajoutprerequis % (mod, officiel.get_officiel_ressource_name_by_code(mod))
                     )
                 prerequis = "\n".join(liste)
 
@@ -146,6 +149,7 @@ def contient_abbr(chaine):
     (dont la liste est fournie par DATA_ABBREVIATIONS lues depuis le .yml) et
     les renvoie sous forme d'une liste par abréviations de nombre de caractères décroissants"""
     mots = []
+    DATA_ABBREVIATIONS = officiel.get_DATA_ABBREVIATIONS()
     for lettre in DATA_ABBREVIATIONS:
         for mot in DATA_ABBREVIATIONS[lettre]:
             if mot in chaine:
@@ -181,6 +185,7 @@ def contient_commandes(chaine):
             chaine_texte += car
     if "ipc" in chaine:
         print("ici")
+    DATA_MOTSCLES = officiel.get_MOTS_CLES()
     if chaine_texte in DATA_MOTSCLES["commandes"]:
         return chaine_texte
     return None
@@ -228,6 +233,7 @@ class SAE(ActivitePedagogique):
         # Préparation des ac
         ajoutac = "\\ajoutSac{%s}{%s}"  # nom, intitule, code latex
         compRT = []
+        DATA_ACS = officiel.get_DATA_ACS()
         for accomp in ["RT1", "RT2", "RT3"]:
             comps = []
             if accomp in self.sae["acs"]:
@@ -244,7 +250,7 @@ class SAE(ActivitePedagogique):
             self.sae["ressources"]
         ):  # in range(len(self.apprentissages)):
             resRT.append(
-                ajoutressources % (res, get_officiel_ressource_name_by_code(res))
+                ajoutressources % (res, officiel.get_officiel_ressource_name_by_code(res))
             )
         ressources = "\n".join(resRT)
 
@@ -379,7 +385,7 @@ def md_to_latex(contenu):
     contenu = "\n\n".join(lignes)
 
     # contenu = caracteres_recalcitrants(contenu)
-    contenu = remove_ligne_vide(contenu)
+    contenu = ressourcedocx.remove_ligne_vide(contenu)
     lignes = contenu.split("\n")  # pour debug
 
     if contenu.startswith("\\begin{itemize}"):
@@ -397,12 +403,15 @@ def md_to_latex(contenu):
 
 def get_matrices_ac_ressource(saes, ressources, sem):
     """Calcule la matrice AC vs sae + ressource pour un sem donné et la renvoie"""
+    DATA_ACS = officiel.get_DATA_ACS()
     les_codes_acs = [code for comp in DATA_ACS for code in DATA_ACS[comp]]
     nbre_acs = len(les_codes_acs)
 
     saesem = saes[sem]  # les saé du semestre
     ressem = ressources[sem]  # les ressources du semestre
 
+    DATA_RESSOURCES = officiel.get_DATA_RESSOURCES()
+    DATA_SAES = officiel.get_DATA_SAES()
     nbre_saes = len(DATA_SAES[sem])
     nbre_ressources = len(DATA_RESSOURCES[sem])
     if len(saesem) != nbre_saes:
@@ -437,6 +446,8 @@ def get_matrices_coeffs(saes, ressources, sem):
     saesem = saes[sem]  # les saé du semestre
     ressem = ressources[sem]  # les ressources du semestre
 
+    DATA_RESSOURCES = officiel.get_DATA_RESSOURCES()
+    DATA_SAES = officiel.get_DATA_SAES()
     nbre_saes = len(DATA_SAES[sem])
     nbre_ressources = len(DATA_RESSOURCES[sem])
     if len(saesem) != nbre_saes:
@@ -463,6 +474,8 @@ def get_matrices_volumes(saes, ressources, sem):
     saesem = saes[sem]  # les saé du semestre
     ressem = ressources[sem]  # les ressources du semestre
 
+    DATA_RESSOURCES = officiel.get_DATA_RESSOURCES()
+    DATA_SAES = officiel.get_DATA_SAES()
     nbre_saes = len(DATA_SAES[sem])
     nbre_ressources = len(DATA_RESSOURCES[sem])
     if len(saesem) != nbre_saes:
@@ -502,12 +515,15 @@ def get_matrices_volumes(saes, ressources, sem):
 
 def str_matrice(matrice, saes, ressources, sem):
     """Renvoie une chaine de caractère affichant la matrice"""
+    DATA_ACS = officiel.get_DATA_ACS()
     les_codes_acs = [code for comp in DATA_ACS for code in DATA_ACS[comp]]
     nbre_acs = len(les_codes_acs)
 
     saesem = saes[sem]  # les saé du semestre
     ressem = ressources[sem]  # les ressources du semestre
 
+    DATA_RESSOURCES = officiel.get_DATA_RESSOURCES()
+    DATA_SAES = officiel.get_DATA_SAES()
     nbre_saes = len(DATA_SAES[sem])
     nbre_ressources = len(DATA_RESSOURCES[sem])
 
@@ -569,6 +585,7 @@ def get_total_nbre_heures(matrice_heures):
 
 def get_total_nbre_heures_saes(matrice_heures, sem):
     """Calcul le nombre d'heures total des SAé d'après la matrice"""
+    DATA_SAES = officiel.get_DATA_SAES()
     nbre_sae = len(DATA_SAES[sem])
     sommes = [
         sum([matrice_heures[i][j] for i in range(nbre_sae) if matrice_heures[i][j]])
@@ -579,6 +596,7 @@ def get_total_nbre_heures_saes(matrice_heures, sem):
 
 def get_total_nbre_heures_ressources(matrice_heures, sem):
     """Calcul le nombre d'heures total des SAé d'après la matrice"""
+    DATA_SAES = officiel.get_DATA_SAES()
     nbre_sae = len(DATA_SAES[sem])
     sommes = [
         sum(
@@ -608,6 +626,7 @@ def get_total_coeffs(matrice_coeffs):
 
 
 def get_total_coeffs_saes(matrice_coeffs, sem):
+    DATA_SAES = officiel.get_DATA_SAES()
     nbre_sae = len(DATA_SAES[sem])
     sommes = [
         sum([matrice_coeffs[i][j] for i in range(nbre_sae) if matrice_coeffs[i][j]])
@@ -617,6 +636,7 @@ def get_total_coeffs_saes(matrice_coeffs, sem):
 
 
 def get_total_coeffs_ressources(matrice_coeffs, sem):
+    DATA_SAES = officiel.get_DATA_SAES()
     nbre_sae = len(DATA_SAES[sem])
     sommes = [
         sum(

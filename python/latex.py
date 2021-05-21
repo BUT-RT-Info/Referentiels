@@ -4,8 +4,8 @@ Ensemble de fonctions utiles à l'export des ressources/SAé en latex
 import re
 import string
 
+import officiel
 from config import Config
-from officiel import DATA_ACS, DATA_SAES, DATA_RESSOURCES, DATA_COMPETENCES, DATA_ABBREVIATIONS
 from activite import *
 
 
@@ -21,12 +21,14 @@ def to_latex_matrice_acs(matrice, saes, ressources, sem):
     ayant connaissances des ``saes`` et des ``ressources `` (triées dans un dictionnaire par semestre)
     pour un ``sem``estre donné
     """
-
+    DATA_ACS = officiel.get_DATA_ACS()
     les_codes_acs = [code for comp in DATA_ACS for code in DATA_ACS[comp]]
 
     saesem = saes[sem]  # les saé du semestre
     ressem = ressources[sem]  # les ressources du semestre
 
+    DATA_RESSOURCES = officiel.get_DATA_RESSOURCES()
+    DATA_SAES = officiel.get_DATA_SAES()
     nbre_saes = len(DATA_SAES[sem])
     nbre_ressources = len(DATA_RESSOURCES[sem])
     nbre_colonnes = nbre_saes + nbre_ressources + 2
@@ -92,6 +94,7 @@ def to_latex_matrice_acs(matrice, saes, ressources, sem):
     chaine += "\\hline \n"
 
     # Les ACS et les croix
+    DATA_COMPETENCES = officiel.get_DATA_COMPETENCES()
     for (noc, comp) in enumerate(DATA_ACS):
         nom_comp = DATA_COMPETENCES[comp]["nom"]
         niveau = list(DATA_COMPETENCES[comp]["niveaux"].keys())[0]
@@ -176,6 +179,7 @@ def to_latex_matrice_coeffs(matrice_vols, matrice_coeffs, saes, ressources, sem)
     chaine += rotation_entete_colonne("\\bfseries Heures de TPs") + " & "
     chaine += rotation_entete_colonne("\\bfseries Heures de projets") + " & "
     # les noms des comps
+    DATA_COMPETENCES = officiel.get_DATA_COMPETENCES()
     noms = []
     for (i, comp) in enumerate(comps):  # pour chaque compétence
         contenu = "\\begin{tabular}{p{5cm}}\n"
@@ -298,6 +302,7 @@ def to_latex_matrice_coeffs(matrice_vols, matrice_coeffs, saes, ressources, sem)
 
 def str_latex_abbreviations():
     """Renvoie le code latex d'un tableau pour les abbréviations"""
+    DATA_ABBREVIATIONS = officiel.get_DATA_ABBREVIATIONS()
     liste = [
         [cle, DATA_ABBREVIATIONS[lettre][cle]]
         for lettre in DATA_ABBREVIATIONS

@@ -177,14 +177,15 @@ for sem in ressources:
 # ************************************************************************
 # Affichages divers
 # Le tableau des heures ressources
-for sem in ressources: # parcours des semestres
+# for sem in ressources: # parcours des semestres
     # print(f"Semestre {sem}")
-    chaine = activite.affiche_bilan_heures(ressources, sem)
+#    chaine = activite.affiche_bilan_heures(ressources, sem)
 
 
 # Matrice ACS/ressources
 matrices = {}
-les_codes_acs = [code for comp in officiel.DATA_ACS for code in officiel.DATA_ACS[comp]]
+DATA_ACS = officiel.get_DATA_ACS()
+les_codes_acs = [code for comp in DATA_ACS for code in DATA_ACS[comp]]
 nbre_acs = len(les_codes_acs)
 
 # Export yaml

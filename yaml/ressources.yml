@@ -1,31 +1,90 @@
 S1:
-  R101: "Initiation aux réseaux informatiques"
-  R102: "Principes et architecture des réseaux"
-  R103: "Réseaux locaux et équipements actifs"
-  R104: "Fondamentaux des systèmes électroniques"
-  R105: "Supports de transmission pour les réseaux locaux"
-  R106: "Architecture des systèmes numériques et informatiques"
-  R107: "Fondamentaux de la programmation"
-  R108: "Bases des systèmes d'exploitation"
-  R109: "Introduction aux technologies Web"
-  R110: "Anglais de communication et initiation au vocabulaire technique"
-  R111: "Expression-Culture-Communication Professionnelles 1"
-  R112: "Projet Personnel et Professionnel"
-  R113: "Mathématiques du signal"
-  R114: "Mathématiques des transmissions"
-  R115: "Gestion de projet"
+  R101:
+    nom: "Initiation aux réseaux informatiques"
+    tags-thematiques: ["réseau", "métier"]
+  R102:
+    nom: "Principes et architecture des réseaux"
+    tags-thematiques: ["réseau", "métier"]
+  R103:
+    nom: "Réseaux locaux et équipements actifs"
+    tags-thematiques: ["réseau", "métier"]
+  R104:
+    nom: "Fondamentaux des systèmes électroniques"
+    tags-thematiques: ["télécom", "métier"]
+  R105:
+    nom: "Supports de transmission pour les réseaux locaux"
+    tags-thematiques: ["télécom", "métier"]
+  R106:
+    nom: "Architecture des systèmes numériques et informatiques"
+    tags-thematiques: ["télécom", "métier"]
+  R107:
+    nom: "Fondamentaux de la programmation"
+    tags-thematiques: ["info", "métier"]
+  R108:
+    nom: "Bases des systèmes d'exploitation"
+    tags-thematiques: ["info", "métier"]
+  R109:
+    nom: "Introduction aux technologies Web"
+    tags-thematiques: ["info", "métier"]
+  R110:
+    nom: "Anglais de communication et initiation au vocabulaire technique"
+    tags-thematiques: ["anglais", "transverse"]
+  R111:
+    nom: "Expression-Culture-Communication Professionnelles 1"
+    tags-thematiques: ["communication", "transverse"]
+  R112:
+    nom: "Projet Personnel et Professionnel"
+    tags-thematiques: ["portfolio", "transverse"]
+  R113:
+    nom: "Mathématiques du signal"
+    tags-thematiques: ["maths", "transverse"]
+  R114:
+    nom: "Mathématiques des transmissions"
+    tags-thematiques: ["maths", "transverse"]
+  R115:
+    nom: "Gestion de projet"
+    tags-thematiques: ["gestion de projet", "transverse"]
 S2:
-  R201: "Technologie de l'Internet"
-  R202: "Administration système et fondamentaux de la virtualisation"
-  R203: "Bases des services réseaux"
-  R204: "Initiation à la téléphonie d'entreprise"
-  R205: "Signaux et Systèmes pour les transmissions"
-  R206: "Numérisation de l'information"
-  R207: "Sources de données"
-  R208: "Analyse et traitement de données structurées"
-  R209: "Initiation au développement Web"
-  R210: "Anglais de communication et développement de l'anglais technique"
-  R211: "Expression-Culture-Communication Professionnelles 2"
-  R212: "Projet Personnel et Professionnel"
-  R213: "Mathématiques des systèmes numériques"
-  R214: "Analyse mathématique des signaux"
+  R201:
+    nom: "Technologie de l'Internet"
+    tags-thematiques: ["réseau", "métier"]
+  R202:
+    nom: "Administration système et fondamentaux de la virtualisation"
+    tags-thematiques: ["réseau", "métier"]
+  R203:
+    nom: "Bases des services réseaux"
+    tags-thematiques: ["réseau", "métier"]
+  R204:
+    nom: "Initiation à la téléphonie d'entreprise"
+    tags-thematiques: ["télécom", "métier"]
+  R205:
+    nom: "Signaux et Systèmes pour les transmissions"
+    tags-thematiques: ["télécom", "métier"]
+  R206:
+    nom: "Numérisation de l'information"
+    tags-thematiques: ["télécom", "métier"]
+  R207:
+    nom: "Sources de données"
+    tags-thematiques: ["info", "métier"]
+  R208:
+    nom: "Analyse et traitement de données structurées"
+    tags-thematiques: ["info", "métier"]
+  R209:
+    nom: "Initiation au développement Web"
+    tags-thematiques: ["info", "métier"]
+  R210:
+    nom: "Anglais de communication et développement de l'anglais technique"
+    tags-thematiques: ["anglais", "transverse"]
+  R211:
+    nom: "Expression-Culture-Communication Professionnelles 2"
+    tags-thematiques: ["communication", "transverse"]
+  R212:
+    nom: "Projet Personnel et Professionnel"
+    tags-thematiques: ["portfolio", "transverse"]
+  R213:
+    nom: "Mathématiques des systèmes numériques"
+    tags-thematiques: ["maths", "transverse"]
+  R214:
+    nom: "Analyse mathématique des signaux"
+    tags-thematiques: ["maths", "transverse"]
+
