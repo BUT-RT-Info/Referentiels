@@ -36,7 +36,7 @@ class ActivitePedagogique():
 
     def get_heures_encadrees(self):
         """Renvoie les heures de formation encadrees (incluant les TP)"""
-        return self.heures_formation
+        return self.heures_encadrees
 
     def get_heures_tp(self):
         """Renvoie les heures de TP"""
@@ -55,7 +55,7 @@ class Ressource(ActivitePedagogique):
     def __init__(self, fichieryaml):
         super().__init__(fichieryaml)
         self.ressource = self.yaml
-        self.heures_formation = self.yaml["heures_formation"]
+        self.heures_encadrees = self.yaml["heures_formation"]
         self.heures_tp = self.yaml["heures_tp"]
         self.heures_projet = 0
 
@@ -493,7 +493,8 @@ def get_matrices_coeffs(saes, ressources, sem):
 
 
 def get_matrices_volumes(saes, ressources, sem):
-    """Calcule la matrice AC vs sae + ressource pour un sem donné et la renvoie"""
+    """Calcule la matrice AC vs sae + ressource pour un sem donné et la renvoie
+    => obsolète ? déplacé dans semestre"""
     saesem = saes[sem]  # les saé du semestre
     ressem = ressources[sem]  # les ressources du semestre
 
@@ -619,13 +620,13 @@ def get_total_nbre_heures_saes(matrice_heures, sem):
 
 def get_total_nbre_heures_ressources(matrice_heures, sem):
     """Calcul le nombre d'heures total des SAé d'après la matrice"""
-    DATA_SAES = officiel.get_DATA_SAES()
-    nbre_sae = len(DATA_SAES[sem])
+    DATA_RESSOURCES = officiel.get_DATA_RESSOURCES()
+    nbre_ressources = len(DATA_RESSOURCES[sem])
     sommes = [
         sum(
             [
                 matrice_heures[i][j]
-                for i in range(nbre_sae, len(matrice_heures))
+                for i in range(nbre_ressources, len(matrice_heures))
                 if matrice_heures[i][j]
             ]
         )

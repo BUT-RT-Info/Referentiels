@@ -320,7 +320,7 @@ class RessourceDocx(Docx):
                 "code": self.code,
                 "semestre" : int(self.semestre[1]),
                 "heures_formation": self.heures_encadrees if self.heures_encadrees else "???",
-                "heures_tp": self.tp if self.tp else "???",
+                "heures_tp": self.tp if self.tp or self.tp == 0 else "???",
                 "coeffs": self.coeffs,
                 "acs": self.apprentissages,
                 "sae": self.sae,
@@ -543,7 +543,7 @@ class SAEDocx(Docx):
         else:
             SAEDocx.__LOGGER.warning(f"nettoie_heures_sae: dans {self.nom}, manque les heures de formation")
             self.heures_encadrees = "???"
-        if self.tp:
+        if self.tp or self.tp == 0:
             self.tp = nettoie_champ_heure(self.tp)
         else:
             SAEDocx.__LOGGER.warning(f"nettoie_heures_sae: dans {self.nom}, manque les heures de tp")
@@ -599,8 +599,9 @@ class SAEDocx(Docx):
         dico = {"titre": self.nom,
                 "code": self.code,
                 "semestre": int(self.semestre[1]),
-                "heures_encadrees": self.heures_encadrees if self.heures_encadrees else "???",
-                "tp": self.tp if self.tp else "???",
+                "heures_encadrees": self.heures_encadrees if self.heures_encadrees != ""
+                                    else "???",
+                "tp": self.tp if self.tp != "" else "???",
                 "projet": self.projet if self.projet != "" else "???",
                 "description": folded(self.description),
                 "coeffs": self.coeffs,

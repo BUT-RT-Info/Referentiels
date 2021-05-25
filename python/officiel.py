@@ -38,10 +38,12 @@ REPERTOIRE = "yaml"
 ## Les ressources
 def get_DATA_RESSOURCES(repertoire = REPERTOIRE):
     """Récupère les informations sur les ressources (triées par semestre
-    et par nom), en extrayant les données du fichier yaml/ressources.yml"""
+    et par nom), en extrayant les données du fichier yaml/ressources.yml.
+    """
     with open(Config.ROOT + "/" + repertoire + "/ressources.yml", 'r', encoding="utf8") as fid:
         DATA_RESSOURCES = yaml.load(fid.read(), Loader=yaml.Loader)
     return DATA_RESSOURCES
+
 
 ## Les ACS
 def get_DATA_ACS(repertoire = REPERTOIRE):
@@ -94,10 +96,15 @@ def devine_code_by_nom_from_dict(champ, dico):
     champ_purge = supprime_accent_espace(champ)
     for comp in dico:
         for code in dico[comp]:
-            acs_purge = supprime_accent_espace(dico[comp][code]["nom"])
+            if isinstance(dico[comp][code], dict) and "nom" in dico[comp][code]:
+                nom = dico[comp][code]["nom"]
+            else:
+                nom = dico[comp][code]
+            acs_purge = supprime_accent_espace(nom)
             if acs_purge in champ_purge:
                 acs += [code]
     return sorted(list(set(acs)))
+
 
 
 def affiche_bilan_heures(ressources, sem):

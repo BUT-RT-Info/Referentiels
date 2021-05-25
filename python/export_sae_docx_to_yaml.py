@@ -3,6 +3,8 @@ import sys
 import argparse
 import logging
 import docx2python
+import officiel
+
 
 from config import Config
 
@@ -213,13 +215,11 @@ for s in liste_saes:
 exemples = {"S1" : {}, "S2" : {} }
 print(" > Exemples")
 for s in liste_exemples: # la sae
-    sem = ressourcedocx.get_officiel_sem_sae_by_code(s)
+    sem = officiel.get_officiel_sem_sae_by_code(s)
     exemples[sem][s] = []
 
     for e in liste_exemples[s]:
         print(f"{s} : {e.semestre}")
-        if e.semestre.startswith("Catalogue des vulnérabilités"):
-            print("ici")
         e.nettoie_champs()
 
         # Tri dans le bon semestre

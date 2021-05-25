@@ -3,6 +3,8 @@
 import os, glob
 import activite
 import officiel
+import logging
+
 
 
 class SemestrePN():
@@ -10,6 +12,8 @@ class SemestrePN():
 
     Les ressources et les saes sont chargées d'après les fichiers yaml, stockés dans des répertoires spécifiques
     """
+    __LOGGER = logging.getLogger(__name__)
+
     def __init__(self, nom_semestre,
                  repertoire_ressources,
                  repertoire_saes):
@@ -25,20 +29,27 @@ class SemestrePN():
         self.nbre_ressources = len(self.ressources)
         self.nbre_saes = len(self.saes)
 
+        self.DATA_RESSOURCES = officiel.get_DATA_RESSOURCES() # les ressources depuis le yaml
+        self.DATA_SAES = officiel.get_DATA_SAES()
+
+        # Check si tous les contenus sont présents
+        if len(self.ressources) != len(self.DATA_RESSOURCES[self.semestre]):
+            SemestrePN.__LOGGER.warning(f"Dans Semestre({self.semestre}), il manque des ressources")
+        if len(self.saes) != len(self.DATA_SAES[self.semestre]):
+            SemestrePN.__LOGGER.warning(f"Dans Semestre({self.semestre}), il manque des saes")
+
         # Injecte les tags
         self.tags = self.injecte_tags()
         print(self.tags)
 
     def injecte_tags(self):
         """Injecte les tags dans les infos sur les ressources"""
-        DATA_RESSOURCES = officiel.get_DATA_RESSOURCES()
-        DATA_SAES = officiel.get_DATA_SAES()
         ttags = [] # tous les tags
         for code in self.activites:
             if isinstance(self.activites[code], activite.Ressource):
-                data = DATA_RESSOURCES
+                data = self.DATA_RESSOURCES
             else: # SAé
-                data = DATA_SAES
+                data = self.DATA_SAES
             tags = data[self.semestre][code]["tags-thematiques"]
             self.activites[code].add_tags(tags)
             ttags += tags
@@ -106,3 +117,59 @@ class SemestrePN():
         for tag in self.tags:
             dico[tag] = self.get_volumes_horaires_par_tag(tag)
         return dico
+
+    def get_volumes_horaires_ressources(self):
+        """Calcule le nombre d'heures total des ressources et
+        renvoie une liste donnant [heures_encadrees (tp_inclus), heures_tp, heures_projet]"""
+        heures = [0]*3
+        for (code, r) in self.ressources.items():
+            heures[0] += r.get_heures_encadrees()
+            heures[1] += r.get_heures_tp()
+            heures[2] += r.get_heures_projet()
+        return heures
+
+    def get_volumes_horaires_saes(self):
+        """Calcule le nombre d'heures total des SAés et renvoie une liste donnant
+        [heures_encadrees (tp_inclus), heures_tp, heures_projet]
+        """
+        heures = [0] * 3
+        for (code, s) in self.saes.items():
+            heures[0] += s.get_heures_encadrees()
+            heures[1] += s.get_heures_tp()
+            heures[2] += s.get_heures_projet()
+        return heures
+
+    def get_matrices_volumes(self):
+        """Calcule la matrice des volumes horaires des sae & des ressource
+        pour un sem donné et la renvoie
+        """
+
+        matrice = [[0] * (len(self.activites))
+                   for i in range(self.nbre_saes + self.nbre_ressources)]
+
+        for (i, s) in enumerate(self.saes):  # pour chaque SAE
+            formation = (
+                s.sae["heures_encadrees"]
+                if not isinstance(s.sae["heures_encadrees"], str)
+                else 0
+            )
+            tp = s.sae["tp"] if not isinstance(s.sae["tp"], str) else 0
+            matrice[i][0] = formation - tp
+            matrice[i][1] = tp
+            matrice[i][2] = s.sae["projet"] if not isinstance(s.sae["projet"], str) else 0
+
+        for (i, r) in enumerate(self.ressources):  # pour chaque ressource
+            formation = (
+                r.ressource["heures_formation"]
+                if not isinstance(r.ressource["heures_formation"], str)
+                else 0
+            )
+            tp = (
+                r.ressource["heures_tp"]
+                if not isinstance(r.ressource["heures_tp"], str)
+                else 0
+            )
+            matrice[i + self.nbre_saes][0] = formation - tp
+            matrice[i + self.nbre_saes][1] = tp
+
+        return matrice

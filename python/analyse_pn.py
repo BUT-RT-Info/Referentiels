@@ -31,9 +31,15 @@ REPERTOIRE_SAE_DEFINITIVES = Config.ROOT + "/yaml/saes"
 
 pn = {}
 for sem in ["S1", "S2"]:
-    pn[sem] = semestre.SemestrePN("S1", REPERTOIRE_RESSOURCES_DEFINITIVES,
+    pn[sem] = semestre.SemestrePN(sem, REPERTOIRE_RESSOURCES_DEFINITIVES,
                                         REPERTOIRE_SAE_DEFINITIVES)
     mat = pn[sem].get_matrices_dependances()
+    # volume horaire du semestre
+    heures = pn[sem].get_volumes_horaires_saes()
+    print("SAE\n", heures)
+    heures = pn[sem].get_volumes_horaires_ressources()
+    print("Ressources\n", heures)
+
     vol_tags = pn[sem].get_volumes_horaires_tous_tags()
     pprint.pprint(vol_tags)
 #    pprint.pprint(mat)
