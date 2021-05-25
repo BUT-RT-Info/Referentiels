@@ -34,7 +34,9 @@ for sem in ["S1", "S2"]:
     pn[sem] = semestre.SemestrePN("S1", REPERTOIRE_RESSOURCES_DEFINITIVES,
                                         REPERTOIRE_SAE_DEFINITIVES)
     mat = pn[sem].get_matrices_dependances()
-    pprint.pprint(mat)
+    vol_tags = pn[sem].get_volumes_horaires_tous_tags()
+    pprint.pprint(vol_tags)
+#    pprint.pprint(mat)
 
 ## Bilan : acs, volume, coefficient, abbréviations
 # for sem in ["S1", "S2"]:

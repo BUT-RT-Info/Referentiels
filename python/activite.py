@@ -30,6 +30,23 @@ class ActivitePedagogique():
             except:
                 ActivitePedagogique.__LOGGER.warning(f"Pb de chargement de {fichieryaml}")
 
+    def add_tags(self, tags):
+        """Ajoute un attribut tags avec la liste de tags fournie"""
+        self.tags = tags
+
+    def get_heures_encadrees(self):
+        """Renvoie les heures de formation encadrees (incluant les TP)"""
+        return self.heures_formation
+
+    def get_heures_tp(self):
+        """Renvoie les heures de TP"""
+        return self.heures_tp
+
+    def get_heures_projet(self):
+        """Renvoie les heures de projet tuteurés"""
+        return self.heures_projet
+
+
 class Ressource(ActivitePedagogique):
     """Modélise une ressource lorsqu'elle est extraite d'un fichier yaml"""
 
@@ -38,6 +55,9 @@ class Ressource(ActivitePedagogique):
     def __init__(self, fichieryaml):
         super().__init__(fichieryaml)
         self.ressource = self.yaml
+        self.heures_formation = self.yaml["heures_formation"]
+        self.heures_tp = self.yaml["heures_tp"]
+        self.heures_projet = 0
 
     def to_latex(self, modele):
         """Génère le code latex décrivant la ressource en utilisant le
@@ -216,6 +236,9 @@ class SAE(ActivitePedagogique):
     def __init__(self, fichieryaml):
         super().__init__(fichieryaml)
         self.sae = self.yaml
+        self.heures_encadrees = self.yaml["heures_encadrees"]
+        self.heures_tp = self.yaml["tp"]
+        self.heures_projet = self.yaml["projet"]
 
     def to_latex(self, modele):
         """Génère le code latex décrivant la ressource en utilisant le modèle indiqué"""

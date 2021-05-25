@@ -37,21 +37,24 @@ REPERTOIRE = "yaml"
 # Récupère les informations officielles  #
 ## Les ressources
 def get_DATA_RESSOURCES(repertoire = REPERTOIRE):
-    """Récupère les informations officielles sur les ressources (triées par semestre
+    """Récupère les informations sur les ressources (triées par semestre
     et par nom), en extrayant les données du fichier yaml/ressources.yml"""
-    with open(Config.ROOT + "/" + REPERTOIRE + "/ressources.yml", 'r', encoding="utf8") as fid:
+    with open(Config.ROOT + "/" + repertoire + "/ressources.yml", 'r', encoding="utf8") as fid:
         DATA_RESSOURCES = yaml.load(fid.read(), Loader=yaml.Loader)
     return DATA_RESSOURCES
 
 ## Les ACS
-def get_DATA_ACS():
-    """Récupère les informations officielles des SAés (triées par semestre et par nom),
-    en extrayant les données du fichier yaml/saes.yml"""
-    with open(Config.ROOT+"/"+REPERTOIRE+"/acs.yml", 'r', encoding="utf8") as fid:
+def get_DATA_ACS(repertoire = REPERTOIRE):
+    """Récupère les informations des ACS,
+    en extrayant les données du fichier yaml/competences.yml"""
+    with open(Config.ROOT+"/"+ repertoire +"/acs.yml", 'r', encoding="utf8") as fid:
         DATA_ACS = yaml.load(fid.read(), Loader=yaml.Loader)
     return DATA_ACS
+
 ## Les SAEs
-def get_DATA_SAES():
+def get_DATA_SAES(repertoire = REPERTOIRE):
+    """Récupère les informations des SAés (triées par semestre et par nom),
+    en extrayant les données du fichier yaml/saes.yml"""
     with open(Config.ROOT+"/"+REPERTOIRE+"/saes.yml", 'r', encoding="utf8") as fid:
         DATA_SAES = yaml.load(fid.read(), Loader=yaml.Loader)
     return DATA_SAES
@@ -77,7 +80,7 @@ def get_MOTS_CLES():
 AUCUN_PREREQUIS = "Aucun"
 
 def supprime_accent_espace(chaine):
-    """Met en minuscule, supprime les accents, les ponctuations et les espaces"""
+    """Met une chaine en minuscule, supprime les accents, les ponctuations et les espaces"""
     purge = chaine.lower().replace("'", "").replace("’", "")
     purge = unicodedata.normalize('NFD', purge).encode('ascii', 'ignore').decode('ascii')
     purge = purge.replace(" ", "")
@@ -89,10 +92,9 @@ def devine_code_by_nom_from_dict(champ, dico):
     Le dico officiel vient d'un .yml"""
     acs = []
     champ_purge = supprime_accent_espace(champ)
-    DATA_ACS = get_DATA_ACS()
-    for comp in DATA_ACS:
-        for code in DATA_ACS[comp]:
-            acs_purge = supprime_accent_espace(DATA_ACS[comp][code])
+    for comp in dico:
+        for code in dico[comp]:
+            acs_purge = supprime_accent_espace(dico[comp][code]["nom"])
             if acs_purge in champ_purge:
                 acs += [code]
     return sorted(list(set(acs)))
@@ -110,10 +112,10 @@ def affiche_bilan_heures(ressources, sem):
     chaine += trait + "\n"
     for r in ressem:
         chaine += ligne.format(r.code if r.code else "MANQUANT",
-                           # r.nom[:30] + ("..." if len(r.nom) > 30 else "") ,
-                           r.nom,
-                           str(r.heures_encadrees) if r.heures_encadrees else "MANQUANT",
-                           str(r.tp) if r.tp else "MANQUANT") + "\n"
+                               # r.nom[:30] + ("..." if len(r.nom) > 30 else "") ,
+                               r.semestre,
+                               str(r.heures_encadrees) if r.heures_encadrees else "MANQUANT",
+                               str(r.tp) if r.tp else "MANQUANT") + "\n"
     heures_formation_total = sum([r.heures_encadrees for r in ressem if r.heures_encadrees != None])
     heures_tp_total = sum([r.tp for r in ressem if r.tp != None])
     chaine += trait + "\n"
@@ -137,8 +139,6 @@ def get_officiel_sae_name_by_code(code):
     """Pour un code valide, fournit le nom officiel de la sae (sans connaissance du semestre)"""
     DATA_SAES = get_DATA_SAES()
     return get_officiel_name_by_code_using_dict(code, DATA_SAES)
-
-
 
 def get_code_from_nom_using_dict(nom, dico):
     """Récupère le code d'une ressource d'après son nom en utilisant les noms officiels

@@ -157,7 +157,7 @@ print(f"{nbre_ressources} ressources")
 ressources = {"S1" : [], "S2": []}
 
 for (i, r) in enumerate(liste_ressources):
-    if r.nom.startswith("Projet "):
+    if r.semestre.startswith("Projet "):
         print("ici")
     r.nettoie_champ()
 

@@ -2,6 +2,7 @@
 """
 import os, glob
 import activite
+import officiel
 
 
 class SemestrePN():
@@ -12,7 +13,7 @@ class SemestrePN():
     def __init__(self, nom_semestre,
                  repertoire_ressources,
                  repertoire_saes):
-        self.nom = nom_semestre
+        self.semestre = nom_semestre
 
         # Chargement des ressources et des saes
         self.ressources = self.get_activites_from_yaml(nom_semestre, "ressource", repertoire_ressources) # dictionnaire des ressources
@@ -24,6 +25,24 @@ class SemestrePN():
         self.nbre_ressources = len(self.ressources)
         self.nbre_saes = len(self.saes)
 
+        # Injecte les tags
+        self.tags = self.injecte_tags()
+        print(self.tags)
+
+    def injecte_tags(self):
+        """Injecte les tags dans les infos sur les ressources"""
+        DATA_RESSOURCES = officiel.get_DATA_RESSOURCES()
+        DATA_SAES = officiel.get_DATA_SAES()
+        ttags = [] # tous les tags
+        for code in self.activites:
+            if isinstance(self.activites[code], activite.Ressource):
+                data = DATA_RESSOURCES
+            else: # SAé
+                data = DATA_SAES
+            tags = data[self.semestre][code]["tags-thematiques"]
+            self.activites[code].add_tags(tags)
+            ttags += tags
+        return sorted(list(set(ttags))) # suppression des doublons
 
     def get_activites_from_yaml(self, nom_semestre, type,
                                 repertoire):
@@ -69,3 +88,21 @@ class SemestrePN():
                 if code_prerequis in prerequis:
                     matrice[i][j] = 1
         return matrice
+
+    def get_volumes_horaires_par_tag(self, tag):
+        """Renvoie les volumes d'heures (formation encadrée) pour un tag donné"""
+        heures_encadrees = 0
+        for code in self.activites:
+            if tag in self.activites[code].tags:
+                if isinstance(self.activites[code], activite.Ressource):
+                    heures_encadrees += self.activites[code].yaml["heures_formation"]
+                else:
+                    heures_encadrees += self.activites[code].yaml["heures_encadrees"]
+        return heures_encadrees
+
+    def get_volumes_horaires_tous_tags(self):
+        """Renvoie un dictionnaire donnant les volumes horaires tag par tag"""
+        dico = {}
+        for tag in self.tags:
+            dico[tag] = self.get_volumes_horaires_par_tag(tag)
+        return dico

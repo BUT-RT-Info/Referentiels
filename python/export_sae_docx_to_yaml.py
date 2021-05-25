@@ -217,8 +217,8 @@ for s in liste_exemples: # la sae
     exemples[sem][s] = []
 
     for e in liste_exemples[s]:
-        print(f"{s} : {e.nom}")
-        if e.nom.startswith("Catalogue des vulnérabilités"):
+        print(f"{s} : {e.semestre}")
+        if e.semestre.startswith("Catalogue des vulnérabilités"):
             print("ici")
         e.nettoie_champs()
 
