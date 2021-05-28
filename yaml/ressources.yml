@@ -1,7 +1,9 @@
 S1:
   R101:
     nom: "Initiation aux réseaux informatiques"
-    tags-thematiques: ["réseau", "métier"]
+    tags-thematiques:
+      - "réseau"
+      - "métier"
   R102:
     nom: "Principes et architecture des réseaux"
     tags-thematiques:
@@ -30,17 +32,17 @@ S1:
   R107:
     nom: "Fondamentaux de la programmation"
     tags-thematiques:
-      - "info"
+      - "informatique"
       - "métier"
   R108:
     nom: "Bases des systèmes d'exploitation"
     tags-thematiques:
-      - "info"
+      - "informatique"
       - "métier"
   R109:
     nom: "Introduction aux technologies Web"
     tags-thematiques:
-      - "info"
+      - "informatique"
       - "métier"
   R110:
     nom: "Anglais de communication et initiation au vocabulaire technique"
@@ -55,17 +57,17 @@ S1:
   R112:
     nom: "Projet Personnel et Professionnel"
     tags-thematiques:
-      - "portfolio"
+      - "PPP-portfolio"
       - "transverse"
   R113:
     nom: "Mathématiques du signal"
     tags-thematiques:
-      - "maths"
+      - "maths-physique"
       - "transverse"
   R114:
     nom: "Mathématiques des transmissions"
     tags-thematiques:
-      - "maths"
+      - "maths-physique"
       - "transverse"
   R115:
     nom: "Gestion de projet"
@@ -106,17 +108,17 @@ S2:
   R207:
     nom: "Sources de données"
     tags-thematiques:
-      - "info"
+      - "informatique"
       - "métier"
   R208:
     nom: "Analyse et traitement de données structurées"
     tags-thematiques:
-      - "info"
+      - "informatique"
       - "métier"
   R209:
     nom: "Initiation au développement Web"
     tags-thematiques:
-      - "info"
+      - "informatique"
       - "métier"
   R210:
     nom: "Anglais de communication et développement de l'anglais technique"
@@ -131,15 +133,15 @@ S2:
   R212:
     nom: "Projet Personnel et Professionnel"
     tags-thematiques:
-      - "portfolio"
+      - "PPP-portfolio"
       - "transverse"
   R213:
     nom: "Mathématiques des systèmes numériques"
     tags-thematiques:
-      - "maths"
+      - "maths-physique"
       - "transverse"
   R214:
     nom: "Analyse mathématique des signaux"
     tags-thematiques:
-      - "maths"
+      - "maths-physique"
       - "transverse"

@@ -100,22 +100,31 @@ class SemestrePN():
                     matrice[i][j] = 1
         return matrice
 
-    def get_volumes_horaires_par_tag(self, tag):
-        """Renvoie les volumes d'heures (formation encadrée) pour un tag donné"""
+    def get_volumes_horaires_par_tag(self, tag, cible=""):
+        """Renvoie les volumes d'heures (formation encadrée) pour un tag donné,
+        en ciblant tout si cible="", ou seulement les `"ressources"` ou les `"saes"`
+        """
         heures_encadrees = 0
-        for code in self.activites:
-            if tag in self.activites[code].tags:
-                if isinstance(self.activites[code], activite.Ressource):
-                    heures_encadrees += self.activites[code].yaml["heures_formation"]
-                else:
-                    heures_encadrees += self.activites[code].yaml["heures_encadrees"]
+        for (code, act) in self.activites.items():
+            if tag in act.tags:
+                inclus = False
+                if cible == "":
+                    inclus = True
+                elif cible == "ressources" and isinstance(act, activite.Ressource):
+                    inclus = True
+                elif cible == "saes" and isinstance(act, activite.SAE):
+                    inclus = True
+                if inclus:
+                    heures_encadrees += act.get_heures_encadrees()
         return heures_encadrees
 
-    def get_volumes_horaires_tous_tags(self):
-        """Renvoie un dictionnaire donnant les volumes horaires tag par tag"""
+    def get_volumes_horaires_tous_tags(self, cible=""):
+        """Renvoie un dictionnaire donnant les volumes horaires tag par tag,
+        en ciblant tout si cible="", ou seulement les `"ressources"` ou les `"saes"`
+        """
         dico = {}
         for tag in self.tags:
-            dico[tag] = self.get_volumes_horaires_par_tag(tag)
+            dico[tag] = self.get_volumes_horaires_par_tag(tag, cible=cible)
         return dico
 
     def get_volumes_horaires_ressources(self):
