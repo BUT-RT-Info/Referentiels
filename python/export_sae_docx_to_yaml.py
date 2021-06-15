@@ -3,11 +3,13 @@ import sys
 import argparse
 import logging
 import docx2python
+import officiel
+
 
 from config import Config
 
 __LOGGER = logging.getLogger(__name__)
-REPERTOIRE = "import"
+REPERTOIRE = "../google"
 
 parser = argparse.ArgumentParser(
     description="Parse doc ressources et crée SAE", 
@@ -21,8 +23,8 @@ parser.add_argument(
 parser.add_argument(
     "-o", 
     "--outdir", 
-    default="export", 
-    help="repertoire resultat, defaut: export"
+    default="../yaml/saes",
+    help="repertoire resultat, defaut: ../yaml/saes"
     )
 parser.add_argument(
     "-r", 
@@ -37,8 +39,8 @@ __LOGGER.warning(f"{sys.argv[0]} processing {args.DOCUMENT}")
 __LOGGER.warning(f"{sys.argv[0]} outputs to {args.outdir}")
 
 # Ces imports doivent être faits après la config
-from tools import *
-from ressourcedocx import *
+import tools
+import ressourcedocx
 
 # Ouverture du document
 docu = docx2python.docx2python(args.DOCUMENT)
@@ -86,10 +88,10 @@ for i in range(1, len(docu)): # A priori un tableau
 
     if est_sae == True:
         res = docu[i] # la ressource
-        nom_sae = caracteres_recalcitrants(res[0][1][0])
+        nom_sae = tools.caracteres_recalcitrants(res[0][1][0])
 
         # Création de la ressource
-        r = SAEDocx(nom_sae, res)
+        r = ressourcedocx.SAEDocx(nom_sae, res)
         liste_saes.append(r)
 
         # Parsing des données brute de la sae
@@ -101,12 +103,12 @@ for i in range(1, len(docu)): # A priori un tableau
         for j in range(len(res)): # parcours des entêtes du tableau décrivant la ressource
             ligne = res[j]
             if len(ligne) == 2: # ligne de données classique champ => valeur
-                champ = caracteres_recalcitrants(ligne[0][0]) # le nom du champ
+                champ = tools.caracteres_recalcitrants(ligne[0][0]) # le nom du champ
                 if champ.startswith("Nom de la"):
                     champ = "Titre de la" # corrige les noms/titres
-                i = get_indice_sans_accent_ni_espace(champ, ENTETES_CHAPEAU)  # l'indice de l'entete dans ENTETES
+                i = tools.get_indice_sans_accent_ni_espace(champ, ENTETES_CHAPEAU)  # l'indice de l'entete dans ENTETES
                 if i != None:
-                    data[i] = caracteres_recalcitrants("\n".join(res[j][1]))
+                    data[i] = tools.caracteres_recalcitrants("\n".join(res[j][1]))
                 else:
                     non_interprete.append((champ, ligne[1][0]))
             else: # ligne de données soit chapeau (ex Compétences ciblées) soit détail par compétence
@@ -116,7 +118,7 @@ for i in range(1, len(docu)): # A priori un tableau
                     # j+1 = les ACs par compétences
                     acs = res[j+2]
                     for k in range(len(acs)):
-                        apprentissages[k] = caracteres_recalcitrants("\n".join(acs[k])) # fusionne les ACS (généralement sur plusieurs lignes)
+                        apprentissages[k] = tools.caracteres_recalcitrants("\n".join(acs[k])) # fusionne les ACS (généralement sur plusieurs lignes)
                 elif "Compétence(s) ciblée(s)" in champ:
                     les_coeffs = res[j+2]
                     coeffs = [elmt[0] for elmt in les_coeffs]
@@ -150,10 +152,10 @@ for i in range(1, len(docu)): # A priori un tableau
 
     elif est_exemple == True:
         res = docu[i] # la ressource
-        nom_exemple = caracteres_recalcitrants(res[0][1][0])
+        nom_exemple = tools.caracteres_recalcitrants(res[0][1][0])
 
         # Création de la ressource
-        r = ExempleSAEDocx(nom_exemple, res, last_sae)
+        r = ressourcedocx.ExempleSAEDocx(nom_exemple, res, last_sae)
         liste_exemples[last_sae].append(r)
 
         # Parsing des données brute de la sae
@@ -164,10 +166,10 @@ for i in range(1, len(docu)): # A priori un tableau
         for j in range(len(res)): # parcours des entêtes du tableau décrivant la ressource
             ligne = res[j]
             if len(ligne) == 2: # ligne de données classique champ => valeur
-                champ = caracteres_recalcitrants(ligne[0][0]) # le nom du champ
-                i = get_indice_sans_accent_ni_espace(champ, ENTETES_EXEMPLES)  # l'indice de l'entete dans ENTETES
+                champ = tools.caracteres_recalcitrants(ligne[0][0]) # le nom du champ
+                i = tools.get_indice_sans_accent_ni_espace(champ, ENTETES_EXEMPLES)  # l'indice de l'entete dans ENTETES
                 if i != None:
-                    data[i] = caracteres_recalcitrants("\n".join(res[j][1]))
+                    data[i] = tools.caracteres_recalcitrants("\n".join(res[j][1]))
                 else:
                     non_interprete.append((champ, ligne[1][0]))
             else: # ligne de données soit chapeau (ex Compétences ciblées) soit détail par compétence
@@ -213,14 +215,11 @@ for s in liste_saes:
 exemples = {"S1" : {}, "S2" : {} }
 print(" > Exemples")
 for s in liste_exemples: # la sae
-
-    sem = get_officiel_sem_sae_by_code(s)
+    sem = officiel.get_officiel_sem_sae_by_code(s)
     exemples[sem][s] = []
 
     for e in liste_exemples[s]:
-        print(f"{s} : {e.nom}")
-        if e.nom.startswith("Catalogue des vulnérabilités"):
-            print("ici")
+        print(f"{s} : {e.semestre}")
         e.nettoie_champs()
 
         # Tri dans le bon semestre
@@ -234,6 +233,7 @@ for sem in saes:
          if s.code:
              code_clean = s.code.replace("É", "E")
              fichier = f"{args.outdir}/{code_clean}.yml"
+             __LOGGER.warning(f"writing '{fichier}")
              with open(fichier, "w", encoding="utf8") as fid:
                  fid.write(output)
 
@@ -243,6 +243,7 @@ for sem in exemples:
             output = e.to_yaml()
             code_clean = s.replace("É", "E")
             fichier = f"{args.outdir}/{code_clean}_exemple{i+1}.yml"
+            __LOGGER.warning(f"writing '{fichier}")
             with open(fichier, "w", encoding="utf8") as fid:
                 fid.write(output)
 

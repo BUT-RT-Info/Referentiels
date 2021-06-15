@@ -1,13 +1,14 @@
 
-import sys
+import sys, os
 import argparse
 import logging
 import docx2python
+import officiel
 
 from config import Config
 
 __LOGGER = logging.getLogger(__name__)
-REPERTOIRE = "import"
+REPERTOIRE = "../google" # répertoire stockant les compilations des google-docs avec le script d'Emmanuel
 
 parser = argparse.ArgumentParser(
     description="Parse doc ressources et crée yaml", 
@@ -21,8 +22,8 @@ parser.add_argument(
 parser.add_argument(
     "-o", 
     "--outdir", 
-    default="export", 
-    help="repertoire resultat, defaut: export"
+    default="../yaml/ressources",
+    help="repertoire resultat, defaut: ../yaml/ressources"
     )
 parser.add_argument(
     "-r", 
@@ -38,11 +39,14 @@ __LOGGER.warning(f"{sys.argv[0]} outputs to {args.outdir}")
 
 # Ces imports doivent être faits après la config
 import tools
-from tools import get_indice, get_indice_sans_accent_ni_espace
-from ressource import get_matrices_ac_ressource
-from ressourcedocx import *
+import activite
+import ressourcedocx
 
 # Ouverture du document
+if not os.path.isfile(args.DOCUMENT):
+    print(f"Le fichier {args.DOCUMENT} n'existe pas")
+    sys.exit(-1)
+
 docu = docx2python.docx2python(args.DOCUMENT)
 
 docu = docu.body
@@ -79,7 +83,7 @@ for i in range(2, len(docu)): # A priori un tableau
         nom_ressource = tools.caracteres_recalcitrants(res[0][1][0])
 
         # Création de la ressource
-        r = RessourceDocx(nom_ressource, res)
+        r = ressourcedocx.RessourceDocx(nom_ressource, res)
         liste_ressources.append(r)
 
         # if len(res) != 15:
@@ -94,7 +98,7 @@ for i in range(2, len(docu)): # A priori un tableau
             ligne = res[j]
             if len(ligne) == 2: # ligne de données classique champ => valeur
                 champ = ligne[0][0] # le nom du champ
-                i = get_indice_sans_accent_ni_espace(champ, ENTETES)  # l'indice de l'entete dans ENTETES
+                i = tools.get_indice_sans_accent_ni_espace(champ, ENTETES)  # l'indice de l'entete dans ENTETES
                 if i != None:
                     data[i] = tools.caracteres_recalcitrants("\n".join(res[j][1]))
                     if champ == "Prérequis" and not data[i]:
@@ -120,7 +124,7 @@ for i in range(2, len(docu)): # A priori un tableau
                 indice_champ = -1
             if indice_champ >= 0: # si le champ "Heures de formation (incluant les TP)" est trouvé
                 # tente de réinjecter les heures dans Heures encadrées si elles n'on pas déjà été renseignées
-                indice_heure = get_indice("formation encadrée", ENTETES)
+                indice_heure = tools.get_indice("formation encadrée", ENTETES)
                 if not data[indice_heure]:
                     print(f"Dans \"{nom_ressource}\", réinjection de \"Heures de formation (incluant les TP)\" dans \"formation encadrée\"")
                     data[indice_heure] = champ[1]
@@ -153,7 +157,7 @@ print(f"{nbre_ressources} ressources")
 ressources = {"S1" : [], "S2": []}
 
 for (i, r) in enumerate(liste_ressources):
-    if r.nom.startswith("Projet "):
+    if r.semestre.startswith("Projet "):
         print("ici")
     r.nettoie_champ()
 
@@ -173,13 +177,14 @@ for sem in ressources:
 # ************************************************************************
 # Affichages divers
 # Le tableau des heures ressources
-for sem in ressources: # parcours des semestres
+# for sem in ressources: # parcours des semestres
     # print(f"Semestre {sem}")
-    chaine = affiche_bilan_heures(ressources, sem)
+#    chaine = activite.affiche_bilan_heures(ressources, sem)
 
 
 # Matrice ACS/ressources
 matrices = {}
+DATA_ACS = officiel.get_DATA_ACS()
 les_codes_acs = [code for comp in DATA_ACS for code in DATA_ACS[comp]]
 nbre_acs = len(les_codes_acs)
 

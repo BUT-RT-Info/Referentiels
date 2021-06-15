@@ -1,75 +1,68 @@
-import logging
-import re
-import string
+import string, logging
 import pypandoc
 import ruamel.yaml
 
-from config import Config
+import latex
+import officiel
 
+import ressourcedocx
 from modeles import get_modele, TemplateLatex
-from officiel import *
-from ressourcedocx import remove_ligne_vide
-from tools import caracteres_recalcitrants
 
 __LOGGER = logging.getLogger(__name__)
 
-
-def nettoie_latex(chaine):
-    """Purge certains éléments de la chaine latex générée par pypandoc"""
-    chaine = chaine.replace("\\tightlist\n", "")
-    chaine = ajoute_abbr_latex(chaine) # détecte les abréviations
-
-    # detecte les espaces insécables
-    chaine = chaine.replace(" :", "~:")
-    m = re.findall(r"(\w\w:)", chaine)
-    m += re.findall(r"(\w}:)", chaine)
-    for marq in m:
-        if marq != "ex:" and marq != "ps:" and marq != "tp:": # les ex et les liens
-            chaine = chaine.replace(marq, marq[0:2] + "~:")
-    m = re.findall(r"(:\w)", chaine) # les : suivis d'une lettre
-    m += re.findall(r"(:\\)", chaine)
-    for marq in m:
-        chaine = chaine.replace(marq, ": " + marq[-1])
-    chaine = chaine.replace(" ;", "\,;")
-    m = re.findall(r"(\w;)", chaine)
-    m += re.findall(r"(\);)", chaine)
-    for marq in m:
-        chaine = chaine.replace(marq, marq[0] + "\,;")
-
-    # Ajoute les topsep
-    lignes = chaine.split("\n")
-    nbre_itemize = 0
-    for (i, ligne) in enumerate(lignes):
-        if "\\begin{itemize}" in ligne:  # on rencontre un itemize
-            nbre_itemize += 1
-            if nbre_itemize == 1 and i != 0: # si c'est le 1er itemize et que ce n'est pas la 1ère ligne
-                lignes[i] = lignes[i].replace("\\begin{itemize}", "\\begin{itemize}[topsep=5pt]")
-        elif "\\end{itemize}" in ligne:
-            nbre_itemize -= 1
-    chaine = "\n".join(lignes)
-
-    return chaine
+MODALITES = ["CM/TD", "TP", "Projet"]   # modalités de mise en oeuvre d'une ressource/SAE
 
 
-class Ressource:
-    """Modélise une ressource lorsqu'elle est extraite d'un yaml"""
+class ActivitePedagogique():
+    """Modélise les éléments de bases d'une activité pédagogique (ressource ou SAE).
+    Classe servant de base à l'héritage.
+
+    Une activité pédagogique est initialisée par lecture des données contenues dans fichier yaml (attribut yaml)
+    """
+    __LOGGER = logging.getLogger(__name__)
+
+    def __init__(self, fichieryaml):
+        """Charge les données du fichier yaml"""
+        with open(fichieryaml, "r", encoding="utf8") as fid:
+            yaml = ruamel.yaml.YAML()
+            try:
+                self.yaml = yaml.load(fid.read())
+            except:
+                ActivitePedagogique.__LOGGER.warning(f"Pb de chargement de {fichieryaml}")
+
+    def add_tags(self, tags):
+        """Ajoute un attribut tags avec la liste de tags fournie"""
+        self.tags = tags
+
+    def get_heures_encadrees(self):
+        """Renvoie les heures de formation encadrees (incluant les TP)"""
+        return self.heures_encadrees
+
+    def get_heures_tp(self):
+        """Renvoie les heures de TP"""
+        return self.heures_tp
+
+    def get_heures_projet(self):
+        """Renvoie les heures de projet tuteurés"""
+        return self.heures_projet
+
+
+class Ressource(ActivitePedagogique):
+    """Modélise une ressource lorsqu'elle est extraite d'un fichier yaml"""
 
     __LOGGER = logging.getLogger(__name__)
 
     def __init__(self, fichieryaml):
-        with open(fichieryaml, "r", encoding="utf8") as fid:
-            yaml = ruamel.yaml.YAML()
-            try:
-                self.ressource = yaml.load(fid.read())
-            except:
-                Ressource.__LOGGER.warning(f"Pb de chargement de {fichieryaml}")
+        super().__init__(fichieryaml)
+        self.ressource = self.yaml
+        self.heures_encadrees = self.yaml["heures_formation"]
+        self.heures_tp = self.yaml["heures_tp"]
+        self.heures_projet = 0
 
-    def to_latex(self, modele=Config.ROOT + "/python/pn/modele_ressource.tex"):
-        """Génère le code latex décrivant la ressource"""
-        modlatex = get_modele(modele)  # "pn/modele_ressource.tex")
-
-        # if self.ressource["code"] == "R107":
-        #    print("ici")
+    def to_latex(self, modele):
+        """Génère le code latex décrivant la ressource en utilisant le
+        modèle latex indiqué"""
+        modlatex = get_modele(modele)
 
         # Préparation des coeffs
         ajoutcoeff = "\\ajoutRcoeff{%s}"
@@ -81,6 +74,7 @@ class Ressource:
                 coeffRT.append("")
 
         # Préparation des ac
+        DATA_ACS = officiel.get_DATA_ACS()
         ajoutac = "\\ajoutRac{%s}{%s}"
         compRT = []
         for accomp in ["RT1", "RT2", "RT3"]:
@@ -104,14 +98,14 @@ class Ressource:
                 + string.ascii_uppercase[int(sae[-1]) - 1]
             )
             saesRT.append(
-                ajoutsaes % (sae, get_officiel_sae_name_by_code(sae))
+                ajoutsaes % (sae, officiel.get_officiel_sae_name_by_code(sae))
             )  # , code_latex))
         saes = "\n".join(saesRT)
 
         if self.ressource["code"] == "R110":
             print("ici")
         prerequis = ""
-        if self.ressource["prerequis"] == AUCUN_PREREQUIS:
+        if self.ressource["prerequis"] == officiel.AUCUN_PREREQUIS:
             prerequis = ""
         else:
             # est-une liste de ressources
@@ -122,7 +116,7 @@ class Ressource:
                 liste = []
                 for (no, mod) in enumerate(self.ressource["prerequis"]):
                     liste.append(
-                        ajoutprerequis % (mod, get_officiel_ressource_name_by_code(mod))
+                        ajoutprerequis % (mod, officiel.get_officiel_ressource_name_by_code(mod))
                     )
                 prerequis = "\n".join(liste)
 
@@ -164,7 +158,7 @@ class Ressource:
             contenu=contenu,
         )
         # chaine = chaine.replace("&", "\&")
-        chaine = nettoie_latex(chaine)
+        chaine = latex.nettoie_latex(chaine)
 
         # Insère les abbréviations
         return chaine
@@ -178,6 +172,7 @@ def contient_abbr(chaine):
     (dont la liste est fournie par DATA_ABBREVIATIONS lues depuis le .yml) et
     les renvoie sous forme d'une liste par abréviations de nombre de caractères décroissants"""
     mots = []
+    DATA_ABBREVIATIONS = officiel.get_DATA_ABBREVIATIONS()
     for lettre in DATA_ABBREVIATIONS:
         for mot in DATA_ABBREVIATIONS[lettre]:
             if mot in chaine:
@@ -203,8 +198,9 @@ def ajoute_abbr_latex(chaine):
         chaine = chaine.replace("/IP", "/\\textabbrv{IP}")
     return chaine
 
+
 def contient_commandes(chaine):
-    """Détecte si la chaine est une commande (éventuellement avec un caractère
+    """Détecte si la `chaine` est une commande (éventuellement avec un caractère
     de ponctuation final)"""
     chaine_texte = ""
     for car in chaine:
@@ -212,9 +208,11 @@ def contient_commandes(chaine):
             chaine_texte += car
     if "ipc" in chaine:
         print("ici")
+    DATA_MOTSCLES = officiel.get_MOTS_CLES()
     if chaine_texte in DATA_MOTSCLES["commandes"]:
         return chaine_texte
     return None
+
 
 def ajoute_cmd_latex(chaine):
     """
@@ -232,21 +230,21 @@ def ajoute_cmd_latex(chaine):
     chaine = " ".join(mots)
     return chaine
 
-class SAE:
-    """Modélise une saé (chapeau) lorsqu'elle est extraite d'un yaml"""
+
+class SAE(ActivitePedagogique):
+    """Modélise une SAé (chapeau) lorsqu'elle est extraite d'un yaml"""
 
     __LOGGER = logging.getLogger(__name__)
 
     def __init__(self, fichieryaml):
-        with open(fichieryaml, "r", encoding="utf8") as fid:
-            yaml = ruamel.yaml.YAML()
-            try:
-                self.sae = yaml.load(fid.read())
-            except:
-                Ressource.__LOGGER.warning(f"Pb de chargement de {fichieryaml}")
+        super().__init__(fichieryaml)
+        self.sae = self.yaml
+        self.heures_encadrees = self.yaml["heures_encadrees"]
+        self.heures_tp = self.yaml["tp"]
+        self.heures_projet = self.yaml["projet"]
 
-    def to_latex(self, modele=Config.ROOT + "/python/pn/modele_sae.tex"):
-        """Génère le code latex décrivant la ressource"""
+    def to_latex(self, modele):
+        """Génère le code latex décrivant la ressource en utilisant le modèle indiqué"""
         modlatex = get_modele(modele)  # "pn/modele_ressource.tex")
 
         # Préparation des coeffs
@@ -261,6 +259,7 @@ class SAE:
         # Préparation des ac
         ajoutac = "\\ajoutSac{%s}{%s}"  # nom, intitule, code latex
         compRT = []
+        DATA_ACS = officiel.get_DATA_ACS()
         for accomp in ["RT1", "RT2", "RT3"]:
             comps = []
             if accomp in self.sae["acs"]:
@@ -277,7 +276,7 @@ class SAE:
             self.sae["ressources"]
         ):  # in range(len(self.apprentissages)):
             resRT.append(
-                ajoutressources % (res, get_officiel_ressource_name_by_code(res))
+                ajoutressources % (res, officiel.get_officiel_ressource_name_by_code(res))
             )
         ressources = "\n".join(resRT)
 
@@ -317,28 +316,24 @@ class SAE:
         )
         # chaine = chaine.replace("&", "\&")
 
-        chaine = nettoie_latex(chaine)
+        chaine = latex.nettoie_latex(chaine)
         return chaine
 
     def getInfo(self):
         return self.sae
 
 
-class ExempleSAE:
+class ExempleSAE(ActivitePedagogique):
     """Modélise un exemple de SAE lorsqu'elle est extraite d'un yaml"""
 
     __LOGGER = logging.getLogger(__name__)
 
     def __init__(self, fichieryaml):
-        with open(fichieryaml, "r", encoding="utf8") as fid:
-            yaml = ruamel.yaml.YAML()
-            try:
-                self.exemple = yaml.load(fid.read())
-            except:
-                Ressource.__LOGGER.warning(f"Pb de chargement de {fichieryaml}")
+        super().__init__(fichieryaml)
+        self.exemple = self.yaml
 
-    def to_latex(self, modele=Config.ROOT + "/python/pn/modele_exemple_sae.tex"):
-        """Génère le code latex décrivant la ressource"""
+    def to_latex(self, modele):
+        """Génère le code latex décrivant la ressource en utilisant le modèle latex indiqué"""
         modlatex = get_modele(modele)  # "pn/modele_ressource.tex")
 
         # préparation du descriptif
@@ -390,7 +385,7 @@ class ExempleSAE:
             modalite=modalite,
         )
         # chaine = chaine.replace("&", "\&")
-        chaine = nettoie_latex(chaine)
+        chaine = latex.nettoie_latex(chaine)
 
         return chaine
 
@@ -450,7 +445,7 @@ def md_to_latex(contenu):
     contenu = "\n\n".join(lignes)
 
     # contenu = caracteres_recalcitrants(contenu)
-    contenu = remove_ligne_vide(contenu)
+    contenu = ressourcedocx.remove_ligne_vide(contenu)
     lignes = contenu.split("\n")  # pour debug
 
     if contenu.startswith("\\begin{itemize}"):
@@ -468,16 +463,21 @@ def md_to_latex(contenu):
 
 def get_matrices_ac_ressource(saes, ressources, sem):
     """Calcule la matrice AC vs sae + ressource pour un sem donné et la renvoie"""
+    DATA_ACS = officiel.get_DATA_ACS()
     les_codes_acs = [code for comp in DATA_ACS for code in DATA_ACS[comp]]
     nbre_acs = len(les_codes_acs)
 
     saesem = saes[sem]  # les saé du semestre
     ressem = ressources[sem]  # les ressources du semestre
 
+    DATA_RESSOURCES = officiel.get_DATA_RESSOURCES()
+    DATA_SAES = officiel.get_DATA_SAES()
     nbre_saes = len(DATA_SAES[sem])
     nbre_ressources = len(DATA_RESSOURCES[sem])
-    if len(saesem) != nbre_saes or len(ressem) != nbre_ressources:
-        __LOGGER.warning(f"Pb => il manque des saes/ressources au {sem}")
+    if len(saesem) != nbre_saes:
+        __LOGGER.warning(f"Pb => il manque des saes au {sem}")
+    if len(ressem) != nbre_ressources:
+        __LOGGER.warning(f"Pb => il manque des ressources au {sem}")
 
     matrice = [[False] * (nbre_saes + nbre_ressources) for i in range(nbre_acs)]
 
@@ -506,10 +506,14 @@ def get_matrices_coeffs(saes, ressources, sem):
     saesem = saes[sem]  # les saé du semestre
     ressem = ressources[sem]  # les ressources du semestre
 
+    DATA_RESSOURCES = officiel.get_DATA_RESSOURCES()
+    DATA_SAES = officiel.get_DATA_SAES()
     nbre_saes = len(DATA_SAES[sem])
     nbre_ressources = len(DATA_RESSOURCES[sem])
-    if len(saesem) != nbre_saes or len(ressem) != nbre_ressources:
-        __LOGGER.warning(f"Pb => il manque des saes/ressources au {sem}")
+    if len(saesem) != nbre_saes:
+        __LOGGER.warning(f"Pb => il manque des saes au {sem}")
+    if len(ressem) != nbre_ressources:
+        __LOGGER.warning(f"Pb => il manque des ressources au {sem}")
 
     matrice = [[None] * (len(comps)) for i in range(nbre_saes + nbre_ressources)]
 
@@ -526,18 +530,21 @@ def get_matrices_coeffs(saes, ressources, sem):
 
 
 def get_matrices_volumes(saes, ressources, sem):
-    """Calcule la matrice AC vs sae + ressource pour un sem donné et la renvoie"""
-    format = ["CM/TD", "TP", "Projet"]
-
+    """Calcule la matrice AC vs sae + ressource pour un sem donné et la renvoie
+    => obsolète ? déplacé dans semestre"""
     saesem = saes[sem]  # les saé du semestre
     ressem = ressources[sem]  # les ressources du semestre
 
+    DATA_RESSOURCES = officiel.get_DATA_RESSOURCES()
+    DATA_SAES = officiel.get_DATA_SAES()
     nbre_saes = len(DATA_SAES[sem])
     nbre_ressources = len(DATA_RESSOURCES[sem])
-    if len(saesem) != nbre_saes or len(ressem) != nbre_ressources:
-        __LOGGER.warning(f"Pb => il manque des saes/ressources au {sem}")
+    if len(saesem) != nbre_saes:
+        __LOGGER.warning(f"Pb => il manque des saes au {sem}")
+    if len(ressem) != nbre_ressources:
+        __LOGGER.warning(f"Pb => il manque des ressources au {sem}")
 
-    matrice = [[0] * (len(format)) for i in range(nbre_saes + nbre_ressources)]
+    matrice = [[0] * (len(MODALITES)) for i in range(nbre_saes + nbre_ressources)]
 
     for (i, s) in enumerate(saesem):  # pour chaque SAE
         formation = (
@@ -569,12 +576,15 @@ def get_matrices_volumes(saes, ressources, sem):
 
 def str_matrice(matrice, saes, ressources, sem):
     """Renvoie une chaine de caractère affichant la matrice"""
+    DATA_ACS = officiel.get_DATA_ACS()
     les_codes_acs = [code for comp in DATA_ACS for code in DATA_ACS[comp]]
     nbre_acs = len(les_codes_acs)
 
     saesem = saes[sem]  # les saé du semestre
     ressem = ressources[sem]  # les ressources du semestre
 
+    DATA_RESSOURCES = officiel.get_DATA_RESSOURCES()
+    DATA_SAES = officiel.get_DATA_SAES()
     nbre_saes = len(DATA_SAES[sem])
     nbre_ressources = len(DATA_RESSOURCES[sem])
 
@@ -619,298 +629,6 @@ def cesure_contenu(contenu, long_max=30):
     return chaine
 
 
-def rotation_entete_colonne(contenu, pos="l"):
-    chaine = "\\rotatebox[origin=" + pos + "]{90}{"
-    chaine += contenu + "}"
-    return chaine
-
-
-def to_latex_matrice_acs(matrice, saes, ressources, sem):
-    """Renvoie le tableau latex affichant la matrice"""
-
-    les_codes_acs = [code for comp in DATA_ACS for code in DATA_ACS[comp]]
-    nbre_acs = len(les_codes_acs)
-
-    lettresem = "A" if sem == "S1" else "B"
-
-    saesem = saes[sem]  # les saé du semestre
-    ressem = ressources[sem]  # les ressources du semestre
-
-    nbre_saes = len(DATA_SAES[sem])
-    nbre_ressources = len(DATA_RESSOURCES[sem])
-    nbre_colonnes = nbre_saes + nbre_ressources + 2
-    longueur = 4
-    chaine = (
-        "\\begin{tabular}[c]{|lp{%scm}|" % str(longueur)
-        + "c|" * (nbre_saes)
-        + "c|" * (nbre_ressources)
-        + "}"
-        + "\n"
-    )
-    chaine += "\\hline \n"  # % (nbre_saes + nbre_ressources+1)+ "\n"
-    # l'entete
-    chaine += " & & "
-    chaine += (
-        "\multicolumn{%d}{c|}{\\textcolor{saeC}{\\bfseries SAÉs}}" % (nbre_saes) + "\n"
-    )
-    chaine += " & "
-    chaine += (
-        "\multicolumn{%d}{c|}{\\textcolor{ressourceC}{\\bfseries Ressources}}"
-        % (nbre_ressources)
-        + "\\\\ \n"
-    )
-    chaine += "\\cline{3-%d}" % (nbre_colonnes)
-    chaine += " & & "
-    # les noms des SAE et des ressources
-    noms_saes = []
-    for (i, s) in enumerate(saesem):  # pour chaque SAE
-        # saecode = "Scode" + lettresem + string.ascii_uppercase[i]
-        # contenu = "\\xdef\saecode{\csname " + saecode + "\endcsname}"
-        # contenu += "\\tiny{\\hyperlink{sae:\\saecode}{" + s.sae["titre"] + "~}}"
-        contenu = "\\tiny{" + s.sae["titre"] + "~}"
-        noms_saes.append(rotation_entete_colonne(contenu) + "\n")
-    chaine += " & ".join(noms_saes) + "\n"
-    chaine += " & "
-    noms_ressources = []
-    for (i, r) in enumerate(ressem):  # pour chaque SAE
-        # contenu = r.ressource["code"] + " | " + r.ressource["nom"]
-        # noms_ressources.append(rotation_entete_colonne(contenu) + "\n")
-        contenu = "\\tiny{" + r.ressource["nom"] + "~}"
-        noms_ressources.append(rotation_entete_colonne(contenu) + "\n")
-    chaine += " & ".join(noms_ressources) + "\n"
-    chaine += "\\\\ \n"
-
-    # les codes des SAE et des ressources
-    noms_saes = []
-    chaine += " & & \n"
-    for (i, s) in enumerate(saesem):  # pour chaque SAE
-        contenu = "~\\hyperlink{sae:" + s.sae["code"] + "}{"
-        contenu += "\\textcolor{saeC}{" + s.sae["code"] + "}"
-        contenu += "}"
-        noms_saes.append(rotation_entete_colonne(contenu, pos="r") + "\n")
-    chaine += " & ".join(noms_saes) + "\n"
-    chaine += " & "
-    noms_ressources = []
-    for (i, r) in enumerate(ressem):  # pour chaque SAE
-        contenu = "~\\hyperlink{res:" + r.ressource["code"] + "}{"
-        contenu += "\\textcolor{ressourceC}{" + r.ressource["code"] + "}"
-        contenu += "}"
-        noms_ressources.append(rotation_entete_colonne(contenu, pos="r") + "\n")
-    chaine += " & ".join(noms_ressources) + "\n"
-    chaine += "\\\\ \n"
-    chaine += "\\hline \n"
-
-    # Les ACS et les croix
-    for (noc, comp) in enumerate(DATA_ACS):
-        nom_comp = DATA_COMPETENCES[comp]["nom"]
-        niveau = list(DATA_COMPETENCES[comp]["niveaux"].keys())[0]
-        couleur = "\\textcolor{compC" + string.ascii_uppercase[noc] + "}"
-        if Config.ccn:
-            hlink = ""
-        else:
-            hlink = "\\hyperlink{comp:%s}" % comp
-        chaine += (
-            "\\multicolumn{%d}{|l|}{%s{%s{\\bfseries %s - %s }}} \\\\"
-            % (nbre_colonnes, hlink, couleur, comp, nom_comp.replace("&", "\&"))
-        )
-        chaine += r"\multicolumn{%d}{|l|}{\small Niveau 1 - %s} \\\\" % (
-            nbre_colonnes,
-            niveau.replace("&", "\&"),
-        )
-        chaine += "\\hline \n"
-        for (k, ac) in enumerate(DATA_ACS[comp]):
-            chaine += couleur + "{" + ac + "}" + " & " + "\n"
-            chaine += "\\begin{tabular}{p{%scm}} " % (str(longueur - 0.2))
-            chaine += "\\tiny{" + DATA_ACS[comp][ac] + "}"
-            chaine += "\\end{tabular} & \n"
-
-            croix = []
-            indice_ac = les_codes_acs.index(ac)
-            for (i, s) in enumerate(saesem):  # pour chaque SAE
-                croix.append("$\\times$" if matrice[indice_ac][i] == True else "")
-            chaine += " & ".join(croix) + "\n"
-            chaine += " & "
-            croix = []
-            for (j, r) in enumerate(ressem):  # pour chaque SAE
-                croix.append(
-                    "$\\times$" if matrice[indice_ac][nbre_saes + j] == True else ""
-                )
-            chaine += " & ".join(croix) + "\\\\ \n"
-            # if k < len(DATA_ACS[comp]) -1:
-            #    chaine += "\\cline{2-%d}" % (nbre_saes+ nbre_ressources+3)
-            chaine += "\\hline \n"
-        chaine += "\\hline \n"
-
-    chaine += "\\end{tabular}"
-    return chaine
-
-
-def to_latex_matrice_coeffs(matrice_vols, matrice_coeffs, saes, ressources, sem):
-    """Renvoie le tableau latex affichant la matrice"""
-
-    def str_coeff(val):
-        if val == None:
-            return ""
-        else:
-            return str(val)
-
-    def str_volume(val):
-        if val:
-            return str(val) + "h"
-        else:
-            return " "
-
-    comps = ["RT1", "RT2", "RT3"]
-    lettresem = "A" if sem == "S1" else "B"
-    sem_id = int(sem[1:])
-    saesem = saes[sem]  # les saé du semestre
-    ressem = ressources[sem]  # les ressources du semestre
-
-    nbre_saes = len(saesem)
-    nbre_colonnes = len(comps) + 2
-
-    chaine = (
-        "\\begin{tabular}[c]{|rp{6cm}|"
-        + "c|" * 2
-        + "c|"
-        + "c|" * (len(comps))
-        + "}"
-        + "\n"
-    )
-    chaine += "\\hline \n"  # % (nbre_saes + nbre_ressources+1)+ "\n"
-    # le début
-    chaine += " & & " + "\\multicolumn{3}{c|}{\\bfseries Volumes} \n"
-    chaine += " & " + "\\multicolumn{3}{c|}{\\bfseries Coefficients} \n"
-    chaine += " \\\\ \\hline \n"
-    # l'entete
-    chaine += " & & "
-    # Volume
-    chaine += rotation_entete_colonne("\\bfseries Heures de formation encadrée") + " & "
-    chaine += rotation_entete_colonne("\\bfseries Heures de TPs") + " & "
-    chaine += rotation_entete_colonne("\\bfseries Heures de projets") + " & "
-    # les noms des comps
-    noms = []
-    for (i, comp) in enumerate(comps):  # pour chaque compétence
-        contenu = "\\begin{tabular}{>{\\raggedright}p{5cm}}\n"
-        couleur = "\\textcolor{compC" + string.ascii_uppercase[i] + "}"
-        if not Config.ccn:
-            contenu += "\\hyperlink{comp:" + comp + "}"
-        contenu += (
-            "{"
-            + couleur
-            + "{\\bfseries "
-            + comp
-            + "}} - "
-            + DATA_COMPETENCES[comp]["nom"].replace("&", "\&")
-            + "\\\\ \n"
-        )
-        niveau = list(DATA_COMPETENCES[comp]["niveaux"].keys())[0]
-        contenu += " \\small Niveau 1 - " + niveau.replace("&", "\&") + "\n"
-        contenu += "\\end{tabular}\n"
-        noms.append(rotation_entete_colonne(contenu) + "\n")
-    chaine += " & ".join(noms) + "\n"
-    chaine += "\\\\ \n"
-
-    chaine += "\\hline"
-    chaine += "\\hline"
-
-    chaine += (
-        "\multicolumn{%d}{|l}{\\textcolor{saeC}{\\bfseries SAÉs}}" % (nbre_colonnes)
-        + "\n"
-    )
-    chaine += "\\\\ \n"
-    chaine += "\\hline "
-    # le nom des SAE
-    for (i, s) in enumerate(saesem):  # pour chaque SAE
-        chaine += "\\hyperlink{sae:" + s.sae["code"] + "}{"
-        chaine += "\\textcolor{saeC}{" + s.sae["code"] + "}"
-        chaine += "}"
-        chaine += " & " + "\n"
-        chaine += (
-            "\\begin{tabular}{p{5.7cm}} \\tiny{"
-            + s.sae["titre"]
-            + "} \\end{tabular} & \n"
-        )
-        chaine += str_volume(matrice_vols[i][0]) + " & "
-        chaine += str_volume(matrice_vols[i][1]) + " & "
-        chaine += str_volume(matrice_vols[i][2]) + " & "
-        chaine += " & ".join(
-            [str_coeff(matrice_coeffs[i][j]) for j in range(len(comp))]
-        )
-        chaine += "\\\\ \n"
-        chaine += "\\hline "
-    # Les ressources et les coeff
-    chaine += (
-        "\multicolumn{%d}{|l}{\\textcolor{ressourceC}{\\bfseries Ressources}}"
-        % (nbre_colonnes)
-        + "\n"
-    )
-    chaine += "\\\\ \n"
-    chaine += "\\hline "
-
-    for (i, r) in enumerate(ressem):  # pour chaque SAE
-        chaine += "\hyperlink{res:" + r.ressource["code"] + "}{"
-        chaine += "\\textcolor{ressourceC}{" + r.ressource["code"] + "}"
-        chaine += "}"
-        chaine += " & " + "\n"
-
-        chaine += "\\begin{tabular}{p{5.7cm}}"
-        chaine += "\\tiny{" + r.ressource["nom"] + "}"
-        chaine += " \\end{tabular} & \n"
-        chaine += str_volume(matrice_vols[i + nbre_saes][0]) + " & "
-        chaine += str_volume(matrice_vols[i + nbre_saes][1]) + " & "
-        chaine += " & "
-        chaine += " & ".join(
-            [str_coeff(matrice_coeffs[i + nbre_saes][j]) for j in range(len(comp))]
-        )
-        chaine += "\\\\ \n"
-        chaine += "\\hline "
-
-    # Total
-    total_heures = get_total_nbre_heures(matrice_vols)
-    total_heures_sae = get_total_nbre_heures_saes(matrice_vols, sem)
-    total_heures_ressources = get_total_nbre_heures_ressources(matrice_vols, sem)
-    total_coeffs = get_total_coeffs(matrice_coeffs)
-    total_coeffs_sae = get_total_coeffs_saes(matrice_coeffs, sem)
-    total_coeffs_ressources = get_total_coeffs_ressources(matrice_coeffs, sem)
-
-    chaine += "\\hline "
-    chaine += "\multicolumn{%d}{|l|}{\\bfseries Total}" % (nbre_colonnes) + "\n"
-    chaine += "\\\\ \n"
-    chaine += "\\hline "
-    # sous-total SAE
-    chaine += "\multicolumn{2}{|r|}{\\textit{SAÉs}} "
-    for i in range(3):
-        chaine += " & \\textit{" + str(total_heures_sae[i]) + "h}"
-    for i in range(3):
-        chaine += " & \\textit{" + str(total_coeffs_sae[i]) + "}"
-    chaine += "\\\\ \hline "
-    chaine += "\multicolumn{2}{|r|}{\\textit{Ressources}} "
-    for i in range(3):
-        chaine += " & \\textit{" + str(total_heures_ressources[i]) + "h}"
-    for i in range(3):
-        chaine += " & \\textit{" + str(total_coeffs_ressources[i]) + "}"
-    chaine += "\\\\ \hline "
-    chaine += "\multicolumn{2}{|r|}{\\bfseries SAÉs + Ressources}"
-    for i in range(3):
-        chaine += " & {\\bfseries " + str(total_heures[i]) + "h}"
-    for i in range(3):
-        chaine += " & {\\bfseries " + str(total_coeffs[i]) + "}"
-    chaine += "\\\\ \\hline"
-
-    # ECTS
-    chaine += r"""\multicolumn{5}{l}{~}\\
-\multicolumn{5}{l}{\bfseries Crédits ECTS}\\
-\hline
-\multicolumn{5}{|l|}{} & RT1 & RT2 & \multicolumn{1}{c|}{RT3} \\
-    \hline
-\multicolumn{5}{|l|}{} & %d & %d & %d \\
-    \hline
-    """ % tuple(Config.ECTS[sem_id][ue] for ue in Config.ECTS[sem_id])
-    chaine += "\\end{tabular}"
-    return chaine
-
-
 def get_total_nbre_heures(matrice_heures):
     """Calcul le nombre d'heures total des SAé d'après la matrice"""
     sommes = [
@@ -928,6 +646,7 @@ def get_total_nbre_heures(matrice_heures):
 
 def get_total_nbre_heures_saes(matrice_heures, sem):
     """Calcul le nombre d'heures total des SAé d'après la matrice"""
+    DATA_SAES = officiel.get_DATA_SAES()
     nbre_sae = len(DATA_SAES[sem])
     sommes = [
         sum([matrice_heures[i][j] for i in range(nbre_sae) if matrice_heures[i][j]])
@@ -938,12 +657,13 @@ def get_total_nbre_heures_saes(matrice_heures, sem):
 
 def get_total_nbre_heures_ressources(matrice_heures, sem):
     """Calcul le nombre d'heures total des SAé d'après la matrice"""
-    nbre_sae = len(DATA_SAES[sem])
+    DATA_RESSOURCES = officiel.get_DATA_RESSOURCES()
+    nbre_ressources = len(DATA_RESSOURCES[sem])
     sommes = [
         sum(
             [
                 matrice_heures[i][j]
-                for i in range(nbre_sae, len(matrice_heures))
+                for i in range(nbre_ressources, len(matrice_heures))
                 if matrice_heures[i][j]
             ]
         )
@@ -967,6 +687,7 @@ def get_total_coeffs(matrice_coeffs):
 
 
 def get_total_coeffs_saes(matrice_coeffs, sem):
+    DATA_SAES = officiel.get_DATA_SAES()
     nbre_sae = len(DATA_SAES[sem])
     sommes = [
         sum([matrice_coeffs[i][j] for i in range(nbre_sae) if matrice_coeffs[i][j]])
@@ -976,6 +697,7 @@ def get_total_coeffs_saes(matrice_coeffs, sem):
 
 
 def get_total_coeffs_ressources(matrice_coeffs, sem):
+    DATA_SAES = officiel.get_DATA_SAES()
     nbre_sae = len(DATA_SAES[sem])
     sommes = [
         sum(
@@ -990,23 +712,3 @@ def get_total_coeffs_ressources(matrice_coeffs, sem):
     return sommes
 
 
-def str_latex_abbreviations():
-    """Renvoie le code latex d'un tableau pour les abbréviations"""
-    liste = [
-        [cle, DATA_ABBREVIATIONS[lettre][cle]]
-        for lettre in DATA_ABBREVIATIONS
-        for cle in DATA_ABBREVIATIONS[lettre]
-    ]
-    nbre_abbreviations = len(liste)
-    chaine = ""
-    for i in range(nbre_abbreviations):
-        chaine += "\\begin{tabular}{rp{6.5cm}} \n"
-        chaine += (
-            "\makebox[1.5cm][r]{\\textabbrv{"
-            + liste[i][0]
-            + "}} & "
-            + liste[i][1]
-            + "\\\\ \n"
-        )
-        chaine += "\\end{tabular}\n\n"
-    return chaine
