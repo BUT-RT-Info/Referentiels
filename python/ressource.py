@@ -80,7 +80,7 @@ class Ressource(ActivitePedagogique):
                 + string.ascii_uppercase[int(sae[-1]) - 1]
             )
             saesRT.append(
-                ajoutsaes % (sae, self.officiel.get_sem_sae_by_code(sae))
+                ajoutsaes % (sae, self.officiel.get_sae_name_by_code(sae))
             )  # , code_latex))
         saes = "\n".join(saesRT)
 
