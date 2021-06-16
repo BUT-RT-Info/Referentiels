@@ -67,7 +67,7 @@ for sem in semestres:
         fid.write(chaine)
     print(f"Export de {fichierlatex}")
 
-    chaine = latex.str_latex_abbreviations(pnofficiel.DATA_ABBREVIATIONS)
+    chaine = latex.to_latex_abbreviations(pnofficiel.DATA_ABBREVIATIONS)
     fichierlatex = REPERTOIRE_SYNTHESE + "/" + "abbreviations.tex"
     with open(fichierlatex, "w", encoding="utf8") as fid:
         fid.write(chaine)

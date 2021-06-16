@@ -1,19 +1,31 @@
 """
-Ensemble de fonctions utiles à l'export des ressources/SAé en latex
+Ensemble de fonctions utiles à l'export des ressources/SAé en latex.
+
+Une partie des traitements s'appuient sur :
+
+* ``DATA_ABBREVIATIONS`` provenant du fichier ``yaml\\abbreviations.yml``
+* ``DATA_MOTSCLES`` provenant du fichier ``yaml\\motscles.yml`` qui liste notamment des
+  noms de logiciels, des commandes...
 """
 
 
-import re
+import re, pypandoc, string
+from ressourcedocx import remove_ligne_vide
+
 
 def rotation_entete_colonne(contenu, pos="l"):
-    """Renvoie le code latex permettant la rotation de 90° d'un ``contenu``"""
+    """Renvoie le code latex permettant la rotation de 90° d'un ``contenu``
+    """
     chaine = "\\rotatebox[origin=" + pos + "]{90}{"
     chaine += contenu + "}"
     return chaine
 
 
-def str_latex_abbreviations(DATA_ABBREVIATIONS):
-    """Renvoie le code latex d'un tableau pour les abbréviations"""
+def to_latex_abbreviations(DATA_ABBREVIATIONS):
+    """Renvoie le code latex d'un tableau listant l'ensemble des abréviations
+     contenue dans le dictionnaire ``DATA_ABBREVIATIONS``.
+
+     """
     liste = [
         [cle, DATA_ABBREVIATIONS[lettre][cle]]
         for lettre in DATA_ABBREVIATIONS
@@ -35,8 +47,9 @@ def str_latex_abbreviations(DATA_ABBREVIATIONS):
 
 
 def nettoie_latex(chaine, DATA_ABBREVIATIONS):
-    """Purge certains éléments de la `chaine` latex générée par pypandoc
-    et détecte les abbréviations indiquées dans `DATA_ABBREVIATIONS`
+    """Purge certains éléments de la ``chaine`` latex générée par ``pypandoc``
+    et détecte les abréviations indiquées dans le dictionnaire
+    ``DATA_ABBREVIATIONS``.
     """
     chaine = chaine.replace("\\tightlist\n", "")
     chaine = ajoute_abbr_latex(chaine, DATA_ABBREVIATIONS) # détecte les abréviations
@@ -75,8 +88,9 @@ def nettoie_latex(chaine, DATA_ABBREVIATIONS):
 
 def ajoute_abbr_latex(chaine, DATA_ABBREVIATIONS):
     """
-    Parse la chaine latex pour ajouter les abbréviations et les remplacer par
-    \\textabbrv{abreviation}
+    Parse la ``chaine`` latex pour ajouter les abréviations décrites dans le dictionnaire
+    ``DATA_ABBREVIATIONS`` et les remplacer par
+    le balisage latex ``\\textabbrv{abreviation}``
     """
     mots = chaine.split(" ")
     for (i, mot) in enumerate(mots):
@@ -90,9 +104,9 @@ def ajoute_abbr_latex(chaine, DATA_ABBREVIATIONS):
 
 
 def contient_abbr(chaine, DATA_ABBREVIATIONS):
-    """Détecte les abréviations présentes dans la chaine
-    (dont la liste est fournie par DATA_ABBREVIATIONS lues depuis le .yml) et
-    les renvoie sous forme d'une liste par abréviations de nombre de caractères décroissants"""
+    """Détecte les abréviations présentes dans la ``chaine`` et présentes dans le dictionnaire
+    ``DATA_ABBREVIATIONS`` et les renvoie sous forme d'une liste d'abréviations triée
+    par nombre de caractères décroissants"""
     mots = []
     for lettre in DATA_ABBREVIATIONS:
         for mot in DATA_ABBREVIATIONS[lettre]:
@@ -102,3 +116,102 @@ def contient_abbr(chaine, DATA_ABBREVIATIONS):
         mots, key=lambda m: len(m), reverse=True
     )  # les mots triés par nbre de carac décroissant
     return mots
+
+
+def md_to_latex(contenu, DATA_MOTSCLES):
+    """Réalise la conversion d'un ``contenu`` markdown en syntaxe latex avec pypandoc.
+
+    Détecte les mots clés indiqués dans le dictionnaire ``DATA_MOTSCLES`` pour les mettre
+    en évidence dans le code latex.
+    """
+    contenu = contenu.replace(
+        "\n", "\n\n"
+    )  # corrige les suppressions de ligne à la relecture du yaml
+
+    contenu = pypandoc.convert_text(
+        contenu, "tex", format="md", extra_args=["--atx-headers"]
+    )
+    contenu = contenu.replace("\r\n", "\n")
+    lignes = contenu.split("\n\n")  # Détecte les sauts de ligne
+    for (i, ligne) in enumerate(lignes):
+        if i < len(lignes) - 1:
+            if (
+                lignes[i].strip().startswith("\\") == False
+                and lignes[i].startswith(" ") == False
+                and lignes[i + 1].strip().startswith("\\") == False
+                and lignes[i + 1].startswith(" ") == False
+                and lignes[i].strip().endswith("\\\\") == False
+            ):
+                lignes[i] = lignes[i] + "\\\\"  # ajoute un passage à la ligne latex
+    contenu = "\n\n".join(lignes)
+
+    # contenu = caracteres_recalcitrants(contenu)
+    contenu = remove_ligne_vide(contenu)
+    lignes = contenu.split("\n")  # pour debug
+
+    if contenu.startswith("\\begin{itemize}"):
+        contenu = (
+            "\\vspace{-10pt}\n" + contenu
+        )  # ajout d'un offset en cas de liste à puces
+    contenu = contenu.replace("\\\\" * 2, "\\\\[25pt]")
+    if not contenu.endswith("\\end{itemize}"):
+        contenu += "\\\\[3pt]"
+
+    contenu = ajoute_cmd_latex(contenu, DATA_MOTSCLES)  # détecte les commandes
+
+    return contenu
+
+
+def cesure_contenu(contenu, long_max=30):
+    """Découpe un ``contenu`` pour le mettre en forme sur plusieurs lignes, chaque ligne
+    ayant ``long_max`` caractères maximum.
+
+    Le découpage se fait au mot près.
+    """
+    chaine = "\\rotatebox[origin=c]{90}{\n"
+    chaine += "\\begin{tabular}{ll}\n"
+    contenu_cesure = []
+    while contenu:
+        indice_espace = contenu.find(" ", long_max)
+        if indice_espace < 0:
+            contenu_cesure.append(contenu)
+            contenu = ""
+        else:
+            contenu_cesure.append(contenu[:indice_espace])
+            contenu = contenu[indice_espace + 1 :]
+    chaine += " \\\\ ".join(contenu_cesure)
+    chaine += "\\end{tabular} }"
+    return chaine
+
+
+def ajoute_cmd_latex(chaine, DATA_MOTSCLES):
+    """
+    Parse la ``chaine`` latex pour ajouter les abréviations et les mettre en forme
+    avec le balisage ``\\textabbrv{abreviation}``
+    """
+    mots = chaine.split(" ")
+    for (i, mot) in enumerate(mots):
+        champs = mot.split("\n")
+        for (j, champ) in enumerate(champs):
+            cmd = contient_commandes(champ, DATA_MOTSCLES)
+            if cmd:
+                champs[j] = champs[j].replace(cmd, "\\texttt{" + cmd + "}")
+        mots[i] = "\n".join(champs)
+    chaine = " ".join(mots)
+    return chaine
+
+def contient_commandes(chaine, DATA_MOTSCLES):
+    """
+    Détecte si la ``chaine`` fait partie des commandes listées dans le dictionnaire ``DATA_MOTSCLES``.
+
+    La détection prend en compte un éventuel caractère de ponctuation final.
+    """
+    chaine_texte = ""
+    for car in chaine:
+        if car in string.ascii_lowercase + "-":
+            chaine_texte += car
+    if "ipc" in chaine:
+        print("ici")
+    if chaine_texte in DATA_MOTSCLES["commandes"]:
+        return chaine_texte
+    return None

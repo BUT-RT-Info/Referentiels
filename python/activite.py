@@ -1,4 +1,3 @@
-import pypandoc
 import ruamel.yaml
 
 import latex
@@ -10,15 +9,24 @@ MODALITES = ["CM/TD", "TP", "Projet"]   # modalités de mise en oeuvre d'une res
 
 
 class ActivitePedagogique():
-    """Modélise les éléments de bases d'une activité pédagogique (ressource ou SAE).
-    Classe servant de base à l'héritage.
+    """Modélise les éléments de bases d'une activité pédagogique (ressource, SAE ou exemple
+    de SAE) et stocke les données officielles.
 
-    Une activité pédagogique est initialisée par lecture des données contenues dans fichier yaml (attribut yaml)
+    Une *activité pédagogique* est initialisée par lecture des données contenues dans fichier yaml (attribut yaml).
+    Ses attributs sont :
+
+    * ``yaml`` : le dictionnaire lu dans le fichier yaml décrivant l'activité
+    * ``code`` : le code de l'activité (par ex: ``"R101"`` ou ``"SAE12"``)
+    * ``nom_semestre`` : le nom du semestre où se tient l'activité (par ex: ``"S1"``)
+    * ``numero_semestre`` : le numéro du semestre où se tient l'activité (1, 2, ..., 6)
+    * ``officiel`` : les données officielles du pn (cf. module ``officiel``)
     """
     __LOGGER = logging.getLogger(__name__)
 
     def __init__(self, fichieryaml, pnofficiel):
-        """Charge les données du fichier yaml"""
+        """
+        Charge les données du ``fichieryaml``
+        """
         with open(fichieryaml, "r", encoding="utf8") as fid:
             yaml = ruamel.yaml.YAML()
             try:
@@ -35,16 +43,21 @@ class ActivitePedagogique():
 
 
 class Ressource(ActivitePedagogique):
-    """Modélise une ressource lorsqu'elle est extraite d'un fichier yaml"""
+    """Modélise une ressource."""
 
     __LOGGER = logging.getLogger(__name__)
 
     def __init__(self, fichieryaml, officiel):
+        """Initialise les informations sur la ressource à partir du ``fichieryaml``
+        et stocke les données ``officiel``les
+        """
         super().__init__(fichieryaml, officiel)
         self.ressource = self.yaml
 
     def to_latex(self, modele=Config.ROOT + "/python/pn/modele_ressource.tex"):
-        """Génère le code latex décrivant la ressource"""
+        """Génère le code latex décrivant la ressource, en utilisant le template
+        latex donné dans ``modele``.
+        """
         modlatex = get_modele(modele)
 
         # Préparation des coeffs
@@ -109,7 +122,7 @@ class Ressource(ActivitePedagogique):
             Ressource.__LOGGER.warning(f"{self.ressource['nom']} n'a pas de contexte")
 
         else:
-            contexte = md_to_latex(contexte, self.officiel.DATA_MOTSCLES)
+            contexte = latex.md_to_latex(contexte, self.officiel.DATA_MOTSCLES)
 
         # contexte = remove_ligne_vide(contexte)
         # préparation du contenu
@@ -119,7 +132,7 @@ class Ressource(ActivitePedagogique):
         if contenu:
             if self.ressource["code"] == "R112":
                 print("ici")
-            contenu = md_to_latex(contenu, self.officiel.DATA_MOTSCLES)
+            contenu = latex.md_to_latex(contenu, self.officiel.DATA_MOTSCLES)
 
         chaine = ""
         chaine = TemplateLatex(modlatex).substitute(
@@ -146,39 +159,12 @@ class Ressource(ActivitePedagogique):
         return chaine
 
 
-def contient_commandes(chaine, DATA_MOTSCLES):
-    """Détecte si la `chaine` est une commande (éventuellement avec un caractère
-    de ponctuation final)"""
-    chaine_texte = ""
-    for car in chaine:
-        if car in string.ascii_lowercase + "-":
-            chaine_texte += car
-    if "ipc" in chaine:
-        print("ici")
-    if chaine_texte in DATA_MOTSCLES["commandes"]:
-        return chaine_texte
-    return None
-
-
-def ajoute_cmd_latex(chaine, DATA_MOTSCLES):
-    """
-    Parse la chaine latex pour ajouter les abbréviations et les remplacer par
-    \\textabbrv{abreviation}
-    """
-    mots = chaine.split(" ")
-    for (i, mot) in enumerate(mots):
-        champs = mot.split("\n")
-        for (j, champ) in enumerate(champs):
-            cmd = contient_commandes(champ, DATA_MOTSCLES)
-            if cmd:
-                champs[j] = champs[j].replace(cmd, "\\texttt{" + cmd + "}")
-        mots[i] = "\n".join(champs)
-    chaine = " ".join(mots)
-    return chaine
 
 
 class SAE(ActivitePedagogique):
-    """Modélise une SAé (chapeau) lorsqu'elle est extraite d'un yaml"""
+    """Modélise une SAé (chapeau) en chargeant les données provenant du ``fichieryaml``
+    et stocke les données ``officiel``les.
+    """
 
     __LOGGER = logging.getLogger(__name__)
 
@@ -187,7 +173,9 @@ class SAE(ActivitePedagogique):
         self.sae = self.yaml
 
     def to_latex(self, modele=Config.ROOT + "/python/pn/modele_sae.tex"):
-        """Génère le code latex décrivant la ressource"""
+        """Génère le code latex décrivant la saé en utilisant le template latex donné
+        dans ``modele``
+        """
         modlatex = get_modele(modele)  # "pn/modele_ressource.tex")
 
         # Préparation des coeffs
@@ -228,7 +216,7 @@ class SAE(ActivitePedagogique):
             descriptif = ""
             SAE.__LOGGER.warning(f"{self.sae['titre']} n'a pas de description")
         else:
-            descriptif = md_to_latex(descriptif, self.officiel.DATA_MOTSCLES)
+            descriptif = latex.md_to_latex(descriptif, self.officiel.DATA_MOTSCLES)
 
         # préparation des livrables
         livrables = self.sae["livrables"]
@@ -236,7 +224,7 @@ class SAE(ActivitePedagogique):
             livrables = ""
             SAE.__LOGGER.warning(f"{self.sae['titre']} n'a pas de livrables")
         else:
-            livrables = md_to_latex(livrables, self.officiel.DATA_MOTSCLES)
+            livrables = latex.md_to_latex(livrables, self.officiel.DATA_MOTSCLES)
 
         chaine = ""
         chaine = TemplateLatex(modlatex).substitute(
@@ -263,7 +251,9 @@ class SAE(ActivitePedagogique):
 
 
 class ExempleSAE(ActivitePedagogique):
-    """Modélise un exemple de SAE lorsqu'elle est extraite d'un yaml"""
+    """Modélise un exemple de SAE en chargeant les données de ``fichieryaml``
+    et stocke les données ``officiel``.
+    """
 
     __LOGGER = logging.getLogger(__name__)
 
@@ -272,7 +262,9 @@ class ExempleSAE(ActivitePedagogique):
         self.exemple = self.yaml
 
     def to_latex(self, modele=Config.ROOT + "/python/pn/modele_exemple_sae.tex"):
-        """Génère le code latex décrivant la ressource"""
+        """Génère le code latex décrivant l'exemple de SAE en utilisant le template
+        donné dans ``modele``
+        """
         modlatex = get_modele(modele)  # "pn/modele_ressource.tex")
 
         # préparation du descriptif
@@ -327,62 +319,5 @@ class ExempleSAE(ActivitePedagogique):
         chaine = latex.nettoie_latex(chaine, self.officiel.DATA_ABBREVIATIONS)
 
         return chaine
-
-
-def md_to_latex(contenu, DATA_MOTSCLES):
-    """Réalise la conversion markdown to latex avec pypandoc"""
-    contenu = contenu.replace(
-        "\n", "\n\n"
-    )  # corrige les suppressions de ligne à la relecture du yaml
-
-    contenu = pypandoc.convert_text(
-        contenu, "tex", format="md", extra_args=["--atx-headers"]
-    )
-    contenu = contenu.replace("\r\n", "\n")
-    lignes = contenu.split("\n\n")  # Détecte les sauts de ligne
-    for (i, ligne) in enumerate(lignes):
-        if i < len(lignes) - 1:
-            if (
-                lignes[i].strip().startswith("\\") == False
-                and lignes[i].startswith(" ") == False
-                and lignes[i + 1].strip().startswith("\\") == False
-                and lignes[i + 1].startswith(" ") == False
-                and lignes[i].strip().endswith("\\\\") == False
-            ):
-                lignes[i] = lignes[i] + "\\\\"  # ajoute un passage à la ligne latex
-    contenu = "\n\n".join(lignes)
-
-    # contenu = caracteres_recalcitrants(contenu)
-    contenu = remove_ligne_vide(contenu)
-    lignes = contenu.split("\n")  # pour debug
-
-    if contenu.startswith("\\begin{itemize}"):
-        contenu = (
-            "\\vspace{-10pt}\n" + contenu
-        )  # ajout d'un offset en cas de liste à puces
-    contenu = contenu.replace("\\\\" * 2, "\\\\[25pt]")
-    if not contenu.endswith("\\end{itemize}"):
-        contenu += "\\\\[3pt]"
-
-    contenu = ajoute_cmd_latex(contenu, DATA_MOTSCLES)  # détecte les commandes
-
-    return contenu
-
-
-def cesure_contenu(contenu, long_max=30):
-    chaine = "\\rotatebox[origin=c]{90}{\n"
-    chaine += "\\begin{tabular}{ll}\n"
-    contenu_cesure = []
-    while contenu:
-        indice_espace = contenu.find(" ", long_max)
-        if indice_espace < 0:
-            contenu_cesure.append(contenu)
-            contenu = ""
-        else:
-            contenu_cesure.append(contenu[:indice_espace])
-            contenu = contenu[indice_espace + 1 :]
-    chaine += " \\\\ ".join(contenu_cesure)
-    chaine += "\\end{tabular} }"
-    return chaine
 
 
