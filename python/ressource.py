@@ -1,10 +1,8 @@
-import string
 import pypandoc
 import ruamel.yaml
 
 import latex
-from modeles import get_modele, TemplateLatex
-from officiel import *
+import officiel
 from ressourcedocx import *
 
 __LOGGER = logging.getLogger(__name__)
@@ -20,7 +18,7 @@ class ActivitePedagogique():
     """
     __LOGGER = logging.getLogger(__name__)
 
-    def __init__(self, fichieryaml):
+    def __init__(self, fichieryaml, officiel):
         """Charge les données du fichier yaml"""
         with open(fichieryaml, "r", encoding="utf8") as fid:
             yaml = ruamel.yaml.YAML()
@@ -28,14 +26,22 @@ class ActivitePedagogique():
                 self.yaml = yaml.load(fid.read())
             except:
                 ActivitePedagogique.__LOGGER.warning(f"Pb de chargement de {fichieryaml}")
+        # Rappatrie les infos communes (code/titre)
+        self.code = self.yaml["code"]
+        self.numero_semestre = self.yaml["semestre"]
+        self.nom_semestre = "S" + str(self.numero_semestre)
+
+        # Charges les données officielles
+        self.officiel = officiel
+
 
 class Ressource(ActivitePedagogique):
     """Modélise une ressource lorsqu'elle est extraite d'un fichier yaml"""
 
     __LOGGER = logging.getLogger(__name__)
 
-    def __init__(self, fichieryaml):
-        super().__init__(fichieryaml)
+    def __init__(self, fichieryaml, officiel):
+        super().__init__(fichieryaml, officiel)
         self.ressource = self.yaml
 
     def to_latex(self, modele=Config.ROOT + "/python/pn/modele_ressource.tex"):
@@ -61,7 +67,7 @@ class Ressource(ActivitePedagogique):
                     len(self.ressource["acs"][accomp])
                 ):  # les ac de la comp
                     code_ac = self.ressource["acs"][accomp][no_ac]
-                    comps.append(ajoutac % (code_ac, DATA_ACS[accomp][code_ac]))
+                    comps.append(ajoutac % (code_ac, self.officiel.DATA_ACS[accomp][code_ac]))
             compRT.append("\n".join(comps))
 
         # Préparation des sae
@@ -141,7 +147,7 @@ class Ressource(ActivitePedagogique):
         return chaine
 
 
-def contient_abbr(chaine):
+def contient_abbr(chaine, DATA_ABBREVIATIONS):
     """Détecte les abréviations présentes dans la chaine
     (dont la liste est fournie par DATA_ABBREVIATIONS lues depuis le .yml) et
     les renvoie sous forme d'une liste par abréviations de nombre de caractères décroissants"""
@@ -172,7 +178,7 @@ def ajoute_abbr_latex(chaine):
     return chaine
 
 
-def contient_commandes(chaine):
+def contient_commandes(chaine, DATA_MOTSCLES):
     """Détecte si la `chaine` est une commande (éventuellement avec un caractère
     de ponctuation final)"""
     chaine_texte = ""
@@ -208,8 +214,8 @@ class SAE(ActivitePedagogique):
 
     __LOGGER = logging.getLogger(__name__)
 
-    def __init__(self, fichieryaml):
-        super().__init__(fichieryaml)
+    def __init__(self, fichieryaml, officiel):
+        super().__init__(fichieryaml, officiel)
         self.sae = self.yaml
 
     def to_latex(self, modele=Config.ROOT + "/python/pn/modele_sae.tex"):
@@ -233,7 +239,7 @@ class SAE(ActivitePedagogique):
             if accomp in self.sae["acs"]:
                 for no_ac in range(len(self.sae["acs"][accomp])):  # les ac de la comp
                     code_ac = self.sae["acs"][accomp][no_ac]
-                    comps.append(ajoutac % (code_ac, DATA_ACS[accomp][code_ac]))
+                    comps.append(ajoutac % (code_ac, self.officiel.DATA_ACS[accomp][code_ac]))
 
             compRT.append("\n".join(comps))
 
@@ -293,8 +299,8 @@ class ExempleSAE(ActivitePedagogique):
 
     __LOGGER = logging.getLogger(__name__)
 
-    def __init__(self, fichieryaml):
-        super().__init__(fichieryaml)
+    def __init__(self, fichieryaml, officiel):
+        super().__init__(fichieryaml, officiel)
         self.exemple = self.yaml
 
     def to_latex(self, modele=Config.ROOT + "/python/pn/modele_exemple_sae.tex"):
@@ -393,146 +399,6 @@ def md_to_latex(contenu):
     contenu = ajoute_cmd_latex(contenu)  # détecte les commandes
 
     return contenu
-
-
-def get_matrices_ac_ressource(saes, ressources, sem):
-    """Calcule la matrice AC vs sae + ressource pour un sem donné et la renvoie"""
-    les_codes_acs = [code for comp in DATA_ACS for code in DATA_ACS[comp]]
-    nbre_acs = len(les_codes_acs)
-
-    saesem = saes[sem]  # les saé du semestre
-    ressem = ressources[sem]  # les ressources du semestre
-
-    nbre_saes = len(DATA_SAES[sem])
-    nbre_ressources = len(DATA_RESSOURCES[sem])
-    if len(saesem) != nbre_saes:
-        __LOGGER.warning(f"Pb => il manque des saes au {sem}")
-    if len(ressem) != nbre_ressources:
-        __LOGGER.warning(f"Pb => il manque des ressources au {sem}")
-
-    matrice = [[False] * (nbre_saes + nbre_ressources) for i in range(nbre_acs)]
-
-    for (i, s) in enumerate(saesem):  # pour chaque SAE
-        for comp in s.sae["acs"]:  # pour chaque comp
-            for (j, ac) in enumerate(DATA_ACS[comp]):  # pour chaque ac
-                if ac in s.sae["acs"][comp]:  # si l'ac est prévue dans la ressource
-                    k = les_codes_acs.index(ac)
-                    matrice[k][i] = True
-
-    for (i, r) in enumerate(ressem):  # pour chaque ressource
-        for comp in r.ressource["acs"]:  # pour chaque comp
-            for (j, ac) in enumerate(DATA_ACS[comp]):  # pour chaque ac
-                if (
-                    ac in r.ressource["acs"][comp]
-                ):  # si l'ac est prévue dans la ressource
-                    k = les_codes_acs.index(ac)
-                    matrice[k][i + nbre_saes] = True
-    return matrice
-
-
-def get_matrices_coeffs(saes, ressources, sem):
-    """Calcule la matrice AC vs sae + ressource pour un sem donné et la renvoie"""
-    comps = ["RT1", "RT2", "RT3"]
-
-    saesem = saes[sem]  # les saé du semestre
-    ressem = ressources[sem]  # les ressources du semestre
-
-    nbre_saes = len(DATA_SAES[sem])
-    nbre_ressources = len(DATA_RESSOURCES[sem])
-    if len(saesem) != nbre_saes:
-        __LOGGER.warning(f"Pb => il manque des saes au {sem}")
-    if len(ressem) != nbre_ressources:
-        __LOGGER.warning(f"Pb => il manque des ressources au {sem}")
-
-    matrice = [[None] * (len(comps)) for i in range(nbre_saes + nbre_ressources)]
-
-    for (i, s) in enumerate(saesem):  # pour chaque SAE
-        for (j, comp) in enumerate(comps):  # pour chaque comp
-            if comp in s.sae["coeffs"]:
-                matrice[i][j] = s.sae["coeffs"][comp]
-
-    for (i, r) in enumerate(ressem):  # pour chaque ressource
-        for (j, comp) in enumerate(comps):  # pour chaque comp
-            if comp in r.ressource["coeffs"]:  # pour chaque ac
-                matrice[i + nbre_saes][j] = r.ressource["coeffs"][comp]
-    return matrice
-
-
-def get_matrices_volumes(saes, ressources, sem):
-    """Calcule la matrice AC vs sae + ressource pour un sem donné et la renvoie"""
-    saesem = saes[sem]  # les saé du semestre
-    ressem = ressources[sem]  # les ressources du semestre
-
-    nbre_saes = len(DATA_SAES[sem])
-    nbre_ressources = len(DATA_RESSOURCES[sem])
-    if len(saesem) != nbre_saes:
-        __LOGGER.warning(f"Pb => il manque des saes au {sem}")
-    if len(ressem) != nbre_ressources:
-        __LOGGER.warning(f"Pb => il manque des ressources au {sem}")
-
-    matrice = [[0] * (len(MODALITES)) for i in range(nbre_saes + nbre_ressources)]
-
-    for (i, s) in enumerate(saesem):  # pour chaque SAE
-        formation = (
-            s.sae["heures_encadrees"]
-            if not isinstance(s.sae["heures_encadrees"], str)
-            else 0
-        )
-        tp = s.sae["tp"] if not isinstance(s.sae["tp"], str) else 0
-        matrice[i][0] = formation - tp
-        matrice[i][1] = tp
-        matrice[i][2] = s.sae["projet"] if not isinstance(s.sae["projet"], str) else 0
-
-    for (i, r) in enumerate(ressem):  # pour chaque ressource
-        formation = (
-            r.ressource["heures_formation"]
-            if not isinstance(r.ressource["heures_formation"], str)
-            else 0
-        )
-        tp = (
-            r.ressource["heures_tp"]
-            if not isinstance(r.ressource["heures_tp"], str)
-            else 0
-        )
-        matrice[i + nbre_saes][0] = formation - tp
-        matrice[i + nbre_saes][1] = tp
-
-    return matrice
-
-
-def str_matrice(matrice, saes, ressources, sem):
-    """Renvoie une chaine de caractère affichant la matrice"""
-    les_codes_acs = [code for comp in DATA_ACS for code in DATA_ACS[comp]]
-    nbre_acs = len(les_codes_acs)
-
-    saesem = saes[sem]  # les saé du semestre
-    ressem = ressources[sem]  # les ressources du semestre
-
-    nbre_saes = len(DATA_SAES[sem])
-    nbre_ressources = len(DATA_RESSOURCES[sem])
-
-    chaine = ""
-    ligne = "{:20s} | " + "{:5s} | " * (nbre_saes + nbre_ressources)
-    valeurs = ("" for i in range(nbre_saes + nbre_ressources + 1))
-    trait = "-" * len(ligne.format(*valeurs))
-
-    valeurs = (
-        [""]
-        + [s.sae["code"] if s.sae["code"] else "????" for s in saesem]
-        + [r.ressource["code"] if r.ressource["code"] else "????" for r in ressem]
-        + [""] * (nbre_saes - len(saesem) + nbre_ressources - len(ressem))
-    )
-    valeurs = tuple(valeurs)
-    chaine += ligne.format(*valeurs) + "\n" + trait + "\n"
-    for (j, ac) in enumerate(les_codes_acs):
-        valeurs = [ac] + [
-            ("X" if matrice[j][i] == True else "")
-            for i in range(nbre_saes + nbre_ressources)
-        ]
-        valeurs = tuple(valeurs)
-        chaine += ligne.format(*valeurs) + "\n"
-    chaine += trait + "\n"
-    return chaine
 
 
 def cesure_contenu(contenu, long_max=30):

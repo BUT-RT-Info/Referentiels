@@ -8,6 +8,7 @@ import argparse
 import logging
 import sys
 
+import semestre
 from config import Config
 
 __LOGGER = logging.getLogger(__name__)
@@ -58,5 +59,5 @@ for sem in saes:
 
 ## Bilan : acs, volume, coefficient, abbréviations
 for sem in ["S1", "S2"]:
-    vol1 = ressource.get_matrices_volumes(saes, ressources, sem)
+    vol1 = semestre.get_matrice_volumes_comp_vs_activites(saes, ressources, sem)
 

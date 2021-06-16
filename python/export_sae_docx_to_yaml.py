@@ -48,7 +48,6 @@ docu[0] # Titre général
 docu[1] # Tableau de synthèse des ressources
 
 
-
 ENTETES_CHAPEAU = ["Titre",  "Code", "Semestre", "Heures de formation",
                    "dont heures de TP",
                    "Heures \"projet",
