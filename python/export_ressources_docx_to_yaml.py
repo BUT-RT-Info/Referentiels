@@ -38,7 +38,7 @@ __LOGGER.warning(f"{sys.argv[0]} processing {args.DOCUMENT}")
 __LOGGER.warning(f"{sys.argv[0]} outputs to {args.outdir}")
 
 # Ces imports doivent être faits après la config
-import tools, ressourcedocx, officiel
+import tools, activitedocx, officiel
 
 # Récupère les données officielles
 pnofficiel = officiel.Officiel()
@@ -84,7 +84,7 @@ for i in range(2, len(docu)): # A priori un tableau
         nom_ressource = tools.caracteres_recalcitrants(res[0][1][0])
 
         # Création de la ressource
-        r = ressourcedocx.RessourceDocx(nom_ressource, res, pnofficiel)
+        r = activitedocx.RessourceDocx(nom_ressource, res, pnofficiel)
         liste_ressources.append(r)
 
         # if len(res) != 15:

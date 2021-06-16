@@ -20,7 +20,7 @@ class Docx():
         self.apprentissages = None # les acs (chargés ultérieurement)
         self.mots = None # les mots-clés chargés ultérieurement
         self.coeffs = None # chargés ultérieurement
-        self.officiel = pnofficiel # les éléments du pn officiel
+        self.officiel = pnofficiel # les éléments du templates officiel
 
     def charge_ac(self, apprentissages):
         self.apprentissages = apprentissages

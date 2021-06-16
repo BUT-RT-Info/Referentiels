@@ -10,7 +10,7 @@ Une partie des traitements s'appuient sur :
 
 
 import re, pypandoc, string
-from ressourcedocx import remove_ligne_vide
+from activitedocx import remove_ligne_vide
 
 
 def rotation_entete_colonne(contenu, pos="l"):

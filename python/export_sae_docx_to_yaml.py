@@ -37,7 +37,7 @@ __LOGGER.warning(f"{sys.argv[0]} processing {args.DOCUMENT}")
 __LOGGER.warning(f"{sys.argv[0]} outputs to {args.outdir}")
 
 # Ces imports doivent être faits après la config
-import tools, ressourcedocx, officiel
+import tools, activitedocx, officiel
 
 # Récupère les données officielles
 pnofficiel = officiel.Officiel()
@@ -94,7 +94,7 @@ for i in range(1, len(docu)): # A priori un tableau
         nom_sae = tools.caracteres_recalcitrants(res[0][1][0])
 
         # Création de la ressource
-        r = ressourcedocx.SAEDocx(nom_sae, res, pnofficiel)
+        r = activitedocx.SAEDocx(nom_sae, res, pnofficiel)
         liste_saes.append(r)
 
         # Parsing des données brute de la sae
@@ -158,7 +158,7 @@ for i in range(1, len(docu)): # A priori un tableau
         nom_exemple = tools.caracteres_recalcitrants(res[0][1][0])
 
         # Création de la ressource
-        r = ressourcedocx.ExempleSAEDocx(nom_exemple, res, last_sae, pnofficiel)
+        r = activitedocx.ExempleSAEDocx(nom_exemple, res, last_sae, pnofficiel)
         liste_exemples[last_sae].append(r)
 
         # Parsing des données brute de la sae

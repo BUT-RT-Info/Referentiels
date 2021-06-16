@@ -20,7 +20,10 @@ def get_indice_sans_accent_ni_espace(champ, entetes):
 
 
 def caracteres_recalcitrants(contenu):
-
+    """Supprime les caractères récalcitrans (éâà) d'un ``contenu`` provenant d'un docx dont
+    l'encodage dépend du système d'exploitation sur lequel a été rédigé
+    le document
+    """
     # contenu = contenu.replace("\'", "'")
     contenu = contenu.replace("è", "è")
     contenu = contenu.replace("é", "é")

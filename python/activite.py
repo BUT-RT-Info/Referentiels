@@ -1,7 +1,7 @@
 import ruamel.yaml
 
 import latex
-from ressourcedocx import *
+from activitedocx import *
 
 __LOGGER = logging.getLogger(__name__)
 
@@ -19,7 +19,7 @@ class ActivitePedagogique():
     * ``code`` : le code de l'activité (par ex: ``"R101"`` ou ``"SAE12"``)
     * ``nom_semestre`` : le nom du semestre où se tient l'activité (par ex: ``"S1"``)
     * ``numero_semestre`` : le numéro du semestre où se tient l'activité (1, 2, ..., 6)
-    * ``officiel`` : les données officielles du pn (cf. module ``officiel``)
+    * ``officiel`` : les données officielles du templates (cf. module ``officiel``)
     """
     __LOGGER = logging.getLogger(__name__)
 
@@ -54,7 +54,7 @@ class Ressource(ActivitePedagogique):
         super().__init__(fichieryaml, officiel)
         self.ressource = self.yaml
 
-    def to_latex(self, modele=Config.ROOT + "/python/pn/modele_ressource.tex"):
+    def to_latex(self, modele=Config.ROOT + "/python/templates/modele_ressource.tex"):
         """Génère le code latex décrivant la ressource, en utilisant le template
         latex donné dans ``modele``.
         """
@@ -172,11 +172,11 @@ class SAE(ActivitePedagogique):
         super().__init__(fichieryaml, officiel)
         self.sae = self.yaml
 
-    def to_latex(self, modele=Config.ROOT + "/python/pn/modele_sae.tex"):
+    def to_latex(self, modele=Config.ROOT + "/python/templates/modele_sae.tex"):
         """Génère le code latex décrivant la saé en utilisant le template latex donné
         dans ``modele``
         """
-        modlatex = get_modele(modele)  # "pn/modele_ressource.tex")
+        modlatex = get_modele(modele)  # "templates/modele_ressource.tex")
 
         # Préparation des coeffs
         ajoutcoeff = "\\ajoutScoeff{%s}"
@@ -261,11 +261,11 @@ class ExempleSAE(ActivitePedagogique):
         super().__init__(fichieryaml, officiel)
         self.exemple = self.yaml
 
-    def to_latex(self, modele=Config.ROOT + "/python/pn/modele_exemple_sae.tex"):
+    def to_latex(self, modele=Config.ROOT + "/python/templates/modele_exemple_sae.tex"):
         """Génère le code latex décrivant l'exemple de SAE en utilisant le template
         donné dans ``modele``
         """
-        modlatex = get_modele(modele)  # "pn/modele_ressource.tex")
+        modlatex = get_modele(modele)  # "templates/modele_ressource.tex")
 
         # préparation du descriptif
         description = self.exemple["description"]
