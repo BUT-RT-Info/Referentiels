@@ -39,7 +39,7 @@ __LOGGER.warning(f"{sys.argv[0]} outputs to {args.outdir}")
 # Ces imports doivent être faits après la config
 import tools
 from tools import get_indice, get_indice_sans_accent_ni_espace
-from ressource import get_matrices_ac_ressource
+from activite import get_matrices_ac_ressource
 from ressourcedocx import *
 
 # Ouverture du document

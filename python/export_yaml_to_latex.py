@@ -24,8 +24,8 @@ parser.add_argument(
 args = parser.parse_args()
 Config.ROOT = args.root
 
-import ressource
-from ressource import *
+import activite
+from activite import *
 
 REPERTOIRE_RESSOURCES_DEFINITIVES = Config.ROOT + "/yaml/ressources"
 REPERTOIRE_SAE_DEFINITIVES = Config.ROOT + "/yaml/saes"

@@ -5,10 +5,10 @@ import glob, os, logging
 import string
 
 import officiel
-import ressource
+import activite
 from config import Config
 from latex import rotation_entete_colonne
-from ressource import MODALITES
+from activite import MODALITES
 
 class SemestrePN():
     """
@@ -74,16 +74,16 @@ class SemestrePN():
 
         for fichieryaml in fichiers_ressources:
             if type == "ressource":
-                a = ressource.Ressource(fichieryaml, self.officiel)  # lecture du fichier
+                a = activite.Ressource(fichieryaml, self.officiel)  # lecture du fichier
                 if a.nom_semestre == self.nom_semestre:
                     self.ressources[a.code] = a
             else: # type = "saé"
                 if "exemple" not in fichieryaml:
-                    a = ressource.SAE(fichieryaml, self.officiel)
+                    a = activite.SAE(fichieryaml, self.officiel)
                     if a.nom_semestre == self.nom_semestre:
                         self.saes[a.code] = a
                 else: # un exemple de SAE
-                    e = ressource.ExempleSAE(fichieryaml, self.officiel)
+                    e = activite.ExempleSAE(fichieryaml, self.officiel)
                     sae = e.yaml["code"]
                     if e.nom_semestre == self.nom_semestre:
                         if sae not in self.exemples:
@@ -174,7 +174,7 @@ class SemestrePN():
         codes_activites = self.get_codes_saes_tries() + self.get_codes_ressources_tries()
         for (i, code) in enumerate(codes_activites):  # pour chaque activité (SAE puis ressource)
             a = self.activites[code]
-            if isinstance(a, ressource.SAE):
+            if isinstance(a, activite.SAE):
                 formation = (
                     a.yaml["heures_encadrees"]
                     if not isinstance(a.yaml["heures_encadrees"], str)

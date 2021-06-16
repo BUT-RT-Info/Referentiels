@@ -24,7 +24,7 @@ parser.add_argument(
 args = parser.parse_args()
 Config.ROOT = args.root
 
-import ressource
+import activite
 
 
 REPERTOIRE_RESSOURCES_DEFINITIVES = Config.ROOT + "/yaml/ressources"
@@ -36,7 +36,7 @@ fichiers_ressources = [os.path.split(x)[1] for x in glob.glob(REPERTOIRE_RESSOUR
 fichiers_ressources = sorted(fichiers_ressources) # tri par ordre alphabétique
 ressources = {"S1": [], "S2": []}
 for fichieryaml in fichiers_ressources:
-    r = ressource.Ressource(fichieryaml) # lecture du fichier
+    r = activite.Ressource(fichieryaml) # lecture du fichier
     sem = "S" + str(r.ressource["semestre"])
     ressources[sem].append(r)
 # tri par code croissant
@@ -50,7 +50,7 @@ fichiers_saes = sorted(fichiers_saes) # tri par ordre alphabétique
 
 saes = {"S1": [], "S2": []}
 for fichieryaml in fichiers_saes:
-    s = ressource.SAE(fichieryaml)
+    s = activite.SAE(fichieryaml)
     sem = "S" + str(s.sae["semestre"])
     saes[sem].append(s)
 
