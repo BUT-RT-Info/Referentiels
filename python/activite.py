@@ -275,7 +275,7 @@ class ExempleSAE(ActivitePedagogique):
                 f"{self.exemple['titre']} n'a pas de description"
             )
         else:
-            description = md_to_latex(description, self.officiel.DATA_MOTSCLES)
+            description = latex.md_to_latex(description, self.officiel.DATA_MOTSCLES)
 
 
         # préparation de la forme
@@ -284,7 +284,7 @@ class ExempleSAE(ActivitePedagogique):
             formes = ""
             ExempleSAE.__LOGGER.warning(f"{self.exemple['titre']} n'a pas de formes")
         else:
-            formes = md_to_latex(formes, self.officiel.DATA_MOTSCLES)
+            formes = latex.md_to_latex(formes, self.officiel.DATA_MOTSCLES)
 
         # préparation de la problématique
         problematique = self.exemple["problematique"]
@@ -294,7 +294,7 @@ class ExempleSAE(ActivitePedagogique):
                 f"{self.exemple['titre']} n'a pas de problematique"
             )
         else:
-            problematique = md_to_latex(problematique, self.officiel.DATA_MOTSCLES)
+            problematique = latex.md_to_latex(problematique, self.officiel.DATA_MOTSCLES)
             if "15" in self.exemple["code"]:
                 # supprime le \\[3pt]
                 problematique = problematique[:-7]
@@ -305,7 +305,7 @@ class ExempleSAE(ActivitePedagogique):
             modalite = ""
             ExempleSAE.__LOGGER.warning(f"{self.exemple['titre']} n'a pas de modalite")
         else:
-            modalite = md_to_latex(modalite, self.officiel.DATA_MOTSCLES)
+            modalite = latex.md_to_latex(modalite, self.officiel.DATA_MOTSCLES)
 
         chaine = ""
         chaine = TemplateLatex(modlatex).substitute(

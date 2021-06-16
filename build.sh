@@ -19,7 +19,7 @@ die() {
 
 [ -d python/export ] || mkdir "python/export" || die "creating python/export directory"
 
-python python/export_docx_to_yaml.py "$ressources" -o "python/export" -r . || die "echec de export_docx_to_yaml.py"
+python python/export_ressources_docx_to_yaml.py "$ressources" -o "python/export" -r . || die "echec de export_docx_to_yaml.py"
 python python/export_sae_docx_to_yaml.py "$saes" -o "python/export" -r . || die "echec de export_sae_docx_to_yaml.py"
 python python/export_yaml_to_latex.py -a -r . || die "echec de export_yaml_to_latex.py"
 

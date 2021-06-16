@@ -24,11 +24,11 @@ L'analyse s'appuie sur les fichiers `python/pn/ressources.yml` et `python/pn/sae
 #### Ressources
 
     cd python
-    python export_docx_to_yaml.py -o REPERTOIRE_EXPORT [nom du fichier docx]
+    python export_ressources_docx_to_yaml.py -o REPERTOIRE_EXPORT [nom du fichier docx]
 
 Par exemple:
 
-    python export_docx_to_yaml.py import/compilation-ressources.docx
+    python export_ressources_docx_to_yaml.py import/compilation-ressources.docx
 
 #### SAÉs
 

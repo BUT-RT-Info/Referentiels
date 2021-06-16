@@ -1,14 +1,13 @@
-
+import os.path
 import sys
 import argparse
 import logging
 import docx2python
 
 from config import Config
-from semestre import affiche_bilan_heures
+
 
 __LOGGER = logging.getLogger(__name__)
-REPERTOIRE = "import"
 
 parser = argparse.ArgumentParser(
     description="Parse doc ressources et crée yaml", 
@@ -17,13 +16,14 @@ parser = argparse.ArgumentParser(
 parser.add_argument(
     "DOCUMENT", 
     nargs="?", 
-    default=REPERTOIRE + "/" + "ressources_v0" + ".docx"
+    default="../google/" + "compilation-ressources-JOBO21" + ".docx",
+    help="docx à parser, defaut: ../google/compilation-ressources-JOBO21.docx"
     )
 parser.add_argument(
     "-o", 
     "--outdir", 
-    default="export", 
-    help="repertoire resultat, defaut: export"
+    default= "../yaml/ressources",
+    help="repertoire resultat, defaut: ../yaml/ressources"
     )
 parser.add_argument(
     "-r", 
@@ -38,11 +38,16 @@ __LOGGER.warning(f"{sys.argv[0]} processing {args.DOCUMENT}")
 __LOGGER.warning(f"{sys.argv[0]} outputs to {args.outdir}")
 
 # Ces imports doivent être faits après la config
-import tools
-from tools import get_indice, get_indice_sans_accent_ni_espace
-from ressourcedocx import *
+import tools, ressourcedocx, officiel
+
+# Récupère les données officielles
+pnofficiel = officiel.Officiel()
 
 # Ouverture du document
+if not os.path.isfile(args.DOCUMENT):
+    print(f"Le fichier à parser {args.DOCUMENT} n'existe pas")
+    sys.exit()
+
 docu = docx2python.docx2python(args.DOCUMENT)
 
 docu = docu.body
@@ -79,7 +84,7 @@ for i in range(2, len(docu)): # A priori un tableau
         nom_ressource = tools.caracteres_recalcitrants(res[0][1][0])
 
         # Création de la ressource
-        r = RessourceDocx(nom_ressource, res)
+        r = ressourcedocx.RessourceDocx(nom_ressource, res, pnofficiel)
         liste_ressources.append(r)
 
         # if len(res) != 15:
@@ -94,7 +99,7 @@ for i in range(2, len(docu)): # A priori un tableau
             ligne = res[j]
             if len(ligne) == 2: # ligne de données classique champ => valeur
                 champ = ligne[0][0] # le nom du champ
-                i = get_indice_sans_accent_ni_espace(champ, ENTETES)  # l'indice de l'entete dans ENTETES
+                i = tools.get_indice_sans_accent_ni_espace(champ, ENTETES)  # l'indice de l'entete dans ENTETES
                 if i != None:
                     data[i] = tools.caracteres_recalcitrants("\n".join(res[j][1]))
                     if champ == "Prérequis" and not data[i]:
@@ -120,7 +125,7 @@ for i in range(2, len(docu)): # A priori un tableau
                 indice_champ = -1
             if indice_champ >= 0: # si le champ "Heures de formation (incluant les TP)" est trouvé
                 # tente de réinjecter les heures dans Heures encadrées si elles n'on pas déjà été renseignées
-                indice_heure = get_indice("formation encadrée", ENTETES)
+                indice_heure = tools.get_indice("formation encadrée", ENTETES)
                 if not data[indice_heure]:
                     print(f"Dans \"{nom_ressource}\", réinjection de \"Heures de formation (incluant les TP)\" dans \"formation encadrée\"")
                     data[indice_heure] = champ[1]
@@ -169,19 +174,6 @@ for sem in ressources:
                 r.code = "R" + sem[1] + "01"
             elif ressources[sem][i-1].code:
                 r.code = "R" + sem[1] + "{:02d}".format(int(ressources[sem][i-1].code[-2:])+1)
-
-# ************************************************************************
-# Affichages divers
-# Le tableau des heures ressources
-for sem in ressources: # parcours des semestres
-    # print(f"Semestre {sem}")
-    chaine = affiche_bilan_heures(ressources, sem)
-
-
-# Matrice ACS/ressources
-matrices = {}
-les_codes_acs = [code for comp in DATA_ACS for code in DATA_ACS[comp]]
-nbre_acs = len(les_codes_acs)
 
 # Export yaml
 WITH_EXPORT = True

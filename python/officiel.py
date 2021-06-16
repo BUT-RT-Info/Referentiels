@@ -81,9 +81,9 @@ def devine_code_by_nom_from_dict(champ, dico):
     acs = []
     champ_purge = supprime_accent_espace(champ)
 
-    for comp in DATA_ACS:
-        for code in DATA_ACS[comp]:
-            acs_purge = supprime_accent_espace(DATA_ACS[comp][code])
+    for comp in dico:
+        for code in dico[comp]:
+            acs_purge = supprime_accent_espace(dico[comp][code])
             if acs_purge in champ_purge:
                 acs += [code]
     return sorted(list(set(acs)))
