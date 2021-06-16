@@ -5,6 +5,7 @@ import logging
 import docx2python
 
 from config import Config
+from semestre import affiche_bilan_heures
 
 __LOGGER = logging.getLogger(__name__)
 REPERTOIRE = "import"
@@ -39,7 +40,6 @@ __LOGGER.warning(f"{sys.argv[0]} outputs to {args.outdir}")
 # Ces imports doivent être faits après la config
 import tools
 from tools import get_indice, get_indice_sans_accent_ni_espace
-from activite import get_matrices_ac_ressource
 from ressourcedocx import *
 
 # Ouverture du document

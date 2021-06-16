@@ -61,11 +61,8 @@ class SemestrePN():
                                 type,
                                 repertoire):
         """
-        Charge les activités dont le type (ressources ou saes) est indiqué, rattachées au semestre nom_semestre dont les yaml sont dans le repertoire
-
-        :param type:
-        :param repertoire:
-        :return:
+        Charge les activités dont le type (ressources ou saes) est indiqué, rattachées au semestre nom_semestre dont
+        les yaml sont dans le repertoire
         """
         fichiers_definitifs = [os.path.split(x)[1] for x in glob.glob(repertoire + '/*.yml')]
         fichiers_ressources = [repertoire + "/" + f for f in fichiers_definitifs]
@@ -101,7 +98,8 @@ class SemestrePN():
 
     def check_activites_vs_officiel(self):
         """Check si le nombre de ressources & de saés chargés correspond au
-        nombre prévu dans les données officielles"""
+        nombre prévu dans les données officielles
+        """
         nbre_saes_attendues = len(self.officiel.DATA_SAES[self.nom_semestre])
         nbre_ressources_attendues = len(self.officiel.DATA_RESSOURCES[self.nom_semestre])
         if len(self.saes) != nbre_saes_attendues:
@@ -232,8 +230,8 @@ class SemestrePN():
 
     def to_latex_matrice_ac_vs_activites(self):
         """Renvoie le tableau latex affichant la matrice des apprentissages critiques
-        ayant connaissances des ``saes`` et des ``ressources `` (triées dans un dictionnaire par semestre)
-        pour un ``sem``estre donné
+        ayant connaissances des ``saes`` et des ``ressources``
+        du semestre
         """
         matrice = self.get_matrice_ac_vs_activites()
 
@@ -571,3 +569,30 @@ class SemestrePN():
             for j in range(3)
         ]
         return sommes
+
+
+    def affiche_bilan_heures(self):
+        """Renvoie une chaine décrivant un bilan des heures-ressources du semestre
+
+        .. deprecated:: à revoir
+        """
+        ligne = "{:20s} | {:75s} | {:10s} | {:10s} |"
+        trait = "-"*len(ligne.format("", "", "", ""))
+
+        ressem = self.ressources # les ressources du semestre
+        chaine = ""
+        chaine += trait + "\n"
+        chaine += ligne.format("Code", "Ressource", "Form.", "dont TP") + "\n"
+        chaine += trait + "\n"
+        for (code, r) in self.ressources.items():
+            chaine += ligne.format(r.code if r.code else "MANQUANT",
+                               # r.nom[:30] + ("..." if len(r.nom) > 30 else "") ,
+                               r.nom,
+                               str(r.heures_encadrees) if r.heures_encadrees else "MANQUANT",
+                               str(r.tp) if r.tp else "MANQUANT") + "\n"
+        heures_formation_total = sum([r.heures_encadrees for r in ressem if r.heures_encadrees != None])
+        heures_tp_total = sum([r.tp for r in ressem if r.tp != None])
+        chaine += trait + "\n"
+        chaine += ligne.format("", "Total", str(heures_formation_total), str(heures_tp_total)) + "\n"
+        chaine += trait + "\n"
+        return chaine

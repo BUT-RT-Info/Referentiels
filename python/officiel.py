@@ -7,22 +7,32 @@ __LOGGER = logging.getLogger(__name__)
 AUCUN_PREREQUIS = "Aucun"
 
 class Officiel():
-    """Récupère les informations officielles :
+    """
+    Récupère et stocke des informations dites *officielles*, fournies par différents
+    fichiers yaml (conçus manuellement).
 
-    * le nom des ressources, des saés
-    * les compétences et les  apprentissages critiques
-    * les mots-clés, les abréviations
+    Certaines traduisent les tableurs de synthèse du GT-BUT avec :
+
+    * le nom des ressources (cf. ressources.yml)
+    * le nom des saés (cf. saes.yml)
+    * les compétences (cf. RT123.yml)
+    * les  apprentissages critiques (structurées par compétences) (cf. acs.yml)
+
+    D'autres donnent : les mots-clés, les abréviations propres à RT (cf. motscles.yml, abreviations.yml).
+
+    Fournit également différentes méthodes pour exploiter ces données officielles.
     """
 
     def __init__(self):
+
         ## Les ressources
-        with open(Config.ROOT+"/python/pn/ressources.yml", 'r', encoding="utf8") as fid:
+        with open(Config.ROOT+"/yaml/pn/ressources.yml", 'r', encoding="utf8") as fid:
             self.DATA_RESSOURCES = yaml.load(fid.read(), Loader=yaml.Loader)
         ## Les ACS
-        with open(Config.ROOT+"/python/pn/acs.yml", 'r', encoding="utf8") as fid:
+        with open(Config.ROOT+"/yaml/pn/acs.yml", 'r', encoding="utf8") as fid:
             self.DATA_ACS = yaml.load(fid.read(), Loader=yaml.Loader)
         ## Les SAEs
-        with open(Config.ROOT+"/python/pn/saes.yml", 'r', encoding="utf8") as fid:
+        with open(Config.ROOT+"/yaml/pn/saes.yml", 'r', encoding="utf8") as fid:
             self.DATA_SAES = yaml.load(fid.read(), Loader=yaml.Loader)
         ## Les compétences
         with open(Config.ROOT+"/yaml/competences/RT123.yml", 'r', encoding="utf8") as fid:
@@ -36,21 +46,24 @@ class Officiel():
 
 
     def get_ressource_name_by_code(self, code):
-        """Pour un code de ressource valide et ce sans connaissance du semestre,
+        """Pour un code de ressource valide (existant dans ``DATA_RESSOURCES``)
+        et ce sans connaissance du semestre,
         fournit le nom officiel de la ressource
         """
         return get_officiel_name_by_code_using_dict(code, self.DATA_RESSOURCES)
 
     def get_sae_name_by_code(self, code):
-        """Pour un code de saé valide et ce sans connaissance du semestre,
+        """Pour un code de saé valide (existant dans ``DATA_SAES``)
+        et ce sans connaissance du semestre,
         fournit le nom officiel de la sae
         """
         return get_officiel_name_by_code_using_dict(code, self.DATA_SAES)
 
-    def get_sem_sae_by_code(self, sae):
-        """Récupère le semestre de la SAE d'après son code"""
+    def get_sem_sae_by_code(self, code_sae):
+        """Récupère le semestre de la sae d'après son ``code_sae``
+        """
         for sem in self.DATA_SAES:
-            if sae in self.DATA_SAES[sem]:
+            if code_sae in self.DATA_SAES[sem]:
                 return sem
 
 
@@ -75,29 +88,6 @@ def devine_code_by_nom_from_dict(champ, dico):
                 acs += [code]
     return sorted(list(set(acs)))
 
-
-def affiche_bilan_heures(ressources, sem):
-    """Renvoie une chaine décrivant un bilan des heures pour un sem donné"""
-    ligne = "{:20s} | {:75s} | {:10s} | {:10s} |"
-    trait = "-"*len(ligne.format("", "", "", ""))
-
-    ressem = ressources[sem] # les ressources du semestre
-    chaine = ""
-    chaine += trait + "\n"
-    chaine += ligne.format("Code", "Ressource", "Form.", "dont TP") + "\n"
-    chaine += trait + "\n"
-    for r in ressem:
-        chaine += ligne.format(r.code if r.code else "MANQUANT",
-                           # r.nom[:30] + ("..." if len(r.nom) > 30 else "") ,
-                           r.nom,
-                           str(r.heures_encadrees) if r.heures_encadrees else "MANQUANT",
-                           str(r.tp) if r.tp else "MANQUANT") + "\n"
-    heures_formation_total = sum([r.heures_encadrees for r in ressem if r.heures_encadrees != None])
-    heures_tp_total = sum([r.tp for r in ressem if r.tp != None])
-    chaine += trait + "\n"
-    chaine += ligne.format("", "Total", str(heures_formation_total), str(heures_tp_total)) + "\n"
-    chaine += trait + "\n"
-    return chaine
 
 def get_officiel_name_by_code_using_dict(code, dico):
     """Extrait un nom à partir d'un code (pour les RESSOURCES ou les SAES)"""
