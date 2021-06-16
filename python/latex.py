@@ -2,8 +2,8 @@
 Ensemble de fonctions utiles à l'export des ressources/SAé en latex
 """
 
-from ressource import *
 
+import re
 
 def rotation_entete_colonne(contenu, pos="l"):
     """Renvoie le code latex permettant la rotation de 90° d'un ``contenu``"""
@@ -34,10 +34,12 @@ def str_latex_abbreviations(DATA_ABBREVIATIONS):
     return chaine
 
 
-def nettoie_latex(chaine):
-    """Purge certains éléments de la `chaine` latex générée par pypandoc"""
+def nettoie_latex(chaine, DATA_ABBREVIATIONS):
+    """Purge certains éléments de la `chaine` latex générée par pypandoc
+    et détecte les abbréviations indiquées dans `DATA_ABBREVIATIONS`
+    """
     chaine = chaine.replace("\\tightlist\n", "")
-    chaine = ajoute_abbr_latex(chaine) # détecte les abréviations
+    chaine = ajoute_abbr_latex(chaine, DATA_ABBREVIATIONS) # détecte les abréviations
 
     # detecte les espaces insécables
     chaine = chaine.replace(" :", "~:")
@@ -71,3 +73,32 @@ def nettoie_latex(chaine):
     return chaine
 
 
+def ajoute_abbr_latex(chaine, DATA_ABBREVIATIONS):
+    """
+    Parse la chaine latex pour ajouter les abbréviations et les remplacer par
+    \\textabbrv{abreviation}
+    """
+    mots = chaine.split(" ")
+    for (i, mot) in enumerate(mots):
+        abbrs = contient_abbr(mot, DATA_ABBREVIATIONS)
+        if abbrs:
+            mots[i] = mots[i].replace(abbrs[0], "\\textabbrv{" + abbrs[0] + "}")
+    chaine = " ".join(mots)
+    if "/IP" in chaine:
+        chaine = chaine.replace("/IP", "/\\textabbrv{IP}")
+    return chaine
+
+
+def contient_abbr(chaine, DATA_ABBREVIATIONS):
+    """Détecte les abréviations présentes dans la chaine
+    (dont la liste est fournie par DATA_ABBREVIATIONS lues depuis le .yml) et
+    les renvoie sous forme d'une liste par abréviations de nombre de caractères décroissants"""
+    mots = []
+    for lettre in DATA_ABBREVIATIONS:
+        for mot in DATA_ABBREVIATIONS[lettre]:
+            if mot in chaine:
+                mots.append(mot)
+    mots = sorted(
+        mots, key=lambda m: len(m), reverse=True
+    )  # les mots triés par nbre de carac décroissant
+    return mots

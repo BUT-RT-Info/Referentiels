@@ -4,6 +4,8 @@ from config import Config
 
 __LOGGER = logging.getLogger(__name__)
 
+AUCUN_PREREQUIS = "Aucun"
+
 class Officiel():
     """Récupère les informations officielles :
 
@@ -32,7 +34,25 @@ class Officiel():
         with open(Config.ROOT+"/yaml/motscles.yml", "r", encoding="utf8") as fid:
             self.DATA_MOTSCLES = yaml.load(fid.read(), Loader=yaml.Loader)
 
-AUCUN_PREREQUIS = "Aucun"
+
+    def get_ressource_name_by_code(self, code):
+        """Pour un code de ressource valide et ce sans connaissance du semestre,
+        fournit le nom officiel de la ressource
+        """
+        return get_officiel_name_by_code_using_dict(code, self.DATA_RESSOURCES)
+
+    def get_sae_name_by_code(self, code):
+        """Pour un code de saé valide et ce sans connaissance du semestre,
+        fournit le nom officiel de la sae
+        """
+        return get_officiel_name_by_code_using_dict(code, self.DATA_SAES)
+
+    def get_sem_sae_by_code(self, sae):
+        """Récupère le semestre de la SAE d'après son code"""
+        for sem in self.DATA_SAES:
+            if sae in self.DATA_SAES[sem]:
+                return sem
+
 
 def supprime_accent_espace(chaine):
     """Met en minuscule, supprime les accents, les ponctuations et les espaces"""
@@ -86,15 +106,6 @@ def get_officiel_name_by_code_using_dict(code, dico):
             if rcode==code:
                 return dico[sem][code]
 
-def get_officiel_ressource_name_by_code(code):
-    """Pour un code valide, fournit le nom officiel de la ressource (sans connaissance du semestre)"""
-    return get_officiel_name_by_code_using_dict(code, DATA_RESSOURCES)
-
-def get_officiel_sae_name_by_code(code):
-    """Pour un code valide, fournit le nom officiel de la sae (sans connaissance du semestre)"""
-    return get_officiel_name_by_code_using_dict(code, DATA_SAES)
-
-
 
 def get_code_from_nom_using_dict(nom, dico):
     """Récupère le code d'une ressource d'après son nom en utilisant les noms officiels
@@ -106,11 +117,6 @@ def get_code_from_nom_using_dict(nom, dico):
             if nom.startswith(nom_data):
                 return code
 
-def get_officiel_sem_sae_by_code(sae):
-    """Récupère le semestre de la SAE d'après son code"""
-    for sem in DATA_SAES:
-        if sae in DATA_SAES[sem]:
-            return sem
 
 if __name__=="__main__":
-    print(DATA_COMPETENCES)
+    print("toto")

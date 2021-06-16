@@ -2,7 +2,6 @@ import pypandoc
 import ruamel.yaml
 
 import latex
-import officiel
 from ressourcedocx import *
 
 __LOGGER = logging.getLogger(__name__)
@@ -18,7 +17,7 @@ class ActivitePedagogique():
     """
     __LOGGER = logging.getLogger(__name__)
 
-    def __init__(self, fichieryaml, officiel):
+    def __init__(self, fichieryaml, pnofficiel):
         """Charge les données du fichier yaml"""
         with open(fichieryaml, "r", encoding="utf8") as fid:
             yaml = ruamel.yaml.YAML()
@@ -32,7 +31,7 @@ class ActivitePedagogique():
         self.nom_semestre = "S" + str(self.numero_semestre)
 
         # Charges les données officielles
-        self.officiel = officiel
+        self.officiel = pnofficiel
 
 
 class Ressource(ActivitePedagogique):
@@ -81,7 +80,7 @@ class Ressource(ActivitePedagogique):
                 + string.ascii_uppercase[int(sae[-1]) - 1]
             )
             saesRT.append(
-                ajoutsaes % (sae, get_officiel_sae_name_by_code(sae))
+                ajoutsaes % (sae, self.officiel.get_sem_sae_by_code(sae))
             )  # , code_latex))
         saes = "\n".join(saesRT)
 
@@ -99,7 +98,7 @@ class Ressource(ActivitePedagogique):
                 liste = []
                 for (no, mod) in enumerate(self.ressource["prerequis"]):
                     liste.append(
-                        ajoutprerequis % (mod, get_officiel_ressource_name_by_code(mod))
+                        ajoutprerequis % (mod, self.officiel.get_ressource_name_by_code(mod))
                     )
                 prerequis = "\n".join(liste)
 
@@ -110,7 +109,7 @@ class Ressource(ActivitePedagogique):
             Ressource.__LOGGER.warning(f"{self.ressource['nom']} n'a pas de contexte")
 
         else:
-            contexte = md_to_latex(contexte)
+            contexte = md_to_latex(contexte, self.officiel.DATA_MOTSCLES)
 
         # contexte = remove_ligne_vide(contexte)
         # préparation du contenu
@@ -120,7 +119,7 @@ class Ressource(ActivitePedagogique):
         if contenu:
             if self.ressource["code"] == "R112":
                 print("ici")
-            contenu = md_to_latex(contenu)
+            contenu = md_to_latex(contenu, self.officiel.DATA_MOTSCLES)
 
         chaine = ""
         chaine = TemplateLatex(modlatex).substitute(
@@ -141,41 +140,10 @@ class Ressource(ActivitePedagogique):
             contenu=contenu,
         )
         # chaine = chaine.replace("&", "\&")
-        chaine = latex.nettoie_latex(chaine)
+        chaine = latex.nettoie_latex(chaine, self.officiel.DATA_ABBREVIATIONS)
 
         # Insère les abbréviations
         return chaine
-
-
-def contient_abbr(chaine, DATA_ABBREVIATIONS):
-    """Détecte les abréviations présentes dans la chaine
-    (dont la liste est fournie par DATA_ABBREVIATIONS lues depuis le .yml) et
-    les renvoie sous forme d'une liste par abréviations de nombre de caractères décroissants"""
-    mots = []
-    for lettre in DATA_ABBREVIATIONS:
-        for mot in DATA_ABBREVIATIONS[lettre]:
-            if mot in chaine:
-                mots.append(mot)
-    mots = sorted(
-        mots, key=lambda m: len(m), reverse=True
-    )  # les mots triés par nbre de carac décroissant
-    return mots
-
-
-def ajoute_abbr_latex(chaine):
-    """
-    Parse la chaine latex pour ajouter les abbréviations et les remplacer par
-    \\textabbrv{abreviation}
-    """
-    mots = chaine.split(" ")
-    for (i, mot) in enumerate(mots):
-        abbrs = contient_abbr(mot)
-        if abbrs:
-            mots[i] = mots[i].replace(abbrs[0], "\\textabbrv{" + abbrs[0] + "}")
-    chaine = " ".join(mots)
-    if "/IP" in chaine:
-        chaine = chaine.replace("/IP", "/\\textabbrv{IP}")
-    return chaine
 
 
 def contient_commandes(chaine, DATA_MOTSCLES):
@@ -192,7 +160,7 @@ def contient_commandes(chaine, DATA_MOTSCLES):
     return None
 
 
-def ajoute_cmd_latex(chaine):
+def ajoute_cmd_latex(chaine, DATA_MOTSCLES):
     """
     Parse la chaine latex pour ajouter les abbréviations et les remplacer par
     \\textabbrv{abreviation}
@@ -201,7 +169,7 @@ def ajoute_cmd_latex(chaine):
     for (i, mot) in enumerate(mots):
         champs = mot.split("\n")
         for (j, champ) in enumerate(champs):
-            cmd = contient_commandes(champ)
+            cmd = contient_commandes(champ, DATA_MOTSCLES)
             if cmd:
                 champs[j] = champs[j].replace(cmd, "\\texttt{" + cmd + "}")
         mots[i] = "\n".join(champs)
@@ -250,7 +218,7 @@ class SAE(ActivitePedagogique):
             self.sae["ressources"]
         ):  # in range(len(self.apprentissages)):
             resRT.append(
-                ajoutressources % (res, get_officiel_ressource_name_by_code(res))
+                ajoutressources % (res, self.officiel.get_ressource_name_by_code(res))
             )
         ressources = "\n".join(resRT)
 
@@ -260,7 +228,7 @@ class SAE(ActivitePedagogique):
             descriptif = ""
             SAE.__LOGGER.warning(f"{self.sae['titre']} n'a pas de description")
         else:
-            descriptif = md_to_latex(descriptif)
+            descriptif = md_to_latex(descriptif, self.officiel.DATA_MOTSCLES)
 
         # préparation des livrables
         livrables = self.sae["livrables"]
@@ -268,7 +236,7 @@ class SAE(ActivitePedagogique):
             livrables = ""
             SAE.__LOGGER.warning(f"{self.sae['titre']} n'a pas de livrables")
         else:
-            livrables = md_to_latex(livrables)
+            livrables = md_to_latex(livrables, self.officiel.DATA_MOTSCLES)
 
         chaine = ""
         chaine = TemplateLatex(modlatex).substitute(
@@ -290,7 +258,7 @@ class SAE(ActivitePedagogique):
         )
         # chaine = chaine.replace("&", "\&")
 
-        chaine = latex.nettoie_latex(chaine)
+        chaine = latex.nettoie_latex(chaine, self.officiel.DATA_ABBREVIATIONS)
         return chaine
 
 
@@ -315,7 +283,7 @@ class ExempleSAE(ActivitePedagogique):
                 f"{self.exemple['titre']} n'a pas de description"
             )
         else:
-            description = md_to_latex(description)
+            description = md_to_latex(description, self.officiel.DATA_MOTSCLES)
 
 
         # préparation de la forme
@@ -324,7 +292,7 @@ class ExempleSAE(ActivitePedagogique):
             formes = ""
             ExempleSAE.__LOGGER.warning(f"{self.exemple['titre']} n'a pas de formes")
         else:
-            formes = md_to_latex(formes)
+            formes = md_to_latex(formes, self.officiel.DATA_MOTSCLES)
 
         # préparation de la problématique
         problematique = self.exemple["problematique"]
@@ -334,7 +302,7 @@ class ExempleSAE(ActivitePedagogique):
                 f"{self.exemple['titre']} n'a pas de problematique"
             )
         else:
-            problematique = md_to_latex(problematique)
+            problematique = md_to_latex(problematique, self.officiel.DATA_MOTSCLES)
             if "15" in self.exemple["code"]:
                 # supprime le \\[3pt]
                 problematique = problematique[:-7]
@@ -345,7 +313,7 @@ class ExempleSAE(ActivitePedagogique):
             modalite = ""
             ExempleSAE.__LOGGER.warning(f"{self.exemple['titre']} n'a pas de modalite")
         else:
-            modalite = md_to_latex(modalite)
+            modalite = md_to_latex(modalite, self.officiel.DATA_MOTSCLES)
 
         chaine = ""
         chaine = TemplateLatex(modlatex).substitute(
@@ -356,12 +324,12 @@ class ExempleSAE(ActivitePedagogique):
             modalite=modalite,
         )
         # chaine = chaine.replace("&", "\&")
-        chaine = latex.nettoie_latex(chaine)
+        chaine = latex.nettoie_latex(chaine, self.officiel.DATA_ABBREVIATIONS)
 
         return chaine
 
 
-def md_to_latex(contenu):
+def md_to_latex(contenu, DATA_MOTSCLES):
     """Réalise la conversion markdown to latex avec pypandoc"""
     contenu = contenu.replace(
         "\n", "\n\n"
@@ -396,7 +364,7 @@ def md_to_latex(contenu):
     if not contenu.endswith("\\end{itemize}"):
         contenu += "\\\\[3pt]"
 
-    contenu = ajoute_cmd_latex(contenu)  # détecte les commandes
+    contenu = ajoute_cmd_latex(contenu, DATA_MOTSCLES)  # détecte les commandes
 
     return contenu
 
@@ -416,84 +384,5 @@ def cesure_contenu(contenu, long_max=30):
     chaine += " \\\\ ".join(contenu_cesure)
     chaine += "\\end{tabular} }"
     return chaine
-
-
-def get_total_nbre_heures(matrice_heures):
-    """Calcul le nombre d'heures total des SAé d'après la matrice"""
-    sommes = [
-        sum(
-            [
-                matrice_heures[i][j]
-                for i in range(len(matrice_heures))
-                if matrice_heures[i][j]
-            ]
-        )
-        for j in range(3)
-    ]
-    return sommes
-
-
-def get_total_nbre_heures_saes(matrice_heures, sem):
-    """Calcul le nombre d'heures total des SAé d'après la matrice"""
-    nbre_sae = len(DATA_SAES[sem])
-    sommes = [
-        sum([matrice_heures[i][j] for i in range(nbre_sae) if matrice_heures[i][j]])
-        for j in range(3)
-    ]
-    return sommes
-
-
-def get_total_nbre_heures_ressources(matrice_heures, sem):
-    """Calcul le nombre d'heures total des SAé d'après la matrice"""
-    nbre_sae = len(DATA_SAES[sem])
-    sommes = [
-        sum(
-            [
-                matrice_heures[i][j]
-                for i in range(nbre_sae, len(matrice_heures))
-                if matrice_heures[i][j]
-            ]
-        )
-        for j in range(3)
-    ]
-    return sommes
-
-
-def get_total_coeffs(matrice_coeffs):
-    sommes = [
-        sum(
-            [
-                matrice_coeffs[i][j]
-                for i in range(len(matrice_coeffs))
-                if matrice_coeffs[i][j]
-            ]
-        )
-        for j in range(3)
-    ]
-    return sommes
-
-
-def get_total_coeffs_saes(matrice_coeffs, sem):
-    nbre_sae = len(DATA_SAES[sem])
-    sommes = [
-        sum([matrice_coeffs[i][j] for i in range(nbre_sae) if matrice_coeffs[i][j]])
-        for j in range(3)
-    ]
-    return sommes
-
-
-def get_total_coeffs_ressources(matrice_coeffs, sem):
-    nbre_sae = len(DATA_SAES[sem])
-    sommes = [
-        sum(
-            [
-                matrice_coeffs[i][j]
-                for i in range(nbre_sae, len(matrice_coeffs))
-                if matrice_coeffs[i][j]
-            ]
-        )
-        for j in range(3)
-    ]
-    return sommes
 
 

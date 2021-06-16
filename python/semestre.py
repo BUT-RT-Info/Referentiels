@@ -8,9 +8,7 @@ import officiel
 import ressource
 from config import Config
 from latex import rotation_entete_colonne
-from ressource import __LOGGER, MODALITES, get_total_nbre_heures, get_total_nbre_heures_saes, \
-    get_total_nbre_heures_ressources, get_total_coeffs, get_total_coeffs_saes, get_total_coeffs_ressources
-
+from ressource import MODALITES
 
 class SemestrePN():
     """
@@ -24,7 +22,7 @@ class SemestrePN():
     def __init__(self, nom_semestre,
                  repertoire_ressources,
                  repertoire_saes,
-                 officiel):
+                 pnofficiel):
         """
         Modélise un semestre avec ses ressources et ses SAés, en utilisant les données
         officiels (yaml).
@@ -37,6 +35,12 @@ class SemestrePN():
         self.saes = {}
         self.exemples = {}
 
+        # Charge les infos officielles
+        self.officiel = pnofficiel
+        self.code_acs = [code for comp in self.officiel.DATA_ACS
+                            for code in self.officiel.DATA_ACS[comp]]
+        self.nbre_acs = len(self.code_acs)
+
         # Chargement des ressources
         self.get_activites_from_yaml(type="ressource",
                                      repertoire=repertoire_ressources)
@@ -48,11 +52,7 @@ class SemestrePN():
         self.activites = {**self.saes, **self.ressources} # les saes et les ressources
         self.nbre_activites = len(self.activites)
 
-        # Charge les infos officielles
-        self.officiel = officiel
-        self.code_acs = [code for comp in self.officiel.DATA_ACS
-                            for code in self.officiel.DATA_ACS[comp]]
-        self.nbre_acs = len(self.code_acs)
+
 
         # Checks divers
         self.check_activites_vs_officiel()
@@ -74,16 +74,16 @@ class SemestrePN():
 
         for fichieryaml in fichiers_ressources:
             if type == "ressource":
-                a = ressource.Ressource(fichieryaml, officiel)  # lecture du fichier
+                a = ressource.Ressource(fichieryaml, self.officiel)  # lecture du fichier
                 if a.nom_semestre == self.nom_semestre:
                     self.ressources[a.code] = a
             else: # type = "saé"
                 if "exemple" not in fichieryaml:
-                    a = ressource.SAE(fichieryaml, officiel)
+                    a = ressource.SAE(fichieryaml, self.officiel)
                     if a.nom_semestre == self.nom_semestre:
                         self.saes[a.code] = a
                 else: # un exemple de SAE
-                    e = ressource.ExempleSAE(fichieryaml, officiel)
+                    e = ressource.ExempleSAE(fichieryaml, self.officiel)
                     sae = e.yaml["code"]
                     if e.nom_semestre == self.nom_semestre:
                         if sae not in self.exemples:
@@ -424,7 +424,9 @@ class SemestrePN():
         chaine += "\\\\ \n"
         chaine += "\\hline "
         # le nom des SAE
-        for (i, s) in enumerate(self.saes):  # pour chaque SAE
+        saes = self.get_codes_saes_tries()
+        for (i, code) in enumerate(saes):  # pour chaque SAE
+            s = self.saes[code]
             chaine += "\\hyperlink{sae:" + s.yaml["code"] + "}{"
             chaine += "\\textcolor{saeC}{" + s.yaml["code"] + "}"
             chaine += "}"
@@ -451,7 +453,9 @@ class SemestrePN():
         chaine += "\\\\ \n"
         chaine += "\\hline "
 
-        for (i, r) in enumerate(self.ressources):  # pour chaque SAE
+        ressources = self.get_codes_ressources_tries()
+        for (i, code) in enumerate(ressources):  # pour chaque SAE
+            r = self.ressources[code]
             chaine += "\hyperlink{res:" + r.yaml["code"] + "}{"
             chaine += "\\textcolor{ressourceC}{" + r.yaml["code"] + "}"
             chaine += "}"
@@ -470,12 +474,12 @@ class SemestrePN():
             chaine += "\\hline "
 
         # Total
-        total_heures = get_total_nbre_heures(matrice_vols)
-        total_heures_sae = get_total_nbre_heures_saes(matrice_vols, self.nom_semestre)
-        total_heures_ressources = get_total_nbre_heures_ressources(matrice_vols, self.nom_semestre)
-        total_coeffs = get_total_coeffs(matrice_coeffs)
-        total_coeffs_sae = get_total_coeffs_saes(matrice_coeffs, self.nom_semestre)
-        total_coeffs_ressources = get_total_coeffs_ressources(matrice_coeffs, self.nom_semestre)
+        total_heures_activites = self.get_total_nbre_heures_par_modalite()
+        total_heures_sae = self.get_total_nbre_heures_par_modalite(type="saés")
+        total_heures_ressources = self.get_total_nbre_heures_par_modalite(type="ressources")
+        total_coeffs_activites = self.get_total_coeffs_par_comp()
+        total_coeffs_sae = self.get_total_coeffs_par_comp(type="saés")
+        total_coeffs_ressources = self.get_total_coeffs_par_comp(type="ressources")
 
         chaine += "\\hline "
         chaine += "\multicolumn{%d}{|l|}{\\bfseries Total}" % (nbre_colonnes) + "\n"
@@ -496,9 +500,9 @@ class SemestrePN():
         chaine += "\\\\ \hline "
         chaine += "\multicolumn{2}{|r|}{\\bfseries SAÉs + Ressources}"
         for i in range(3):
-            chaine += " & {\\bfseries " + str(total_heures[i]) + "h}"
+            chaine += " & {\\bfseries " + str(total_heures_activites[i]) + "h}"
         for i in range(3):
-            chaine += " & {\\bfseries " + str(total_coeffs[i]) + "}"
+            chaine += " & {\\bfseries " + str(total_coeffs_activites[i]) + "}"
         chaine += "\\\\ \\hline"
 
         # ECTS
@@ -512,3 +516,58 @@ class SemestrePN():
         """ % tuple(Config.ECTS[self.numero_semestre][ue] for ue in Config.ECTS[self.numero_semestre])
         chaine += "\\end{tabular}"
         return chaine
+
+
+    def get_total_nbre_heures_par_modalite(self, type=""):
+        """Calcule le nombre d'heures total d'après la matrice des volumes horaires,
+        sur les 3 modalités (CM/TD, TP, projet).
+        Par défaut, saés et ressources sont pris en compte.
+
+        `type` permet de limiter le calcul soit aux `"saés"`, soit aux `"ressources"`.
+        """
+        matrice_heures = self.get_matrice_volumes_comp_vs_activites()
+
+        plage = range(len(matrice_heures)) # plage sur les saés et les ressources
+        if type == "saés":
+            plage = range(self.nbre_saes)
+        elif type == "ressources":
+            plage = range(self.nbre_saes, len(matrice_heures))
+
+        sommes = [
+            sum(
+                [
+                    matrice_heures[i][j]
+                    for i in plage
+                    if matrice_heures[i][j]
+                ]
+            )
+            for j in range(3)
+        ]
+        return sommes
+
+
+
+    def get_total_coeffs_par_comp(self, type=""):
+        """Calcule le total (somme) des coeffs de chaque compétence, en utilisant la matrice
+        des coefficients.
+        Par défaut, saés et ressources sont pris en compte.
+
+        `type` permet de limiter le calcul soit aux `"saés"`, soit aux `"ressources"`.
+        """
+        matrice_coeffs = self.get_matrice_coeffs_comp_vs_activites()
+        plage = range(len(matrice_coeffs))  # plage sur les saés et les ressources
+        if type == "saés":
+            plage = range(self.nbre_saes)
+        elif type == "ressources":
+            plage = range(self.nbre_saes, len(matrice_coeffs))
+        sommes = [
+            sum(
+                [
+                    matrice_coeffs[i][j]
+                    for i in plage
+                    if matrice_coeffs[i][j]
+                ]
+            )
+            for j in range(3)
+        ]
+        return sommes
