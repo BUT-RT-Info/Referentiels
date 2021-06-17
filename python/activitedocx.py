@@ -11,7 +11,7 @@ class Docx():
     """Classe de base pour les ressources/saé/exemples du docx"""
     __LOGGER = logging.getLogger(__name__)
 
-    def __init__(self, nom, brut):
+    def __init__(self, nom, brut, pnofficiel):
         self.nom = nom
         self.code = None # chargé ultérieurement
         self.brut = brut  # les données brutes de la ressource/saé
@@ -19,6 +19,7 @@ class Docx():
         self.apprentissages = None # les acs (chargés ultérieurement)
         self.mots = None # les mots-clés chargés ultérieurement
         self.coeffs = None # chargés ultérieurement
+        self.officiel = pnofficiel # les éléments du templates officiel
 
     def charge_ac(self, apprentissages):
         self.apprentissages = apprentissages
@@ -58,7 +59,7 @@ class Docx():
             acs_avec_code = devine_acs_by_code(donnees) # récupère les codes des acs
             acs_avec_code = [ac.replace(" ", "") for ac in acs_avec_code]  # supprime les espaces inutiles
 
-            acs_avec_nom = officiel.devine_code_by_nom_from_dict(donnees, DATA_ACS) # récupère les codes en utilisant les noms
+            acs_avec_nom = officiel.devine_code_by_nom_from_dict(donnees, self.officiel.DATA_ACS) # récupère les codes en utilisant les noms
             acs_avec_nom = [ac.replace(" ", "") for ac in acs_avec_nom]  # supprime les espaces inutiles
 
             if acs_avec_code and set(acs_avec_nom).intersection(set(acs_avec_code)) != set(acs_avec_nom):
@@ -182,9 +183,10 @@ class RessourceDocx(Docx):
         """Nettoie le titre d'une ressource ou d'une SAE en utilisant les titres officiels
         fournis dans le yaml (via le dictionnaire DATA_RESSOURCES)"""
         old = self.nom
-        DATA_RESSOURCES = officiel.get_DATA_RESSOURCES()
-        self.nettoie_titre(DATA_RESSOURCES)
-        titre2 = officiel.get_officiel_ressource_name_by_code(self.code)
+
+        self.nettoie_titre(self.officiel.DATA_RESSOURCES)
+        titre2 = self.officiel.get_ressource_name_by_code(self.code)
+
         if titre2 != self.nom:
             self.nom = titre2
             RessourceDocx.__LOGGER.warning(f"nettoie_titre : {old} => titre d'après PN \"{titre2}\"")
@@ -198,7 +200,8 @@ class RessourceDocx(Docx):
             if len(codes) == 1:
                 self.code = codes[0]
             else:
-                code_devine = officiel.get_code_from_nom_using_dict(self.nom, DATA_RESSOURCES)
+                code_devine = officiel.get_code_from_nom_using_dict(self.nom, self.officiel.DATA_RESSOURCES)
+
                 if code_devine:
                     RessourceDocx.__LOGGER.warning(f"nettoie_code : \"{self.nom}\" => code {code_devine}")
                     self.code = code_devine
@@ -213,7 +216,7 @@ class RessourceDocx(Docx):
         if not self.prerequis or officiel.AUCUN_PREREQUIS.lower() in self.prerequis.lower():
             self.prerequis = officiel.AUCUN_PREREQUIS
         else:
-            ressources = nettoie_liste_ressources(self.prerequis)
+            ressources = nettoie_liste_ressources(self.prerequis, self.officiel.DATA_RESSOURCES)
             if ressources:
                 self.prerequis = ressources
 
@@ -344,7 +347,7 @@ def nettoie_champ_heure(champ):
             return (int(volumes[0][:-1]), int(volumes[1][:-1]))
 
 
-def nettoie_liste_ressources(contenu):
+def nettoie_liste_ressources(contenu, DATA_RESSOURCES):
     """Nettoie un contenu contenant une liste ressources, en extrayant les codes ressources
     et en les fournissant les codes extraits dans une liste
     """
@@ -378,7 +381,7 @@ def devine_ressources_by_code(champ):
     codes = codes1 + [c.strip() for c in codes2 if "|" not in c]
     return sorted(list(set(codes)))
 
-def devine_ressources_by_nom(donnees):
+def devine_ressources_by_nom(donnees, DATA_RESSOURCES):
     """Partant d'une chaine de caractères, détermine les ressources
     présentes dans la donnée, en utilisant les infos officielles de
     ressources.yml"""
@@ -512,9 +515,10 @@ class SAEDocx(Docx):
         """Nettoie le titre d'une SAE en utilisant les titres officiels
         fournis dans le yaml (via le dictionnaire DATA_RESSOURCES)"""
         old = self.nom
-        DATA_SAES = officiel.get_DATA_SAES()
-        self.nettoie_titre(DATA_SAES)
-        titre2 = officiel.get_officiel_sae_name_by_code(self.code)
+
+        self.nettoie_titre(self.officiel.DATA_SAES)
+        titre2 = self.officiel.get_sae_name_by_code(self.code)
+
         if titre2 != self.nom:
             self.nom = titre2
             SAEDocx.__LOGGER.warning(f"nettoie_titre : {old} => titre d'après PN \"{titre2}\"")
@@ -527,7 +531,7 @@ class SAEDocx(Docx):
             if len(codes) == 1:
                 self.code = codes[0]
             else:
-                code_devine = officiel.get_code_from_nom_using_dict(self.nom, DATA_SAES)
+                code_devine = officiel.get_code_from_nom_using_dict(self.nom, self.officiel.DATA_SAES)
                 if code_devine:
                     SAEDocx.__LOGGER.warning(f"nettoie_code : \"{self.nom}\" => code {code_devine}")
                     self.code = code_devine
@@ -572,7 +576,7 @@ class SAEDocx(Docx):
 
     def nettoie_ressources(self):
         """Nettoie le champ ressource d'une sae en détectant les codes"""
-        self.ressources = nettoie_liste_ressources(self.ressources)
+        self.ressources = nettoie_liste_ressources(self.ressources, self.officiel.DATA_RESSOURCES)
         if not self.ressources:
             SAEDocx.__LOGGER.warning(f"nettoie_ressources: dans {self.nom} pas de ressources (:")
 
@@ -616,12 +620,13 @@ class SAEDocx(Docx):
 class ExempleSAEDocx(Docx):
     """Classe modélisant les exemples de SAE tel que relu dans les Docx"""
 
-    def __init__(self, nom, brut, code):
+    def __init__(self, nom, brut, code, pnofficiel):
         self.nom = nom.rstrip()
         self.brut = brut  # les données brutes de la ressource
         self.code = code # code de la SAE à laquelle l'exemple est raccroché
+        self.officiel = pnofficiel
         # Ajoute le semestre de la SAE
-        self.semestre = int(officiel.get_officiel_sem_sae_by_code(code)[1])
+        self.semestre = int(self.officiel.get_sem_sae_by_code(code)[1])
 
     def charge_informations(self, description, formes, problematique, modalite):
         self.description = description
@@ -677,8 +682,4 @@ class ExempleSAEDocx(Docx):
 
 if __name__=="__main__":
     # Eléments de test
-    DATA_RESSOURCES = officiel.get_DATA_RESSOURCES()
-    for sem in DATA_RESSOURCES:
-        for code in DATA_RESSOURCES[sem]:
-            nom_data = officiel.supprime_accent_espace(DATA_RESSOURCES[sem][code])
-            print(nom_data)
+    pass

@@ -16,9 +16,9 @@ __LOGGER = logging.getLogger(__name__)
 
 parser = argparse.ArgumentParser(description="Analyse d'éléments du PN")
 parser.add_argument(
-    "-r", 
-    "--root", 
-    default="..", 
+    "-r",
+    "--root",
+    default="..",
     help="repertoire de base (racine) pour chercher les fichiers de données"
     )
 args = parser.parse_args()

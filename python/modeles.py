@@ -1,5 +1,5 @@
 """
-Gestion des modeles de question/reponses latex
+Gestion des modèles/templates pour l'export latex des ressources et des SAé
 """
 import string, os
 
@@ -14,4 +14,5 @@ def effify(non_f_str: str):
     return eval(f'f"""{non_f_str}"""')
 
 class TemplateLatex(string.Template):
+    """Modèle/Template Latex utilisant pour délimiter le #"""
     delimiter = '#'

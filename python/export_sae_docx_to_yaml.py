@@ -1,5 +1,5 @@
 
-import sys
+import sys, os.path
 import argparse
 import logging
 import docx2python
@@ -9,21 +9,21 @@ import officiel
 from config import Config
 
 __LOGGER = logging.getLogger(__name__)
-REPERTOIRE = "../google"
 
 parser = argparse.ArgumentParser(
-    description="Parse doc ressources et crée SAE", 
+    description="Parse doc saés et crée SAE",
     usage='%(prog)s [options]'
     )
 parser.add_argument(
     "DOCUMENT", 
     nargs="?", 
-    default=REPERTOIRE + "/" + "sae_v0" + ".docx"
+    default="../google/" + "compilation-saes-JOBO21" + ".docx",
+    help="docx à parser, defaut: ../google/compilation-saes-JOBO21.docx"
     )
 parser.add_argument(
     "-o", 
-    "--outdir", 
-    default="../yaml/saes",
+    "--outdir",
+    default= "../yaml/saes",
     help="repertoire resultat, defaut: ../yaml/saes"
     )
 parser.add_argument(
@@ -39,16 +39,21 @@ __LOGGER.warning(f"{sys.argv[0]} processing {args.DOCUMENT}")
 __LOGGER.warning(f"{sys.argv[0]} outputs to {args.outdir}")
 
 # Ces imports doivent être faits après la config
-import tools
-import ressourcedocx
+import tools, activitedocx, officiel
+
+# Récupère les données officielles
+pnofficiel = officiel.Officiel()
 
 # Ouverture du document
+if not os.path.isfile(args.DOCUMENT):
+    print(f"Le fichier à parser {args.DOCUMENT} n'existe pas")
+    sys.exit()
+
 docu = docx2python.docx2python(args.DOCUMENT)
 
 docu = docu.body
 docu[0] # Titre général
 docu[1] # Tableau de synthèse des ressources
-
 
 
 ENTETES_CHAPEAU = ["Titre",  "Code", "Semestre", "Heures de formation",
@@ -91,7 +96,7 @@ for i in range(1, len(docu)): # A priori un tableau
         nom_sae = tools.caracteres_recalcitrants(res[0][1][0])
 
         # Création de la ressource
-        r = ressourcedocx.SAEDocx(nom_sae, res)
+        r = activitedocx.SAEDocx(nom_sae, res, pnofficiel)
         liste_saes.append(r)
 
         # Parsing des données brute de la sae
@@ -155,7 +160,7 @@ for i in range(1, len(docu)): # A priori un tableau
         nom_exemple = tools.caracteres_recalcitrants(res[0][1][0])
 
         # Création de la ressource
-        r = ressourcedocx.ExempleSAEDocx(nom_exemple, res, last_sae)
+        r = activitedocx.ExempleSAEDocx(nom_exemple, res, last_sae, pnofficiel)
         liste_exemples[last_sae].append(r)
 
         # Parsing des données brute de la sae
@@ -215,7 +220,7 @@ for s in liste_saes:
 exemples = {"S1" : {}, "S2" : {} }
 print(" > Exemples")
 for s in liste_exemples: # la sae
-    sem = officiel.get_officiel_sem_sae_by_code(s)
+    sem = pnofficiel.get_sem_sae_by_code(s)
     exemples[sem][s] = []
 
     for e in liste_exemples[s]:

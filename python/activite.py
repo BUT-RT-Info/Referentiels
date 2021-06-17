@@ -5,7 +5,6 @@ import ruamel.yaml
 import latex
 import officiel
 
-import ressourcedocx
 from modeles import get_modele, TemplateLatex
 
 __LOGGER = logging.getLogger(__name__)

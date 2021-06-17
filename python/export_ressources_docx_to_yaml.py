@@ -1,5 +1,5 @@
-
-import sys, os
+import os.path
+import sys
 import argparse
 import logging
 import docx2python
@@ -7,8 +7,8 @@ import officiel
 
 from config import Config
 
+
 __LOGGER = logging.getLogger(__name__)
-REPERTOIRE = "../google" # répertoire stockant les compilations des google-docs avec le script d'Emmanuel
 
 parser = argparse.ArgumentParser(
     description="Parse doc ressources et crée yaml", 
@@ -17,12 +17,13 @@ parser = argparse.ArgumentParser(
 parser.add_argument(
     "DOCUMENT", 
     nargs="?", 
-    default=REPERTOIRE + "/" + "ressources_v0" + ".docx"
+    default="../google/" + "compilation-ressources-JOBO21" + ".docx",
+    help="docx à parser, defaut: ../google/compilation-ressources-JOBO21.docx"
     )
 parser.add_argument(
     "-o", 
-    "--outdir", 
-    default="../yaml/ressources",
+    "--outdir",
+    default= "../yaml/ressources",
     help="repertoire resultat, defaut: ../yaml/ressources"
     )
 parser.add_argument(
@@ -38,14 +39,15 @@ __LOGGER.warning(f"{sys.argv[0]} processing {args.DOCUMENT}")
 __LOGGER.warning(f"{sys.argv[0]} outputs to {args.outdir}")
 
 # Ces imports doivent être faits après la config
-import tools
-import activite
-import ressourcedocx
+import tools, activitedocx, officiel
+
+# Récupère les données officielles
+pnofficiel = officiel.Officiel()
 
 # Ouverture du document
 if not os.path.isfile(args.DOCUMENT):
-    print(f"Le fichier {args.DOCUMENT} n'existe pas")
-    sys.exit(-1)
+    print(f"Le fichier à parser {args.DOCUMENT} n'existe pas")
+    sys.exit()
 
 docu = docx2python.docx2python(args.DOCUMENT)
 
@@ -83,7 +85,7 @@ for i in range(2, len(docu)): # A priori un tableau
         nom_ressource = tools.caracteres_recalcitrants(res[0][1][0])
 
         # Création de la ressource
-        r = ressourcedocx.RessourceDocx(nom_ressource, res)
+        r = activitedocx.RessourceDocx(nom_ressource, res, pnofficiel)
         liste_ressources.append(r)
 
         # if len(res) != 15:
@@ -173,20 +175,6 @@ for sem in ressources:
                 r.code = "R" + sem[1] + "01"
             elif ressources[sem][i-1].code:
                 r.code = "R" + sem[1] + "{:02d}".format(int(ressources[sem][i-1].code[-2:])+1)
-
-# ************************************************************************
-# Affichages divers
-# Le tableau des heures ressources
-# for sem in ressources: # parcours des semestres
-    # print(f"Semestre {sem}")
-#    chaine = activite.affiche_bilan_heures(ressources, sem)
-
-
-# Matrice ACS/ressources
-matrices = {}
-DATA_ACS = officiel.get_DATA_ACS()
-les_codes_acs = [code for comp in DATA_ACS for code in DATA_ACS[comp]]
-nbre_acs = len(les_codes_acs)
 
 # Export yaml
 WITH_EXPORT = True

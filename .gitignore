@@ -322,3 +322,7 @@ __pycache__/
 latex/saes/*.tex
 latex/ressources/*.tex
 __latexindent_temp.tex
+
+yaml/saes/*.yml
+yaml/ressources/*.yml
+
