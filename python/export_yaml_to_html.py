@@ -27,7 +27,8 @@ REPERTOIRE_TEMP = Config.ROOT + "/python/export"
 REPERTOIRE_RESSOURCES_DEFINITIVES = Config.ROOT + "/yaml/ressources"
 REPERTOIRE_SAE_DEFINITIVES = Config.ROOT + "/yaml/saes"
 REPERTOIRE_COMPETENCES_DEFINITIVES = Config.ROOT + "/yaml/competences"
-REPERTOIRE_ACS = Config.ROOT + "/python/pn"
+REPERTOIRE_ACS = Config.ROOT + "/yaml/pn"
+
 REPERTOIRE_HTML = Config.ROOT + "/html/export"
 REPERTOIRE_JS = REPERTOIRE_HTML + "/js"
 CHEMIN_TEMPLATE = Config.ROOT + "/html"
@@ -325,11 +326,11 @@ ListACs = {"RT1":[], "RT2":[], "RT3":[]}
 
 # Chargement des ACs
 fichieryaml = REPERTOIRE_ACS +'/acs.yml'
-acs = ACs(fichieryaml)
+acs = officiel.ACs(fichieryaml)
 
 # Chargement des Compétences
 fichieryaml = REPERTOIRE_COMPETENCES_DEFINITIVES + '/RT123.yml'
-competences = Competences(fichieryaml)
+competences = officiel.Competences(fichieryaml)
 
 # Création des pages individuelles ACs, Compétences
 for indexRt, rt in enumerate(acs.getInfo()):

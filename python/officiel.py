@@ -25,7 +25,7 @@ Idem pour les SAés, dans yaml/saes.yml de la forme :
 
 """
 
-import logging, yaml
+import logging, yaml, ruamel
 import unicodedata
 from config import Config
 
@@ -172,6 +172,39 @@ def get_code_from_nom_using_dict(nom, dico):
             nom_data = supprime_accent_espace(dico[sem][code])
             if nom.startswith(nom_data):
                 return code
+
+class Competences():
+    """ Modélise une liste de compétences lorsqu'elle est extraite d'un dictionnaire """
+
+    __LOGGER = logging.getLogger(__name__)
+
+    def __init__(self, fichieryaml):
+        with open(fichieryaml, "r", encoding="utf8") as fid:
+            yaml = ruamel.yaml.YAML()
+            try:
+                self.competences = yaml.load(fid.read())
+            except:
+                Competences.__LOGGER.warning(f"Pb de chargement de {fichieryaml}")
+
+    def getInfo(self):
+        return self.competences
+
+class ACs():
+    """ Modélise une liste de acs lorsqu'elle est extraite d'un fichier yaml """
+
+    __LOGGER = logging.getLogger(__name__)
+
+    def __init__(self, fichieryaml):
+        with open(fichieryaml, "r", encoding="utf8") as fid:
+            yaml = ruamel.yaml.YAML(typ="safe")
+            try:
+                self.acs = yaml.load(fid.read())
+            except:
+                ACs.__LOGGER.warning(f"Pb de chargement de {fichieryaml}")
+
+    def getInfo(self):
+        return self.acs
+
 
 if __name__=="__main__":
     print("toto")
