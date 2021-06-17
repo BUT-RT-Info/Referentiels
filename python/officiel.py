@@ -34,7 +34,7 @@ __LOGGER = logging.getLogger(__name__)
 # *************************************** #
 # Récupère les informations officielles  #
 ## Les ressources
-def get_DATA_RESSOURCES(repertoire = "yaml/ressources"):
+def get_DATA_RESSOURCES(repertoire = "yaml/pn"):
     """Récupère les informations sur les ressources (triées par semestre
     et par nom), en extrayant les données du fichier yaml/ressources.yml.
     """
@@ -52,7 +52,7 @@ def get_DATA_ACS(repertoire = "yaml/pn"):
     return DATA_ACS
 
 ## Les SAEs
-def get_DATA_SAES(repertoire = "yaml/saes"):
+def get_DATA_SAES(repertoire = "yaml/pn"):
     """Récupère les informations des SAés (triées par semestre et par nom),
     en extrayant les données du fichier yaml/saes.yml"""
     with open(Config.ROOT+"/"+ repertoire +"/saes.yml", 'r', encoding="utf8") as fid:
@@ -99,23 +99,17 @@ class Officiel():
     def __init__(self):
 
         ## Les ressources
-        with open(Config.ROOT+"/yaml/pn/ressources.yml", 'r', encoding="utf8") as fid:
-            self.DATA_RESSOURCES = yaml.load(fid.read(), Loader=yaml.Loader)
+        self.DATA_RESSOURCES = get_DATA_RESSOURCES()
         ## Les ACS
-        with open(Config.ROOT+"/yaml/pn/acs.yml", 'r', encoding="utf8") as fid:
-            self.DATA_ACS = yaml.load(fid.read(), Loader=yaml.Loader)
+        self.DATA_ACS = get_DATA_ACS()
         ## Les SAEs
-        with open(Config.ROOT+"/yaml/pn/saes.yml", 'r', encoding="utf8") as fid:
-            self.DATA_SAES = yaml.load(fid.read(), Loader=yaml.Loader)
+        self.DATA_SAES = get_DATA_SAES()
         ## Les compétences
-        with open(Config.ROOT+"/yaml/competences/RT123.yml", 'r', encoding="utf8") as fid:
-            self.DATA_COMPETENCES = yaml.load(fid.read(), Loader=yaml.Loader)
+        self.DATA_COMPETENCES = get_DATA_COMPETENCES()
         ## Les abréviations
-        with open(Config.ROOT+"/yaml/abbreviations.yml", "r", encoding="utf8") as fid:
-            self.DATA_ABBREVIATIONS = yaml.load(fid.read(), Loader=yaml.Loader)
+        self.DATA_ABBREVIATIONS = get_DATA_ABBREVIATIONS()
         ## Les mostcles (commandes, logiciels, etc...)
-        with open(Config.ROOT+"/yaml/motscles.yml", "r", encoding="utf8") as fid:
-            self.DATA_MOTSCLES = yaml.load(fid.read(), Loader=yaml.Loader)
+        self.DATA_MOTSCLES = get_MOTS_CLES()
 
 
     def get_ressource_name_by_code(self, code):
@@ -167,7 +161,7 @@ def get_officiel_name_by_code_using_dict(code, dico):
     for sem in dico:
         for rcode in dico[sem]:
             if rcode==code:
-                return dico[sem][code]["nom"]
+                return dico[sem][code]
 
 def get_code_from_nom_using_dict(nom, dico):
     """Récupère le code d'une ressource d'après son nom en utilisant les noms officiels

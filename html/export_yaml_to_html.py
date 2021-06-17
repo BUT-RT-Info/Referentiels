@@ -3,6 +3,7 @@ import sys
 import argparse
 import glob
 
+
 sys.path.insert(0,"../python")
 from config import Config
 from jinja2 import Template, Environment, FileSystemLoader
@@ -18,8 +19,8 @@ parser.add_argument(
 args = parser.parse_args()
 Config.ROOT = args.root
 
-import ressource
-from ressource import *
+import activite
+import officiel
 
 # Chemins des différents dossiers
 REPERTOIRE_TEMP = Config.ROOT + "/python/export"
@@ -37,6 +38,8 @@ if not os.path.exists(REPERTOIRE_HTML):
 if not os.path.exists(REPERTOIRE_JS):
     os.makedirs(REPERTOIRE_JS)
 
+pnofficiel = officiel.Officiel()
+
 # Chargement des ressources : depuis les versions définitives du répertoire yaml d'abord,
 # puis dans python/export si manquantes
 fichiers_definitifs = [ os.path.split(x)[1] for x in glob.glob(REPERTOIRE_RESSOURCES_DEFINITIVES+'/*.yml') ] #nom fichier dans yaml/ressources
@@ -49,12 +52,12 @@ fichiers_ressources = sorted(fichiers_ressources) # tri par ordre alphabétique
 
 ressources = {"S1": [], "S2": []}
 for fichieryaml in fichiers_ressources:
-    r = Ressource(fichieryaml) # lecture du fichier
-    sem = "S" + str(r.ressource["semestre"])
+    r = activite.Ressource(fichieryaml, pnofficiel) # lecture du fichier
+    sem = "S" + str(r.yaml["semestre"])
     ressources[sem].append(r)
 # tri par code croissant
 for sem in ressources:
-    ressources[sem] = sorted(ressources[sem], key=lambda r: r.ressource["code"])
+    ressources[sem] = sorted(ressources[sem], key=lambda r: r.yaml["code"])
 
 # Chargement des saé et des exemples
 fichiers_definitifs = [ os.path.split(x)[1] for x in glob.glob(REPERTOIRE_SAE_DEFINITIVES+'/*.yml') ]
@@ -72,19 +75,19 @@ fichiers_exemples = sorted(fichiers_exemples)
 
 saes = {"S1": [], "S2": []}
 for fichieryaml in fichiers_saes:
-    s = SAE(fichieryaml)
-    sem = "S" + str(s.sae["semestre"])
+    s = activite.SAE(fichieryaml)
+    sem = "S" + str(s.yaml["semestre"])
     saes[sem].append(s)
 
 for sem in saes:
-    saes[sem] = sorted(saes[sem], key=lambda s: s.sae["code"])
+    saes[sem] = sorted(saes[sem], key=lambda s: s.yaml["code"])
 
 exemples = {"S1" : {}, "S2" : {} }
 
 for fichieryaml in fichiers_exemples:
-    e = ExempleSAE(fichieryaml)
-    sem = "S" + str(e.exemple["semestre"])
-    sae = e.exemple["code"]
+    e = activite.ExempleSAE(fichieryaml)
+    sem = "S" + str(e.yaml["semestre"])
+    sae = e.yaml["code"]
     if sae not in exemples[sem]:
         exemples[sem][sae] = []
     exemples[sem][sae].append(e)

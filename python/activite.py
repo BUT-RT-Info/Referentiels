@@ -20,8 +20,10 @@ class ActivitePedagogique():
     """
     __LOGGER = logging.getLogger(__name__)
 
-    def __init__(self, fichieryaml):
+    def __init__(self, fichieryaml, pnofficiel):
         """Charge les données du fichier yaml"""
+        self.officiel = pnofficiel
+
         with open(fichieryaml, "r", encoding="utf8") as fid:
             yaml = ruamel.yaml.YAML()
             try:
@@ -29,9 +31,6 @@ class ActivitePedagogique():
             except:
                 ActivitePedagogique.__LOGGER.warning(f"Pb de chargement de {fichieryaml}")
 
-    def add_tags(self, tags):
-        """Ajoute un attribut tags avec la liste de tags fournie"""
-        self.tags = tags
 
     def get_heures_encadrees(self):
         """Renvoie les heures de formation encadrees (incluant les TP)"""
@@ -51,8 +50,8 @@ class Ressource(ActivitePedagogique):
 
     __LOGGER = logging.getLogger(__name__)
 
-    def __init__(self, fichieryaml):
-        super().__init__(fichieryaml)
+    def __init__(self, fichieryaml, pnofficiel):
+        super().__init__(fichieryaml, pnofficiel)
         self.ressource = self.yaml
         self.heures_encadrees = self.yaml["heures_formation"]
         self.heures_tp = self.yaml["heures_tp"]
