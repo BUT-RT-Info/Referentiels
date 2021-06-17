@@ -75,7 +75,7 @@ fichiers_exemples = sorted(fichiers_exemples)
 
 saes = {"S1": [], "S2": []}
 for fichieryaml in fichiers_saes:
-    s = activite.SAE(fichieryaml)
+    s = activite.SAE(fichieryaml, pnofficiel)
     sem = "S" + str(s.yaml["semestre"])
     saes[sem].append(s)
 
@@ -85,7 +85,7 @@ for sem in saes:
 exemples = {"S1" : {}, "S2" : {} }
 
 for fichieryaml in fichiers_exemples:
-    e = activite.ExempleSAE(fichieryaml)
+    e = activite.ExempleSAE(fichieryaml, pnofficiel)
     sem = "S" + str(e.yaml["semestre"])
     sae = e.yaml["code"]
     if sae not in exemples[sem]:
