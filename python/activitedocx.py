@@ -87,9 +87,9 @@ class Docx():
             champ_purge = officiel.supprime_accent_espace(champ)
             for sem in data_titres:
                 for code in data_titres[sem]:
-                    nom_purge = officiel.supprime_accent_espace(data_titres[sem][code]["nom"])
+                    nom_purge = officiel.supprime_accent_espace(data_titres[sem][code])
                     if champ_purge.startswith(nom_purge):
-                        return data_titres[sem][code]["nom"]  # le bon nom
+                        return data_titres[sem][code] # le bon nom
 
         old = self.nom
         titre = devine_nom(self.nom)
