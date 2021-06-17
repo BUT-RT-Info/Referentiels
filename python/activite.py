@@ -41,6 +41,18 @@ class ActivitePedagogique():
         # Charges les données officielles
         self.officiel = pnofficiel
 
+    def get_heures_encadrees(self):
+        """Renvoie les heures de formation encadrees (incluant les TP)"""
+        return self.heures_encadrees
+
+    def get_heures_tp(self):
+        """Renvoie les heures de TP"""
+        return self.heures_tp
+
+    def get_heures_projet(self):
+        """Renvoie les heures de projet tuteurés"""
+        return self.heures_projet
+
 
 class Ressource(ActivitePedagogique):
     """Modélise une ressource."""
@@ -53,6 +65,9 @@ class Ressource(ActivitePedagogique):
         """
         super().__init__(fichieryaml, officiel)
         self.ressource = self.yaml
+        self.heures_encadrees = self.yaml["heures_formation"]
+        self.heures_tp = self.yaml["heures_tp"]
+        self.heures_projet = 0
 
     def to_latex(self, modele=Config.ROOT + "/python/templates/modele_ressource.tex"):
         """Génère le code latex décrivant la ressource, en utilisant le template
@@ -171,6 +186,9 @@ class SAE(ActivitePedagogique):
     def __init__(self, fichieryaml, officiel):
         super().__init__(fichieryaml, officiel)
         self.sae = self.yaml
+        self.heures_encadrees = self.yaml["heures_encadrees"]
+        self.heures_tp = self.yaml["tp"]
+        self.heures_projet = self.yaml["projet"]
 
     def to_latex(self, modele=Config.ROOT + "/python/templates/modele_sae.tex"):
         """Génère le code latex décrivant la saé en utilisant le template latex donné

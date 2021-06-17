@@ -596,3 +596,43 @@ class SemestrePN():
         chaine += ligne.format("", "Total", str(heures_formation_total), str(heures_tp_total)) + "\n"
         chaine += trait + "\n"
         return chaine
+
+    def get_matrice_prerequis(self):
+        """Renvoie la matrice traduisant les dépendances entre les SAés et les
+        ressources d'un même semestre (les activités hors semestres ne sont pas considérées).
+
+        Une activité i dépend d'une activité j si l'activité j fait partie des pré-requis de l'activité i.
+        """
+        matrice = [[0] * (self.nbre_saes + self.nbre_ressources) for i in range(len(self.codes))]
+
+        for (i, code) in enumerate(self.codes):  # pour chaque SAE ou ressources
+            act = self.activites[code]
+            prerequis = []
+            if "prerequis" in act.yaml:
+                prerequis = act.yaml["prerequis"]
+
+            for (j, code_prerequis) in enumerate(self.codes):
+                if code_prerequis in prerequis:
+                    matrice[i][j] = 1
+        return matrice
+
+    def get_volumes_horaires_ressources(self):
+        """Calcule le nombre d'heures total des ressources et
+        renvoie une liste donnant [heures_encadrees (tp_inclus), heures_tp, heures_projet]"""
+        heures = [0]*3
+        for (code, r) in self.ressources.items():
+            heures[0] += r.get_heures_encadrees()
+            heures[1] += r.get_heures_tp()
+            heures[2] += r.get_heures_projet()
+        return heures
+
+    def get_volumes_horaires_saes(self):
+        """Calcule le nombre d'heures total des SAés et renvoie une liste donnant
+        [heures_encadrees (tp_inclus), heures_tp, heures_projet]
+        """
+        heures = [0] * 3
+        for (code, s) in self.saes.items():
+            heures[0] += s.get_heures_encadrees()
+            heures[1] += s.get_heures_tp()
+            heures[2] += s.get_heures_projet()
+        return heures
