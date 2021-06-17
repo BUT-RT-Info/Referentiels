@@ -53,6 +53,9 @@ class ActivitePedagogique():
         """Renvoie les heures de projet tuteurés"""
         return self.heures_projet
 
+    def getInfo(self):
+        """Renvoie les données du yaml (pour export to html)"""
+        return self.yaml
 
 class Ressource(ActivitePedagogique):
     """Modélise une ressource."""
