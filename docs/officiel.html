@@ -201,6 +201,18 @@ et par code, de la forme :</p>
 </pre></div>
 </div>
 <dl class="py class">
+<dt id="officiel.ACs">
+<em class="property">class </em><code class="sig-prename descclassname">officiel.</code><code class="sig-name descname">ACs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fichieryaml</span></em><span class="sig-paren">)</span><a class="headerlink" href="#officiel.ACs" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Modélise une liste de acs lorsqu’elle est extraite d’un fichier yaml</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="officiel.Competences">
+<em class="property">class </em><code class="sig-prename descclassname">officiel.</code><code class="sig-name descname">Competences</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fichieryaml</span></em><span class="sig-paren">)</span><a class="headerlink" href="#officiel.Competences" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Modélise une liste de compétences lorsqu’elle est extraite d’un dictionnaire</p>
+</dd></dl>
+
+<dl class="py class">
 <dt id="officiel.Officiel">
 <em class="property">class </em><code class="sig-prename descclassname">officiel.</code><code class="sig-name descname">Officiel</code><a class="headerlink" href="#officiel.Officiel" title="Lien permanent vers cette définition">¶</a></dt>
 <dd><p>Récupère et stocke des informations dites <em>officielles</em>, fournies par différents
@@ -255,14 +267,14 @@ en extrayant les données du fichier yaml/competences.yml</p>
 
 <dl class="py function">
 <dt id="officiel.get_DATA_RESSOURCES">
-<code class="sig-prename descclassname">officiel.</code><code class="sig-name descname">get_DATA_RESSOURCES</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">repertoire</span><span class="o">=</span><span class="default_value">'yaml/ressources'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#officiel.get_DATA_RESSOURCES" title="Lien permanent vers cette définition">¶</a></dt>
+<code class="sig-prename descclassname">officiel.</code><code class="sig-name descname">get_DATA_RESSOURCES</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">repertoire</span><span class="o">=</span><span class="default_value">'yaml/pn'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#officiel.get_DATA_RESSOURCES" title="Lien permanent vers cette définition">¶</a></dt>
 <dd><p>Récupère les informations sur les ressources (triées par semestre
 et par nom), en extrayant les données du fichier yaml/ressources.yml.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt id="officiel.get_DATA_SAES">
-<code class="sig-prename descclassname">officiel.</code><code class="sig-name descname">get_DATA_SAES</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">repertoire</span><span class="o">=</span><span class="default_value">'yaml/saes'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#officiel.get_DATA_SAES" title="Lien permanent vers cette définition">¶</a></dt>
+<code class="sig-prename descclassname">officiel.</code><code class="sig-name descname">get_DATA_SAES</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">repertoire</span><span class="o">=</span><span class="default_value">'yaml/pn'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#officiel.get_DATA_SAES" title="Lien permanent vers cette définition">¶</a></dt>
 <dd><p>Récupère les informations des SAés (triées par semestre et par nom),
 en extrayant les données du fichier yaml/saes.yml</p>
 </dd></dl>
