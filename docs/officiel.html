@@ -36,7 +36,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Recherche" href="search.html" />
     <link rel="next" title="Module semestre" href="semestre.html" />
-    <link rel="prev" title="Module latex" href="latex.html" />
+    <link rel="prev" title="Module modeles" href="modeles.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en" />
     
@@ -76,8 +76,18 @@
   </a>
  </li>
  <li class="toctree-l1">
+  <a class="reference internal" href="activitedocx.html">
+   Module activitedocx
+  </a>
+ </li>
+ <li class="toctree-l1">
   <a class="reference internal" href="latex.html">
    Module latex
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="modeles.html">
+   Module modeles
   </a>
  </li>
  <li class="toctree-l1 current active">
@@ -88,6 +98,11 @@
  <li class="toctree-l1">
   <a class="reference internal" href="semestre.html">
    Module semestre
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="tools.html">
+   Module tools
   </a>
  </li>
 </ul>
@@ -166,6 +181,25 @@
                 
   <div class="section" id="module-0">
 <span id="module-officiel"></span><h1>Module officiel<a class="headerlink" href="#module-0" title="Lien permanent vers ce titre">¶</a></h1>
+<p>Module dédié aux éléments synthétiques (extrait des tableaux de synthèse
+maintenu par le PACD) sur les ressources, les SAés, les Compétences et les ACS.
+Parmi ces éléments, les codes et les noms officiels ; des tags pour calcul
+d’information de répartition.</p>
+<p>Les ressources sont décrites dans un fichier yaml/ressources.yml structuré par semestre
+et par code, de la forme :</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">S1</span><span class="p">:</span>
+  <span class="n">R101</span><span class="p">:</span>
+    <span class="n">nom</span><span class="p">:</span> <span class="s2">&quot;Initiation aux réseaux informatiques&quot;</span>
+    <span class="n">tags</span><span class="o">-</span><span class="n">thematiques</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;réseau&quot;</span><span class="p">,</span> <span class="s2">&quot;métier&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Idem pour les SAés, dans yaml/saes.yml de la forme :</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">S1</span><span class="p">:</span>
+  <span class="n">SAE11</span><span class="p">:</span>
+    <span class="n">nom</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span>
+    <span class="n">tags</span><span class="o">-</span><span class="n">thematiques</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;métier&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
 <dl class="py class">
 <dt id="officiel.Officiel">
 <em class="property">class </em><code class="sig-prename descclassname">officiel.</code><code class="sig-name descname">Officiel</code><a class="headerlink" href="#officiel.Officiel" title="Lien permanent vers cette définition">¶</a></dt>
@@ -213,6 +247,27 @@ Le dico officiel vient d’un .yml</p>
 </dd></dl>
 
 <dl class="py function">
+<dt id="officiel.get_DATA_ACS">
+<code class="sig-prename descclassname">officiel.</code><code class="sig-name descname">get_DATA_ACS</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">repertoire</span><span class="o">=</span><span class="default_value">'yaml/pn'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#officiel.get_DATA_ACS" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Récupère les informations des ACS,
+en extrayant les données du fichier yaml/competences.yml</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="officiel.get_DATA_RESSOURCES">
+<code class="sig-prename descclassname">officiel.</code><code class="sig-name descname">get_DATA_RESSOURCES</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">repertoire</span><span class="o">=</span><span class="default_value">'yaml/ressources'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#officiel.get_DATA_RESSOURCES" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Récupère les informations sur les ressources (triées par semestre
+et par nom), en extrayant les données du fichier yaml/ressources.yml.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="officiel.get_DATA_SAES">
+<code class="sig-prename descclassname">officiel.</code><code class="sig-name descname">get_DATA_SAES</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">repertoire</span><span class="o">=</span><span class="default_value">'yaml/saes'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#officiel.get_DATA_SAES" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Récupère les informations des SAés (triées par semestre et par nom),
+en extrayant les données du fichier yaml/saes.yml</p>
+</dd></dl>
+
+<dl class="py function">
 <dt id="officiel.get_code_from_nom_using_dict">
 <code class="sig-prename descclassname">officiel.</code><code class="sig-name descname">get_code_from_nom_using_dict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nom</span></em>, <em class="sig-param"><span class="n">dico</span></em><span class="sig-paren">)</span><a class="headerlink" href="#officiel.get_code_from_nom_using_dict" title="Lien permanent vers cette définition">¶</a></dt>
 <dd><p>Récupère le code d’une ressource d’après son nom en utilisant les noms officiels
@@ -228,7 +283,7 @@ des ressources du yaml si dico == DATA_RESSOURCES ; sinon fait de même avec les
 <dl class="py function">
 <dt id="officiel.supprime_accent_espace">
 <code class="sig-prename descclassname">officiel.</code><code class="sig-name descname">supprime_accent_espace</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">chaine</span></em><span class="sig-paren">)</span><a class="headerlink" href="#officiel.supprime_accent_espace" title="Lien permanent vers cette définition">¶</a></dt>
-<dd><p>Met en minuscule, supprime les accents, les ponctuations et les espaces</p>
+<dd><p>Met une chaine en minuscule, supprime les accents, les ponctuations et les espaces</p>
 </dd></dl>
 
 </div>
@@ -239,7 +294,7 @@ des ressources du yaml si dico == DATA_RESSOURCES ; sinon fait de même avec les
         
         <div class='prev-next-bottom'>
             
-    <a class='left-prev' id="prev-link" href="latex.html" title="previous page">Module latex</a>
+    <a class='left-prev' id="prev-link" href="modeles.html" title="previous page">Module modeles</a>
     <a class='right-next' id="next-link" href="semestre.html" title="next page">Module semestre</a>
 
         </div>

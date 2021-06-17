@@ -35,6 +35,7 @@
     <script src="_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Recherche" href="search.html" />
+    <link rel="next" title="Module tools" href="tools.html" />
     <link rel="prev" title="Module officiel" href="officiel.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en" />
@@ -75,8 +76,18 @@
   </a>
  </li>
  <li class="toctree-l1">
+  <a class="reference internal" href="activitedocx.html">
+   Module activitedocx
+  </a>
+ </li>
+ <li class="toctree-l1">
   <a class="reference internal" href="latex.html">
    Module latex
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="modeles.html">
+   Module modeles
   </a>
  </li>
  <li class="toctree-l1">
@@ -87,6 +98,11 @@
  <li class="toctree-l1 current active">
   <a class="current reference internal" href="#">
    Module semestre
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="tools.html">
+   Module tools
   </a>
  </li>
 </ul>
@@ -223,6 +239,14 @@ et la renvoie</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="semestre.SemestrePN.get_matrice_prerequis">
+<code class="sig-name descname">get_matrice_prerequis</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#semestre.SemestrePN.get_matrice_prerequis" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Renvoie la matrice traduisant les dépendances entre les SAés et les
+ressources d’un même semestre (les activités hors semestres ne sont pas considérées).</p>
+<p>Une activité i dépend d’une activité j si l’activité j fait partie des pré-requis de l’activité i.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt id="semestre.SemestrePN.get_matrice_volumes_comp_vs_activites">
 <code class="sig-name descname">get_matrice_volumes_comp_vs_activites</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#semestre.SemestrePN.get_matrice_volumes_comp_vs_activites" title="Lien permanent vers cette définition">¶</a></dt>
 <dd><p>Calcule la matrice AC vs sae + ressource pour un sem donné et la renvoie</p>
@@ -252,6 +276,20 @@ Par défaut, saés et ressources sont pris en compte.</p>
 sur les 3 modalités (CM/TD, TP, projet).
 Par défaut, saés et ressources sont pris en compte.</p>
 <p><cite>type</cite> permet de limiter le calcul soit aux <cite>« saés »</cite>, soit aux <cite>« ressources »</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="semestre.SemestrePN.get_volumes_horaires_ressources">
+<code class="sig-name descname">get_volumes_horaires_ressources</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#semestre.SemestrePN.get_volumes_horaires_ressources" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Calcule le nombre d’heures total des ressources et
+renvoie une liste donnant [heures_encadrees (tp_inclus), heures_tp, heures_projet]</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="semestre.SemestrePN.get_volumes_horaires_saes">
+<code class="sig-name descname">get_volumes_horaires_saes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#semestre.SemestrePN.get_volumes_horaires_saes" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Calcule le nombre d’heures total des SAés et renvoie une liste donnant
+[heures_encadrees (tp_inclus), heures_tp, heures_projet]</p>
 </dd></dl>
 
 <dl class="py method">
@@ -286,6 +324,7 @@ du semestre</p>
         <div class='prev-next-bottom'>
             
     <a class='left-prev' id="prev-link" href="officiel.html" title="previous page">Module officiel</a>
+    <a class='right-next' id="next-link" href="tools.html" title="next page">Module tools</a>
 
         </div>
         

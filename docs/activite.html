@@ -182,60 +182,162 @@
   <div class="section" id="module-0">
 <span id="module-activite"></span><h1>Module activite<a class="headerlink" href="#module-0" title="Lien permanent vers ce titre">¶</a></h1>
 <dl class="py class">
+<dt id="activite.ACs">
+<em class="property">class </em><code class="sig-prename descclassname">activite.</code><code class="sig-name descname">ACs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fichieryaml</span></em><span class="sig-paren">)</span><a class="headerlink" href="#activite.ACs" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Modélise une liste de acs lorsqu’elle est extraite d’un fichier yaml</p>
+</dd></dl>
+
+<dl class="py class">
 <dt id="activite.ActivitePedagogique">
-<em class="property">class </em><code class="sig-prename descclassname">activite.</code><code class="sig-name descname">ActivitePedagogique</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fichieryaml</span></em>, <em class="sig-param"><span class="n">pnofficiel</span></em><span class="sig-paren">)</span><a class="headerlink" href="#activite.ActivitePedagogique" title="Lien permanent vers cette définition">¶</a></dt>
-<dd><p>Modélise les éléments de bases d’une activité pédagogique (ressource, SAE ou exemple
-de SAE) et stocke les données officielles.</p>
-<p>Une <em>activité pédagogique</em> est initialisée par lecture des données contenues dans fichier yaml (attribut yaml).
-Ses attributs sont :</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">yaml</span></code> : le dictionnaire lu dans le fichier yaml décrivant l’activité</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">code</span></code> : le code de l’activité (par ex: <code class="docutils literal notranslate"><span class="pre">&quot;R101&quot;</span></code> ou <code class="docutils literal notranslate"><span class="pre">&quot;SAE12&quot;</span></code>)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">nom_semestre</span></code> : le nom du semestre où se tient l’activité (par ex: <code class="docutils literal notranslate"><span class="pre">&quot;S1&quot;</span></code>)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">numero_semestre</span></code> : le numéro du semestre où se tient l’activité (1, 2, …, 6)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">officiel</span></code> : les données officielles du templates (cf. module <code class="docutils literal notranslate"><span class="pre">officiel</span></code>)</p></li>
-</ul>
+<em class="property">class </em><code class="sig-prename descclassname">activite.</code><code class="sig-name descname">ActivitePedagogique</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fichieryaml</span></em><span class="sig-paren">)</span><a class="headerlink" href="#activite.ActivitePedagogique" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Modélise les éléments de bases d’une activité pédagogique (ressource ou SAE).
+Classe servant de base à l’héritage.</p>
+<p>Une activité pédagogique est initialisée par lecture des données contenues dans fichier yaml (attribut yaml)</p>
+<dl class="py method">
+<dt id="activite.ActivitePedagogique.add_tags">
+<code class="sig-name descname">add_tags</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tags</span></em><span class="sig-paren">)</span><a class="headerlink" href="#activite.ActivitePedagogique.add_tags" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Ajoute un attribut tags avec la liste de tags fournie</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="activite.ActivitePedagogique.get_heures_encadrees">
+<code class="sig-name descname">get_heures_encadrees</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#activite.ActivitePedagogique.get_heures_encadrees" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Renvoie les heures de formation encadrees (incluant les TP)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="activite.ActivitePedagogique.get_heures_projet">
+<code class="sig-name descname">get_heures_projet</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#activite.ActivitePedagogique.get_heures_projet" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Renvoie les heures de projet tuteurés</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="activite.ActivitePedagogique.get_heures_tp">
+<code class="sig-name descname">get_heures_tp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#activite.ActivitePedagogique.get_heures_tp" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Renvoie les heures de TP</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="activite.Competences">
+<em class="property">class </em><code class="sig-prename descclassname">activite.</code><code class="sig-name descname">Competences</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fichieryaml</span></em><span class="sig-paren">)</span><a class="headerlink" href="#activite.Competences" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Modélise une liste de compétences lorsqu’elle est extraite d’un dictionnaire</p>
 </dd></dl>
 
 <dl class="py class">
 <dt id="activite.ExempleSAE">
-<em class="property">class </em><code class="sig-prename descclassname">activite.</code><code class="sig-name descname">ExempleSAE</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fichieryaml</span></em>, <em class="sig-param"><span class="n">officiel</span></em><span class="sig-paren">)</span><a class="headerlink" href="#activite.ExempleSAE" title="Lien permanent vers cette définition">¶</a></dt>
-<dd><p>Modélise un exemple de SAE en chargeant les données de <code class="docutils literal notranslate"><span class="pre">fichieryaml</span></code>
-et stocke les données <code class="docutils literal notranslate"><span class="pre">officiel</span></code>.</p>
+<em class="property">class </em><code class="sig-prename descclassname">activite.</code><code class="sig-name descname">ExempleSAE</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fichieryaml</span></em><span class="sig-paren">)</span><a class="headerlink" href="#activite.ExempleSAE" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Modélise un exemple de SAE lorsqu’elle est extraite d’un yaml</p>
 <dl class="py method">
 <dt id="activite.ExempleSAE.to_latex">
-<code class="sig-name descname">to_latex</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">modele</span><span class="o">=</span><span class="default_value">'../python/templates/modele_exemple_sae.tex'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#activite.ExempleSAE.to_latex" title="Lien permanent vers cette définition">¶</a></dt>
-<dd><p>Génère le code latex décrivant l’exemple de SAE en utilisant le template
-donné dans <code class="docutils literal notranslate"><span class="pre">modele</span></code></p>
+<code class="sig-name descname">to_latex</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">modele</span></em><span class="sig-paren">)</span><a class="headerlink" href="#activite.ExempleSAE.to_latex" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Génère le code latex décrivant la ressource en utilisant le modèle latex indiqué</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
 <dt id="activite.Ressource">
-<em class="property">class </em><code class="sig-prename descclassname">activite.</code><code class="sig-name descname">Ressource</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fichieryaml</span></em>, <em class="sig-param"><span class="n">officiel</span></em><span class="sig-paren">)</span><a class="headerlink" href="#activite.Ressource" title="Lien permanent vers cette définition">¶</a></dt>
-<dd><p>Modélise une ressource.</p>
+<em class="property">class </em><code class="sig-prename descclassname">activite.</code><code class="sig-name descname">Ressource</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fichieryaml</span></em><span class="sig-paren">)</span><a class="headerlink" href="#activite.Ressource" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Modélise une ressource lorsqu’elle est extraite d’un fichier yaml</p>
 <dl class="py method">
 <dt id="activite.Ressource.to_latex">
-<code class="sig-name descname">to_latex</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">modele</span><span class="o">=</span><span class="default_value">'../python/templates/modele_ressource.tex'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#activite.Ressource.to_latex" title="Lien permanent vers cette définition">¶</a></dt>
-<dd><p>Génère le code latex décrivant la ressource, en utilisant le template
-latex donné dans <code class="docutils literal notranslate"><span class="pre">modele</span></code>.</p>
+<code class="sig-name descname">to_latex</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">modele</span></em><span class="sig-paren">)</span><a class="headerlink" href="#activite.Ressource.to_latex" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Génère le code latex décrivant la ressource en utilisant le
+modèle latex indiqué</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
 <dt id="activite.SAE">
-<em class="property">class </em><code class="sig-prename descclassname">activite.</code><code class="sig-name descname">SAE</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fichieryaml</span></em>, <em class="sig-param"><span class="n">officiel</span></em><span class="sig-paren">)</span><a class="headerlink" href="#activite.SAE" title="Lien permanent vers cette définition">¶</a></dt>
-<dd><p>Modélise une SAé (chapeau) en chargeant les données provenant du <code class="docutils literal notranslate"><span class="pre">fichieryaml</span></code>
-et stocke les données <a href="#id1"><span class="problematic" id="id2">``</span></a>officiel``les.</p>
+<em class="property">class </em><code class="sig-prename descclassname">activite.</code><code class="sig-name descname">SAE</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fichieryaml</span></em><span class="sig-paren">)</span><a class="headerlink" href="#activite.SAE" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Modélise une SAé (chapeau) lorsqu’elle est extraite d’un yaml</p>
 <dl class="py method">
 <dt id="activite.SAE.to_latex">
-<code class="sig-name descname">to_latex</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">modele</span><span class="o">=</span><span class="default_value">'../python/templates/modele_sae.tex'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#activite.SAE.to_latex" title="Lien permanent vers cette définition">¶</a></dt>
-<dd><p>Génère le code latex décrivant la saé en utilisant le template latex donné
-dans <code class="docutils literal notranslate"><span class="pre">modele</span></code></p>
+<code class="sig-name descname">to_latex</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">modele</span></em><span class="sig-paren">)</span><a class="headerlink" href="#activite.SAE.to_latex" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Génère le code latex décrivant la ressource en utilisant le modèle indiqué</p>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="py function">
+<dt id="activite.ajoute_abbr_latex">
+<code class="sig-prename descclassname">activite.</code><code class="sig-name descname">ajoute_abbr_latex</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">chaine</span></em><span class="sig-paren">)</span><a class="headerlink" href="#activite.ajoute_abbr_latex" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Parse la chaine latex pour ajouter les abbréviations et les remplacer par
+textabbrv{abreviation}</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="activite.ajoute_cmd_latex">
+<code class="sig-prename descclassname">activite.</code><code class="sig-name descname">ajoute_cmd_latex</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">chaine</span></em><span class="sig-paren">)</span><a class="headerlink" href="#activite.ajoute_cmd_latex" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Parse la chaine latex pour ajouter les abbréviations et les remplacer par
+textabbrv{abreviation}</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="activite.contient_abbr">
+<code class="sig-prename descclassname">activite.</code><code class="sig-name descname">contient_abbr</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">chaine</span></em><span class="sig-paren">)</span><a class="headerlink" href="#activite.contient_abbr" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Détecte les abréviations présentes dans la chaine
+(dont la liste est fournie par DATA_ABBREVIATIONS lues depuis le .yml) et
+les renvoie sous forme d’une liste par abréviations de nombre de caractères décroissants</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="activite.contient_commandes">
+<code class="sig-prename descclassname">activite.</code><code class="sig-name descname">contient_commandes</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">chaine</span></em><span class="sig-paren">)</span><a class="headerlink" href="#activite.contient_commandes" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Détecte si la <cite>chaine</cite> est une commande (éventuellement avec un caractère
+de ponctuation final)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="activite.get_matrices_ac_ressource">
+<code class="sig-prename descclassname">activite.</code><code class="sig-name descname">get_matrices_ac_ressource</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">saes</span></em>, <em class="sig-param"><span class="n">ressources</span></em>, <em class="sig-param"><span class="n">sem</span></em><span class="sig-paren">)</span><a class="headerlink" href="#activite.get_matrices_ac_ressource" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Calcule la matrice AC vs sae + ressource pour un sem donné et la renvoie</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="activite.get_matrices_coeffs">
+<code class="sig-prename descclassname">activite.</code><code class="sig-name descname">get_matrices_coeffs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">saes</span></em>, <em class="sig-param"><span class="n">ressources</span></em>, <em class="sig-param"><span class="n">sem</span></em><span class="sig-paren">)</span><a class="headerlink" href="#activite.get_matrices_coeffs" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Calcule la matrice AC vs sae + ressource pour un sem donné et la renvoie</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="activite.get_matrices_volumes">
+<code class="sig-prename descclassname">activite.</code><code class="sig-name descname">get_matrices_volumes</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">saes</span></em>, <em class="sig-param"><span class="n">ressources</span></em>, <em class="sig-param"><span class="n">sem</span></em><span class="sig-paren">)</span><a class="headerlink" href="#activite.get_matrices_volumes" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Calcule la matrice AC vs sae + ressource pour un sem donné et la renvoie
+=&gt; obsolète ? déplacé dans semestre</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="activite.get_total_nbre_heures">
+<code class="sig-prename descclassname">activite.</code><code class="sig-name descname">get_total_nbre_heures</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">matrice_heures</span></em><span class="sig-paren">)</span><a class="headerlink" href="#activite.get_total_nbre_heures" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Calcul le nombre d’heures total des SAé d’après la matrice</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="activite.get_total_nbre_heures_ressources">
+<code class="sig-prename descclassname">activite.</code><code class="sig-name descname">get_total_nbre_heures_ressources</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">matrice_heures</span></em>, <em class="sig-param"><span class="n">sem</span></em><span class="sig-paren">)</span><a class="headerlink" href="#activite.get_total_nbre_heures_ressources" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Calcul le nombre d’heures total des SAé d’après la matrice</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="activite.get_total_nbre_heures_saes">
+<code class="sig-prename descclassname">activite.</code><code class="sig-name descname">get_total_nbre_heures_saes</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">matrice_heures</span></em>, <em class="sig-param"><span class="n">sem</span></em><span class="sig-paren">)</span><a class="headerlink" href="#activite.get_total_nbre_heures_saes" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Calcul le nombre d’heures total des SAé d’après la matrice</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="activite.md_to_latex">
+<code class="sig-prename descclassname">activite.</code><code class="sig-name descname">md_to_latex</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">contenu</span></em><span class="sig-paren">)</span><a class="headerlink" href="#activite.md_to_latex" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Réalise la conversion markdown to latex avec pypandoc</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="activite.str_matrice">
+<code class="sig-prename descclassname">activite.</code><code class="sig-name descname">str_matrice</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">matrice</span></em>, <em class="sig-param"><span class="n">saes</span></em>, <em class="sig-param"><span class="n">ressources</span></em>, <em class="sig-param"><span class="n">sem</span></em><span class="sig-paren">)</span><a class="headerlink" href="#activite.str_matrice" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Renvoie une chaine de caractère affichant la matrice</p>
 </dd></dl>
 
 </div>
