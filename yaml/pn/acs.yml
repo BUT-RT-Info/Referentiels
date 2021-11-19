@@ -1,20 +1,153 @@
-RT1:
-  AC0111: "Maîtriser les lois fondamentales de l'électricité afin d'intervenir sur des équipements de réseaux et télécommunications"
-  AC0112: "Comprendre l'architecture des systèmes numériques et les principes du codage de l'information"
-  AC0113: "Configurer les fonctions de base du réseau local"
-  AC0114: "Maîtriser les rôles et les principes fondamentaux des systèmes d'exploitation afin d'interagir avec ceux-ci pour la configuration et administration des réseaux et services fournis"
-  AC0115: "Identifier les dysfonctionnements du réseau local"
-  AC0116: "Installer un poste client"
-RT2:
-  AC0211: "Mesurer et analyser les signaux"
-  AC0212: "Caractériser des systèmes de transmissions élémentaires et découvrir la modélisation mathématique de leur fonctionnement"
-  AC0213: "Déployer des supports de transmission"
-  AC0214: "Connecter les systèmes de ToIP"
-  AC0215: "Communiquer avec un client ou un collaborateur"
-RT3:
-  AC0311: "Utiliser un système informatique et ses outils"
-  AC0312: "Lire, exécuter, corriger et modifier un programme"
-  AC0313: "Traduire un algorithme, dans un langage et pour un environnement donné"
-  AC0314: "Connaître l'architecture et les technologies d'un site Web"
-  AC0315: "Choisir les mécanismes de gestion de données adaptés au développement de l'outil"
-  AC0316: "S'intégrer dans un environnement propice au développement et au travail collaboratif"
+BUT1:
+  RT1:
+    AC11.01: "Maîtriser les lois fondamentales de l’électricité afin d’intervenir sur des équipements de réseaux et télécommunications"
+    AC11.02: "Comprendre l'architecture et les fondements des systèmes numériques, les principes du codage de l'information, des communications et de l'Internet"
+    AC11.03: "Configurer les fonctions de base du réseau local"
+    AC11.04: "Maîtriser les rôles et les principes fondamentaux des systèmes d'exploitation afin d'interagir avec ceux-ci pour la configuration et l'administration des réseaux et services fournis"
+    AC11.05: "Identifier les dysfonctionnements du réseau local et savoir les signaler"
+    AC11.06: "Installer un poste client, expliquer la procédure mise en place"
+  RT2:
+    AC12.01: "Mesurer et analyser les signaux"
+    AC12.02: "Caractériser des systèmes de transmissions élémentaires et découvrir la modélisation mathématique de leur fonctionnement"
+    AC12.03: "Déployer des supports de transmission"
+    AC12.04: "Connecter les systèmes de ToIP"
+    AC12.05: "Communiquer avec un tiers (client, collaborateur...) et adapter son discours et sa langue à son interlocuteur"
+  RT3:
+    AC13.01: "Utiliser un système informatique et ses outils"
+    AC13.02: "Lire, exécuter, corriger et modifier un programme"
+    AC13.03: "Traduire un algorithme, dans un langage et pour un environnement donné"
+    AC13.04: "Connaître l'architecture et les technologies d'un site Web"
+    AC13.05: "Choisir les mécanismes de gestion de données adaptés au développement de l'outil et argumenter ses choix"
+    AC13.06: "S'intégrer dans un environnement propice au développement et au travail collaboratif"
+BUT2:
+  RT1:
+    AC21.01: "Configurer et dépanner le routage dynamique dans un réseau"
+    AC21.02: "Configurer et expliquer une politique simple de QoS et les fonctions de base de la sécurité d'un réseau"
+    AC21.03: "Déployer des postes clients et des solutions virtualisées adaptées à une situation donnée"
+    AC21.04: "Déployer des services réseaux avancés"
+    AC21.05: "Identifier les réseaux opérateurs et l'architecture d'Internet"
+    AC21.06: "Travailler en équipe pour développer ses compétences professionnelles"
+  RT2:
+    AC22.01: "Déployer et caractériser des systèmes de transmissions complexes"
+    AC22.02: "Mettre en place un accès distant sécurisé"
+    AC22.03: "Mettre en place une connexion multi-site via un réseau opérateur"
+    AC22.04: "Administrer les réseaux d'accès des opérateurs"
+    AC22.05: "Capacité à questionner un cahier des charges R&T"
+  RT3:
+    AC23.01: "Automatiser l'administration système avec des scripts"
+    AC23.02: "Développer une application à partir d’un cahier des charges donné, pour le Web ou les périphériques mobiles"
+    AC23.03: "Utiliser un protocole réseau pour programmer une application client/serveur"
+    AC23.04: "Installer, administrer un système de gestion de données"
+    AC23.05: "Accéder à un ensemble de données depuis une application et/ou un site web"
+  IOM1:
+    AC24.01IOM: "Comprendre les architectures et spécificités des réseaux dédiés à l'IoT"
+    AC24.02IOM: "Mettre en œuvre des systèmes de transmissions pour l’accès à un réseau IoT"
+  IOM2:
+    AC25.01IOM: "Intégrer des systèmes électroniques et des systèmes d’exploitation embarqués"
+    AC25.02IOM: "Mettre en œuvre des protocoles pour les réseaux de l'IoT"
+    AC25.03IOM: "Mettre en œuvre des applications et traiter des données issues des objets connectés"
+  CYBER1:
+    AC24.01Cyber: "Connaître et utiliser les bonnes pratiques et les recommandations de cybersécurité"
+    AC24.02Cyber: "Mettre en œuvre les outils fondamentaux de sécurisation d’une infrastructure du réseau"
+    AC24.03Cyber: "Sécuriser les services"
+    AC24.04Cyber: "Choisir les outils cryptographiques adaptés au besoin fonctionnel du système d’information"
+    AC24.05Cyber: "Connaître les différents types d’attaque"
+    AC24.06Cyber: "Comprendre des documents techniques en anglais"
+  CYBER2:
+    AC25.01Cyber: "Administrer les protections contre les logiciels malveillants"
+    AC25.02Cyber: "Prendre en main des outils de test de pénétration réseau/système"
+  ROM1:
+    AC24.01ROM: "Administrer les réseaux d’accès fixes et mobiles"
+    AC24.02ROM: "Virtualiser des services réseaux"
+    AC24.03ROM: "Décrire/comprendre l’architecture et les offres des opérateurs"
+    AC24.04ROM: "Gérer le routage/commutation et les interconnexions"
+    AC24.05ROM: "Automatiser la gestion des équipements réseaux"
+  ROM2:
+    AC25.01ROM: "Choisir une architecture et déployer des services de ToIP"
+    AC25.02ROM: "Administrer un service de téléphonie pour l’entreprise"
+    AC25.03ROM: "Mettre en place une politique de QoS pour les applications"
+  DevCloud1:
+    AC24.01DevCloud: "Proposer une solution Cloud adaptée à l’entreprise"
+    AC24.02DevCloud: "Virtualiser un environnement"
+    AC24.03DevCloud: "Utiliser les services du Cloud"
+    AC24.04DevCloud: "Analyser un service Cloud au travers des métriques"
+  DevCloud2:
+    AC25.01DevCloud: "Développer un microservice"
+    AC25.02DevCloud: "Mettre en production une application"
+    AC25.03DevCloud: "Programmer son réseau par le code"
+  PilPro1:
+    AC24.01PilPro: "Compréhension d'un cahier des charges technique R&T"
+    AC24.02PilPro: "Planification des étapes d’un projet technique R&T"
+    AC24.03PilPro: "Co-animation d’une équipe technique"
+    AC24.04PilPro: "Proposition de solutions techniques R&T efficientes"
+    AC24.05PilPro: "Échanges vulgarisés ou techniques avec tous les acteurs d’un projet"
+  PilPro2:
+    AC25.01PilPro: "Prise en compte des contraintes d’un pilotage de projet R&T"
+    AC25.02PilPro: "Planification de solutions techniques R&T efficientes"
+    AC25.03PilPro: "Prise de conscience des enjeux de la communication dans les relations interpersonnelles"
+    AC25.04PilPro: "Établissement d’un relationnel de qualité"
+BUT3:
+  RT1:
+    AC31.01: "Concevoir un projet de réseau informatique d’une entreprise en intégrant les problématiques de haute disponibilité, de QoS, de sécurité et de supervision"
+    AC31.02: "Réaliser la documentation technique de ce projet"
+    AC31.03: "Réaliser une maquette de démonstration du projet"
+    AC31.04: "Défendre/argumenter un projet"
+    AC31.05: "Communiquer avec les acteurs du projet"
+    AC31.06: "Gérer le projet et les différentes étapes de sa mise en œuvre en respectant les délais"
+  RT2:
+    AC32.01: "Déployer un système de communication pour l’entreprise"
+    AC32.02: "Déployer un réseau d’accès sans fil pour le réseau d’entreprise en intégrant les enjeux de la sécurité"
+    AC32.03: "Déployer un réseau d’accès fixe ou mobile pour un opérateur de télécommunications en intégrant la sécurité"
+    AC32.04: "Permettre aux collaborateurs de se connecter de manière sécurisée au système d’information de l’entreprise"
+    AC32.05: "Collaborer en mode projet en français et en anglais"
+  RT3:
+    AC33.01: "Élaborer les spécifications techniques et le cahier des charges d’une application informatique"
+    AC33.02: "Mettre en place un environnement de travail collaboratif informatique"
+    AC33.03: "Participer à la formation des utilisateurs"
+    AC33.04: "Déployer et maintenir une solution informatique"
+    AC33.05: "S’informer sur les évolutions et les nouveautés technologiques"
+    AC33.06: "Sécuriser l'environnement numérique d'une application"
+  IOM1:
+    AC34.01: "Comprendre les architectures, protocoles et services des réseaux mobiles 4G/5G"
+    AC34.02: "Choisir un réseau pour satisfaire les contraintes énergétiques et spectrales, en délai, en débit et en portée des objets connectés"
+    AC34.03: "Mettre en œuvre des réseaux mobiles personnels ou industriels"
+  IOM2:
+    AC35.01: "Superviser et analyser le déploiement des réseaux sans-fils"
+    AC35.02: "Sécuriser les objets connectés"
+    AC35.03: "Créer et innover pour l’IoT"
+  CYBER1:
+    AC34.01: "Participer activement à une analyse de risque pour définir une politique de sécurité pour une petite structure"
+    AC34.02: "Mettre en oeuvre des outils avancés de sécurisation d’une infrastructure du réseau"
+    AC34.03: "Sécuriser les systèmes d’exploitation"
+    AC34.04: "Proposer une architecture sécurisée de système d’information pour une petite structure"
+  CYBER2:
+    AC35.01: "Administrer les outils de surveillance du système d’information"
+    AC35.02: "Surveiller l'activité du système d’information"
+    AC35.03: "Appliquer une méthodologie de tests de pénétration"
+    AC35.04: "Réagir face à un incident de sécurité"
+  ROM1:
+    AC34.01ROM: "Administrer/superviser les infrastructures et les services télécom"
+    AC34.02ROM: "Administrer et déployer des fonctions réseaux virtualisées et programmer le réseau"
+  ROM2:
+    AC35.01ROM: "Administrer les services multimédias pour une entreprise"
+  DevCloud1:
+    AC34.01DevCloud: "Concevoir, administrer et superviser une infrastructure Cloud"
+    AC34.02DevCloud: "Orchestrer les ressources Cloud"
+    AC34.03DevCloud: "Investiguer sur les incidents et les résoudre afin d’améliorer la qualité et la fiabilité des infrastructures"
+  DevCloud2:
+    AC35.01DevCloud: "Adopter les pratiques de pilotage de projet"
+    AC35.02DevCloud: "Concevoir, gérer et sécuriser un environnement de microservices"
+    AC35.03DevCloud: "Gérer son infrastructure comme du code"
+    AC35.04DevCloud: "Gérer une chaîne d’intégration et/ou de déploiement continu"
+  PilPro1:
+    AC34.01PPR: "Rédaction d'un appel d'offres ou d'un cahier des charges technique R&T"
+    AC34.02PPR: "Animation technique d’équipes pluridisciplinaires"
+    AC34.03PPR: "Coordination d’équipes sur une partie de projet R&T ou sa totalité"
+    AC34.04PPR: "Mise en place de solutions techniques R&T efficientes"
+    AC34.05PPR: "Livraison et suivi technique de projet R&T"
+  PilPro2:
+    AC35.01PPR: "Rigueur dans le pilotage d’un projet R&T dans sa globalité"
+    AC35.02PPR: "Flexibilité dans la gestion des équipes et des tâches"
+    AC35.03PPR: "Prise de responsabilité envers les équipes"
+    AC35.04PPR: "Valorisation de solutions déployées, ou d’offres techniques, ou d'offres commerciales"
+    AC35.05PPR: "Force de proposition de solutions R&T innovantes responsables"

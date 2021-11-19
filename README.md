@@ -14,7 +14,11 @@ Sans Anaconda, remplacer `conda` par `pip`.
 
 ## Utilisation
 
-Les sources sont les fichiers GoogleDoc (drive), réunis par un script Apps Scripts (`FusionneFiches`) qui permet d'obtenir deux documents : l'un réunissant les fiches ressources, l'autre les fiches SAÉ.
+OLD : Les sources sont les fichiers GoogleDoc (drive), réunis par un script Apps Scripts (`FusionneFiches`) qui permet d'obtenir deux documents : l'un réunissant les fiches ressources, l'autre les fiches SAÉ.
+
+NEW: Les sources sont les fichiers GooglDoc (drive) téléchargés en local dans le répertoire google/ en partant du document de synthèse BUT-RT-S1-S6.xlsx en utilisant les liens de la première feuille et en utilisant l'API Google Drive. 
+
+Le téléchargement suppose de configurer l'OAuth sur un compte google par le biais d'une application déclarée sur cloud.google.
 
 ### Extraction des informations
 

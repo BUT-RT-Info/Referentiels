@@ -57,8 +57,7 @@ docu[1] # Tableau de synthèse des ressources
 nbre_ressources = 0
 
 
-ENTETES = ["Nom",  "Code", "Semestre", "Heures de formation", "dont heures de TP",
-           "SAÉ", "Prérequis", "Descriptif", "Mots"]
+ENTETES_BUT1 = ["Nom", "Code", "Semestre", "Heures de formation", "dont heures de TP", "SAÉ", "Prérequis", "Descriptif", "Mots"]
 
 """
 Format du parsing issu de docx2python
@@ -69,8 +68,8 @@ Format du parsing issu de docx2python
 """
 
 liste_ressources = [] # la liste des ressources telle qu'extrait du docx
-print("*Etape 1* : Parsing")
 
+print("*Etape 1* : Parsing")
 for i in range(2, len(docu)): # A priori un tableau
     est_ressource = False
     try:
@@ -91,7 +90,7 @@ for i in range(2, len(docu)): # A priori un tableau
         # if len(res) != 15:
             # __LOGGER.warning(f"Champs en trop ou manquants dans \"{nom_ressource}\"")
         # Parsing des données brute de la ressource
-        data = [None for i in range(len(ENTETES))] # les données attendues Nom, Code, ..., Mots clés
+        data = [None for i in range(len(ENTETES_BUT1))] # les données attendues Nom, Code, ..., Mots clés
         apprentissages = [None for i in range(3)] # les apprentissages des 3 compétences
         coeffs = [None for i in range(3)]
 
@@ -100,7 +99,7 @@ for i in range(2, len(docu)): # A priori un tableau
             ligne = res[j]
             if len(ligne) == 2: # ligne de données classique champ => valeur
                 champ = ligne[0][0] # le nom du champ
-                i = tools.get_indice_sans_accent_ni_espace(champ, ENTETES)  # l'indice de l'entete dans ENTETES
+                i = tools.get_indice_sans_accent_ni_espace(champ, ENTETES_BUT1)  # l'indice de l'entete dans ENTETES
                 if i != None:
                     data[i] = tools.caracteres_recalcitrants("\n".join(res[j][1]))
                     if champ == "Prérequis" and not data[i]:
@@ -126,7 +125,7 @@ for i in range(2, len(docu)): # A priori un tableau
                 indice_champ = -1
             if indice_champ >= 0: # si le champ "Heures de formation (incluant les TP)" est trouvé
                 # tente de réinjecter les heures dans Heures encadrées si elles n'on pas déjà été renseignées
-                indice_heure = tools.get_indice("formation encadrée", ENTETES)
+                indice_heure = tools.get_indice("formation encadrée", ENTETES_BUT1)
                 if not data[indice_heure]:
                     print(f"Dans \"{nom_ressource}\", réinjection de \"Heures de formation (incluant les TP)\" dans \"formation encadrée\"")
                     data[indice_heure] = champ[1]
@@ -138,7 +137,7 @@ for i in range(2, len(docu)): # A priori un tableau
 
         # Analyse des champs manquants
         champ_manquants = []
-        for (j, champ) in enumerate(ENTETES):
+        for (j, champ) in enumerate(ENTETES_BUT1):
             if not data[j]:
                 champ_manquants += [champ]
         if champ_manquants:

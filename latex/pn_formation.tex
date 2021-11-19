@@ -18,7 +18,7 @@
 \usepackage{enumitem}
 % \usepackage{longtable}
 \usepackage[pdfencoding=unicode, pdfusetitle]{hyperref}
-\usepackage{bookmark}
+%\usepackage{bookmark}
 
 \usepackage{amsmath} % pour les formules de maths
 \usepackage{nicematrix} % pour les tableaux de synthèse 
@@ -50,6 +50,8 @@
 \pgfdeclarelayer{background}%
 \pgfdeclarelayer{foreground}%
 \pgfsetlayers{background,main,foreground}%
+
+\usepackage{lscape}
 
 % ********************************************************
 % Macros et contrôle de l'affichage des mots-clés
@@ -203,6 +205,10 @@ et {\em Emmanuel Viennet} (Président de l'ACD).
 \section{La formation BUT R\'eseaux \& T\'el\'ecommunications et ses parcours}
 \input{presentation_formation.tex}
 
+\begin{landscape}
+Test
+\end{landscape}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% RAPPEL DES COMPETENCES     %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -213,77 +219,80 @@ et {\em Emmanuel Viennet} (Président de l'ACD).
 		\tableauCompetence{\CNOM}{\CTYPE}{\CLETTRE}
 }
 
-%%%%%%%%%%%%%%%%
-%% SEMESTRE 1 %%
-%%%%%%%%%%%%%%%%
-\arrayrulecolor{black}
-\section{Semestre 1}
-\def\sem{A}
 
-\subsection{SAÉs du semestre 1}
+
 %
-\listeTitreSAE{\sem}
+%%%%%%%%%%%%%%%%%
+%%% SEMESTRE 1 %%
+%%%%%%%%%%%%%%%%%
+%\arrayrulecolor{black}
+%\section{Semestre 1}
+%\def\sem{A}
 %
-\subsection{Ressources du semestre 1}
+%\subsection{SAÉs du semestre 1}
+%%
+%\listeTitreSAE{\sem}
+%%
+%\subsection{Ressources du semestre 1}
+%%
+%\listeTitreRessourceIndex{\sem}
 %
-\listeTitreRessourceIndex{\sem}
-
-\subsection{Matrice Compétences/SAÉs-Ressources du semestre 1}
-
-\scalebox{0.95}{\input{synthese/S1_acs_vs_saes_ressources.tex}}
-
-\subsection{Volumes horaires, coefficients et ECTS du semestre 1}
-
-\input{synthese/S1_coeffs_saes_ressources.tex}
-
-\newpage
-
-% Les SAE du semestre 1 + les exemples
-\subsection{Fiches SAÉs du semestre 1}
-\affichageSAE{\sem}
-\newpage
-
-% Les ressources du semestre 1
-\subsection{Fiches ressources du semestre 1}
-\affichageRessource{\sem}
-
-%%%%%%%%%%%%%%%%
-%% SEMESTRE 2 %%
-%%%%%%%%%%%%%%%%
-\arrayrulecolor{black}
-\section{Semestre 2}
-\def\sem{B} % Le semestre 2
-
-\subsection{SAÉs du semestre 2}
-
-\listeTitreSAE{\sem}
-
-\subsection{Ressources du semestre 2}
-
-\listeTitreRessourceIndex{\sem} 
-
-\subsection{Matrice Compétences/SAÉs-Ressources du semestre 2}
-
-\scalebox{0.95}{\input{synthese/S2_acs_vs_saes_ressources.tex}}
-
-\subsection{Volumes horaires, coefficients et ECTS du semestre 2}
-
-\input{synthese/S2_coeffs_saes_ressources.tex}
-
-\newpage
-
-% Les SAE du semestre 2 + les exemples
-\subsection{Fiches SAÉs du semestre 2}
-\affichageSAE{\sem}
-
-% Les ressources du semestre 2
-\subsection{Fiches ressources du semestre 2}
-\affichageRessource{\sem}
-
-\section{Abréviations}
-
-\begin{multicols}{2}\small
-\input{synthese/abbreviations.tex}
-\end{multicols}
+%\subsection{Matrice Compétences/SAÉs-Ressources du semestre 1}
+%
+%\scalebox{0.95}{\input{synthese/S1_acs_vs_saes_ressources.tex}}
+%
+%\subsection{Volumes horaires, coefficients et ECTS du semestre 1}
+%
+%\input{synthese/S1_coeffs_saes_ressources.tex}
+%
+%\newpage
+%
+%% Les SAE du semestre 1 + les exemples
+%\subsection{Fiches SAÉs du semestre 1}
+%\affichageSAE{\sem}
+%\newpage
+%
+%% Les ressources du semestre 1
+%\subsection{Fiches ressources du semestre 1}
+%\affichageRessource{\sem}
+%
+%%%%%%%%%%%%%%%%%
+%%% SEMESTRE 2 %%
+%%%%%%%%%%%%%%%%%
+%\arrayrulecolor{black}
+%\section{Semestre 2}
+%\def\sem{B} % Le semestre 2
+%
+%\subsection{SAÉs du semestre 2}
+%
+%\listeTitreSAE{\sem}
+%
+%\subsection{Ressources du semestre 2}
+%
+%\listeTitreRessourceIndex{\sem} 
+%
+%\subsection{Matrice Compétences/SAÉs-Ressources du semestre 2}
+%
+%\scalebox{0.95}{\input{synthese/S2_acs_vs_saes_ressources.tex}}
+%
+%\subsection{Volumes horaires, coefficients et ECTS du semestre 2}
+%
+%\input{synthese/S2_coeffs_saes_ressources.tex}
+%
+%\newpage
+%
+%% Les SAE du semestre 2 + les exemples
+%\subsection{Fiches SAÉs du semestre 2}
+%\affichageSAE{\sem}
+%
+%% Les ressources du semestre 2
+%\subsection{Fiches ressources du semestre 2}
+%\affichageRessource{\sem}
+%
+%\section{Abréviations}
+%
+%\begin{multicols}{2}\small
+%\input{synthese/abbreviations.tex}
+%\end{multicols}
 
 \end{document}

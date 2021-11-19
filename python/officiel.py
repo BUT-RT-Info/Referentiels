@@ -77,7 +77,15 @@ def get_MOTS_CLES(repertoire = "yaml"):
         DATA_MOTSCLES = yaml.load(fid.read(), Loader=yaml.Loader)
     return DATA_MOTSCLES
 
+## L'association code ressource -> fichier google
+def get_DATA_R_DOCX(repertoire = "yaml/docx"):
+    with open(Config.ROOT+"/"+ repertoire +"/docx.yml", "r", encoding="utf8") as fid:
+        DATA_R_DOCX = yaml.load(fid.read(), Loader=yaml.Loader)
+    return DATA_R_DOCX
+
 AUCUN_PREREQUIS = "Aucun"
+
+PARCOURS = ["Cyber", "DevCloud", "IOM", "ROM", "PilPro"]
 
 class Officiel():
     """
@@ -110,6 +118,8 @@ class Officiel():
         self.DATA_ABBREVIATIONS = get_DATA_ABBREVIATIONS()
         ## Les mostcles (commandes, logiciels, etc...)
         self.DATA_MOTSCLES = get_MOTS_CLES()
+        ## L'association ressources -> fichier.docx
+        self.DATA_R_DOCX = get_DATA_R_DOCX()
 
 
     def get_ressource_name_by_code(self, code):
@@ -119,12 +129,22 @@ class Officiel():
         """
         return get_officiel_name_by_code_using_dict(code, self.DATA_RESSOURCES)
 
+
     def get_sae_name_by_code(self, code):
         """Pour un code de saé valide (existant dans ``DATA_SAES``)
         et ce sans connaissance du semestre,
         fournit le nom officiel de la sae
         """
         return get_officiel_name_by_code_using_dict(code, self.DATA_SAES)
+
+
+    def get_sem_ressource_by_code(self, code_ressource):
+        """Récupère le semestre de la sae d'après son ``code_sae``
+        """
+        for sem in self.DATA_RESSOURCES:
+            if code_ressource in self.DATA_RESSOURCES[sem]:
+                return sem
+
 
     def get_sem_sae_by_code(self, code_sae):
         """Récupère le semestre de la sae d'après son ``code_sae``
@@ -134,6 +154,33 @@ class Officiel():
                 return sem
 
 
+    def get_docx_file_by_code(self, code_ressource):
+        """Renvoie le nom du fichier docx contenant le descriptif d'une ressource à l'aide de son code"""
+        for sem in self.DATA_R_DOCX:
+            if code_ressource in self.DATA_R_DOCX[sem]:
+                return self.DATA_R_DOCX[sem][code_ressource]
+        return None
+
+
+    def get_comp_from_acs_code(self, code_acs):
+        """Renvoie le nom/code de la comp en utilisant le code (notation pointé) d'un acs"""
+        for annee in self.DATA_ACS:
+            for comp in self.DATA_ACS[annee]:
+                if code_acs in self.DATA_ACS[annee][comp]:
+                    return comp
+        return None
+
+    @staticmethod
+    def get_annee_from_semestre(sem):
+        """Renvoie l'année en fonction d'un semestre"""
+        if sem in ["1", "2"]:
+            return "BUT1"
+        elif sem in ["3", "4"]:
+            return "BUT2"
+        else:
+            return "BUT3"
+
+
 def supprime_accent_espace(chaine):
     """Met une chaine en minuscule, supprime les accents, les ponctuations et les espaces"""
     purge = chaine.lower().replace("'", "").replace("’", "")
@@ -141,18 +188,34 @@ def supprime_accent_espace(chaine):
     purge = purge.replace(" ", "")
     return purge
 
-def devine_code_by_nom_from_dict(champ, dico):
+
+def devine_code_acs_by_nom_from_dict(champ, dico):
     """Partant d'une chaine de caractères décrivant une ressource, une SAé ou un ACS,
     détermine le code présent dans le dico officiel (dico à double entrée),
     Le dico officiel vient d'un .yml"""
     acs = []
     champ_purge = supprime_accent_espace(champ)
+    for annee in dico:
+        for comp in dico[annee]:
+            for code in dico[annee][comp]:
+                acs_purge = supprime_accent_espace(dico[annee][comp][code])
+                if acs_purge in champ_purge:
+                    acs += [code]
+    return sorted(list(set(acs)))
+
+
+def devine_code_activite_by_nom_from_dict(champ, dico):
+    """Partant d'une chaine de caractères décrivant une ressource, une SAé ou un ACS,
+    détermine le code présent dans le dico officiel (dico à double entrée),
+    Le dico officiel vient d'un .yml"""
+    codes = []
+    champ_purge = supprime_accent_espace(champ)
     for comp in dico:
         for code in dico[comp]:
-            acs_purge = supprime_accent_espace(dico[comp][code])
-            if acs_purge in champ_purge:
-                acs += [code]
-    return sorted(list(set(acs)))
+            code_purge = supprime_accent_espace(dico[comp][code])
+            if code_purge in champ_purge:
+                codes += [code]
+    return sorted(list(set(codes)))
 
 
 
@@ -189,8 +252,10 @@ class Competences():
     def getInfo(self):
         return self.competences
 
+
 class ACs():
-    """ Modélise une liste de acs lorsqu'elle est extraite d'un fichier yaml """
+    """ Modélise une liste de acs
+    lorsqu'elle est extraite d'un fichier yaml """
 
     __LOGGER = logging.getLogger(__name__)
 
@@ -204,6 +269,52 @@ class ACs():
 
     def getInfo(self):
         return self.acs
+
+    @staticmethod
+    def get_acs_notation_pointe(code_acs):
+        """Partant d'un code d'acs de la forme ACXXXX, renvoie
+        la notation pointée ACXX.XX"""
+        return code_acs[:4] + "." + code_acs[4:]
+
+
+def get_ressource_notation_pointe(code_ressource): # => à remplacer
+    """Renvoie la notation pointée d'une ressource partant
+    de RXXX"""
+    return code_ressource[:2] + "." + code_ressource[-2:]
+
+
+def get_sae_notation_pointe(code_sae):
+    """Renvoie la notation pointée d'une sae"""
+    return code_sae[:4] + ".0" + code_sae[-1]
+
+
+def mapping_code_RXXX_vers_code_pointe(code):
+    """Renvoie le code d'une ressource en utilisant le mapping"""
+    DATA_R_DOCX = get_DATA_R_DOCX()
+    for sem in DATA_R_DOCX:
+        for mod in DATA_R_DOCX[sem]:
+            if DATA_R_DOCX[sem][mod].lower().startswith(code.lower()):
+                return mod
+    __LOGGER.warning(f"Pb: Le code {code} n'a pas pu être mappé en RX.XX")
+
+def mapping_code_AC0XXX_vers_code_pointe(code):
+    """Réalise le mapping d'un AC avec l'ancien systeme de numeroration
+    vers le nouveau :
+    ancien : AC0can ou ACcan avec c=n° de la compétence, a=annee, n=numero
+    nouveau : ACac.0n avec a=annee, c=competence, n=numero"""
+    if len(code) == 6: # supprime le 0 très certainement en trop
+        if "AC0" in code or "AC1" in code:
+            code = "AC" + code[3:]
+        else:
+            raise Exception("Décodage de l'AC non prévu")
+    elif len(code) != 5:
+        raise Exception("Décodage de l'AC non prévu")
+    comp, annee, numero = code[2], code[3], code[4]
+    renumerote = "AC" + annee + comp + "0" + numero
+    return ACs.get_acs_notation_pointe(renumerote)
+
+
+
 
 
 if __name__=="__main__":

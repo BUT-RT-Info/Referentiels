@@ -203,7 +203,8 @@ et par code, de la forme :</p>
 <dl class="py class">
 <dt id="officiel.ACs">
 <em class="property">class </em><code class="sig-prename descclassname">officiel.</code><code class="sig-name descname">ACs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fichieryaml</span></em><span class="sig-paren">)</span><a class="headerlink" href="#officiel.ACs" title="Lien permanent vers cette définition">¶</a></dt>
-<dd><p>Modélise une liste de acs lorsqu’elle est extraite d’un fichier yaml</p>
+<dd><p>Modélise une liste de acs
+lorsqu’elle est extraite d’un fichier yaml</p>
 </dd></dl>
 
 <dl class="py class">
@@ -227,6 +228,18 @@ fichiers yaml (conçus manuellement).</p>
 <p>D’autres donnent : les mots-clés, les abréviations propres à RT (cf. motscles.yml, abreviations.yml).</p>
 <p>Fournit également différentes méthodes pour exploiter ces données officielles.</p>
 <dl class="py method">
+<dt id="officiel.Officiel.get_comp_from_acs_code">
+<code class="sig-name descname">get_comp_from_acs_code</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">code_acs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#officiel.Officiel.get_comp_from_acs_code" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Renvoie le nom/code de la comp en utilisant le code (notation pointé) d’un acs</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="officiel.Officiel.get_docx_file_by_code">
+<code class="sig-name descname">get_docx_file_by_code</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">code_ressource</span></em><span class="sig-paren">)</span><a class="headerlink" href="#officiel.Officiel.get_docx_file_by_code" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Renvoie le nom du fichier docx contenant le descriptif d’une ressource à l’aide de son code</p>
+</dd></dl>
+
+<dl class="py method">
 <dt id="officiel.Officiel.get_ressource_name_by_code">
 <code class="sig-name descname">get_ressource_name_by_code</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">code</span></em><span class="sig-paren">)</span><a class="headerlink" href="#officiel.Officiel.get_ressource_name_by_code" title="Lien permanent vers cette définition">¶</a></dt>
 <dd><p>Pour un code de ressource valide (existant dans <code class="docutils literal notranslate"><span class="pre">DATA_RESSOURCES</span></code>)
@@ -240,6 +253,12 @@ fournit le nom officiel de la ressource</p>
 <dd><p>Pour un code de saé valide (existant dans <code class="docutils literal notranslate"><span class="pre">DATA_SAES</span></code>)
 et ce sans connaissance du semestre,
 fournit le nom officiel de la sae</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="officiel.Officiel.get_sem_ressource_by_code">
+<code class="sig-name descname">get_sem_ressource_by_code</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">code_ressource</span></em><span class="sig-paren">)</span><a class="headerlink" href="#officiel.Officiel.get_sem_ressource_by_code" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Récupère le semestre de la sae d’après son <code class="docutils literal notranslate"><span class="pre">code_sae</span></code></p>
 </dd></dl>
 
 <dl class="py method">
@@ -280,6 +299,19 @@ en extrayant les données du fichier yaml/saes.yml</p>
 </dd></dl>
 
 <dl class="py function">
+<dt id="officiel.get_acs_notation_pointe">
+<code class="sig-prename descclassname">officiel.</code><code class="sig-name descname">get_acs_notation_pointe</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">code_acs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#officiel.get_acs_notation_pointe" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Partant d’un code d’acs de la forme ACXXXX, renvoie
+la notation pointée ACXX.XX</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="officiel.get_annee_from_semestre">
+<code class="sig-prename descclassname">officiel.</code><code class="sig-name descname">get_annee_from_semestre</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sem</span></em><span class="sig-paren">)</span><a class="headerlink" href="#officiel.get_annee_from_semestre" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Renvoie l’année en fonction d’un semestre</p>
+</dd></dl>
+
+<dl class="py function">
 <dt id="officiel.get_code_from_nom_using_dict">
 <code class="sig-prename descclassname">officiel.</code><code class="sig-name descname">get_code_from_nom_using_dict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nom</span></em>, <em class="sig-param"><span class="n">dico</span></em><span class="sig-paren">)</span><a class="headerlink" href="#officiel.get_code_from_nom_using_dict" title="Lien permanent vers cette définition">¶</a></dt>
 <dd><p>Récupère le code d’une ressource d’après son nom en utilisant les noms officiels
@@ -290,6 +322,19 @@ des ressources du yaml si dico == DATA_RESSOURCES ; sinon fait de même avec les
 <dt id="officiel.get_officiel_name_by_code_using_dict">
 <code class="sig-prename descclassname">officiel.</code><code class="sig-name descname">get_officiel_name_by_code_using_dict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">code</span></em>, <em class="sig-param"><span class="n">dico</span></em><span class="sig-paren">)</span><a class="headerlink" href="#officiel.get_officiel_name_by_code_using_dict" title="Lien permanent vers cette définition">¶</a></dt>
 <dd><p>Extrait un nom à partir d’un code (pour les RESSOURCES ou les SAES)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="officiel.get_ressource_notation_pointe">
+<code class="sig-prename descclassname">officiel.</code><code class="sig-name descname">get_ressource_notation_pointe</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">code_ressource</span></em><span class="sig-paren">)</span><a class="headerlink" href="#officiel.get_ressource_notation_pointe" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Renvoie la notation pointée d’une ressource partant
+de RXXX</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="officiel.mapping_code_RXXX_vers_code_pointe">
+<code class="sig-prename descclassname">officiel.</code><code class="sig-name descname">mapping_code_RXXX_vers_code_pointe</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">code</span></em><span class="sig-paren">)</span><a class="headerlink" href="#officiel.mapping_code_RXXX_vers_code_pointe" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Renvoie le code d’une ressource en utilisant le mapping</p>
 </dd></dl>
 
 <dl class="py function">

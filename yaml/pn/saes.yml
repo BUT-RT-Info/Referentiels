@@ -11,5 +11,41 @@ S2:
   SAÉ23: "Mettre en place une solution informatique pour l'entreprise"
   SAÉ24: "Projet intégratif"
   SAÉ25: "Portfolio"
+S3:
+  SAÉ31: "Concevoir un réseau informatique multi-sites"
+  SAÉ32: "Etude et mise en oeuvre d'un système de transmission"
+  SAÉ33: "Développer des applications communicantes"
+  SAÉ34: "Portfolio"
+  SAÉ35: "Collecter et traiter des données avec des objets connectés"
+  SAÉ36: "Découvrir le pentesting"
+  SAÉ37: "Déployer un service de téléphonie multi-sites"
+  SAÉ38: "Mettre en place une infrastructure virtualisée"
+  SAÉ39: "Mettre en place une solution de téléphone IP selon un besoin client"
+S4:
+  SAÉ41: "Portfolio"
+  SAÉ42: "Stage"
+  SAÉ43: "Réseaux et protocoles sans fil dédiés à l'IoT"
+  SAÉ44: "Sécuriser un système d'information"
+  SAÉ45: "Déployer une infrastructure opérateur et de services clients"
+  SAÉ46: "Développer et déployer un microservice dans un environnement virtualisé"
+  SAÉ47: "Etudier les solutions (système, réseau, sécurité) d'un fournisseur"
+S5:
+  SAÉ51: "Concevoir, réaliser et présenter une solution technique"
+  SAÉ52: "Portfolio"
+  SAÉ53: "Piloter un projet informatique"
+  SAÉ54: "Performance des architectures de réseaux hybrides dédiées à l'IoT"
+  SAÉ55: "Sécurisation avancée et supervision d'un système d'information"
+  SAÉ56: "Déploiement de services multimédia et/ou opérateur virtualisés et automatisés"
+  SAÉ57: "Conteneurisation et orchestration d'une applicaton"
+  SAÉ58: "Déploiement d'une solution tehcnique d'aménagement des infrastructures R&T"
+S6:
+  SAÉ61: "Portfolio"
+  SAÉ62: "Stage"
+  SAÉ63: "Mise en place d'un réseau IoT en partant d'un cahier des charges"
+  SAÉ64: "Réagir face à une cyber-attaque"
+  SAÉ65: "Défi technologique"
+  SAÉ66: "Pipeline d'une application orientée Cloud"
+  SAÉ67: "Pilotage de projets techniques complexes imbriqués R&T"
+
 
 

@@ -183,8 +183,43 @@
 <span id="module-activitedocx"></span><h1>Module activitedocx<a class="headerlink" href="#module-0" title="Lien permanent vers ce titre">¶</a></h1>
 <dl class="py class">
 <dt id="activitedocx.Docx">
-<em class="property">class </em><code class="sig-prename descclassname">activitedocx.</code><code class="sig-name descname">Docx</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nom</span></em>, <em class="sig-param"><span class="n">brut</span></em>, <em class="sig-param"><span class="n">pnofficiel</span></em><span class="sig-paren">)</span><a class="headerlink" href="#activitedocx.Docx" title="Lien permanent vers cette définition">¶</a></dt>
-<dd><p>Classe de base pour les ressources/saé/exemples du docx</p>
+<em class="property">class </em><code class="sig-prename descclassname">activitedocx.</code><code class="sig-name descname">Docx</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nom</span></em>, <em class="sig-param"><span class="n">code</span></em>, <em class="sig-param"><span class="n">brut</span></em>, <em class="sig-param"><span class="n">pnofficiel</span></em><span class="sig-paren">)</span><a class="headerlink" href="#activitedocx.Docx" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Classe de base servant à l’héritage pour modéliser les ressources/saé/exemples lues dans les docx
+et réaliser le parsing et le nettoyage des informations.</p>
+<p>Les informations sont stockées dans les attributs suivants :</p>
+<ul class="simple">
+<li><p>nom : le nom officiel de l’activité (d’après les données officielles du yaml)</p></li>
+<li><p>code : le code officiel de l’activité (d’après le yaml) en notation pointée</p></li>
+<li><p>code_docx : le code lu dans le docx (a priori en notation non pointée)</p></li>
+<li><p>brut : les données brutes de la ressource/saé (contenu du docx)</p></li>
+<li><p>semestre : le semestre de la ressource/saé déduit du code</p></li>
+<li><p>annee : l’année (déduite du semestre)</p></li>
+<li><p>apprentissages : les acs tels que décrit dans le docx</p></li>
+<li><p>acs : les acs finaux après analyse des apprentissages et comparés aux données officiels (yaml)</p></li>
+<li><p>mots : les mots-clés chargés ultérieurement</p></li>
+<li><p>competences : les compétences tels que décrites dans le docx</p></li>
+<li><p>coeffs : les coeffs décrits dans le docx pour des activités de BUT1 (old version)</p></li>
+<li><p>officiel : les éléments officiels du pn (yaml)</p></li>
+<li><p>parcours : les parcours concernés</p></li>
+</ul>
+<dl class="py method">
+<dt id="activitedocx.Docx.charge_ac">
+<code class="sig-name descname">charge_ac</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">apprentissages</span></em><span class="sig-paren">)</span><a class="headerlink" href="#activitedocx.Docx.charge_ac" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Mutateur pour les apprentissages</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="activitedocx.Docx.charge_coeffs">
+<code class="sig-name descname">charge_coeffs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">coeffs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#activitedocx.Docx.charge_coeffs" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Mutateur pour les coefficients</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="activitedocx.Docx.charge_competences">
+<code class="sig-name descname">charge_competences</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">competences</span></em><span class="sig-paren">)</span><a class="headerlink" href="#activitedocx.Docx.charge_competences" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Mutateur pour les compétences</p>
+</dd></dl>
+
 <dl class="py method">
 <dt id="activitedocx.Docx.nettoie_acs">
 <code class="sig-name descname">nettoie_acs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#activitedocx.Docx.nettoie_acs" title="Lien permanent vers cette définition">¶</a></dt>
@@ -203,6 +238,12 @@ en les remplaçant par leur code pour les 3 compétences</p>
 <code class="sig-name descname">nettoie_titre</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data_titres</span></em><span class="sig-paren">)</span><a class="headerlink" href="#activitedocx.Docx.nettoie_titre" title="Lien permanent vers cette définition">¶</a></dt>
 <dd><p>Nettoie le titre d’une ressource ou d’une SAE en utilisant les titres officiels
 fournis dans le yaml (via le dictionnaire DATA_RESSOURCES)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="activitedocx.Docx.set_annee_from_semestre">
+<code class="sig-name descname">set_annee_from_semestre</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#activitedocx.Docx.set_annee_from_semestre" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Fixe l’année au regard du semestre</p>
 </dd></dl>
 
 </dd></dl>
@@ -251,7 +292,7 @@ fournis dans le yaml (via le dictionnaire DATA_RESSOURCES)</p>
 
 <dl class="py class">
 <dt id="activitedocx.RessourceDocx">
-<em class="property">class </em><code class="sig-prename descclassname">activitedocx.</code><code class="sig-name descname">RessourceDocx</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nom</span></em>, <em class="sig-param"><span class="n">brut</span></em>, <em class="sig-param"><span class="n">pnofficiel</span></em><span class="sig-paren">)</span><a class="headerlink" href="#activitedocx.RessourceDocx" title="Lien permanent vers cette définition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">activitedocx.</code><code class="sig-name descname">RessourceDocx</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nom</span></em>, <em class="sig-param"><span class="n">code</span></em>, <em class="sig-param"><span class="n">brut</span></em>, <em class="sig-param"><span class="n">pnofficiel</span></em><span class="sig-paren">)</span><a class="headerlink" href="#activitedocx.RessourceDocx" title="Lien permanent vers cette définition">¶</a></dt>
 <dd><p>Classe modélisant les ressources, lorsqu’elles sont extraites du docx</p>
 <dl class="py method">
 <dt id="activitedocx.RessourceDocx.nettoie_champ">
@@ -262,7 +303,7 @@ fournis dans le yaml (via le dictionnaire DATA_RESSOURCES)</p>
 <dl class="py method">
 <dt id="activitedocx.RessourceDocx.nettoie_code">
 <code class="sig-name descname">nettoie_code</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#activitedocx.RessourceDocx.nettoie_code" title="Lien permanent vers cette définition">¶</a></dt>
-<dd><p>Recherche le code de la forme RXXX</p>
+<dd><p>Recherche le code de la forme RXXX =&gt; ne sert plus qu’à vérifier le mapping</p>
 </dd></dl>
 
 <dl class="py method">
@@ -322,7 +363,7 @@ fournis dans le yaml (via le dictionnaire DATA_RESSOURCES)</p>
 
 <dl class="py class">
 <dt id="activitedocx.SAEDocx">
-<em class="property">class </em><code class="sig-prename descclassname">activitedocx.</code><code class="sig-name descname">SAEDocx</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nom</span></em>, <em class="sig-param"><span class="n">brut</span></em>, <em class="sig-param"><span class="n">pnofficiel</span></em><span class="sig-paren">)</span><a class="headerlink" href="#activitedocx.SAEDocx" title="Lien permanent vers cette définition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">activitedocx.</code><code class="sig-name descname">SAEDocx</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nom</span></em>, <em class="sig-param"><span class="n">code</span></em>, <em class="sig-param"><span class="n">brut</span></em>, <em class="sig-param"><span class="n">pnofficiel</span></em><span class="sig-paren">)</span><a class="headerlink" href="#activitedocx.SAEDocx" title="Lien permanent vers cette définition">¶</a></dt>
 <dd><p>Classe modélisant un chapeau de SAé relu dans les docx</p>
 <dl class="py method">
 <dt id="activitedocx.SAEDocx.nettoie_champs">
@@ -385,14 +426,20 @@ fournis dans le yaml (via le dictionnaire DATA_RESSOURCES)</p>
 <dl class="py function">
 <dt id="activitedocx.devine_acs_by_code">
 <code class="sig-prename descclassname">activitedocx.</code><code class="sig-name descname">devine_acs_by_code</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">champ</span></em><span class="sig-paren">)</span><a class="headerlink" href="#activitedocx.devine_acs_by_code" title="Lien permanent vers cette définition">¶</a></dt>
-<dd><p>Recherche les codes ressources de la forme ACXXX ou AC0XXX dans champ ;
+<dd><p>Recherche les codes des ACs dans champ ;
 ramène les codes AC0XXX à 3 chiffres.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="activitedocx.devine_ressources_by_code">
-<code class="sig-prename descclassname">activitedocx.</code><code class="sig-name descname">devine_ressources_by_code</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">champ</span></em><span class="sig-paren">)</span><a class="headerlink" href="#activitedocx.devine_ressources_by_code" title="Lien permanent vers cette définition">¶</a></dt>
-<dd><p>Recherche les codes ressources de la forme RXXX dans champ ;</p>
+<dt id="activitedocx.devine_ressources_by_code_RXXX">
+<code class="sig-prename descclassname">activitedocx.</code><code class="sig-name descname">devine_ressources_by_code_RXXX</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">champ</span></em><span class="sig-paren">)</span><a class="headerlink" href="#activitedocx.devine_ressources_by_code_RXXX" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Recherche les codes ressources de la forme RXXX ou R-XXX-XXX dans champ ;</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="activitedocx.devine_ressources_by_code_pointe">
+<code class="sig-prename descclassname">activitedocx.</code><code class="sig-name descname">devine_ressources_by_code_pointe</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">champ</span></em><span class="sig-paren">)</span><a class="headerlink" href="#activitedocx.devine_ressources_by_code_pointe" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Recherche les codes en notation pointé</p>
 </dd></dl>
 
 <dl class="py function">
