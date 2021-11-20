@@ -13,11 +13,14 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from googleapiclient.http import MediaIoBaseDownload, MediaFileUpload
 import openpyxl
+import docxcompose.composer
+from docx import Document as Document_compose
 
 # Define the scopes
 REPERTOIRE = "../google/"
 SCOPES = ['https://www.googleapis.com/auth/drive']
 CLE = "client_secret.json"
+DOWNLOAD = False
 
 def get_credentials():
     """Ouvre les authorisations pour l'accès à l'API Google Docs/Drive"""
@@ -105,19 +108,42 @@ def main():
     # print(*items, sep="\n", end="\n\n")
 
     # Download d'un fichier
-    nbre_telecharge = 0
+    if DOWNLOAD:
+        print("***Etape 1*** Téléchargement des fiches depuis google drive")
+        nbre_telecharge = 0
+        for f in fiches:
+            f_id = fiches[f] # "1Ddks5BOdAVCA6p4nFAbDx0PqQ71-pKirSu-nrdQ0JLQ" # input("Enter file id: ")
+            f_name = REPERTOIRE + f"{f}.docx" # nom du fichier
+            if os.path.exists(f_name):
+                os.remove(f_name) # supprime le fichier
+            res = download_file_docx(service, f_id, f_name)
+            if res:
+                nbre_telecharge += 1
+
+        print(f"** Fin avec {nbre_telecharge} fichiers téléchargés / {len(fiches)}**")
+
+    print("***Etape 2*** Création d'une compilation des ressources")
+    compilation_ressources = Document_compose()
+    compilation_saes = Document_compose()
+    composer_ressources = docxcompose.composer.Composer(compilation_ressources)
+    composer_saes = docxcompose.composer.Composer(compilation_saes)
+
+
+    count = 0
     for f in fiches:
-        f_id = fiches[f] # "1Ddks5BOdAVCA6p4nFAbDx0PqQ71-pKirSu-nrdQ0JLQ" # input("Enter file id: ")
-        f_name = REPERTOIRE + f"{f}.docx" # nom du fichier
-        if os.path.exists(f_name):
-            os.remove(f_name) # supprime le fichier
-        res = download_file_docx(service, f_id, f_name)
-        if res:
-            nbre_telecharge += 1
+        f_name = REPERTOIRE + f"{f}.docx"
+        docu = Document_compose(f_name)
+        docu.add_page_break()
 
-    print(f"** Fin avec {nbre_telecharge} fichiers téléchargés / {len(fiches)}**")
+        if "R" in f:
+            composer_ressources.append(docu)
+        else:
+            composer_saes.append(docu)
 
-    
+    print(count)
+    composer_ressources.save("ressources.docx")
+    composer_saes.save("saes.docx")
+
 def get_download_information(fichier = "BUT-RT-S1-S6.xlsx"):
     """Récupère les info sur les fiches à télécharger par lecture de la feuille "Ressources et SAE S1-S6" du
     tableur"""

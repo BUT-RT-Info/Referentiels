@@ -306,8 +306,8 @@ class SemestrePN():
 
         # Les ACS et les croix
         for (noc, comp) in enumerate(self.officiel.DATA_ACS):
-            nom_comp = self.officiel.DATA_COMPETENCES[comp]["nom"]
-            niveau = list(self.officiel.DATA_COMPETENCES[comp]["niveaux"].keys())[0]
+            nom_comp = self.officiel.DATA_COMPETENCES_DETAILLEES[comp]["nom"]
+            niveau = list(self.officiel.DATA_COMPETENCES_DETAILLEES[comp]["niveaux"].keys())[0]
             couleur = "\\textcolor{compC" + string.ascii_uppercase[noc] + "}"
             chaine += (
                 "\\multicolumn{%d}{|l|}{\hyperlink{comp:%s}{%s{\\bfseries %s - %s }}} \\\\"
@@ -402,10 +402,10 @@ class SemestrePN():
                 + "{\\bfseries "
                 + comp
                 + "}} - "
-                + self.officiel.DATA_COMPETENCES[comp]["nom"].replace("&", "\&")
+                + self.officiel.DATA_COMPETENCES_DETAILLEES[comp]["nom"].replace("&", "\&")
                 + "\\\\ \n"
             )
-            niveau = list(self.officiel.DATA_COMPETENCES[comp]["niveaux"].keys())[0]
+            niveau = list(self.officiel.DATA_COMPETENCES_DETAILLEES[comp]["niveaux"].keys())[0]
             contenu += " \\small Niveau 1 - " + niveau.replace("&", "\&") + "\n"
             contenu += "\\end{tabular}\n"
             noms.append(rotation_entete_colonne(contenu) + "\n")

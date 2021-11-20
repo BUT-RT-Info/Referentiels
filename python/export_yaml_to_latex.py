@@ -50,8 +50,7 @@ REPERTOIRE_MODELE_LATEX = Config.ROOT + "/python/latex"
 
 # Chargement des ressources, des SAés et des exemples
 pnofficiel = officiel.Officiel() # charge les données officielles
-semestres = {"S1" : None,
-             "S2" : None}
+semestres = {"S{}".format(d) : None for d in range(1, 7)}
 for sem in semestres:
     semestres[sem] = semestre.SemestrePN(sem,
                                          REPERTOIRE_RESSOURCES_DEFINITIVES,

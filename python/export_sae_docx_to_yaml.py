@@ -3,8 +3,10 @@ import sys, os.path
 import argparse
 import logging
 import docx2python
-import officiel
 
+import exempledocx
+import officiel
+import saedocx
 
 from config import Config
 
@@ -17,8 +19,8 @@ parser = argparse.ArgumentParser(
 parser.add_argument(
     "DOCUMENT", 
     nargs="?", 
-    default="../google/" + "compilation-saes-JOBO21" + ".docx",
-    help="docx à parser, defaut: ../google/compilation-saes-JOBO21.docx"
+    default="../google/" + "compilation-saes-JOBO21" + ".rdocx",
+    help="rdocx à parser, defaut: ../google/compilation-saes-JOBO21.rdocx"
     )
 parser.add_argument(
     "-o", 
@@ -76,7 +78,7 @@ Format du parsing issu de docx2python
 print("*Etape 1* : Parsing")
 nbre_saes = 0
 last_sae = None
-liste_saes = [] # la liste des saes telle qu'extraite du docx
+liste_saes = [] # la liste des saes telle qu'extraite du rdocx
 liste_exemples = {} # la liste des exemples de chaque SAé
 
 for i in range(1, len(docu)): # A priori un tableau
@@ -96,7 +98,7 @@ for i in range(1, len(docu)): # A priori un tableau
         nom_sae = tools.caracteres_recalcitrants(res[0][1][0])
 
         # Création de la ressource
-        r = activitedocx.SAEDocx(nom_sae, res, pnofficiel)
+        r = saedocx.SAEDocx(nom_sae, res, pnofficiel)
         liste_saes.append(r)
 
         # Parsing des données brute de la sae
@@ -160,7 +162,7 @@ for i in range(1, len(docu)): # A priori un tableau
         nom_exemple = tools.caracteres_recalcitrants(res[0][1][0])
 
         # Création de la ressource
-        r = activitedocx.ExempleSAEDocx(nom_exemple, res, last_sae, pnofficiel)
+        r = exempledocx.ExempleSAEDocx(nom_exemple, res, last_sae, pnofficiel)
         liste_exemples[last_sae].append(r)
 
         # Parsing des données brute de la sae

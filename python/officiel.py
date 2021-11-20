@@ -42,6 +42,14 @@ def get_DATA_RESSOURCES(repertoire = "yaml/pn"):
         DATA_RESSOURCES = yaml.load(fid.read(), Loader=yaml.Loader)
     return DATA_RESSOURCES
 
+## Les intitules des compétences
+def get_DATA_COMPETENCES(repertoire = "yaml/pn"):
+    """Récupère les informations des ACS,
+    en extrayant les données du fichier yaml/competences.yml"""
+    with open(Config.ROOT+"/"+ repertoire +"/competences.yml", 'r', encoding="utf8") as fid:
+        DATA_COMPETENCES = yaml.load(fid.read(), Loader=yaml.Loader)
+    return DATA_COMPETENCES
+
 
 ## Les ACS
 def get_DATA_ACS(repertoire = "yaml/pn"):
@@ -60,7 +68,7 @@ def get_DATA_SAES(repertoire = "yaml/pn"):
     return DATA_SAES
 
 ## Les compétences
-def get_DATA_COMPETENCES(repertoire = "yaml/competences"):
+def get_DATA_COMPETENCES_DETAILLEES(repertoire = "yaml/competences"):
     with open(Config.ROOT+"/"+ repertoire + "/RT123.yml", 'r', encoding="utf8") as fid:
         DATA_COMPETENCES = yaml.load(fid.read(), Loader=yaml.Loader)
     return DATA_COMPETENCES
@@ -114,11 +122,12 @@ class Officiel():
         self.DATA_SAES = get_DATA_SAES()
         ## Les compétences
         self.DATA_COMPETENCES = get_DATA_COMPETENCES()
+        self.DATA_COMPETENCES_DETAILLEES = get_DATA_COMPETENCES_DETAILLEES()
         ## Les abréviations
         self.DATA_ABBREVIATIONS = get_DATA_ABBREVIATIONS()
         ## Les mostcles (commandes, logiciels, etc...)
         self.DATA_MOTSCLES = get_MOTS_CLES()
-        ## L'association ressources -> fichier.docx
+        ## L'association ressources -> fichier.rdocx
         self.DATA_R_DOCX = get_DATA_R_DOCX()
 
 
@@ -154,11 +163,12 @@ class Officiel():
                 return sem
 
 
-    def get_docx_file_by_code(self, code_ressource):
-        """Renvoie le nom du fichier docx contenant le descriptif d'une ressource à l'aide de son code"""
+    def get_docx_file_by_code(self, code):
+        """Renvoie le nom du fichier rdocx contenant le descriptif d'une ressource ou d'une SAE
+        à l'aide de son code"""
         for sem in self.DATA_R_DOCX:
-            if code_ressource in self.DATA_R_DOCX[sem]:
-                return self.DATA_R_DOCX[sem][code_ressource]
+            if code in self.DATA_R_DOCX[sem]:
+                return self.DATA_R_DOCX[sem][code]
         return None
 
 
@@ -202,6 +212,20 @@ def devine_code_acs_by_nom_from_dict(champ, dico):
                 if acs_purge in champ_purge:
                     acs += [code]
     return sorted(list(set(acs)))
+
+
+def devine_code_comp_by_nom_from_dict(champ):
+    """Partant d'une chaine de caractères décrivant une compétence,
+    détermine le code présent dans le dico officiel,
+    Le dico officiel vient d'un .yml"""
+    comp = []
+    DATA_COMPETENCES = get_DATA_COMPETENCES()
+    champ_purge = supprime_accent_espace(champ)
+    for code in DATA_COMPETENCES:
+        comp_purge = supprime_accent_espace(DATA_COMPETENCES[code])
+        if champ_purge in comp_purge:
+            comp += [code]
+    return sorted(list(set(comp)))
 
 
 def devine_code_activite_by_nom_from_dict(champ, dico):

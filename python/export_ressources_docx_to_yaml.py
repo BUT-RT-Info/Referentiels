@@ -4,6 +4,7 @@ import argparse
 import logging
 import docx2python
 import officiel
+import ressourcedocx
 
 from config import Config
 
@@ -17,8 +18,8 @@ parser = argparse.ArgumentParser(
 parser.add_argument(
     "DOCUMENT", 
     nargs="?", 
-    default="../google/" + "compilation-ressources-JOBO21" + ".docx",
-    help="docx à parser, defaut: ../google/compilation-ressources-JOBO21.docx"
+    default="../google/" + "compilation-ressources-JOBO21" + ".rdocx",
+    help="rdocx à parser, defaut: ../google/compilation-ressources-JOBO21.rdocx"
     )
 parser.add_argument(
     "-o", 
@@ -67,7 +68,7 @@ Format du parsing issu de docx2python
             [  # table A cell 1  <-- structure des tableaux
 """
 
-liste_ressources = [] # la liste des ressources telle qu'extrait du docx
+liste_ressources = [] # la liste des ressources telle qu'extrait du rdocx
 
 print("*Etape 1* : Parsing")
 for i in range(2, len(docu)): # A priori un tableau
@@ -84,7 +85,7 @@ for i in range(2, len(docu)): # A priori un tableau
         nom_ressource = tools.caracteres_recalcitrants(res[0][1][0])
 
         # Création de la ressource
-        r = activitedocx.RessourceDocx(nom_ressource, res, pnofficiel)
+        r = ressourcedocx.RessourceDocx(nom_ressource, res, pnofficiel)
         liste_ressources.append(r)
 
         # if len(res) != 15:

@@ -9,7 +9,8 @@ Une partie des traitements s'appuient sur :
 """
 
 import re, pypandoc, string
-from activitedocx import remove_ligne_vide
+from rdocx import remove_ligne_vide
+
 
 def rotation_entete_colonne(contenu, pos="l"):
     """Renvoie le code latex permettant la rotation de 90° d'un ``contenu``
