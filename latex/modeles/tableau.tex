@@ -1,7 +1,9 @@
 
-
 % Les formats de colonnes
-\newcolumntype{P}{>{}m{3.6cm}<{}}  % Pour la colonne d'entete
+\newcolumntype{G}{>{}m{17.2cm}<{}}
+
+% Pour la colonne d'entete
+\newcolumntype{P}{>{}m{3.6cm}<{}}  
 
 %% Pour les champs horaires (lorsqu'il y en a 2)
 \newcolumntype{Q}{>{}m{4.6cm}<{}}  % En 3 (4.1 pour équiréparti)
@@ -24,6 +26,7 @@
 
 % Compteur de ligne pour les tableaux
 \newcounter{noligne}
+\newcounter{noacs}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Liste des apprentissages critiques %%
@@ -31,18 +34,19 @@
 
 % \listeAC{R}{code_ressource}{lettre_competence} pour une ressource
 % \listeAC{S}{code_ressource}{lettre_competence} pour une sae
+% si les ACs sont rattachés à des compétences
 \newcommand*{\listeAC}[4]{%
 \begin{tabular}[t]{@{}C@{}}%
     \xdef\TYPE{#1} % R pour ressource, S pour SAE
 	\xdef\CODE{#2} % le code de la ressource sous la forme AA
 	\xdef\COMP{#3} % le code de la compétence sous la forme A
-	\xdef\targetcomp{#4}
+	\xdef\targetcomp{#4} % target de l'hyperlink
   \forLoop{1}{\value{cpt\TYPE ac\CODE\COMP}}{noligne}{
   		\xdef\accode{\csname \TYPE accode\CODE\COMP\Alph{noligne}\endcsname}
 		\hyperlink{comp:\targetcomp}{\textcolor{compC\COMP}{\accode}} {\csname \TYPE acname\CODE\COMP\Alph{noligne}\endcsname}
    \tabularnewline %
    }
-\end{tabular}%
+ \end{tabular}%
 }%
 
 
@@ -63,6 +67,53 @@
 	}
 }%
 
+
+% Liste des compétences (dans un tableau), utilisée pour décrire les compétences d'une ressource
+\newcommand*{\listeCompetences}[1]{%
+	\xdef\CODE{#1} % le code de la ressource sous la forme AA
+		\ifthenelse{\equal{\value{cptRcomp\CODE}}{0}}{ % Si pas de compétences
+		Aucune
+		}{
+		\begin{tabular}[t]{@{}T@{}}%
+			\forLoop{1}{\value{cptRcomp\CODE}}{noligne}{
+				\xdef\saecode{\csname Rcomp\CODE\Alph{noligne}\endcsname}
+				%\hyperlink{comp:\compode}{\textcolor{saeC}{\saecode}}~
+						{\csname Rcomp\CODE\Alph{noligne}\endcsname}
+			 \tabularnewline %
+			 }
+		\end{tabular}%
+	}
+}%
+
+% Listes des compétences et des ACs
+\newcommand*{\listeCompetencesEtACs}[1]{%
+	\xdef\CODE{#1} % le code de la ressource sous la forme AA
+		\ifthenelse{\equal{\value{cptRcomp\CODE}}{0}}{ % Si pas de compétences
+		Aucune
+		}{
+		\begin{tabular}[t]{@{}T@{}}%
+			\forLoop{1}{\value{cptRcomp\CODE}}{noligne}{
+				\xdef\compcode{\csname Rcomp\CODE\Alph{noligne}\endcsname}
+				%\hyperlink{comp:\compcode}{\textcolor{saeC}{\saecode}}~
+						{%\bfseries
+							\csname Rcomp\CODE\Alph{noligne}\endcsname}
+			 	\tabularnewline %
+					% \listeAC{R}{\CODE}{\Alph{noligne}}{RT1}
+
+
+				\forLoop{1}{\value{cptRac\CODE\Alph{noligne}}}{noacs}{
+						\xdef\accode{\csname Raccode\CODE\Alph{noligne}\Alph{noacs}\endcsname}
+						%\hyperlink{comp:\targetcomp}{
+						>~\textcolor{compC\Alph{noligne}}{\accode}
+				%}
+						{\csname Racname\CODE\Alph{noligne}\Alph{noacs}\endcsname}
+				   \tabularnewline %
+				   }
+				%}
+			 }
+		\end{tabular}%
+	}
+}%
 
 % Liste des pré-requis
 \newcommand*{\listePrerequis}[1]{%

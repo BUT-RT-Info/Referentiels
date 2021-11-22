@@ -66,14 +66,15 @@
 
 % ****************************
 % Déclaration de la ressource : 
-% \nouvelleressource{code_ressource}{intitule_ressource}
-\def\nouvelleressource#1#2{
+% \nouvelleressource{code_ressource}{code_RT}{intitule_ressource}
+\def\nouvelleressource#1#2#3{
 	\addtocounter{cptR}{1} % Ajoute une ressource (tous semestres confondu)
 	\addtocounter{cptR\currentsemestre}{1} % Ajoute une ressource au semestre
 	\def\currentRressource{\currentsemestre\Alph{cptR}} % Ressource RAA = A pour semestre 1 puis A pour ressource n°1
 
 	\expandafter\xdef\csname Rcode\currentRressource\endcsname{#1} % code
-	\expandafter\xdef\csname Rname\currentRressource\endcsname{#2} % nom/intitule
+	\expandafter\xdef\csname RcodeRT\currentRressource\endcsname{#2} % codeRT
+	\expandafter\xdef\csname Rname\currentRressource\endcsname{#3} % nom/intitule
 	\expandafter\xdef\csname Rsem\currentRressource\endcsname{\csname semestrenumero\currentsemestre\endcsname} % nom du semestre
 	
 	\newcounter{cptRcomp\currentRressource} % le compteur de compétences rattachées à la ressource
@@ -111,11 +112,12 @@
 	\addtocounter{cptRcomp\currentRressource}{1} % le compteur de la comp dans la ressource
 	\xdef\currentRcomp{\Alph{cptRcomp\currentRressource}} % La lettre de la comp dans la ressource
 	
-	
+
 	\expandafter\xdef\csname Rcomp\currentRressource\currentRcomp\endcsname{#1} % le nom de la comp
 	\expandafter\xdef\csname Rniveau\currentRressource\currentRcomp\endcsname{#2} % le nom de la comp
 	
 	\newcounter{cptRac\currentRressource\currentRcomp} % le compteur d'ac pour la compétence rattachées à la ressource
+	% \newcounter{cptRac\currentRressource} % le compteur d'acs indépendant des comp
 }
 
 % ****************************
@@ -128,13 +130,23 @@
 % ****************************
 % Ajout d'AC aux compétences
 \def\ajoutRac#1#2{
+	% si AC rattaché à une comp
 	\addtocounter{cptRac\currentRressource\currentRcomp}{1} % le compteur de l'ac pour la comp dans la ressource
 	\xdef\currentRac{\Alph{cptRac\currentRressource\currentRcomp}} % La lettre de l'ac pour la comp dans la ressource
-	
+
 	\expandafter\xdef\csname Raccode\currentRressource\currentRcomp\currentRac\endcsname{#1} % le nom de la comp
 	\begingroup\let\+\relax
 	\expandafter\gdef\csname Racname\currentRressource\currentRcomp\currentRac\endcsname{#2} % le nom de la comp
 	\endgroup
+
+	% Si les ACs ne sont pas rattachés à des compétences
+	%\addtocounter{cptRac\currentRressource}{1} % incrémente le compteur d'ac
+	%\xdef\currentRac{\Alph{cptRac\currentRressource}}  % associe une lettre au compteur d'ac
+
+	%\expandafter\xdef\csname Raccode\currentRressource\currentRac\endcsname{#1} % le code
+	%\begingroup\let\+\relax
+	%\expandafter\gdef\csname Racname\currentRressource\currentRac\endcsname{#2} % le nom de l'acs
+	%\endgroup
 }
 
 % ****************************

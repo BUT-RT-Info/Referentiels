@@ -16,7 +16,9 @@ class Ressource(rpn.activite.ActivitePedagogique):
         et stocke les données ``officiel``les
         """
         super().__init__(fichieryaml, officiel)
+        self.nom = self.yaml["nom"]
         self.acs = self.yaml["acs"]
+        self.annee = self.yaml["annee"]
         # self.competences = self.yaml["competences"]
         self.heures_encadrees = self.yaml["heures_formation"]
         self.heures_tp = self.yaml["heures_tp"]
@@ -28,33 +30,15 @@ class Ressource(rpn.activite.ActivitePedagogique):
         """
         modlatex = modeles.get_modele(modele)
 
-        # Préparation des coeffs
-        ajoutcoeff = "\\ajoutRcoeff{%s}"
-        coeffRT = []
-        for comp in ["RT1", "RT2", "RT3"]:
-            if comp in self.ressource["coeffs"]:
-                coeffRT.append(ajoutcoeff % (str(self.ressource["coeffs"][comp])))
-            else:
-                coeffRT.append("")
 
-        # Préparation des ac
-        ajoutac = "\\ajoutRac{%s}{%s}"
-        compRT = []
-        for accomp in ["RT1", "RT2", "RT3"]:
-            comps = []
-            if accomp in self.ressource["acs"]:
-                for no_ac in range(
-                    len(self.ressource["acs"][accomp])
-                ):  # les ac de la comp
-                    code_ac = self.ressource["acs"][accomp][no_ac]
-                    comps.append(ajoutac % (code_ac, self.officiel.DATA_ACS[accomp][code_ac]))
-            compRT.append("\n".join(comps))
+        # Préparation des compétences, des ACs et des coeffs \ajoutRcomp + \ajoutRcoeff + boucle \ajoutRacs
+        competences = self.to_latex_competences_et_acs("ressource")
 
         # Préparation des sae
         ajoutsaes = "\\ajoutRsae{%s}{%s}"  # nom, intitule, code_latex
         saesRT = []
         for (i, sae) in enumerate(
-            self.ressource["sae"]
+            self.yaml["sae"]
         ):  # in range(len(self.apprentissages)):
             code_latex = (
                 string.ascii_uppercase[int(sae[-2]) - 1]
@@ -65,57 +49,48 @@ class Ressource(rpn.activite.ActivitePedagogique):
             )  # , code_latex))
         saes = "\n".join(saesRT)
 
-        if self.ressource["code"] == "R110":
-            print("ici")
         prerequis = ""
-        if self.ressource["prerequis"] == officiel.AUCUN_PREREQUIS:
+        if self.yaml["prerequis"] == officiel.AUCUN_PREREQUIS:
             prerequis = ""
         else:
             # est-une liste de ressources
-            if not self.ressource["prerequis"][0].startswith("R"):
-                prerequis = "\\ajoutRprerequislycee{%s}" % (self.ressource["prerequis"])
+            if not self.yaml["prerequis"][0].startswith("R"):
+                prerequis = "\\ajoutRprerequislycee{%s}" % (self.yaml["prerequis"])
             else:
                 ajoutprerequis = "\\ajoutRprerequis{%s}{%s}"
                 liste = []
-                for (no, mod) in enumerate(self.ressource["prerequis"]):
+                for (no, mod) in enumerate(self.yaml["prerequis"]):
                     liste.append(
                         ajoutprerequis % (mod, self.officiel.get_ressource_name_by_code(mod))
                     )
                 prerequis = "\n".join(liste)
 
         # préparation du contexte
-        contexte = self.ressource["contexte"]
+        contexte = self.yaml["contexte"]
         if contexte == "Aucun":
             contexte = ""
-            Ressource.__LOGGER.warning(f"{self.ressource['nom']} n'a pas de contexte")
+            Ressource.__LOGGER.warning(f"{self.yaml['nom']} n'a pas de contexte")
 
         else:
             contexte = rpn.latex.md_to_latex(contexte, self.officiel.DATA_MOTSCLES)
 
         # contexte = remove_ligne_vide(contexte)
         # préparation du contenu
-
-        contenu = self.ressource["contenu"]  # supprime les passages à la ligne
+        contenu = self.yaml["contenu"]  # supprime les passages à la ligne
 
         if contenu:
-            if self.ressource["code"] == "R112":
-                print("ici")
             contenu = rpn.latex.md_to_latex(contenu, self.officiel.DATA_MOTSCLES)
 
         chaine = ""
         chaine = modeles.TemplateLatex(modlatex).substitute(
-            code=self.ressource["code"],
-            nom=self.ressource["nom"],
-            heures_formation=self.ressource["heures_formation"],
-            heures_tp=self.ressource["heures_tp"],
-            coeffRT1=coeffRT[0],
-            coeffRT2=coeffRT[1],
-            coeffRT3=coeffRT[2],
-            compRT1=compRT[0],
-            compRT2=compRT[1],
-            compRT3=compRT[2],
+            code=self.code,
+            codeRT=self.codeRT,
+            nom=self.nom,
+            heures_formation=self.yaml["heures_formation"],
+            heures_tp=self.yaml["heures_tp"],
+            competences_et_ACs="\n".join(competences), # les compétences
             saes=saes,
-            motscles=self.ressource["motscles"] + ".",
+            motscles=self.yaml["motscles"] + ".",
             prerequis=prerequis,
             contexte=contexte,
             contenu=contenu,

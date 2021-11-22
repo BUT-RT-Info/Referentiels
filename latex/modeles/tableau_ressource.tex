@@ -5,7 +5,6 @@
 
 \xdef\CODE{#1} % code de la ressource (par ex: AA avec A=1er semestre, A=1ère ressource)
 
-
 \setlength{\tabcolsep}{0.125cm} % Marge des colonnes
 \setlength{\extrarowheight}{2pt} % Marge des lignes
 
@@ -14,82 +13,76 @@
 % \cellcolor{exempleC}\hypertarget{exemple:\exemplecode}{\textcolor{compCAp!20!white}
 % 1er tableau : Nom/Code/Heures
 \begin{tabular}[t]{|P|Q|V|}
-\hline % 1ère ligne
-	\cellcolor{ressourceC} \xdef\rescode{\csname Rcode\CODE\endcsname}
-	\textcolor{compCAp!20!white}{\bfseries \hypertarget{res:\rescode}{Ressource \rescode}}
+\hline % 1ère ligne : code & titre
+	\cellcolor{ressourceC} \xdef\rescode{\csname Rcode\CODE\endcsname} % Variable \rescode contenant le code de la ressource pour hyperlink
+	\textcolor{compCAp!20!white}{\bfseries \hypertarget{res:\rescode}{Ressource \rescode} / {\csname RcodeRT\CODE\endcsname} }
 	& \multicolumn{2}{l|}{\cellcolor{ressourceC} \textcolor{compCAp!20!white}{\bfseries \csname Rname\CODE\endcsname}}
 	\\
-\hline % 2ème ligne
-	%{\bfseries Code}
-	%& \csname Rcode\CODE\endcsname
-	%&
+\hline % 2ème ligne : semestre
 	\textcolor{ressourceC}{\bfseries Semestre}
-	& \multicolumn{2}{l|}{\csname Rsem\CODE\endcsname} \\
-\hline % 3ème ligne Heures
-%{ \setlength{\extrarowheight}{0pt}
-%	\begin{tabular}[t]{@{}Q@{}} \bfseries Heures de formation \\ \bfseries encadrées \end{tabular}
-%}
+	& \multicolumn{2}{l|}{S{\csname Rsem\CODE\endcsname}} \\
+\hline % 3ème ligne : Heures
 \hline
 \textcolor{ressourceC}{\bfseries Heures}
 &
 \textcolor{ressourceC}{\bfseries Formation encadrée}
 & {\csname Rtraining\CODE\endcsname}h, dont {\csname Rtp\CODE\endcsname}h de TP \\
-%& % {\bfseries dont heures de TP}
-%	{\bfseries dont TP}
-%& {\csname Rtp\CODE\endcsname}h \\
+\hline
+\hline % 4ème ligne : Parcours
+	\textcolor{ressourceC}{\bfseries Parcours}
+	& \multicolumn{2}{l|}{Cyber, DevCloud, PilPro, IOM, ROM} \\
 \hline
 \end{tabular}
 
-% 2ème tableau : compétences et apprentissages critiques
-\begin{tabular}[t]{|C|C|C|}
-\hline
-\multicolumn{3}{|c|}{\textcolor{ressourceC}{\bfseries Compétence(s) ciblées, coefficient(s) et apprentissage(s) critique(s) couvert(s)}} \\
-\hline
-	%\hyperlink{comp:RT1}
-	{\textcolor{compCA}{\csname Rcomp\CODE A\endcsname}} {\csname Rniveau\CODE A\endcsname}
-	&
-	%\hyperlink{comp:RT2}
-	{\textcolor{compCB}{\csname Rcomp\CODE B\endcsname}} {\csname Rniveau\CODE B\endcsname}
-	&
-	%\hyperlink{comp:RT3}
-	{\textcolor{compCC}{\csname Rcomp\CODE C\endcsname}} {\csname Rniveau\CODE C\endcsname}
-\\
-\hline
-	\ifcsdef{Rcoeff\CODE A}{coef. {\csname Rcoeff\CODE A\endcsname}}{} &
-	\ifcsdef{Rcoeff\CODE B}{coef. {\csname Rcoeff\CODE B\endcsname}}{} &
-	\ifcsdef{Rcoeff\CODE C}{coef. {\csname Rcoeff\CODE C\endcsname}}{}
-\\
-\hline % AC de RT1
-{\listeAC{R}{\CODE}{A}{RT1}
-}
-& % AC de RT2
-{\listeAC{R}{\CODE}{B}{RT2}
-}
-& % AC de RT3
-{\listeAC{R}{\CODE}{C}{RT3}
-}
-\\
+% Description
+\begin{tabular}{|G|}
+	\hline
+	\textcolor{ressourceC}{\bfseries Description} \\
+	\hline
+	{\csname Rancrage\CODE\endcsname}
+	\\
 \hline
 \end{tabular}
 
-% 3ème tableau : SAE, descriptif
+% Contenu
+\begin{tabular}{|G|}
+	\textcolor{ressourceC}{\bfseries Contenu} \\
+	\hline
+	\tableauChampLong{\csname Rcontenu\CODE\endcsname}
+	\\
+\end{tabular}
+
+% 2ème tableau : Compétences et apprentissages critiques
+\begin{tabular}[t]{|P|T|}
+\hline
+\textcolor{ressourceC}{\bfseries \makecell[l]{Compétences / \\
+Apprentissages \\ critiques} } & %\listeACs{\CODE}
+\tableauChampLong{\listeCompetencesEtACs{\CODE}} \\
+\hline
+\end{tabular}
+% \ifcsdef{Rcoeff\CODE A}{coef. {\csname Rcoeff\CODE A\endcsname}}{}
+
+% SAE
 \begin{tabular}[t]{|P|T|}
 \hline
 \textcolor{ressourceC}{\bfseries SAÉ concernée(s) } & \listeSAE{\CODE} \\
 \hline
+\end{tabular}
+
+% Pré-requis
+\begin{tabular}[t]{|P|T|}
+\hline
 \textcolor{ressourceC}{\bfseries Prérequis} & \listePrerequis{\CODE} \\
 \hline
-% {\bfseries Descriptif } & \tableauDescriptif{\CODE} \\
-\textcolor{ressourceC}{\bfseries Descriptif } & \tableauChampLong{\csname Rancrage\CODE\endcsname} \\
-\hline
-\textcolor{ressourceC}{\bfseries Contenus } & \tableauChampLong{\csname Rcontenu\CODE\endcsname}
-\\
+\end{tabular}
+
+% Mots-clés
+\begin{tabular}[t]{|P|T|}
 \hline
 \textcolor{ressourceC}{\bfseries Mots-clés} & {\csname Rmotscles\CODE\endcsname} \\
 \hline
 
 \end{tabular}
-
 
 
 } % Fin de la commande

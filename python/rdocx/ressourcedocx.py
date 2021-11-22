@@ -114,8 +114,8 @@ class RessourceDocx(rdocx.docx.Docx):
         champs = [c for c in champs if c]  # supprime les lignes vides
 
         indicea = 0  # la ligne mentionnant le contexte
-        if True in [ligne.startswith("Contexte et ") for ligne in champs]:  # la ligne commençant par Contenus
-            indicea = [ligne.startswith("Contexte et ") for ligne in champs].index(True)
+        if True in [ligne.startswith("Contexte ") for ligne in champs]:  # la ligne commençant par Contenus
+            indicea = [ligne.startswith("Contexte ") for ligne in champs].index(True)
 
         indicec = 0
         contexte = []
@@ -158,18 +158,6 @@ class RessourceDocx(rdocx.docx.Docx):
         self.contexte = rdocx.docx.convert_to_markdown(contexte)
 
 
-    def nettoie_description(self):
-        """Partant du contexte détaillé d'une ressource, la transforme
-        en markdown en générant les listes à puces"""
-        # if not self.contenu or not self.contexte: # <= pas de contexte/contenu
-        champs = self.description.split("\n")
-        champs = [c.replace(" / ", "/") for c in champs if c]
-        contenu = rdocx.docx.convert_to_markdown("\n".join(champs))
-        self.description = contenu
-        # else:
-        #    self.description = self.contexte + "\n" + self.contenu
-
-
     def nettoie_champ(self):
         """Lance le nettoyage des champs"""
         self.nettoie_code()
@@ -189,7 +177,7 @@ class RessourceDocx(rdocx.docx.Docx):
         self.split_description()
         self.nettoie_contexte()
         self.nettoie_contenu()
-        self.nettoie_description()
+        # self.nettoie_description()
         # print(f"{self.code} {self.semestre}")
 
 
@@ -200,13 +188,15 @@ class RessourceDocx(rdocx.docx.Docx):
                 "codeRT": self.codeRT,
                 "libelle": self.codeRT,
                 "semestre" : int(self.semestre),
+                "annee": self.annee,
                 "heures_formation": self.heures_encadrees if self.heures_encadrees else "???",
                 "heures_tp": self.tp if self.tp or self.tp == 0 else "???",
                 "coeffs": self.coeffs,
                 "acs": self.acs,
                 "sae": self.sae,
                 "prerequis": self.prerequis,
-                "description": folded(self.description),
+                "contexte": folded(self.contexte),
+                "contenu": folded(self.contenu),
                 "motscles": self.mots if self.mots else "",
                 "parcours": self.parcours
                 }

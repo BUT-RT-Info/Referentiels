@@ -1,16 +1,13 @@
 \documentclass[10pt,lualatex,french]{article}
-\usepackage{fontspec}
-\usepackage{helvet}
-
+%\usepackage{fontspec} <- à remettre en place pour le référentiel définitif
+%\usepackage{helvet} <- à remettre en place pour le référentiel définitif
 \usepackage{arevtext}
 \usepackage{tgtermes} % tgadventor} % https://tug.org/FontCatalogue/seriffonts.html
 %\usepackage[condensed]{tgheros}
 %\usepackage{cmbright}
-
 \usepackage{textcomp}
 \usepackage{colortbl}%
 \usepackage{etoolbox}
-
 \usepackage{multicol}
 \usepackage{geometry}
 \usepackage{forloop}
@@ -19,7 +16,6 @@
 % \usepackage{longtable}
 \usepackage[pdfencoding=unicode, pdfusetitle]{hyperref}
 %\usepackage{bookmark}
-
 \usepackage{amsmath} % pour les formules de maths
 \usepackage{nicematrix} % pour les tableaux de synthèse 
 \usepackage{multirow}
@@ -29,11 +25,10 @@
 \usepackage[framemethod=tikz]{mdframed}
 \usepackage{fancyhdr}
 \usepackage{xspace}
-
 \usepackage[french]{babel}
-
 \usepackage{csquotes}
 \setlist{leftmargin=1em,topsep=0pt,partopsep=0pt,itemsep=0pt,itemindent=0em}
+\usepackage{makecell}
 
 %\geometry{a4paper,left=25mm,right=25mm,top=25 mm,bottom=25mm} % landscape
  \geometry{
@@ -93,7 +88,7 @@ Référentiel de formation}
 \input{feminisation-metiers.tex}
 % L'import du référentiel
 \specialite{Réseaux et Télécommunications}
-\input{referentiel_competences.tex}
+%\input{referentiel_competences.tex}
 \input{referentiel_BUT1.tex}
 
 % Les macros pour affichage
@@ -112,24 +107,30 @@ Référentiel de formation}
 
 \fancyhf{}
 \renewcommand{\footrulewidth}{1pt}
+%\fancypagestyle{BO}{%
+  %\fancyhf{}%
+  %\fancyfoot[L]{\textcopyright~Ministère de l'Enseignement supérieur, de la Recherche et de l'Innovation 2021\\\url{http://www.enseignementsup-recherche.gouv.fr}}
+  %\fancyfoot[C]{~\\}
+  %\fancyfoot[R]{~\\Réseaux \& Télécommunications\hspace*{4cm}\thepage}
+%}
 \fancypagestyle{BO}{%
   \fancyhf{}%
-  \fancyfoot[L]{\textcopyright~Ministère de l'Enseignement supérieur, de la Recherche et de l'Innovation 2021\\\url{http://www.enseignementsup-recherche.gouv.fr}}
+  \fancyfoot[L]{\textcopyright~Black PN de la communauté RT}
   \fancyfoot[C]{~\\}
-  \fancyfoot[R]{~\\Réseaux \& Télécommunications\hspace*{4cm}\thepage}
+  \fancyfoot[R]{~\\Réseaux \& Télécommunications\hspace*{2cm}\thepage}
 }
 
-\usepackage[verbose]{newunicodechar}
-\makeatletter
-\newunicodechar{«}{\fontspec{Arial}\char"00AB\FB@guillspace\ignorespaces}
-\newunicodechar{»}{\unskip\FB@guillspace\fontspec{Arial}\char"00BB}
-\newunicodechar{©}{\fontspec{Arial}\char"00A9\unskip\,}
-\makeatother
+% Police <- à remettre en place pour le référentiel définitf
+%\usepackage[verbose]{newunicodechar}
+%\makeatletter
+%\newunicodechar{«}{\fontspec{Arial}\char"00AB\FB@guillspace\ignorespaces}
+%\newunicodechar{»}{\unskip\FB@guillspace\fontspec{Arial}\char"00BB}
+%\newunicodechar{©}{\fontspec{Arial}\char"00A9\unskip\,}
+%\makeatother
 
 \begin{document}
-\setmainfont{Arial}
-%\newcommand{\og}{\guillemotleft~}
-%\newcommand{\fg}{~\guillemotright\xspace}
+%\setmainfont{Arial} <- police
+
 % Les listes
 \renewcommand{\labelitemi}{$\bullet$}
 \renewcommand{\labelitemii}{$\circ$}
@@ -190,50 +191,52 @@ et {\em Emmanuel Viennet} (Président de l'ACD).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% TABLES D'INDEX             %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\clearpage
-\section*{Index des SAÉs et ressources}
-\subsection*{Semestre 1}
-\listeTitreSAEIndex{A}
-\listeTitreRessourceIndex{A}
-\subsection*{Semestre 2}
-\listeTitreSAEIndex{B}
-\listeTitreRessourceIndex{B}
+%\clearpage
+%\section*{Index des SAÉs et ressources}
+%
+%\subsection*{Semestre 1}
+%\listeTitreSAEIndex{A}
+%\listeTitreRessourceIndex{A}
+%
+%\subsection*{Semestre 2}
+%\listeTitreSAEIndex{B}
+%\listeTitreRessourceIndex{B}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% PRESENTATION FORMATION     %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{La formation BUT R\'eseaux \& T\'el\'ecommunications et ses parcours}
-\input{presentation_formation.tex}
-
-\begin{landscape}
-Test
-\end{landscape}
+%\section{La formation BUT R\'eseaux \& T\'el\'ecommunications et ses parcours}
+%\input{presentation_formation.tex}
+%
+%\begin{landscape}
+%Test
+%\end{landscape}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% RAPPEL DES COMPETENCES     %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Compétences du tronc commun}
-
-\foreach \CNOM/\CTYPE/\CLETTRE [count=\COUXX] in {CCA/C/A, CCB/C/B, CCC/C/C} {
-	\subsection{ {\csname compcoderef\CNOM\endcsname} - {\csname compname\CNOM\endcsname} }
-		\tableauCompetence{\CNOM}{\CTYPE}{\CLETTRE}
-}
-
+%\section{Compétences du tronc commun}
+%
+%\foreach \CNOM/\CTYPE/\CLETTRE [count=\COUXX] in {CCA/C/A, CCB/C/B, CCC/C/C} {
+	%\subsection{ {\csname compcoderef\CNOM\endcsname} - {\csname compname\CNOM\endcsname} }
+		%\tableauCompetence{\CNOM}{\CTYPE}{\CLETTRE}
+%}
+%
 
 
 %
 %%%%%%%%%%%%%%%%%
 %%% SEMESTRE 1 %%
 %%%%%%%%%%%%%%%%%
-%\arrayrulecolor{black}
-%\section{Semestre 1}
-%\def\sem{A}
+\arrayrulecolor{black}
+\section{Semestre 1}
+\def\sem{A}
+
+\subsection{SAÉs du semestre 1}
 %
-%\subsection{SAÉs du semestre 1}
-%%
 %\listeTitreSAE{\sem}
 %%
-%\subsection{Ressources du semestre 1}
+\subsection{Ressources du semestre 1}
 %%
 %\listeTitreRessourceIndex{\sem}
 %
@@ -245,7 +248,7 @@ Test
 %
 %\input{synthese/S1_coeffs_saes_ressources.tex}
 %
-%\newpage
+\newpage
 %
 %% Les SAE du semestre 1 + les exemples
 %\subsection{Fiches SAÉs du semestre 1}
@@ -253,8 +256,8 @@ Test
 %\newpage
 %
 %% Les ressources du semestre 1
-%\subsection{Fiches ressources du semestre 1}
-%\affichageRessource{\sem}
+\subsection{Fiches ressources du semestre 1}
+\affichageRessource{\sem}
 %
 %%%%%%%%%%%%%%%%%
 %%% SEMESTRE 2 %%

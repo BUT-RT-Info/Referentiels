@@ -1,7 +1,7 @@
 import argparse
 import logging
 import sys
-
+import os
 
 from config import Config
 
@@ -70,7 +70,7 @@ for sem in semestres:
     chaine = semestres[sem].str_matrice_vs_activites(M1, acs_du_semestre, codes_activites)
     # print(chaine)
 
-    chaine = semestres[sem].to_latex_matrice_ac_vs_activites()
+    # chaine = semestres[sem].to_latex_matrice_ac_vs_activites()
 
     # fichierlatex = REPERTOIRE_SYNTHESE + "/" + f"{sem}_acs_vs_saes_ressources.tex"
     # with open(fichierlatex, "w", encoding="utf8") as fid:
@@ -114,16 +114,26 @@ for parcours in ['Cyber']: # officiel.PARCOURS:
 if not args.all:
     __LOGGER.warning(f"{sys.argv[0]}: reduced version (use -a to get full docs)")
 else:
+    # Création des répertoires
+    for sem in semestres:
+        if not os.path.exists(REPERTOIRE_LATEX_RESSOURCES + "/" + sem):
+            os.mkdir(REPERTOIRE_LATEX_RESSOURCES + "/" + sem)
+
     # Export latex des ressources
     for sem in semestres:
         for code in semestres[sem].ressources:
             r = semestres[sem].ressources[code]
-            fichierlatex = REPERTOIRE_LATEX_RESSOURCES + "/" + "{}.tex".format(r.yaml["code"])
+            fichierlatex = REPERTOIRE_LATEX_RESSOURCES + "/" + sem + "/" + "{}.tex".format(r.yaml["code"])
             contenu = r.to_latex()
 
             with open(fichierlatex, "w", encoding="utf8") as fid:
                 fid.write(contenu)
             print(f"Export de {fichierlatex} ")
+
+    # Création des répertoires
+    for sem in semestres:
+        if not os.path.exists(REPERTOIRE_LATEX_SAES + "/" + sem):
+            os.mkdir(REPERTOIRE_LATEX_SAES + "/" + sem)
 
     # Export latex des sae
     for sem in semestres:
@@ -137,11 +147,11 @@ else:
             print(f"Export de {fichierlatex} ")
 
     # Export latex des exemples
-    for sem in semestres:
-        for s in semestres[sem].exemples:
-            for (i, e) in enumerate(semestres[sem].exemples[s]):
-                fichierlatex = REPERTOIRE_LATEX_SAES + "/" + "{}_exemple{}.tex".format(e.exemple["code"].replace("É", "E"), i+1)
-                contenu = e.to_latex(REPERTOIRE_MODELE_LATEX + "/modele_exemple_sae.tex")
-                with open(fichierlatex, "w", encoding="utf8") as fid:
-                    fid.write(contenu)
-                print(f"Export de {fichierlatex} ")
+    # for sem in semestres:
+    #    for s in semestres[sem].exemples:
+    #        for (i, e) in enumerate(semestres[sem].exemples[s]):
+    #            fichierlatex = REPERTOIRE_LATEX_SAES + "/" + "{}_exemple{}.tex".format(e.exemple["code"].replace("É", "E"), i+1)
+    #            contenu = e.to_latex(REPERTOIRE_MODELE_LATEX + "/modele_exemple_sae.tex")
+    #            with open(fichierlatex, "w", encoding="utf8") as fid:
+    #                fid.write(contenu)
+    #            print(f"Export de {fichierlatex} ")

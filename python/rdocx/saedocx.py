@@ -167,6 +167,7 @@ class SAEDocx(rdocx.docx.Docx):
                 "code": self.code,
                 "codeRT": self.codeRT,
                 "semestre": int(self.semestre),
+                "annee": self.annee,
                 "heures_encadrees": self.heures_encadrees if self.heures_encadrees != ""
                                     else "???",
                 "tp": self.tp if self.tp != "" else "???",

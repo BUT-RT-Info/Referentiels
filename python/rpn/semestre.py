@@ -46,7 +46,9 @@ class SemestrePN():
         self.nbre_acs = len([self.acs[comp][a] for comp in self.acs for a in self.acs[comp]])
 
         # Les compétences du semestre
-        self.comp = self.officiel.DATA_COMPETENCES[self.annee]
+        self.niveaux = self.officiel.get_noms_niveaux()[self.annee]
+        self.comp = self.officiel.DATA_COMPETENCES
+
         # Chargement des ressources
         self.get_activites_from_yaml(type="ressource",
                                      repertoire=repertoire_ressources + f"/{nom_semestre}")
