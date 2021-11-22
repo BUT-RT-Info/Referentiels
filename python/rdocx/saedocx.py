@@ -159,6 +159,7 @@ class SAEDocx(rdocx.docx.Docx):
         self.nettoie_livrables_sae()
         self.nettoie_mots_cles()
         self.nettoie_coeffs()
+        self.parcours = self.nettoie_parcours(self.parcours)
 
     def to_yaml(self):
         """Exporte la saé en yaml"""
@@ -171,7 +172,7 @@ class SAEDocx(rdocx.docx.Docx):
                 "tp": self.tp if self.tp != "" else "???",
                 "projet": self.projet if self.projet != "" else "???",
                 "objectifs": folded(self.objectifs),
-                "description": folded(self.description),
+                "description": folded(self.description) if self.description else "",
                 "coeffs": self.coeffs,
                 "competences": self.competences,
                 "acs": self.acs,

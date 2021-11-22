@@ -1,0 +1,60 @@
+Cyber1:
+  nom: Administrer un système d'information sécurisé
+  diminutif: Sécuriser
+  description: >-
+    Un Système d’Information (SI) peut être défini comme l’ensemble des ressources de
+    l’entreprise qui permettent la gestion de l’information. Le SI est généralement
+    associé aux technologies des infrastructures systèmes, réseaux et informatiques,
+    aux processus qui les accompagnent, et aux personnes qui les supportent.
+
+    La conception d’un SI commence inévitablement par une analyse de l’existant et des
+    risques associés. Cette étape inclut une analyse des besoins de l’entreprise et permet
+    d’identifier les biens essentiels à protéger au mieux et de définir ainsi une politique
+    de sécurité du SI (PSSI). Une architecture du SI pourra ainsi être définie et déployée,
+    répondant aux besoins de sécurité précédemment établis. Le facteur humain est le principal
+    facteur de risque ; la responsabilisation et la formation du personnel sont par conséquent
+    essentiels. En outre, les attaques sont de plus en plus courantes et sophistiquées et il
+    est donc important pour la sécurité de s’appuyer sur les méthodes et les normes existantes,
+    de respecter le cadre juridique et de mettre à jour régulièrement sa politique.
+  composantes: []
+  situations: []
+  niveaux:
+    Sensibiliser aux vulnérabilités d'un système d'information et aux remédiations possibles:
+      AC24.01Cyber: "Connaître et utiliser les bonnes pratiques et les recommandations de cybersécurité"
+      AC24.02Cyber: "Mettre en œuvre les outils fondamentaux de sécurisation d’une infrastructure du réseau"
+      AC24.03Cyber: "Sécuriser les services"
+      AC24.04Cyber: "Choisir les outils cryptographiques adaptés au besoin fonctionnel du système d’information"
+      AC24.05Cyber: "Connaître les différents types d’attaque"
+      AC24.06Cyber: "Comprendre des documents techniques en anglais"
+    Mettre en œuvre un système d'information sécurisé pour une petite structure:
+      AC34.01Cyber: "Participer activement à une analyse de risque pour définir une politique de sécurité pour une petite structure"
+      AC34.02Cyber: "Mettre en oeuvre des outils avancés de sécurisation d’une infrastructure du réseau"
+      AC34.03Cyber: "Sécuriser les systèmes d’exploitation"
+      AC34.04Cyber: "Proposer une architecture sécurisée de système d’information pour une petite structure"
+Cyber2:
+  nom: Surveiller un système d’information sécurisé
+  diminutif: Surveiller
+  description: >-
+    Afin de rester fiable et opérationnel, un système d’information doit être sous surveillance
+    permanente et en perpétuelle évolution et ce, dès sa mise en production. Il doit donc
+    intégrer tous les outils nécessaires à son exploitation, c’est-à-dire permettant d’en
+    assurer sa configuration optimale, de l’administrer, de le surveiller, de le mettre à jour,
+    d’en assurer la continuité de service (notamment le sauvegarder et le restaurer) et
+    d’en gérer les changements.
+
+    De même, en cas d’incident constaté (ce qui doit toujours rester une éventualité envisagée),
+    toutes les procédures à suivre doivent être prévues à l’avance et mises en œuvre
+    afin de minimiser les impacts et conséquences de l’incident, notamment au travers
+    de plans de reprise ou de continuité d’activité.
+  composantes: [ ]
+  situations: [ ]
+  niveaux:
+    Prendre en main les outils de surveillance et de test du système d'information:
+      AC25.01Cyber: "Administrer les protections contre les logiciels malveillants"
+      AC25.02Cyber: "Prendre en main des outils de test de pénétration réseau/système"
+    Mettre en œuvre le système de surveillance d'incidents de sécurité:
+      AC35.01Cyber: "Administrer les outils de surveillance du système d’information"
+      AC35.02Cyber: "Surveiller l'activité du système d’information"
+      AC35.03Cyber: "Appliquer une méthodologie de tests de pénétration"
+      AC35.04Cyber: "Réagir face à un incident de sécurité"
+

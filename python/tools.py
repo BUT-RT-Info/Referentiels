@@ -2,6 +2,9 @@ from officiel import supprime_accent_espace
 import unicodedata
 import re
 
+from rdocx.docx import get_marqueurs
+
+
 def get_indice(champ, entetes):
     """Récupère l'indice d'une entête"""
     for (i, entete) in enumerate(entetes):
@@ -52,3 +55,19 @@ def check_espace(contenu):
     for val in espace_avant_point_virgule:
         contenu = contenu.replace(val, val[0] + ";")
     return contenu
+
+
+def remove_ligne_vide(contenus):
+    """Supprime les lignes vides"""
+    if isinstance(contenus, list):
+        return [c for c in contenus if c.rstrip()]
+    else: # contenu = chaine
+        if get_marqueurs(contenus):
+            temp = contenus.split("\n")
+            temp = [t for t in temp if t.replace("\t", "").rstrip()]
+            return "\n".join(temp)
+        else: # pas de marqueur => respect des paragraphes
+            contenus = contenus.replace("\n\n", "\\\\\n")
+            temp = contenus.split("\n")
+            temp = [t for t in temp if t.replace("\t", "").rstrip()]
+            return "\n".join(temp)

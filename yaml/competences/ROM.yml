@@ -1,0 +1,45 @@
+ROM1:
+  nom: Gérer les infrastructures et les services des réseaux opérateurs
+  diminutif: Rapprocher
+  description: >-
+    Les opérateurs de télécommunications fournissent des services pour le marché des
+    particuliers et des entreprises, mais aussi pour les autres opérateurs. Ces services
+    sont principalement l’accès à Internet via différents supports (fibres optiques, ADSL,
+    5G…), les services voix (téléphonie fixe ou mobile), les services vidéo (IPTV,
+    VoD…) et les services d’interconnexion (VPN, transit, peering). Le professionnel
+    ROM, qu'il soit salarié de l'opérateur de télécommunications ou correspondant de son
+    entreprise auprès de l'opérateur, doit comprendre l'infrastructure des réseaux opérateur,
+    savoir administrer les principaux éléments de l’infrastructure ou les services proposés
+    aux clients.
+  composantes: []
+  situations: []
+  niveaux:
+    Gérer les infrastructures des réseaux opérateurs:
+      AC24.01ROM: "Administrer les réseaux d’accès fixes et mobiles"
+      AC24.02ROM: "Virtualiser des services réseaux"
+      AC24.03ROM: "Décrire/comprendre l’architecture et les offres des opérateurs"
+      AC24.04ROM: "Gérer le routage/commutation et les interconnexions"
+      AC24.05ROM: "Automatiser la gestion des équipements réseaux"
+    Administrer les services des opérateurs de télécommunications:
+      AC34.01ROM: "Administrer/superviser les infrastructures et les services télécom"
+      AC34.02ROM: "Administrer et déployer des fonctions réseaux virtualisées et programmer le réseau"
+ROM2:
+  nom: Gérer les communications unifiées et la vidéo sur Internet
+  diminutif: Unifier
+  description: >-
+    Pour faciliter les échanges et la communication en temps réel des usagers, nombre
+    d'entreprises se tournent vers les communications unifiées qui centralisent téléphone/voix
+    (avec numéro unique sur différents terminaux), messagerie (instantanée) ou visioconférence.
+    Le professionnel doit être capable de déployer ses solutions avec une supervision globale
+    assurant la qualité et la fluidité des échanges.
+  composantes: []
+  situations: []
+  niveaux:
+    Mettre en oeuvre le système de téléphonie de l'entreprise:
+      AC25.01ROM: "Choisir une architecture et déployer des services de ToIP"
+      AC25.02ROM: "Administrer un service de téléphonie pour l’entreprise"
+      AC25.03ROM: "Mettre en place une politique de QoS pour les applications"
+    Administrer les communications unifiées et les services vidéo de l’entreprise:
+      AC35.01ROM: "Administrer les services multimédias pour une entreprise"
+
+

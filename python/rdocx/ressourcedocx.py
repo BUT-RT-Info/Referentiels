@@ -4,6 +4,8 @@ from ruamel.yaml.scalarstring import FoldedScalarString as folded
 
 import officiel
 import rdocx.docx
+import tools
+
 
 class RessourceDocx(rdocx.docx.Docx):
     """Classe modélisant les ressources, lorsqu'elles sont extraites du rdocx"""
@@ -29,19 +31,13 @@ class RessourceDocx(rdocx.docx.Docx):
     def nettoie_titre_ressource(self):
         """Nettoie le titre d'une ressource ou d'une SAE en utilisant les titres officiels
         fournis dans le yaml (via le dictionnaire DATA_RESSOURCES)"""
-        old = self.nom
-
         self.nettoie_titre(self.officiel.DATA_RESSOURCES)
-        titre2 = self.officiel.get_ressource_name_by_code(self.code)
 
-        if titre2 != self.nom:
-            self.nom = titre2
-            RessourceDocx.__LOGGER.warning(f"nettoie_titre : {old} => titre d'après PN \"{titre2}\"")
 
     def nettoie_semestre(self):
         """Pour une ressource, ou une SAE, nettoie le champ semestre
         étant donné le semestre_officiel_decode"""
-        semestre = self.officiel.get_ressource_name_by_code(self.code)
+        semestre = self.officiel.get_sem_ressource_by_code(self.code)
         self.nettoie_semestre_from_decode(semestre)
 
 
@@ -110,24 +106,6 @@ class RessourceDocx(rdocx.docx.Docx):
             self.heures_encadrees = None
 
 
-    def nettoie_parcours(self):
-        PARCOURS = officiel.PARCOURS
-        if self.parcours:
-            self.parcours = "Tronc commun"
-            self.__LOGGER.warning(f"{self.code}/{self.codeRT}: ajout de la mention Tronc commun")
-        liste = self.parcours.split(",")
-        if not liste:
-            self.__LOGGER.warning(f"{self.code}/{self.codeRT}: PB: pas de parcours détectés")
-        parcours = []
-        for (i, p) in enumerate(liste):
-            if p.lower() in [par.lower() for par in PARCOURS]:
-                i = [par.lower() for par in PARCOURS].index(p.lower())
-                parcours.append(PARCOURS[i])
-            elif "tronc" in p.lower():
-                parcours.extend(PARCOURS)
-        self.parcours = sorted(list(set(parcours)))
-
-
     def split_description(self):
         """Découpe le champ description en un contexte+un contenu ; si pas possible """
         # if self.code == "R110":
@@ -153,7 +131,7 @@ class RessourceDocx(rdocx.docx.Docx):
         else:
             contexte = champs[:indicec]
         # suppression des lignes vides
-        contexte = "\n".join(rdocx.docx.remove_ligne_vide(contexte))
+        contexte = "\n".join(tools.remove_ligne_vide(contexte))
         # suppression des liens
 
         contexte = rdocx.docx.remove_link(contexte)
@@ -183,13 +161,13 @@ class RessourceDocx(rdocx.docx.Docx):
     def nettoie_description(self):
         """Partant du contexte détaillé d'une ressource, la transforme
         en markdown en générant les listes à puces"""
-        if not self.contenu or not self.contexte: # <= pas de contexte/contenu
-            champs = self.description.split("\n")
-            champs = [c.replace(" / ", "/") for c in champs if c]
-            contenu = rdocx.docx.convert_to_markdown("\n".join(champs))
-            self.description = contenu
-        else:
-            self.description = self.contexte + "\n" + self.contenu
+        # if not self.contenu or not self.contexte: # <= pas de contexte/contenu
+        champs = self.description.split("\n")
+        champs = [c.replace(" / ", "/") for c in champs if c]
+        contenu = rdocx.docx.convert_to_markdown("\n".join(champs))
+        self.description = contenu
+        # else:
+        #    self.description = self.contexte + "\n" + self.contenu
 
 
     def nettoie_champ(self):
@@ -205,7 +183,7 @@ class RessourceDocx(rdocx.docx.Docx):
         self.nettoie_prerequis()
         self.nettoie_mots_cles()
         self.nettoie_coeffs()
-        self.nettoie_parcours()
+        self.parcours = self.nettoie_parcours(self.parcours)
 
         # Remet en forme le descriptif
         self.split_description()
@@ -219,6 +197,7 @@ class RessourceDocx(rdocx.docx.Docx):
         """Exporte la ressource en yaml"""
         dico = {"nom": self.nom,
                 "code": self.code,
+                "codeRT": self.codeRT,
                 "libelle": self.codeRT,
                 "semestre" : int(self.semestre),
                 "heures_formation": self.heures_encadrees if self.heures_encadrees else "???",

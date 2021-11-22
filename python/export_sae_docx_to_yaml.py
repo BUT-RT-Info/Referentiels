@@ -155,6 +155,7 @@ for i in range(1, len(docu)): # A priori un tableau
 
 
         last_sae = r.code
+        last_sae_code_rt = r.codeRT
         liste_exemples[r.code] = []
 
     elif est_exemple == True:
@@ -162,7 +163,7 @@ for i in range(1, len(docu)): # A priori un tableau
         nom_exemple = tools.caracteres_recalcitrants(res[0][1][0])
 
         # Création de la ressource
-        r = exempledocx.ExempleSAEDocx(nom_exemple, res, last_sae, pnofficiel)
+        r = exempledocx.ExempleSAEDocx(nom_exemple, res, last_sae, last_sae_code_rt, pnofficiel)
         liste_exemples[last_sae].append(r)
 
         # Parsing des données brute de la sae

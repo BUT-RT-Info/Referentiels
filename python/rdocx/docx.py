@@ -6,7 +6,6 @@ import ruamel.yaml
 
 import officiel
 # import rdocx.saedocx, rdocx.ressourcedocx
-import tools
 
 __LOGGER = logging.getLogger(__name__)
 
@@ -154,7 +153,7 @@ class Docx():
         """Nettoie les mots_clés (dans ressource ou SAE de BUT1)"""
         if self.mots:
             mots = self.mots  # .encode('utf8', 'ignore').decode('utf8')
-            mots = mots.replace(".", "").replace(";", ",")
+            mots = mots.replace(".", "").replace(";", ",").replace(":", ",")
             liste_mots = mots.split(",")
             liste_mots = [l.strip() for l in liste_mots if l.strip()] # supprime les espaces inutiles et les lignes vides
             mots = ", ".join(liste_mots)
@@ -174,7 +173,7 @@ class Docx():
                     if champ_purge.startswith(nom_purge):
                         return data_titres[sem][code] # le bon nom
 
-        old = self.nom
+        old = self.nom.replace(":", "-") # supprime les -
         titre = devine_nom(self.nom)
         if titre and titre != old:
             Docx.__LOGGER.warning(f"nettoie_titre : {old} => titre deviné \"{titre}\"")
@@ -195,8 +194,12 @@ class Docx():
 
 
     def dico_to_yaml(self, dico):
+        if "nom" in dico:
+            dico["nom"] = ruamel.yaml.scalarstring.SingleQuotedScalarString(dico["nom"]) # force les guillemets pour autoriser les ":"
+
         output = ruamel.yaml.dump(dico, Dumper=ruamel.yaml.RoundTripDumper,
-                                  allow_unicode=True, width=100)
+                                  allow_unicode=True, width=100,
+                                  )
         # Purge les lignes vides en trop
         lignes = output.split("\n")
         lignes_finales = []
@@ -282,8 +285,14 @@ class Docx():
         R_anterieur_avec_nom = []
         for r in R_avec_nom:
             sem = int(r[1])
+            try:
+                int(self.semestre)
+            except:
+                print("pb formattage")
             if sem <= int(self.semestre):
                 R_anterieur_avec_nom.append(r)
+
+
 
         R_code = mapping_R_avec_code + R_avec_code_pointe
         if R_code:
@@ -312,6 +321,28 @@ class Docx():
                 volumes = sorted(volumes, reverse=True)
                 return (int(volumes[0][:-1]), int(volumes[1][:-1]))
 
+    def nettoie_parcours(self, parcours):
+        PARCOURS = officiel.PARCOURS
+        if not parcours:
+            parcours = "Tronc commun"
+            self.__LOGGER.warning(f"{self.code}/{self.codeRT}: ajout en tant que \"Tronc commun\"")
+        parcours = parcours.lower() # mise en minuscule pour faciliter la détection
+
+        # self.__LOGGER.warning(f"{self.code}/{self.codeRT}: PB: pas de parcours détectés")
+
+        parcours_officiel = []
+        for p in PARCOURS:
+            if p.lower() in parcours:
+                parcours_officiel.append(p)
+        if len(parcours_officiel) == len(PARCOURS):
+            parcours = ["Tronc commun"]
+            self.__LOGGER.warning(f"{self.code}/{self.codeRT}: 5 parcours => Tronc commun")
+        elif len(parcours_officiel) == 0: # pas de parcours => TC
+            parcours = ["Tronc commun"]
+            self.__LOGGER.warning(f"{self.code}/{self.codeRT}: 0 parcours => Tronc commun")
+        else:
+            parcours = parcours_officiel
+        return sorted(list(set(parcours)))
 
 def remove_link(contenu):
     #liens = re.findall("(<a\s.*\">)", contenu)
@@ -324,22 +355,6 @@ def remove_link(contenu):
 
     # supprime les espaces dans les liens
     return contenu
-
-
-def remove_ligne_vide(contenus):
-    """Supprime les lignes vides"""
-    if isinstance(contenus, list):
-        return [c for c in contenus if c.rstrip()]
-    else: # contenu = chaine
-        if get_marqueurs(contenus):
-            temp = contenus.split("\n")
-            temp = [t for t in temp if t.replace("\t", "").rstrip()]
-            return "\n".join(temp)
-        else: # pas de marqueur => respect des paragraphes
-            contenus = contenus.replace("\n\n", "\\\\\n")
-            temp = contenus.split("\n")
-            temp = [t for t in temp if t.replace("\t", "").rstrip()]
-            return "\n".join(temp)
 
 
 def get_marqueur_numerique(contenu):
@@ -402,6 +417,7 @@ def convert_to_markdown(contenu):
     lignes = contenu.split("\n")
     contenus_fin =  lignes[:] # copie des ligne
     for (i, ligne) in enumerate(lignes):
+        ligne = ligne.lstrip() # retire les espaces du début
         m = get_marqueur_from_liste(ligne, marqueurs_finaux) # identifie la présence d'un marqueur dans la ligne
         if m:
             pos = marqueurs_finaux.index(m)

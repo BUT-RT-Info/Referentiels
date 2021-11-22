@@ -9,7 +9,7 @@ Une partie des traitements s'appuient sur :
 """
 
 import re, pypandoc, string
-from rdocx import remove_ligne_vide
+from tools import remove_ligne_vide
 
 
 def rotation_entete_colonne(contenu, pos="l"):

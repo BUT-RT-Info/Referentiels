@@ -1,0 +1,47 @@
+RT1:
+  nom: Administrer les réseaux et l'Internet
+  diminutif: Administrer
+  description: >-
+    A l'ère du numérique, la gestion des réseaux informatiques ou de télécommunications,
+    essentielle au bon fonctionnement de l'entreprise, suppose de concevoir le réseau,
+    le déployer, l'administrer et le superviser. Le gestionnaire doit être réactif en
+    cas d'incident et savoir communiquer avec les employés/clients pour comprendre et
+    résoudre leurs problématiques. Il exploite des équipements complexes (routeurs,
+    commutateurs...) et met en œuvre des liaisons (fibres optiques, câbles ou sans fils).
+    Il doit être au fait des évolutions du domaine et de la sécurité en s'autoformant.
+    Travaillant typiquement au sein d'équipes souvent internationales, il doit savoir
+    s'intégrer dans un groupe, définir des procédures pour garantir le bon fonctionnement
+    du réseau et documenter son travail. Il assure également la supervision des systèmes
+    et réseaux pour prévenir tout dysfonctionnement ou cyberattaque.
+  composantes:
+    - choisissant les solutions et technologies réseaux adaptées
+    - respectant les principes fondamentaux de la sécurité informatique
+    - utilisant une approche rigoureuse pour la résolution des dysfonctionnements
+    - respectant les règles métiers
+    - assurant une veille technologique
+  situations:
+    - Conception et administration de l'infrastructure du réseau informatique d'une entreprise
+    - Installation et administration des services réseau informatique d'une entreprise
+    - Déploiement et administration des solutions fixes pour les clients d'un opérateur de télécommunication
+  niveaux:
+    Assister l'administrateur du réseau:
+      AC11.01: "Maîtriser les lois fondamentales de l’électricité afin d’intervenir sur des équipements de réseaux et télécommunications"
+      AC11.02: "Comprendre l'architecture et les fondements des systèmes numériques, les principes du codage de l'information, des communications et de l'Internet"
+      AC11.03: "Configurer les fonctions de base du réseau local"
+      AC11.04: "Maîtriser les rôles et les principes fondamentaux des systèmes d'exploitation afin d'interagir avec ceux-ci pour la configuration et l'administration des réseaux et services fournis"
+      AC11.05: "Identifier les dysfonctionnements du réseau local et savoir les signaler"
+      AC11.06: "Installer un poste client, expliquer la procédure mise en place"
+    Administrer un réseau:
+      AC21.01: "Configurer et dépanner le routage dynamique dans un réseau"
+      AC21.02: "Configurer et expliquer une politique simple de QoS et les fonctions de base de la sécurité d'un réseau"
+      AC21.03: "Déployer des postes clients et des solutions virtualisées adaptées à une situation donnée"
+      AC21.04: "Déployer des services réseaux avancés"
+      AC21.05: "Identifier les réseaux opérateurs et l'architecture d'Internet"
+      AC21.06: "Travailler en équipe pour développer ses compétences professionnelles"
+    Concevoir un réseau:
+      AC31.01: "Concevoir un projet de réseau informatique d’une entreprise en intégrant les problématiques de haute disponibilité, de QoS, de sécurité et de supervision"
+      AC31.02: "Réaliser la documentation technique de ce projet"
+      AC31.03: "Réaliser une maquette de démonstration du projet"
+      AC31.04: "Défendre/argumenter un projet"
+      AC31.05: "Communiquer avec les acteurs du projet"
+      AC31.06: "Gérer le projet et les différentes étapes de sa mise en œuvre en respectant les délais"

@@ -1,0 +1,50 @@
+DevCloud1:
+  nom: Coordonner des infrastructures modulaires
+  diminutif: Orchestrer
+  description: >-
+    L’Internet demande une adaptation rapide et permanente des logiciels et des infrastructures
+    qui les supportent. Il faut réduire le temps de commercialisation afin de délivrer
+    toujours plus rapidement de nouvelles fonctionnalités aux utilisateurs ou améliorer en
+    continue les services intra et inter-entreprises. Il faut également s’adapter à des
+    variations de charges et répondre rapidement aux crises provoquées par des incidents
+    de sécurité ou de production. Le professionnel en charge de l’infrastructure doit alors
+    travailler de façon agile et en collaboration avec des développeurs d’applications pour
+    maintenir un environnement Cloud adapté aux besoins métiers et en automatiser la production.
+  composantes: []
+  situations: []
+  niveaux:
+    Assister l'administrateur infrastructure et Cloud:
+      AC24.01DevCloud: "Proposer une solution Cloud adaptée à l’entreprise"
+      AC24.02DevCloud: "Virtualiser un environnement"
+      AC24.03DevCloud: "Utiliser les services du Cloud"
+      AC24.04DevCloud: "Analyser un service Cloud au travers des métriques"
+    Administrer une infrastructure Cloud:
+      AC34.01DevCloud: "Concevoir, administrer et superviser une infrastructure Cloud"
+      AC34.02DevCloud: "Orchestrer les ressources Cloud"
+      AC34.03DevCloud: "Investiguer sur les incidents et les résoudre afin d’améliorer la qualité et la fiabilité des infrastructures"
+DevCloud2:
+  nom: Accompagner le développement d’applications
+  diminutif: Développer
+  description: >-
+    Que ce soit pour automatiser le déploiement d’outils logiciels sur le réseau ou pour mettre
+    en place les services et les ressources nécessaires à une équipe de développeurs, le
+    professionnel DevCloud doit posséder de solides compétences en programmation : il doit
+    comprendre les besoins des développeurs et des utilisateurs, aider à la résolution de bugs
+    à la fois sur l’infrastructure de développement que sur le code informatique et mettre en
+    place des solutions évolutives visant l’amélioration continue du réseau et des produits de
+    l’entreprise.
+  composantes: []
+  situations: []
+  niveaux:
+    Développer pour le Cloud:
+      AC25.01DevCloud: "Développer un microservice"
+      AC25.02DevCloud: "Mettre en production une application"
+      AC25.03DevCloud: "Programmer son réseau par le code"
+    S'intégrer dans une équipe DevOps:
+      AC35.01DevCloud: "Adopter les pratiques de pilotage de projet"
+      AC35.02DevCloud: "Concevoir, gérer et sécuriser un environnement de microservices"
+      AC35.03DevCloud: "Gérer son infrastructure comme du code"
+      AC35.04DevCloud: "Gérer une chaîne d’intégration et/ou de déploiement continu"
+
+
+

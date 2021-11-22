@@ -60,8 +60,8 @@ DATA_RESSOURCES = officiel.get_DATA_RESSOURCES() # les ressources du PN
 DATA_SAES = officiel.get_DATA_SAES() # les saés du PN
 
 print("*** ETAPE 1*** Lecture des google.docx avec parsing des informations")
-for sem in DATA_SAES: # DATA_RESSOURCES: # ['S1']: #
-    for code in DATA_SAES[sem]: # DATA_RESSOURCES[sem]:
+for sem in ['S1', 'S2', 'S3', 'S4', 'S5', 'S6']: # DATA_RESSOURCES: # ['S1']: #
+    for code in {**DATA_RESSOURCES[sem], **DATA_SAES[sem]}:
         fichier = pnofficiel.get_docx_file_by_code(code)
         if fichier == None:
             raise Exception( f"{code} n'existe pas")
@@ -84,7 +84,7 @@ for sem in DATA_SAES: # DATA_RESSOURCES: # ['S1']: #
                 pass
 
             if type_fiche == "RESSOURCE":
-                r = rdocx.parsedocx.parse_docu_ressource(code, docu)
+                r = rdocx.parsedocx.parse_docu_ressource(code, docu, pnofficiel)
                 if r:
                     liste_ressources.append(r)
             else: # type_fiche == "SAE":
@@ -106,6 +106,8 @@ print("*** ETAPE 2*** Post-traitement/nettoyage des informations")
 ressources = {"S{}".format(d) : [] for d in range(1, 7)}
 print(" > Ressources :")
 for (i, r) in enumerate(liste_ressources):
+    if r.code == "R4.08":
+        print("marie-b :)!")
     r.nettoie_champ()
 
     # Remet en forme les mots-clés
@@ -141,12 +143,16 @@ WITH_EXPORT = True
 repertoire = f"{args.outdir}ressources"
 if not os.path.exists(repertoire):
     os.mkdir(repertoire)
+
 print(" > Ressources")
 for sem in ressources:
+    rep = repertoire + f"/{sem}"
+    if not os.path.exists(rep):
+        os.mkdir(rep)
     for r in ressources[sem]:
         output = r.to_yaml()
         if WITH_EXPORT and r.code:
-            fichier = f"{repertoire}/{r.code}.yml"
+            fichier = f"{rep}/{r.code}.yml"
             __LOGGER.warning(f"writing '{fichier}")
             with open(fichier, "w", encoding="utf8") as fid:
                 fid.write(output)
@@ -157,22 +163,28 @@ if not os.path.exists(repertoire):
     os.mkdir(repertoire)
 
 for sem in saes:
-     for s in saes[sem]:
+    rep = repertoire + f"/{sem}"
+    if not os.path.exists(rep):
+        os.mkdir(rep)
+    for s in saes[sem]:
          output = s.to_yaml()
          if WITH_EXPORT and s.code:
              code_clean = s.code.replace("É", "E")
-             fichier = f"{repertoire}/{code_clean}.yml"
+             fichier = f"{rep}/{code_clean}.yml"
              __LOGGER.warning(f"writing '{fichier}")
              with open(fichier, "w", encoding="utf8") as fid:
                  fid.write(output)
 
 print(" > Exemples de SAE")
 for sem in exemples:
-     for s in exemples[sem]:
+    rep = repertoire + f"/{sem}"
+    if not os.path.exists(rep):
+        os.mkdir(rep)
+    for s in exemples[sem]:
          for (i, e) in enumerate(exemples[sem][s]):
             output = e.to_yaml()
             code_clean = s.replace("É", "E")
-            fichier = f"{repertoire}/{code_clean}_exemple{i+1}.yml"
+            fichier = f"{rep}/{code_clean}_exemple{i+1}.yml"
             __LOGGER.warning(f"writing '{fichier}")
             with open(fichier, "w", encoding="utf8") as fid:
                 fid.write(output)

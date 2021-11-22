@@ -20,7 +20,7 @@ from docx import Document as Document_compose
 REPERTOIRE = "../google/"
 SCOPES = ['https://www.googleapis.com/auth/drive']
 CLE = "client_secret.json"
-DOWNLOAD = False
+DOWNLOAD = True
 
 def get_credentials():
     """Ouvre les authorisations pour l'accès à l'API Google Docs/Drive"""

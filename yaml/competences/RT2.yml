@@ -1,0 +1,44 @@
+RT2:
+  nom: Connecter les entreprises et les usagers
+  diminutif: Connecter
+  description: >-
+    Les réseaux informatiques ou de télécommunications s'appuient sur des infrastructures
+    de transmission pour l'acheminement des données entre les différents équipements du réseau.
+    L'installation et l'administration de ces infrastructures demandent de bonnes connaissances
+    dans certains domaines de la physique, du traitement du signal et des communications numériques.
+    L'installation et la gestion de ces systèmes sont généralement faites par des équipes
+    spécialisées qui doivent donc rendre compte de leur travail aux différents acteurs qui
+    vont utiliser ces systèmes. Les phénomènes rencontrés en cas de problèmes peuvent être
+    très complexes et il est donc essentiel de respecter les règles métiers pour éviter tout
+    dysfonctionnement et de savoir adopter une démarche scientifique pour la gestion des incidents.
+    Une culture scientifique est nécessaire pour comprendre et s'adapter aux rapides évolutions
+    technologiques du secteur.
+  composantes:
+    - communiquant avec le client et les différents acteurs impliqués, parfois en anglais
+    - faisant preuve d'une démarche scientifique
+    - choisissant les solutions et technologies adaptées
+    - proposant des solutions respectueuses de l'environnement
+  situations:
+    - Déploiement des supports et systèmes de transmission
+    - Mise en service et administration des équipements d'accès fixe ou mobile d'un opérateur de télécommunication
+    - Déploiement et administration des accès sans fil pour l'entreprise
+    - Déploiement des systèmes de communications
+  niveaux:
+    Découvrir les transmissions et la ToIP:
+      AC12.01: "Mesurer et analyser les signaux"
+      AC12.02: "Caractériser des systèmes de transmissions élémentaires et découvrir la modélisation mathématique de leur fonctionnement"
+      AC12.03: "Déployer des supports de transmission"
+      AC12.04: "Connecter les systèmes de ToIP"
+      AC12.05: "Communiquer avec un tiers (client, collaborateur...) et adapter son discours et sa langue à son interlocuteur"
+    Maîtriser les différentes composantes des solutions de connexion des entreprises et des usagers:
+      AC22.01: "Déployer et caractériser des systèmes de transmissions complexes"
+      AC22.02: "Mettre en place un accès distant sécurisé"
+      AC22.03: "Mettre en place une connexion multi-site via un réseau opérateur"
+      AC22.04: "Administrer les réseaux d'accès des opérateurs"
+      AC22.05: "Capacité à questionner un cahier des charges R&T"
+    Déployer une solution de connexion ou de communication sur IP:
+      AC32.01: "Déployer un système de communication pour l'entreprise"
+      AC32.02: "Déployer un réseau d’accès sans fil pour le réseau d’entreprise en intégrant les enjeux de la sécurité"
+      AC32.03: "Déployer un réseau d’accès fixe ou mobile pour un opérateur de télécommunications en intégrant la sécurité"
+      AC32.04: "Permettre aux collaborateurs de se connecter de manière sécurisée au système d’information de l’entreprise"
+      AC32.05: "Collaborer en mode projet en français et en anglais"

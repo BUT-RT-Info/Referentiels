@@ -2,7 +2,7 @@ import argparse
 import logging
 import sys
 
-import semestre, officiel
+
 from config import Config
 
 __LOGGER = logging.getLogger(__name__)
@@ -37,8 +37,8 @@ args = parser.parse_args()
 Config.ROOT = args.root
 Config.ccn = args.ccn
 
-import activite
-from activite import *
+
+import rpn.semestre, officiel, rpn.activite
 
 REPERTOIRE_RESSOURCES_DEFINITIVES = Config.ROOT + "/yaml/ressources"
 REPERTOIRE_SAE_DEFINITIVES = Config.ROOT + "/yaml/saes"
@@ -51,8 +51,10 @@ REPERTOIRE_MODELE_LATEX = Config.ROOT + "/python/latex"
 # Chargement des ressources, des SAés et des exemples
 pnofficiel = officiel.Officiel() # charge les données officielles
 semestres = {"S{}".format(d) : None for d in range(1, 7)}
+print("***Etape 1*** Chargement des yaml")
 for sem in semestres:
-    semestres[sem] = semestre.SemestrePN(sem,
+    print(f" > Semestre {sem}")
+    semestres[sem] = rpn.semestre.SemestrePN(sem,
                                          REPERTOIRE_RESSOURCES_DEFINITIVES,
                                          REPERTOIRE_SAE_DEFINITIVES,
                                          pnofficiel)
@@ -61,30 +63,52 @@ for sem in semestres:
 
 ## Bilan : acs, volume, coefficient, abbréviations
 for sem in semestres:
-    M1 = semestres[sem].get_matrice_ac_vs_activites()
-    chaine = semestres[sem].str_matrice_ac_vs_activites()
+    (Msaes1, acs_du_semestre, codes_saes) = semestres[sem].get_matrice_ac_vs_saes()
+    (Mressources1, acs_du_semestre, codes_ressources) = semestres[sem].get_matrice_ac_vs_ressources()
+
+    (M1, acs_du_semestre, codes_activites) = semestres[sem].get_matrice_ac_vs_activites()
+    chaine = semestres[sem].str_matrice_vs_activites(M1, acs_du_semestre, codes_activites)
     # print(chaine)
 
     chaine = semestres[sem].to_latex_matrice_ac_vs_activites()
-    fichierlatex = REPERTOIRE_SYNTHESE + "/" + f"{sem}_acs_vs_saes_ressources.tex"
-    with open(fichierlatex, "w", encoding="utf8") as fid:
-        fid.write(chaine)
-    print(f"Export de {fichierlatex}")
 
-    coeff1 = semestres[sem].get_matrice_coeffs_comp_vs_activites()
-    vol1 = semestres[sem].get_matrice_volumes_comp_vs_activites()
-    chaine = semestres[sem].to_latex_matrice_coeffs_et_volumes_comp_vs_activites()
+    # fichierlatex = REPERTOIRE_SYNTHESE + "/" + f"{sem}_acs_vs_saes_ressources.tex"
+    # with open(fichierlatex, "w", encoding="utf8") as fid:
+    #     fid.write(chaine)
+    # print(f"Export de {fichierlatex}")
 
-    fichierlatex = REPERTOIRE_SYNTHESE + "/" + f"{sem}_coeffs_saes_ressources.tex"
-    with open(fichierlatex, "w", encoding="utf8") as fid:
-        fid.write(chaine)
-    print(f"Export de {fichierlatex}")
+    # coeff1 = semestres[sem].get_matrice_coeffs_comp_vs_activites()
+    # vol1 = semestres[sem].get_matrice_volumes_comp_vs_activites()
+    # chaine = semestres[sem].to_latex_matrice_coeffs_et_volumes_comp_vs_activites()
 
-    chaine = latex.to_latex_abbreviations(pnofficiel.DATA_ABBREVIATIONS)
-    fichierlatex = REPERTOIRE_SYNTHESE + "/" + "abbreviations.tex"
-    with open(fichierlatex, "w", encoding="utf8") as fid:
-        fid.write(chaine)
-    print(f"Export de {fichierlatex}")
+    # fichierlatex = REPERTOIRE_SYNTHESE + "/" + f"{sem}_coeffs_saes_ressources.tex"
+    # with open(fichierlatex, "w", encoding="utf8") as fid:
+    #    fid.write(chaine)
+    # print(f"Export de {fichierlatex}")
+
+    # chaine = rpn.latex.to_latex_abbreviations(pnofficiel.DATA_ABBREVIATIONS)
+    # fichierlatex = REPERTOIRE_SYNTHESE + "/" + "abbreviations.tex"
+    # with open(fichierlatex, "w", encoding="utf8") as fid:
+    #    fid.write(chaine)
+    # print(f"Export de {fichierlatex}")
+
+## Liste des ressources/SAEs par semestre et parcours
+for parcours in ['Cyber']: # officiel.PARCOURS:
+    print("***", parcours)
+    for sem in semestres: # pour chaque semestre
+        print(" > Semestre", sem)
+        codes_ressources = semestres[sem].get_codes_ressources_tries(parcours=parcours)
+        # print(codes_ressources)
+        for c in codes_ressources:
+            chaine = ""
+            # chaine += semestres[sem].ressources[c].code
+            # chaine += "/" + semestres[sem].ressources[c].codeRT
+            # chaine += " | "
+            chaine += semestres[sem].ressources[c].yaml["nom"]
+            chaine += " (~{}h)".format(semestres[sem].ressources[c].yaml["heures_formation"])
+            chaine += " : " + semestres[sem].ressources[c].yaml["motscles"]
+            print(chaine)
+
 
 ## Export latex divers (désactivé par défaut pour gagner du temps)
 if not args.all:

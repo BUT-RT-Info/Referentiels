@@ -3,6 +3,9 @@ import sys
 import argparse
 import glob
 
+import rpn.exemple
+import rpn.ressource
+import rpn.sae
 
 sys.path.insert(0,"../python")
 from config import Config
@@ -53,7 +56,7 @@ fichiers_ressources = sorted(fichiers_ressources) # tri par ordre alphabétique
 
 ressources = {"S1": [], "S2": []}
 for fichieryaml in fichiers_ressources:
-    r = activite.Ressource(fichieryaml, pnofficiel) # lecture du fichier
+    r = rpn.ressource.Ressource(fichieryaml, pnofficiel) # lecture du fichier
     sem = "S" + str(r.yaml["semestre"])
     ressources[sem].append(r)
 # tri par code croissant
@@ -76,7 +79,7 @@ fichiers_exemples = sorted(fichiers_exemples)
 
 saes = {"S1": [], "S2": []}
 for fichieryaml in fichiers_saes:
-    s = activite.SAE(fichieryaml, pnofficiel)
+    s = rpn.sae.SAE(fichieryaml, pnofficiel)
     sem = "S" + str(s.yaml["semestre"])
     saes[sem].append(s)
 
@@ -86,7 +89,7 @@ for sem in saes:
 exemples = {"S1" : {}, "S2" : {} }
 
 for fichieryaml in fichiers_exemples:
-    e = activite.ExempleSAE(fichieryaml, pnofficiel)
+    e = rpn.exemple.ExempleSAE(fichieryaml, pnofficiel)
     sem = "S" + str(e.yaml["semestre"])
     sae = e.yaml["code"]
     if sae not in exemples[sem]:

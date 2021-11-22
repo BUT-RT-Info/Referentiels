@@ -8,10 +8,11 @@ __LOGGER = logging.getLogger(__name__)
 class ExempleSAEDocx(rdocx.docx.Docx):
     """Classe modélisant les exemples de SAE tel que relu dans les Docx"""
 
-    def __init__(self, nom, brut, code, pnofficiel):
+    def __init__(self, nom, brut, code, codeRT, pnofficiel):
         self.nom = nom.rstrip()
         self.brut = brut  # les données brutes de la ressource
         self.code = code # code de la SAE à laquelle l'exemple est raccroché
+        self.codeRT = codeRT
         self.officiel = pnofficiel
         # Ajoute le semestre de la SAE
         self.semestre = int(self.officiel.get_sem_sae_by_code(code)[1])
@@ -60,6 +61,7 @@ class ExempleSAEDocx(rdocx.docx.Docx):
         """Exporte la ressource en yaml"""
         dico = {"titre": self.nom,
                 "code": self.code,
+                "codeRT": self.codeRT,
                 "semestre": self.semestre,
                 "description": folded(self.description),
                 "formes": folded(self.formes),

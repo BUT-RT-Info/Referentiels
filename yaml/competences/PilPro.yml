@@ -1,0 +1,54 @@
+PilPro1:
+  nom: Mettre en œuvre des projets techniques et réglementaires des R&T dans son activité
+  diminutif: Piloter
+  description: >-
+    Un professionnel R&T doit avoir une bonne compréhension des technologies des réseaux
+    informatiques et de télécommunications. Ces connaissances métiers lui permettent de dialoguer
+    avec les différents acteurs d’un projet ou d’un contrat. Il a la capacité d’analyser, de suivre,
+    coordonner puis de piloter les demandes internes et externes des entreprises, organismes
+    privés ou publics, ainsi que les composantes des contrats, dans le respect des normes
+    techniques et réglementaires de son activité. Il suit les évolutions technologiques dans le
+    souci de l’empreinte environnementale.
+  composantes: []
+  situations: []
+  niveaux:
+    Mettre en œuvre un projet R&T:
+      AC24.01PilPro: "Compréhension d'un cahier des charges technique R&T"
+      AC24.02PilPro: "Planification des étapes d’un projet technique R&T"
+      AC24.03PilPro: "Co-animation d’une équipe technique"
+      AC24.04PilPro: "Proposition de solutions techniques R&T efficientes"
+      AC24.05PilPro: "Échanges vulgarisés ou techniques avec tous les acteurs d’un projet"
+    Opérationnaliser un projet R&T:
+      AC34.01PilPro: "Rédaction d'un appel d'offres ou d'un cahier des charges technique R&T"
+      AC34.02PilPro: "Animation technique d’équipes pluridisciplinaires"
+      AC34.03PilPro: "Coordination d’équipes sur une partie de projet R&T ou sa totalité"
+      AC34.04PilPro: "Mise en place de solutions techniques R&T efficientes"
+      AC34.05PilPro: "Livraison et suivi technique de projet R&T"
+PilPro2:
+  nom: Gérer des activités R\&T en termes organisationnels, relationnels, financiers et commerciaux
+  diminutif: Organiser
+  description: >-
+    Le monde des réseaux et télécommunications est très évolutif, concurrentiel et complexe. Il
+    nécessite une bonne connaissance des axes de développement des entreprises, de la politique
+    nationale et de la législation qui l’accompagne.
+
+    A différents titres, en tant que responsable d’affaires client, chargé d’études, chef de projet
+    technique, technico-commercial, il analyse une demande dans ses dimensions les plus larges et
+    propose une offre adaptée à un client. Ainsi, il organise et anime des réunions, il participe
+    à la rédaction et aux évolutions de cahiers des charges, il rend compte de l’activité (analyse,
+    évalue, communique) et il veille au respect des coûts, de la qualité et des délais, ainsi qu’à
+    la conformité de la mise en œuvre des décisions, des demandes, ou des engagements contractuels.
+  composantes: []
+  situations: []
+  niveaux:
+    Élaborer un projet technique:
+      AC25.01PilPro: "Prise en compte des contraintes d’un pilotage de projet R&T"
+      AC25.02PilPro: "Planification de solutions techniques R&T efficientes"
+      AC25.03PilPro: "Prise de conscience des enjeux de la communication dans les relations interpersonnelles"
+      AC25.04PilPro: "Établissement d’un relationnel de qualité"
+    Mettre en place et suivre un projet technique:
+      AC35.01PilPro: "Rigueur dans le pilotage d’un projet R&T dans sa globalité"
+      AC35.02PilPro: "Flexibilité dans la gestion des équipes et des tâches"
+      AC35.03PilPro: "Prise de responsabilité envers les équipes"
+      AC35.04PilPro: "Valorisation de solutions déployées, ou d’offres techniques, ou d'offres commerciales"
+      AC35.05PilPro: "Force de proposition de solutions R&T innovantes responsables"

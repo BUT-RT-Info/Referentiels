@@ -174,7 +174,8 @@ def get_ressource_BUT23_from_google(code_ressource, docu):
                     if res[l][0][0]:
                         val.append(res[l][0][0])
                 val = tools.caracteres_recalcitrants("\n".join(val))
-
+            if k != None:
+                data[k] = tools.caracteres_recalcitrants(val)
 
         elif len(ligne) == 2:  # ligne de données classique champ => valeur ou tableau des heures
             champ = ligne[0][0]  # le nom du champ
@@ -511,7 +512,7 @@ def parse_docu_sae(code_sae, docu, pnofficiel):
                 nom_exemple = tools.caracteres_recalcitrants(res[0][1][0])
 
                 # Création de l'exemple
-                e = rdocx.exempledocx.ExempleSAEDocx(nom_exemple, res, code_sae, pnofficiel)
+                e = rdocx.exempledocx.ExempleSAEDocx(nom_exemple, res, s.code, s.codeRT, pnofficiel) # fourni les codes de la sae rattachée
                 info = get_exemple_sae_BUT1_from_google(nom_exemple, res)
                 e.charge_informations(*info)
                 liste_exemples.append(e)

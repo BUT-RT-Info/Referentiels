@@ -1,0 +1,43 @@
+RT3:
+  nom: Créer des outils et applications informatiques pour les R&T
+  diminutif: Programmer
+  description: >-
+    L'administrateur de réseaux informatiques ou de télécommunications a un besoin grandissant de compétences
+    en développement informatique. Il peut être amené à développer des applications spécifiques pour son réseau
+    (par exemple, pour remonter et analyser des informations sur ses équipements, développer une sonde pour un
+    logiciel de supervision ou une interface pour les objets connectés). Il peut également intervenir sur les
+    sites Web et sur la gestion des données de l'entreprise. Parce que l'administration des systèmes et des
+    réseaux s'oriente de plus en plus vers la programmation notamment dans le cadre de la virtualisation en
+    général et du SDN (*Software Defined Network*) en particulier, il doit être en capacité de suivre les
+    évolutions de son métier.
+  composantes:
+    - étant à l'écoute des besoins du client
+    - documentant le travail réalisé
+    - utilisant les outils numériques à bon escient
+    - choisissant les outils de développement adaptés
+    - intégrant les problématiques de sécurité
+  situations:
+    - Conception, déploiement et maintenance du système d'information d'une entreprise
+    - Automatisation du déploiement et de la maintenance des outils logiciels
+    - Développement d'outils informatiques à usage interne d'une équipe
+  niveaux:
+    S'intégrer dans un service informatique:
+      AC13.01: "Utiliser un système informatique et ses outils"
+      AC13.02: "Lire, exécuter, corriger et modifier un programme"
+      AC13.03: "Traduire un algorithme, dans un langage et pour un environnement donné"
+      AC13.04: "Connaître l'architecture et les technologies d'un site Web"
+      AC13.05: "Choisir les mécanismes de gestion de données adaptés au développement de l'outil et argumenter ses choix"
+      AC13.06: "S'intégrer dans un environnement propice au développement et au travail collaboratif"
+    Développer une application R&T:
+      AC23.01: "Automatiser l'administration système avec des scripts"
+      AC23.02: "Développer une application à partir d’un cahier des charges donné, pour le Web ou les périphériques mobiles"
+      AC23.03: "Utiliser un protocole réseau pour programmer une application client/serveur"
+      AC23.04: "Installer, administrer un système de gestion de données"
+      AC23.05: "Accéder à un ensemble de données depuis une application et/ou un site web"
+    Piloter un projet de développement d'une application R&T:
+      AC33.01: "Élaborer les spécifications techniques et le cahier des charges d’une application informatique"
+      AC33.02: "Mettre en place un environnement de travail collaboratif informatique"
+      AC33.03: "Participer à la formation des utilisateurs"
+      AC33.04: "Déployer et maintenir une solution informatique"
+      AC33.05: "S’informer sur les évolutions et les nouveautés technologiques"
+      AC33.06: "Sécuriser l'environnement numérique d'une application"

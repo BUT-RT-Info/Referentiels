@@ -69,8 +69,13 @@ def get_DATA_SAES(repertoire = "yaml/pn"):
 
 ## Les compétences
 def get_DATA_COMPETENCES_DETAILLEES(repertoire = "yaml/competences"):
-    with open(Config.ROOT+"/"+ repertoire + "/RT123.yml", 'r', encoding="utf8") as fid:
-        DATA_COMPETENCES = yaml.load(fid.read(), Loader=yaml.Loader)
+    DATA_COMPETENCES = {}
+    fichier = ["RT1.yml", "RT2.yml", "RT3.yml", "IOM.yml", "Cyber.yml", "ROM.yml", "DevCloud.yml", "PilPro.yml"]
+    for f in fichier:
+        chemin = Config.ROOT + "/"+ repertoire + "/" + f
+        with open(chemin, 'r', encoding="utf8") as fid:
+            donnees = yaml.load(fid.read(), Loader=yaml.Loader)
+            DATA_COMPETENCES = {**DATA_COMPETENCES, **donnees} # fusion dictionnaire
     return DATA_COMPETENCES
 
 ## Les abréviations
@@ -137,6 +142,35 @@ class Officiel():
         fournit le nom officiel de la ressource
         """
         return get_officiel_name_by_code_using_dict(code, self.DATA_RESSOURCES)
+
+
+    def get_noms_niveaux(self):
+        """Partant de la description détaillée des compétences DATA_COMPETENCES_DETAILLES, renvoie le nom
+        des niveaux triés par année sous la forme d'un dictionnaire :
+        { 'BUT1': {'RT1': [niveau1, niveau2, niveau3]}, ... } """
+        niveaux = {"BUT{}".format(i): {} for i in range(1, 4)}
+        for annee in niveaux:
+            comp_communes = {"RT{}".format(i): [] for i in range(1, 4)}
+            if annee == "BUT1": # ajout des compétences de parcours
+                niveaux[annee] = comp_communes
+            else:
+                comp_parcours = {"{}{}".format(p, i): None for i in range(1, 3) for p in PARCOURS}
+                niveaux[annee] = {**comp_communes, **comp_parcours}
+
+        for comp in self.DATA_COMPETENCES_DETAILLEES:
+            nbre_niveaux = len(self.DATA_COMPETENCES_DETAILLEES[comp]["niveaux"])
+            nivs = list(self.DATA_COMPETENCES_DETAILLEES[comp]["niveaux"].keys())
+            if nbre_niveaux == 3:
+                assert "RT" in comp, "officiel: Pb dans les niveaux de la comp"
+                for annee in range(0, 3): # l'année
+                    assert comp in niveaux["BUT{}".format(annee+1)], f"officiel: {comp} manquante"
+                    niveaux["BUT{}".format(annee+1)][comp] = nivs[annee]
+            else:
+                for annee in range(0, 2): # l'année
+                    assert comp in niveaux["BUT{}".format(annee+2)], f"officiel: {comp} manquante"
+                    niveaux["BUT{}".format(annee+2)][comp] = nivs[annee]
+        return niveaux
+
 
 
     def get_sae_name_by_code(self, code):
@@ -342,4 +376,7 @@ def mapping_code_AC0XXX_vers_code_pointe(code):
 
 
 if __name__=="__main__":
-    print("toto")
+    import pprint
+    pn = Officiel()
+    niveaux = pn.get_noms_niveaux()
+    pprint.pprint(niveaux)
