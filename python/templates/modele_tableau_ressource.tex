@@ -1,0 +1,95 @@
+% Le tableau complet présentant une ressource
+
+\setlength{\tabcolsep}{0.125cm} % Marge des colonnes
+\setlength{\extrarowheight}{2pt} % Marge des lignes
+
+\arrayrulecolor{ressourceC}
+
+% 1er tableau : Nom/Code/Heures
+\begin{tabular}[t]{|P|T|}
+\hline % 1ère ligne : code & titre
+	\cellcolor{ressourceC} \textcolor{compCAp!20!white}{\bfseries \hypertarget{#codelatex}{#code}}
+    & \cellcolor{ressourceC} \textcolor{compCAp!20!white}{\bfseries #nom (#codeRT)}
+\\
+\end{tabular}
+
+\begin{tabular}[t]{|P|Q|V|}
+\hline % 2ème ligne : semestre
+	\textcolor{ressourceC}{\bfseries Semestre}
+	& \multicolumn{2}{l|}{ #semestre } \\
+\hline % 3ème ligne : Heures
+\hline
+    \textcolor{ressourceC}{\bfseries Heures}
+    &
+    \textcolor{ressourceC}{\bfseries Formation encadrée}
+    & {#heures_formation}h, dont {#heures_tp}h de TP \\
+\hline
+\hline % 4ème ligne : Parcours
+	\textcolor{ressourceC}{\bfseries Parcours}
+	& \multicolumn{2}{l|}{#parcours} \\
+\hline
+\end{tabular}
+
+% Description
+\begin{tabular}{|G|}
+	\hline
+	\textcolor{ressourceC}{\bfseries Description} \\
+	\hline
+	 #contexte
+	\\
+\hline
+\end{tabular}
+
+% Contenu
+\begin{tabular}{|G|}
+	\textcolor{ressourceC}{\bfseries Contenu} \\
+	\hline
+    #contenu
+	\\
+\end{tabular}
+
+% 2ème tableau : Compétences et apprentissages critiques
+\begin{tabular}[t]{|P|T|}
+\hline
+    \begin{tabular}[t]{@{}P@{}}
+        \bfseries \textcolor{ressourceC}{Compétences /} \tabularnewline
+        \bfseries \textcolor{ressourceC}{Apprentissages} \tabularnewline
+        \bfseries \textcolor{ressourceC}{critiques}
+    \end{tabular}
+    &
+    #competences_et_acs
+    \\
+\hline
+\end{tabular}
+% \ifcsdef{Rcoeff\CODE A}{coef. {\csname Rcoeff\CODE A\endcsname}}{}
+
+% SAE
+\begin{tabular}[t]{|P|T|}
+\hline
+    \textcolor{ressourceC}{\bfseries SAÉ concernées }
+    &
+    #listeSAE %\listeSAE{\CODE}
+    \\
+\hline
+\end{tabular}
+
+% Pré-requis
+\begin{tabular}[t]{|P|T|}
+\hline
+    \textcolor{ressourceC}{\bfseries Prérequis}
+    &
+    #listePreRequis %\listePrerequis{\CODE}
+    \\
+\hline
+\end{tabular}
+
+% Mots-clés
+\begin{tabular}[t]{|P|T|}
+\hline
+    \textcolor{ressourceC}{\bfseries Mots-clés}
+    &
+    #motsCles % {\csname Rmotscles\CODE\endcsname}
+    \\
+\hline
+
+\end{tabular}

@@ -46,14 +46,14 @@ BUT2:
     AC25.01IOM: "Intégrer des systèmes électroniques et des systèmes d’exploitation embarqués"
     AC25.02IOM: "Mettre en œuvre des protocoles pour les réseaux de l'IoT"
     AC25.03IOM: "Mettre en œuvre des applications et traiter des données issues des objets connectés"
-  CYBER1:
+  Cyber1:
     AC24.01Cyber: "Connaître et utiliser les bonnes pratiques et les recommandations de cybersécurité"
     AC24.02Cyber: "Mettre en œuvre les outils fondamentaux de sécurisation d’une infrastructure du réseau"
     AC24.03Cyber: "Sécuriser les services"
     AC24.04Cyber: "Choisir les outils cryptographiques adaptés au besoin fonctionnel du système d’information"
     AC24.05Cyber: "Connaître les différents types d’attaque"
     AC24.06Cyber: "Comprendre des documents techniques en anglais"
-  CYBER2:
+  Cyber2:
     AC25.01Cyber: "Administrer les protections contre les logiciels malveillants"
     AC25.02Cyber: "Prendre en main des outils de test de pénétration réseau/système"
   ROM1:

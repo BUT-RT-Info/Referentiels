@@ -107,13 +107,14 @@ for parcours in ['Cyber']: # officiel.PARCOURS:
             chaine += semestres[sem].ressources[c].yaml["nom"]
             chaine += " (~{}h)".format(semestres[sem].ressources[c].yaml["heures_formation"])
             chaine += " : " + semestres[sem].ressources[c].yaml["motscles"]
-            print(chaine)
+            # print(chaine)
 
 
 ## Export latex divers (désactivé par défaut pour gagner du temps)
 if not args.all:
     __LOGGER.warning(f"{sys.argv[0]}: reduced version (use -a to get full docs)")
 else:
+    inclusion = []
     # Création des répertoires
     for sem in semestres:
         if not os.path.exists(REPERTOIRE_LATEX_RESSOURCES + "/" + sem):
@@ -129,6 +130,7 @@ else:
             with open(fichierlatex, "w", encoding="utf8") as fid:
                 fid.write(contenu)
             print(f"Export de {fichierlatex} ")
+            # inclusion.append("ressources/" + sem + "/" + "{}.tex".format(r.yaml["code"]))
 
     # Création des répertoires
     for sem in semestres:
@@ -139,12 +141,13 @@ else:
     for sem in semestres:
         for code in semestres[sem].saes:
             s = semestres[sem].saes[code]
-            fichierlatex = REPERTOIRE_LATEX_SAES + "/" + "{}.tex".format(s.yaml["code"].replace("É", "E"))
+            fichierlatex = REPERTOIRE_LATEX_SAES + "/" + sem + "/" + "{}.tex".format(s.yaml["code"].replace("É", "E"))
             contenu = s.to_latex()
 
             with open(fichierlatex, "w", encoding="utf8") as fid:
                 fid.write(contenu)
             print(f"Export de {fichierlatex} ")
+            inclusion.append("saes/" + sem + "/" + "{}.tex".format(s.yaml["code"]))
 
     # Export latex des exemples
     # for sem in semestres:
@@ -155,3 +158,6 @@ else:
     #            with open(fichierlatex, "w", encoding="utf8") as fid:
     #                fid.write(contenu)
     #            print(f"Export de {fichierlatex} ")
+
+    for val in inclusion:
+        print("\\input{%s} \\newpage" % (val.replace("É", "E")))

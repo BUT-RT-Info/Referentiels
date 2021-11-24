@@ -6,6 +6,7 @@
 
 \setlength{\tabcolsep}{0.125cm} % Marge des colonnes
 \setlength{\extrarowheight}{2pt} % Marge des lignes
+
 \arrayrulecolor{saeC}
 
 % 1er tableau : Nom/Code/Semestre
@@ -13,6 +14,7 @@
 \hline % 1ère ligne
 	\xdef\saecode{\csname Scode\CODE\endcsname}
 	\xdef\saelink{\csname Slinkcode\CODE\endcsname}
+
 	\cellcolor{saeC} \textcolor{compCAp!20!white}{\bfseries % SAÉ
 	\hypertarget{sae:\saecode}{\saecode}}
 	& \multicolumn{2}{l|}{
@@ -34,110 +36,79 @@
 \cline{2-3}
 	& \textcolor{saeC}{\bfseries Projet}
 		& {\csname Sprojet\CODE\endcsname}h \\
-%	{\bfseries Formation encadrée}
-%	& {\csname Straining\CODE\endcsname}h
-%	& {\bfseries dont TP}
-%	& {\csname Stp\CODE\endcsname}h	\\
-%\hline
-	%{\bfseries Projet}
-	% & \multicolumn{3}{l|}{{\csname Sprojet\CODE\endcsname}h} \\
+\hline
+\hline % 4ème ligne : Parcours
+	\textcolor{saeC}{\bfseries Parcours}
+	& \multicolumn{2}{l|}{Cyber, DevCloud, PilPro, IOM, ROM} \\
 \hline
 \end{tabular}
 
-% 2ème tableau
-%\begin{tabular}[t]{|P|S|P|S|P|S|}
-%% 	Heures
-%{\bfseries Formation encadrée} & {\csname Straining\CODE\endcsname}h
-%& {\bfseries dont TP}          & {\csname Stp\CODE\endcsname}h
-%& {\bfseries Projet}           & {\csname Sprojet\CODE\endcsname}h \\
-%\hline
-%\end{tabular}
 
-% 3ème tableau : descriptif
+% 3ème tableau : objectifs
+\begin{tabular}{|G|}
+	\hline
+	\textcolor{saeC}{\bfseries Objectifs et problématique professionnelle} \\
+	\hline
+	{\csname Sobjectifs\CODE\endcsname}
+	\\
+\hline
+\end{tabular}
+
+% 3ème tableau : description
+\begin{tabular}{|G|}
+	\hline
+	\textcolor{saeC}{\bfseries Description générique} \\
+	\hline
+	{\csname Sdescription\CODE\endcsname}
+	\\
+\hline
+\end{tabular}
+
+% 4ème tableau : livrables
+\begin{tabular}{|G|}
+	\hline
+	\textcolor{saeC}{\bfseries Livrable ou production} \\
+	\hline
+	{\csname Slivrables\CODE\endcsname}
+	\\
+\hline
+\end{tabular}
+
+% Compétences et apprentissages critiques
 \begin{tabular}[t]{|P|T|}
 \hline
-{ \setlength{\extrarowheight}{0pt}
-	\begin{tabular}[t]{@{}P@{}}
-	\textcolor{saeC}{\bfseries Objectifs et} \\
-	\textcolor{saeC}{\bfseries problématique} \\
-	\textcolor{saeC}{\bfseries professionnelle}
-	\end{tabular}
-}
-& \tableauChampLong{\csname Sdescriptif\CODE\endcsname} \\
+\textcolor{saeC}{\bfseries \makecell[l]{Compétences / \\
+Apprentissages \\ critiques} } & %\listeACs{\CODE}
+\tableauChampLong{\listeSCompetencesEtACs{\CODE}} \\
 \hline
 \end{tabular}
 
-% 3ème tableau : compétences et apprentissages critiques
-\begin{tabular}[t]{|C|C|C|}
-\hline
-\multicolumn{3}{|c|}{\textcolor{saeC}{\bfseries Compétence(s) ciblée(s), coefficient(s) et apprentissage(s) critique(s) couvert(s)}} \\
-\hline
-	% \hyperlink{comp:RT1}
-	{\textcolor{compCA}{\csname Scomp\CODE A\endcsname}} {\csname Sniveau\CODE A\endcsname}
-	&
-	% \hyperlink{comp:RT2}
-	{\textcolor{compCB}{\csname Scomp\CODE B\endcsname}} {\csname Sniveau\CODE B\endcsname}
-	&
-	% \hyperlink{comp:RT3}
-	{\textcolor{compCC}{\csname Scomp\CODE C\endcsname}} {\csname Sniveau\CODE C\endcsname}
-\\
-\hline
-	\ifcsdef{Scoeff\CODE A}{coef. {\csname Scoeff\CODE A\endcsname}}{} &
-	\ifcsdef{Scoeff\CODE B}{coef. {\csname Scoeff\CODE B\endcsname}}{} &
-	\ifcsdef{Scoeff\CODE C}{coef. {\csname Scoeff\CODE C\endcsname}}{}
-\\
-\hline % AC de RT1
-{\listeAC{S}{\CODE}{A}{RT1}
-}
-& % AC de RT2
-{\listeAC{S}{\CODE}{B}{RT2}
-}
-& % AC de RT3
-{\listeAC{S}{\CODE}{C}{RT3}
-}
-\\
-\hline
-\end{tabular}
-
-% Dernier tableau : Ressources, livrable, mots clés
+% Ressources mobilisées
 \begin{tabular}[t]{|P|T|}
 \hline
-{ \setlength{\extrarowheight}{0pt}
-	\begin{tabular}[t]{@{}P@{}}
-	\textcolor{saeC}{\bfseries Ressources} \\
-	\textcolor{saeC}{\bfseries mobilisées et} \\
-	\textcolor{saeC}{\bfseries combinées} \\
-	\end{tabular}
-}
-& \listeRessources{\CODE} \\
+\textcolor{saeC}{\bfseries \makecell[l]{Ressources \\
+combinées} } & %\listeACs{\CODE}
+\tableauChampLong{\listeRessources{\CODE}} \\
 \hline
 \end{tabular}
 
+% Mots-clés
 \begin{tabular}[t]{|P|T|}
 \hline
-{ \setlength{\extrarowheight}{0pt}
-	\begin{tabular}[t]{@{}P@{}}
-	\textcolor{saeC}{\bfseries Type de livrable ou} \\
-	\textcolor{saeC}{\bfseries de production} \\
-	\textcolor{saeC}{\small (traces pour le portfolio)} \\
-	\end{tabular}
-}
-& \tableauChampLong{\csname Slivrables\CODE\endcsname} \\
-\hline
-\textcolor{saeC}{\bfseries Mots-clés} & {\csname Smotscles\CODE\endcsname} \\
-\hline
-\hline
-{ \setlength{\extrarowheight}{0pt}
-	\begin{tabular}[t]{@{}P@{}}
-	\textcolor{saeC}{\bfseries Exemples de} \\
-	\textcolor{saeC}{\bfseries mise en oeuvre} \\
-	\end{tabular}
-}
-	&
-\tableauExemples{\CODE} 
-\\
-
+\textcolor{saeC}{\bfseries Mots-clés } & %\listeACs{\CODE}
+{\csname Smotscles\CODE\endcsname} \\
 \hline
 \end{tabular}
 
+% Exemples de mise en oeuvre
+\begin{tabular}[t]{|P|T|}
+\hline
+\textcolor{saeC}{\bfseries \makecell[l]{Exemples de \\
+mise en oeuvre} } & %\listeACs{\CODE}
+\tableauExemples{\CODE}  \\
+\hline
+\end{tabular}
+
+
 }
+

@@ -147,13 +147,13 @@ def md_to_latex(contenu, DATA_MOTSCLES):
     contenu = remove_ligne_vide(contenu)
     lignes = contenu.split("\n")  # pour debug
 
-    if contenu.startswith("\\begin{itemize}"):
-        contenu = (
-            "\\vspace{-10pt}\n" + contenu
-        )  # ajout d'un offset en cas de liste à puces
+    # if contenu.startswith("\\begin{itemize}"):
+    #    contenu = (
+    #        "\\vspace{-10pt}\n" + contenu
+    #    )  # ajout d'un offset en cas de liste à puces
     contenu = contenu.replace("\\\\" * 2, "\\\\[25pt]")
-    if not contenu.endswith("\\end{itemize}"):
-        contenu += "\\\\[3pt]"
+    # if not contenu.endswith("\\end{itemize}"):
+    #    contenu += "\\\\[3pt]"
 
     contenu = ajoute_cmd_latex(contenu, DATA_MOTSCLES)  # détecte les commandes
 

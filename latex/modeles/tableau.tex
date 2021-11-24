@@ -3,7 +3,7 @@
 \newcolumntype{G}{>{}m{17.2cm}<{}}
 
 % Pour la colonne d'entete
-\newcolumntype{P}{>{}m{3.6cm}<{}}  
+\newcolumntype{P}{>{}m{3.6cm}<{}}
 
 %% Pour les champs horaires (lorsqu'il y en a 2)
 \newcolumntype{Q}{>{}m{4.6cm}<{}}  % En 3 (4.1 pour équiréparti)
@@ -16,6 +16,8 @@
 
 %% Pour les champs de description (2de colonne)
 \newcolumntype{T}{>{}p{13.325cm}<{}} % 12.825cm
+
+
 
 \newcolumntype{V}{>{}p{8.45cm}<{}} % 12.825cm
 
@@ -85,8 +87,8 @@
 	}
 }%
 
-% Listes des compétences et des ACs
-\newcommand*{\listeCompetencesEtACs}[1]{%
+% Listes des compétences et des ACs pour une ressource
+\newcommand*{\listeRCompetencesEtACs}[1]{%
 	\xdef\CODE{#1} % le code de la ressource sous la forme AA
 		\ifthenelse{\equal{\value{cptRcomp\CODE}}{0}}{ % Si pas de compétences
 		Aucune
@@ -114,6 +116,37 @@
 		\end{tabular}%
 	}
 }%
+
+% Idem pour une SAE
+\newcommand*{\listeSCompetencesEtACs}[1]{%
+	\xdef\CODE{#1} % le code de la ressource sous la forme AA
+		\ifthenelse{\equal{\value{cptScomp\CODE}}{0}}{ % Si pas de compétences
+		Aucune
+		}{
+		\begin{tabular}[t]{@{}T@{}}%
+			\forLoop{1}{\value{cptScomp\CODE}}{noligne}{
+				\xdef\compcode{\csname Scomp\CODE\Alph{noligne}\endcsname}
+				%\hyperlink{comp:\compcode}{\textcolor{saeC}{\saecode}}~
+						{%\bfseries
+							\csname Scomp\CODE\Alph{noligne}\endcsname}
+			 	\tabularnewline %
+					% \listeAC{R}{\CODE}{\Alph{noligne}}{RT1}
+
+
+				\forLoop{1}{\value{cptSac\CODE\Alph{noligne}}}{noacs}{
+						\xdef\accode{\csname Saccode\CODE\Alph{noligne}\Alph{noacs}\endcsname}
+						%\hyperlink{comp:\targetcomp}{
+						>~\textcolor{compC\Alph{noligne}}{\accode}
+				%}
+						{\csname Sacname\CODE\Alph{noligne}\Alph{noacs}\endcsname}
+				   \tabularnewline %
+				   }
+				%}
+			 }
+		\end{tabular}%
+	}
+}%
+
 
 % Liste des pré-requis
 \newcommand*{\listePrerequis}[1]{%

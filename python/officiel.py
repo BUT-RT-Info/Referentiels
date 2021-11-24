@@ -343,7 +343,7 @@ def get_ressource_notation_pointe(code_ressource): # => à remplacer
 
 def get_sae_notation_pointe(code_sae):
     """Renvoie la notation pointée d'une sae"""
-    return code_sae[:4] + ".0" + code_sae[-1]
+    return code_sae[:4] + "." + code_sae[-1]
 
 
 def mapping_code_RXXX_vers_code_pointe(code):

@@ -1,4 +1,4 @@
-\documentclass[10pt,lualatex,french]{article}
+utf8\documentclass[10pt,french]{article} % lualatex
 %\usepackage{fontspec} <- à remettre en place pour le référentiel définitif
 %\usepackage{helvet} <- à remettre en place pour le référentiel définitif
 \usepackage{arevtext}
@@ -89,7 +89,7 @@ Référentiel de formation}
 % L'import du référentiel
 \specialite{Réseaux et Télécommunications}
 %\input{referentiel_competences.tex}
-\input{referentiel_BUT1.tex}
+%\input{referentiel_BUT1.tex}
 
 % Les macros pour affichage
 \input{modeles/tableau.tex}
@@ -249,28 +249,20 @@ et {\em Emmanuel Viennet} (Président de l'ACD).
 %\input{synthese/S1_coeffs_saes_ressources.tex}
 %
 \newpage
-%
-%% Les SAE du semestre 1 + les exemples
-%\subsection{Fiches SAÉs du semestre 1}
-%\affichageSAE{\sem}
-%\newpage
-%
-%% Les ressources du semestre 1
-\subsection{Fiches ressources du semestre 1}
-\affichageRessource{\sem}
-%
+\input{referentiel_S1.tex}
+
 %%%%%%%%%%%%%%%%%
 %%% SEMESTRE 2 %%
 %%%%%%%%%%%%%%%%%
-%\arrayrulecolor{black}
-%\section{Semestre 2}
-%\def\sem{B} % Le semestre 2
+\arrayrulecolor{black}
+\section{Semestre 2}
+\def\sem{B} % Le semestre 2
 %
-%\subsection{SAÉs du semestre 2}
+\subsection{SAÉs du semestre 2}
 %
 %\listeTitreSAE{\sem}
 %
-%\subsection{Ressources du semestre 2}
+\subsection{Ressources du semestre 2}
 %
 %\listeTitreRessourceIndex{\sem} 
 %
@@ -282,16 +274,72 @@ et {\em Emmanuel Viennet} (Président de l'ACD).
 %
 %\input{synthese/S2_coeffs_saes_ressources.tex}
 %
-%\newpage
+\newpage
+\input{referentiel_S2.tex}
+
+%%%%%%%%%%%%%%%%%
+%%% SEMESTRE 3 %%
+%%%%%%%%%%%%%%%%%
+\arrayrulecolor{black}
+\section{Semestre 3}
+\def\sem{C} % Le semestre 3
 %
-%% Les SAE du semestre 2 + les exemples
-%\subsection{Fiches SAÉs du semestre 2}
-%\affichageSAE{\sem}
+%\subsection{SAÉs du semestre 2}
 %
-%% Les ressources du semestre 2
-%\subsection{Fiches ressources du semestre 2}
-%\affichageRessource{\sem}
+%\listeTitreSAE{\sem}
 %
+\subsection{Ressources du semestre 3}
+
+\input{referentiel_S3.tex}
+
+%%%%%%%%%%%%%%%%%
+%%% SEMESTRE 4 %%
+%%%%%%%%%%%%%%%%%
+\arrayrulecolor{black}
+\section{Semestre 4}
+\def\sem{D} % Le semestre 4
+%
+%\subsection{SAÉs du semestre 2}
+%
+%\listeTitreSAE{\sem}
+%
+\subsection{Ressources du semestre 4}
+
+\input{referentiel_S4.tex}
+
+%%%%%%%%%%%%%%%%%
+%%% SEMESTRE 5 %%
+%%%%%%%%%%%%%%%%%
+\arrayrulecolor{black}
+\section{Semestre 5}
+\def\sem{E} % Le semestre 3
+%
+%\subsection{SAÉs du semestre 2}
+%
+%\listeTitreSAE{\sem}
+%
+\subsection{Ressources du semestre 5}
+
+\input{referentiel_S5.tex}
+
+%%%%%%%%%%%%%%%%%
+%%% SEMESTRE 6 %%
+%%%%%%%%%%%%%%%%%
+\arrayrulecolor{black}
+\section{Semestre 6}
+\def\sem{F} % Le semestre 3
+%
+%\subsection{SAÉs du semestre 2}
+%
+%\listeTitreSAE{\sem}
+%
+\subsection{Ressources du semestre 6}
+
+\input{referentiel_S6.tex}
+
+%%%%%%%%%%%%%%%%%%%%
+%%% ABBREVIATIONS %%
+%%%%%%%%%%%%%%%%%%%%
 %\section{Abréviations}
 %
 %\begin{multicols}{2}\small

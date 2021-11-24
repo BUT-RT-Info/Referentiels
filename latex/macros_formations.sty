@@ -151,13 +151,14 @@
 
 % ****************************
 % Ajout des SAE
-\def\ajoutRsae#1#2{
+\def\ajoutRsae#1#2#3{
 	\addtocounter{cptRsae\currentRressource}{1} % le compteur de la sae dans la ressource
 	\xdef\currentRsae{\Alph{cptRsae\currentRressource}} % La lettre
 
 	%\expandafter\xdef\csname Rlinkcode\currentRressource\currentRsae\endcsname{#1}
 	\expandafter\xdef\csname Rsaecode\currentRressource\currentRsae\endcsname{#1} %
-	\expandafter\xdef\csname Rsaename\currentRressource\currentRsae\endcsname{#2} %
+	\expandafter\xdef\csname RsaecodeRT\currentRressource\currentRsae\endcsname{#2} %
+	\expandafter\xdef\csname Rsaename\currentRressource\currentRsae\endcsname{#3} %
 }
 
 % ****************************
@@ -221,6 +222,15 @@
 
 % ****************************
 % Ajout du descriptif (description des objectifs)
+\def\ajoutSobjectifs#1{
+	\begingroup\let\+\relax
+	\expandafter\gdef\csname Sobjectifs\currentSsae\endcsname{\noexpand #1} % descriptif
+	\endgroup
+}
+
+
+% ****************************
+% Ajout du descriptif (description générique)
 \def\ajoutSdescription#1{
 	\begingroup\let\+\relax
 	\expandafter\gdef\csname Sdescriptif\currentSsae\endcsname{\noexpand #1} % descriptif

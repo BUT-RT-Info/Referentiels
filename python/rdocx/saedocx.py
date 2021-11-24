@@ -170,8 +170,9 @@ class SAEDocx(rdocx.docx.Docx):
                 "annee": self.annee,
                 "heures_encadrees": self.heures_encadrees if self.heures_encadrees != ""
                                     else "???",
-                "tp": self.tp if self.tp != "" else "???",
+                "heures_tp": self.tp if self.tp != "" else "???",
                 "projet": self.projet if self.projet != "" else "???",
+                "parcours": self.parcours,
                 "objectifs": folded(self.objectifs),
                 "description": folded(self.description) if self.description else "",
                 "coeffs": self.coeffs,

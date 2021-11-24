@@ -24,7 +24,73 @@ class Ressource(rpn.activite.ActivitePedagogique):
         self.heures_tp = self.yaml["heures_tp"]
         self.heures_projet = 0
 
-    def to_latex(self, modele=Config.ROOT + "/python/templates/modele_ressource.tex"):
+    def to_latex(self, modele=Config.ROOT + "/python/templates/modele_tableau_ressource.tex"):
+        """Génère le code latex décrivant la fiche de la ressource avec une mise en forme
+        sous forme de tableau, en utilisant le template latex donné dans ``modele``.
+        """
+        modlatex = modeles.get_modele(modele)
+
+
+        # Préparation des compétences, des ACs et des coeffs \ajoutRcomp + \ajoutRcoeff + boucle \ajoutRacs
+        latex_competences = self.to_latex_liste_competences_et_acs()
+
+        # Préparation des sae
+        latex_sae = self.to_latex_liste_fiches(self.yaml["sae"])
+
+        # Préparation des prérequis
+        prerequis = ""
+        if self.yaml["prerequis"] == officiel.AUCUN_PREREQUIS:
+            latex_prerequis = "\\textit{Aucun}"
+        else:
+            # est-une liste de ressources
+            if not self.yaml["prerequis"][0].startswith("R"):
+                latex_prerequis = self.yaml["prerequis"]
+            else:
+                latex_prerequis = self.to_latex_liste_fiches(self.yaml["prerequis"])
+
+        # préparation du contexte
+        contexte = self.yaml["contexte"]
+        if contexte == "Aucun":
+            latex_contexte = ""
+            Ressource.__LOGGER.warning(f"{self.code}/{self.codeRT} n'a pas de contexte")
+        else:
+            latex_contexte = rpn.latex.md_to_latex(contexte, self.officiel.DATA_MOTSCLES)
+
+        # contexte = remove_ligne_vide(contexte)
+        # préparation du contenu
+        contenu = self.yaml["contenu"]  # supprime les passages à la ligne
+        if contenu:
+            latex_contenu = rpn.latex.md_to_latex(contenu, self.officiel.DATA_MOTSCLES)
+        else:
+            latex_contenu = ""
+
+        # Prépare les parcours
+        latex_parcours = ", ".join(self.yaml["parcours"])
+
+        # Injection dans le template
+        chaine = modeles.TemplateLatex(modlatex).substitute(
+            codelatex=self.get_code_latex_hyperlinkself(self.code),
+            code=self.code,
+            codeRT=self.codeRT,
+            nom=rpn.latex.nettoie_latex(self.nom, self.officiel.DATA_ABBREVIATIONS),
+            semestre=self.nom_semestre,
+            heures_formation=self.yaml["heures_formation"],
+            heures_tp=self.yaml["heures_tp"],
+            parcours=latex_parcours,
+            contexte=rpn.latex.nettoie_latex(latex_contexte, self.officiel.DATA_ABBREVIATIONS),
+            contenu=rpn.latex.nettoie_latex(latex_contenu, self.officiel.DATA_ABBREVIATIONS),
+            competences_et_acs=latex_competences, # les compétences
+            listeSAE=latex_sae,
+            listePreRequis=latex_prerequis,
+            motsCles=rpn.latex.nettoie_latex(self.yaml["motscles"] + ".", self.officiel.DATA_ABBREVIATIONS)
+        )
+        # chaine = chaine.replace("&", "\&")
+        # chaine = rpn.latex.nettoie_latex(chaine, self.officiel.DATA_ABBREVIATIONS)
+
+        # Insère les abbréviations
+        return chaine
+
+    def to_variable_latex(self, modele=Config.ROOT + "/python/templates/modele_ressource.tex"):
         """Génère le code latex décrivant la ressource, en utilisant le template
         latex donné dans ``modele``.
         """
