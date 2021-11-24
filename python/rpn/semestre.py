@@ -9,7 +9,7 @@ import rpn.ressource
 import rpn.sae
 from config import Config
 import rpn.latex
-import rpn.activite
+import rpn.activite, modeles
 
 class SemestrePN():
     """
@@ -693,3 +693,59 @@ class SemestrePN():
             heures[1] += s.get_heures_tp()
             heures[2] += s.get_heures_projet()
         return heures
+
+
+    def to_latex_liste_saes(self, modele=Config.ROOT + "/python/templates/modele_liste_sae_par_semestre.tex"):
+        """Prépare les codes latex d'une liste de sae"""
+
+        modlatex = modeles.get_modele(modele)
+
+        liste_saes_et_exemples = []
+        for sae in self.saes: # les saes du semestre
+            info_sae = []
+            hyperlink = self.saes[sae].get_code_latex_hyperlink(self.saes[sae].code)
+            code = "\\bfseries \\hyperlink{%s}{\\textcolor{saeC}{%s}}" % (hyperlink, self.saes[sae].code)
+            titre = titre = "%s : " % (self.saes[sae].codeRT) + self.saes[sae].nom
+            page = "\\pageref{subsubsec:%s}" % (hyperlink)
+            info_sae.append( " & ".join([code, titre, page]))
+
+            for exemple in []: # self.exemples[sae]:
+                code = ""
+                titre = "Exemple 1:"
+                # page = "\"
+                info_sae.append( " & ".join([code, titre, page]) )
+
+            liste_saes_et_exemples.append("\n\\tabularnewline\n".join(info_sae))
+
+        tableau = "\n \\tabularnewline \\hline \n".join(liste_saes_et_exemples) + "\n\\tabularnewline\n"
+
+        chaine = modeles.TemplateLatex(modlatex).substitute(
+            liste_sae_par_semestre=tableau
+            # listeExemples = A FAIRE
+        )
+        # chaine = chaine.replace("&", "\&")
+        return chaine
+
+
+    def to_latex_liste_ressources(self, modele=Config.ROOT + "/python/templates/modele_liste_sae_par_semestre.tex"):
+        """Prépare les codes latex d'une liste de sae"""
+
+        modlatex = modeles.get_modele(modele)
+
+        liste_ressources = []
+        for res in self.ressources: # les saes du semestre
+            hyperlink = self.ressources[res].get_code_latex_hyperlink(self.ressources[res].code)
+            code = "\\bfseries \\hyperlink{%s}{\\textcolor{ressourceC}{%s}}" % (hyperlink, self.ressources[res].code)
+            titre = "%s : " % (self.ressources[res].codeRT) + self.ressources[res].nom
+            page = "\\pageref{subsubsec:%s}" % (hyperlink)
+            liste_ressources.append( " & ".join([code, titre, page]))
+
+        tableau = "\n \\tabularnewline \\hline \n".join(liste_ressources) + "\n\\tabularnewline\n"
+
+        chaine = modeles.TemplateLatex(modlatex).substitute(
+            liste_sae_par_semestre=tableau
+            # listeExemples = A FAIRE
+        )
+        # chaine = chaine.replace("&", "\&")
+        return chaine
+

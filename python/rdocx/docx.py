@@ -1,11 +1,12 @@
 import logging
 import re
-import string
 
 import ruamel.yaml
 
 import officiel
 # import rdocx.saedocx, rdocx.ressourcedocx
+from tools import get_marqueurs, get_marqueur_from_liste, remplace_marqueur_numerique_with_caracteres, \
+    indice_premier_caractere
 
 __LOGGER = logging.getLogger(__name__)
 
@@ -357,56 +358,6 @@ def remove_link(contenu):
     return contenu
 
 
-def get_marqueur_numerique(contenu):
-    """Revoie la liste des marqueurs numériques"""
-    m = re.findall(r"(\d/|\d\s/)", contenu)
-    #m += re.findall(r"(\d\s\)|\d\))", contenu) # les marqueurs de la forme 1)
-    m += re.findall(r"(\d\s\))", contenu)
-    m += re.findall(r"(--)\s", contenu)
-    m += re.findall(r"(--)\t", contenu)
-    return m
-
-
-def get_marqueurs(contenu):
-    """Renvoie la liste des marqueurs (à 1 caractère) partant d'un contenu - splitable en plusieurs lignes
-    (éventuellement vide)"""
-    contenus = [ligne.strip() for ligne in contenu.split("\n")]  # les contenus
-
-    marqueurs = []
-    for ligne in contenus:
-        m = re.search(r"(\t)*", ligne) # y a-t-il des tabulations ?
-        if m.group() != "":
-            ajout = m.group()
-        else:
-            ajout = ""
-        ligne = ligne.replace("\t","").strip() # supprime les tabulations pour rapatrier le marqueur en début de ligne
-        if ligne: # si la ligne n'est pas vide, cherche le marqueur en début de ligne (si 1 caractère)
-            if ligne[0] not in string.ascii_letters and ligne[0] != "É" and ligne[0] != "/":
-                marqueurs += [ajout + ligne[0]] # tous les symboles
-
-    marqueurs_finaux = [] # tri les marqueurs en supprimant les doublons et en gardant un ordre (pour détecter les sous listes)
-    for m in marqueurs:
-        if m not in marqueurs_finaux:
-            marqueurs_finaux.append(m)
-    return marqueurs_finaux
-
-
-def get_marqueur_from_liste(ligne, marqueurs):
-    """Renvoie le marqueur qui marque le début d'une ligne parmi une liste de marqueurs recherchés"""
-    for m in marqueurs:
-        if ligne.startswith(m):
-            return m
-
-
-def remplace_marqueur_numerique_with_caracteres(contenu):
-    """Remplace les marqueurs numériques par des marqueurs > lorsque présents dans un contenu"""
-    marqueurs_numeriques = get_marqueur_numerique(contenu)
-    for m in marqueurs_numeriques: # remplace les marqueurs numériques
-        contenu = contenu.replace(m, ">")
-    return contenu
-
-
-
 def convert_to_markdown(contenu):
     """Convertit un contenu avec des marqueurs en markdown"""
     contenu = remove_link(contenu) # supprime les liens
@@ -417,7 +368,7 @@ def convert_to_markdown(contenu):
     lignes = contenu.split("\n")
     contenus_fin =  lignes[:] # copie des ligne
     for (i, ligne) in enumerate(lignes):
-        ligne = ligne.lstrip() # retire les espaces du début
+        ligne = ligne[indice_premier_caractere(ligne):].rstrip() # retire les espaces du début
         m = get_marqueur_from_liste(ligne, marqueurs_finaux) # identifie la présence d'un marqueur dans la ligne
         if m:
             pos = marqueurs_finaux.index(m)

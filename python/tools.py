@@ -1,8 +1,8 @@
+import string
+
 from officiel import supprime_accent_espace
 import unicodedata
 import re
-
-from rdocx.docx import get_marqueurs
 
 
 def get_indice(champ, entetes):
@@ -71,3 +71,76 @@ def remove_ligne_vide(contenus):
             temp = contenus.split("\n")
             temp = [t for t in temp if t.replace("\t", "").rstrip()]
             return "\n".join(temp)
+
+
+def get_marqueurs(contenu):
+    """Renvoie la liste des marqueurs (à 1 caractère) partant d'un contenu - splitable en plusieurs lignes
+    (éventuellement vide)"""
+    contenus = [ligne.rstrip()[indice_premier_caractere(ligne):] for ligne in contenu.split("\n")]  # les contenus avec suppression des espaces initiaux
+
+    marqueurs = []
+    for ligne in contenus:
+        m = re.search(r"(\t)*", ligne) # y a-t-il des tabulations ?
+        if m.group() != "":
+            ajout = m.group()
+        else:
+            ajout = ""
+        ligne = ligne.replace("\t"," ") # supprime les tabulations pour rapatrier le marqueur en début de ligne
+        ligne = ligne[indice_premier_caractere(ligne):] # supprime les espaces en début de ligne
+        ligne = supprime_accent_espace(ligne) # supprime les accents
+        if ligne: # si la ligne n'est pas vide, cherche le marqueur en début de ligne (si 1 caractère)
+            if ligne[0] not in string.ascii_letters and ligne[0] != "/":
+                i = 0
+                while i<len(ligne) and ligne[i].lower() not in string.ascii_lowercase + string.digits:
+                    i = i+1
+                marqueur = ligne[0:i]
+                marqueurs += [ajout + marqueur] # tous les symboles
+
+    marqueurs_finaux = [] # tri les marqueurs en supprimant les doublons et en gardant un ordre (pour détecter les sous listes)
+    for m in marqueurs:
+        if m not in marqueurs_finaux:
+            marqueurs_finaux.append(m)
+    return marqueurs_finaux
+
+
+def get_marqueur_from_liste(ligne, marqueurs):
+    """Renvoie le marqueur qui marque le début d'une ligne parmi une liste de marqueurs recherchés"""
+    match = []
+    for m in marqueurs: # à l'envers pour éviter les marqueurs emboités
+        if ligne.startswith(m):
+            match.append(m)
+    if match:
+        # Prend le marqueur qui match le mieux (le plus long à priori)
+        longueur = [len(m) for m in match]
+        max_longueur = max(longueur)
+        return match[longueur.index(max_longueur)]
+
+
+def remplace_marqueur_numerique_with_caracteres(contenu):
+    """Remplace les marqueurs numériques par des marqueurs > lorsque présents dans un contenu"""
+    marqueurs_numeriques = get_marqueur_numerique(contenu)
+    for m in marqueurs_numeriques: # remplace les marqueurs numériques
+        contenu = contenu.replace(m, ">")
+    return contenu
+
+
+def indice_premier_caractere(contenu):
+    """Renvoie l'indice du premier caractère (non espace) pour suppression espace"""
+    i = 0
+    while i < len(contenu) and contenu[i] == " ":
+        i = i+1
+    if i == len(contenu):
+        return 0
+    else:
+        return i
+
+
+def get_marqueur_numerique(contenu):
+    """Revoie la liste des marqueurs numériques"""
+    m = re.findall(r"(\d/|\d\s/)", contenu)
+    #m += re.findall(r"(\d\s\)|\d\))", contenu) # les marqueurs de la forme 1)
+    m += re.findall(r"(\d\s\))", contenu)
+    # m = re.findall(r"\d\s{0,1}[/\)]", contenu)
+    # tirets = re.findall(r"(--)(\s|\t)", contenu) # <-- pourquoi ?
+    # m += ["".join(t) for t in tirets]
+    return m

@@ -69,7 +69,7 @@ class Ressource(rpn.activite.ActivitePedagogique):
 
         # Injection dans le template
         chaine = modeles.TemplateLatex(modlatex).substitute(
-            codelatex=self.get_code_latex_hyperlinkself(self.code),
+            codelatex=self.get_code_latex_hyperlink(self.code),
             code=self.code,
             codeRT=self.codeRT,
             nom=rpn.latex.nettoie_latex(self.nom, self.officiel.DATA_ABBREVIATIONS),

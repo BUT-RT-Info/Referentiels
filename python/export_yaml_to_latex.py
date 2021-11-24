@@ -114,6 +114,27 @@ for parcours in ['Cyber']: # officiel.PARCOURS:
 if not args.all:
     __LOGGER.warning(f"{sys.argv[0]}: reduced version (use -a to get full docs)")
 else:
+    # Création des listes de synthèse
+    for sem in semestres:
+        if not os.path.exists(REPERTOIRE_SYNTHESE):
+            os.mkdir(REPERTOIRE_SYNTHESE)
+
+        # Les SAEs
+        fichierlatex = REPERTOIRE_SYNTHESE + "/" + "liste_saes_{}.tex".format(sem)
+        contenu = semestres[sem].to_latex_liste_saes()
+
+        with open(fichierlatex, "w", encoding="utf8") as fid:
+            fid.write(contenu)
+        print(f"Export de {fichierlatex} ")
+
+        # Les ressources
+        fichierlatex = REPERTOIRE_SYNTHESE + "/" + "liste_ressources_{}.tex".format(sem)
+        contenu = semestres[sem].to_latex_liste_ressources()
+
+        with open(fichierlatex, "w", encoding="utf8") as fid:
+            fid.write(contenu)
+        print(f"Export de {fichierlatex} ")
+
     inclusion = []
     # Création des répertoires
     for sem in semestres:
@@ -160,4 +181,5 @@ else:
     #            print(f"Export de {fichierlatex} ")
 
     for val in inclusion:
-        print("\\input{%s} \\newpage" % (val.replace("É", "E")))
+        pass
+        # print("\\input{%s} \\newpage" % (val.replace("É", "E")))

@@ -1,4 +1,4 @@
-utf8\documentclass[10pt,french]{article} % lualatex
+\documentclass[10pt,french]{article} % lualatex
 %\usepackage{fontspec} <- à remettre en place pour le référentiel définitif
 %\usepackage{helvet} <- à remettre en place pour le référentiel définitif
 \usepackage{arevtext}
@@ -183,6 +183,7 @@ et {\em Emmanuel Viennet} (Président de l'ACD).
 % ------ TABLE DES MATIERES (en version draft seulement)
 %\ifdef{\draft}{
 	%\section*{Table des matières}
+\setcounter{tocdepth}{2} % Limite au subsection
 \tableofcontents % [sections={1-3}]
 	
 % \newpage
@@ -223,23 +224,23 @@ et {\em Emmanuel Viennet} (Président de l'ACD).
 %}
 %
 
+\newpage
 
-%
 %%%%%%%%%%%%%%%%%
 %%% SEMESTRE 1 %%
 %%%%%%%%%%%%%%%%%
 \arrayrulecolor{black}
+
 \section{Semestre 1}
 \def\sem{A}
 
 \subsection{SAÉs du semestre 1}
-%
-%\listeTitreSAE{\sem}
-%%
+\input{synthese/liste_saes_S1.tex}
+
+
 \subsection{Ressources du semestre 1}
-%%
-%\listeTitreRessourceIndex{\sem}
-%
+\input{synthese/liste_ressources_S1.tex}
+
 %\subsection{Matrice Compétences/SAÉs-Ressources du semestre 1}
 %
 %\scalebox{0.95}{\input{synthese/S1_acs_vs_saes_ressources.tex}}
@@ -259,13 +260,11 @@ et {\em Emmanuel Viennet} (Président de l'ACD).
 \def\sem{B} % Le semestre 2
 %
 \subsection{SAÉs du semestre 2}
-%
-%\listeTitreSAE{\sem}
-%
+\input{synthese/liste_saes_S2.tex}
+
 \subsection{Ressources du semestre 2}
-%
-%\listeTitreRessourceIndex{\sem} 
-%
+\input{synthese/liste_ressources_S2.tex}
+
 %\subsection{Matrice Compétences/SAÉs-Ressources du semestre 2}
 %
 %\scalebox{0.95}{\input{synthese/S2_acs_vs_saes_ressources.tex}}
@@ -283,13 +282,14 @@ et {\em Emmanuel Viennet} (Président de l'ACD).
 \arrayrulecolor{black}
 \section{Semestre 3}
 \def\sem{C} % Le semestre 3
-%
-%\subsection{SAÉs du semestre 2}
-%
-%\listeTitreSAE{\sem}
+
+\subsection{SAÉs du semestre 3}
+\input{synthese/liste_saes_S3.tex}
 %
 \subsection{Ressources du semestre 3}
+\input{synthese/liste_ressources_S3.tex}
 
+\newpage
 \input{referentiel_S3.tex}
 
 %%%%%%%%%%%%%%%%%
@@ -298,13 +298,14 @@ et {\em Emmanuel Viennet} (Président de l'ACD).
 \arrayrulecolor{black}
 \section{Semestre 4}
 \def\sem{D} % Le semestre 4
-%
-%\subsection{SAÉs du semestre 2}
-%
-%\listeTitreSAE{\sem}
-%
-\subsection{Ressources du semestre 4}
 
+\subsection{SAÉs du semestre 4}
+\input{synthese/liste_saes_S4.tex}
+
+\subsection{Ressources du semestre 4}
+\input{synthese/liste_ressources_S4.tex}
+
+\newpage
 \input{referentiel_S4.tex}
 
 %%%%%%%%%%%%%%%%%
@@ -313,13 +314,14 @@ et {\em Emmanuel Viennet} (Président de l'ACD).
 \arrayrulecolor{black}
 \section{Semestre 5}
 \def\sem{E} % Le semestre 3
-%
-%\subsection{SAÉs du semestre 2}
-%
-%\listeTitreSAE{\sem}
-%
-\subsection{Ressources du semestre 5}
 
+\subsection{SAÉs du semestre 5}
+\input{synthese/liste_saes_S5.tex}
+
+\subsection{Ressources du semestre 5}
+\input{synthese/liste_ressources_S5.tex}
+
+\newpage
 \input{referentiel_S5.tex}
 
 %%%%%%%%%%%%%%%%%
@@ -328,22 +330,23 @@ et {\em Emmanuel Viennet} (Président de l'ACD).
 \arrayrulecolor{black}
 \section{Semestre 6}
 \def\sem{F} % Le semestre 3
-%
-%\subsection{SAÉs du semestre 2}
-%
-%\listeTitreSAE{\sem}
-%
-\subsection{Ressources du semestre 6}
 
+\subsection{SAÉs du semestre 6}
+\input{synthese/liste_saes_S6.tex}
+
+\subsection{Ressources du semestre 6}
+\input{synthese/liste_ressources_S6.tex}
+
+\newpage
 \input{referentiel_S6.tex}
 
 %%%%%%%%%%%%%%%%%%%%
 %%% ABBREVIATIONS %%
 %%%%%%%%%%%%%%%%%%%%
-%\section{Abréviations}
-%
-%\begin{multicols}{2}\small
-%\input{synthese/abbreviations.tex}
-%\end{multicols}
+\section{Abréviations}
+
+\begin{multicols}{2}\small
+\input{synthese/abbreviations.tex}
+\end{multicols}
 
 \end{document}

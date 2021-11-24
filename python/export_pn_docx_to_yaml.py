@@ -49,6 +49,9 @@ pnofficiel = officiel.Officiel()
 #    print(f"Le fichier à parser {args.DOCUMENT} n'existe pas")
 #    sys.exit()
 
+# Pour debuggage, donne les codes sur lesquelles se focuser
+LIMIT_TO = [] # ["R1.13"]
+
 REPERTOIRE_GOOGLE = "../google/"
 
 liste_ressources = []  # la liste des ressources telle qu'extrait du rdocx
@@ -62,35 +65,36 @@ DATA_SAES = officiel.get_DATA_SAES() # les saés du PN
 print("*** ETAPE 1*** Lecture des google.docx avec parsing des informations")
 for sem in ['S1', 'S2', 'S3', 'S4', 'S5', 'S6']: # DATA_RESSOURCES: # ['S1']: #
     for code in {**DATA_RESSOURCES[sem], **DATA_SAES[sem]}:
-        fichier = pnofficiel.get_docx_file_by_code(code)
-        if fichier == None:
-            raise Exception( f"{code} n'existe pas")
+        if not LIMIT_TO or code in LIMIT_TO:
+            fichier = pnofficiel.get_docx_file_by_code(code)
+            if fichier == None:
+                raise Exception( f"{code} n'existe pas")
 
-        fichier = REPERTOIRE_GOOGLE + fichier
-        if not fichier or not os.path.exists(fichier):
-            print(f"{fichier} manquant pour la fiche {code}")
-        else:
-            docu = docx2python.docx2python(fichier)
-            docu = docu.body
+            fichier = REPERTOIRE_GOOGLE + fichier
+            if not fichier or not os.path.exists(fichier):
+                print(f"{fichier} manquant pour la fiche {code}")
+            else:
+                docu = docx2python.docx2python(fichier)
+                docu = docu.body
 
-            # A priori un tableau avec un titre (AnnexeD ou Données) puis les tableaux de synthèse de la ressource
-            type_fiche = False
+                # A priori un tableau avec un titre (AnnexeD ou Données) puis les tableaux de synthèse de la ressource
+                type_fiche = False
 
-            try:
-                res = docu[1]  # le 1er contenu
-                version = rdocx.parsedocx.get_docx_format(res)
-                type_fiche = rdocx.parsedocx.get_type_fiche(res)
-            except:
-                pass
+                try:
+                    res = docu[1]  # le 1er contenu
+                    version = rdocx.parsedocx.get_docx_format(res)
+                    type_fiche = rdocx.parsedocx.get_type_fiche(res)
+                except:
+                    pass
 
-            if type_fiche == "RESSOURCE":
-                r = rdocx.parsedocx.parse_docu_ressource(code, docu, pnofficiel)
-                if r:
-                    liste_ressources.append(r)
-            else: # type_fiche == "SAE":
-                (s, liste_exemples) = rdocx.parsedocx.parse_docu_sae(code, docu, pnofficiel)
-                liste_saes.append(s)
-                liste_exemples_saes[code] = liste_exemples
+                if type_fiche == "RESSOURCE":
+                    r = rdocx.parsedocx.parse_docu_ressource(code, docu, pnofficiel)
+                    if r:
+                        liste_ressources.append(r)
+                else: # type_fiche == "SAE":
+                    (s, liste_exemples) = rdocx.parsedocx.parse_docu_sae(code, docu, pnofficiel)
+                    liste_saes.append(s)
+                    liste_exemples_saes[code] = liste_exemples
 
 # fin du parsing
 nbre_exemples = sum([len(liste_exemples_saes[cle]) for cle in liste_exemples_saes])
@@ -106,8 +110,6 @@ print("*** ETAPE 2*** Post-traitement/nettoyage des informations")
 ressources = {"S{}".format(d) : [] for d in range(1, 7)}
 print(" > Ressources :")
 for (i, r) in enumerate(liste_ressources):
-    if r.code == "R4.08":
-        print("marie-b :)!")
     r.nettoie_champ()
 
     # Remet en forme les mots-clés
@@ -117,8 +119,6 @@ for (i, r) in enumerate(liste_ressources):
 saes = {"S{}".format(d) : [] for d in range(1, 7)}
 print(" > SAE")
 for s in liste_saes:
-    if s.code == "SAÉ5.3":
-        print("ici")
     print(f"{s.nom}")
     s.nettoie_champs()
 
