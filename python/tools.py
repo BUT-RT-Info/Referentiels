@@ -87,11 +87,13 @@ def get_marqueurs(contenu):
             ajout = ""
         ligne = ligne.replace("\t"," ") # supprime les tabulations pour rapatrier le marqueur en début de ligne
         ligne = ligne[indice_premier_caractere(ligne):] # supprime les espaces en début de ligne
-        ligne = supprime_accent_espace(ligne) # supprime les accents
+        ligne = ligne.replace(" ", "")  # retire les espaces
+        # ligne = supprime_accent_espace(ligne) # supprime les accents
         if ligne: # si la ligne n'est pas vide, cherche le marqueur en début de ligne (si 1 caractère)
-            if ligne[0] not in string.ascii_letters and ligne[0] != "/":
+            attendus = string.ascii_lowercase + string.digits + "é/"
+            if ligne[0].lower() not in attendus:
                 i = 0
-                while i<len(ligne) and ligne[i].lower() not in string.ascii_lowercase + string.digits:
+                while i<len(ligne) and ligne[i].lower() not in attendus:
                     i = i+1
                 marqueur = ligne[0:i]
                 marqueurs += [ajout + marqueur] # tous les symboles

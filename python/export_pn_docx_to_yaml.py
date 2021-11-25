@@ -50,7 +50,7 @@ pnofficiel = officiel.Officiel()
 #    sys.exit()
 
 # Pour debuggage, donne les codes sur lesquelles se focuser
-LIMIT_TO = [] # ["R1.13"]
+LIMIT_TO = [] # ["R3.21"] #"R4.01"] # ["R1.01", "R3.14"]
 
 REPERTOIRE_GOOGLE = "../google/"
 

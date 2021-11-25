@@ -705,7 +705,8 @@ class SemestrePN():
             info_sae = []
             hyperlink = self.saes[sae].get_code_latex_hyperlink(self.saes[sae].code)
             code = "\\bfseries \\hyperlink{%s}{\\textcolor{saeC}{%s}}" % (hyperlink, self.saes[sae].code)
-            titre = titre = "%s : " % (self.saes[sae].codeRT) + self.saes[sae].nom
+            titre = "%s : " % (self.saes[sae].codeRT)
+            titre += self.saes[sae].nom.replace("&", "\\&")
             page = "\\pageref{subsubsec:%s}" % (hyperlink)
             info_sae.append( " & ".join([code, titre, page]))
 
@@ -736,7 +737,8 @@ class SemestrePN():
         for res in self.ressources: # les saes du semestre
             hyperlink = self.ressources[res].get_code_latex_hyperlink(self.ressources[res].code)
             code = "\\bfseries \\hyperlink{%s}{\\textcolor{ressourceC}{%s}}" % (hyperlink, self.ressources[res].code)
-            titre = "%s : " % (self.ressources[res].codeRT) + self.ressources[res].nom
+            titre = "%s : " % (self.ressources[res].codeRT)
+            titre += self.ressources[res].nom.replace("&", "\\&")
             page = "\\pageref{subsubsec:%s}" % (hyperlink)
             liste_ressources.append( " & ".join([code, titre, page]))
 

@@ -60,8 +60,56 @@ class ActivitePedagogique():
         """Renvoie les données du yaml (pour export to html)"""
         return self.yaml
 
-
     def to_latex_liste_competences_et_acs(self):
+        """Renvoie la description latex d'une liste de compétences et d'acs"""
+        latex_comp = []
+        # Nom compétence =>2 colonnes "\\begin{tabular}{UW}\n"
+        # mapping ACs de la ressource -> compétences
+        for comp in self.acs:
+            details_competences = []
+            # \hyperlink{comp:\compcode}{\textcolor{saeC}{\saecode}}
+            # le nom de la comp
+            type_niveau = "\\niveau" + {"BUT1": "A", "BUT2": "B", "BUT3": "C"}[self.yaml["annee"]]
+
+            if "RT" in comp:
+                couleur = "compC" + ["A", "B", "C"][int(comp[-1])-1]
+            else:
+                couleur = "compS" + ["A", "B"][int(comp[-1])-1] # la couleur pour les parcours
+            nom_comp = self.officiel.DATA_COMPETENCES[comp].replace("&","\\&")
+            details_competences.append("\\textcolor{%s}{%s} & %s" % (couleur, comp, nom_comp)) # le code de la comp
+            # details_competences.append("\\tabularnewline")
+
+            # Préparation du coeff (si existe)
+            # ajoutcoeff = "\\ajoutRcoeff{%s}"
+            # details_competences.append(ajoutcoeff % (str(self.ressource["coeffs"][comp])))
+
+            # Préparation des ac
+            details_acs = []
+            for code_ac in self.acs[comp]:  # les acs de la ressource (triés théoriquement)
+                if code_ac not in self.officiel.DATA_ACS[self.annee][comp]:
+                    self.__LOGGER.warning(f"{self.code}/{self.codeRT}: to_latex: Pb {code_ac} non trouvé en {self.annee}")
+                else:
+                    nom_acs = " & " + "\\textcolor{%s}{%s}" % (couleur, code_ac)
+                    nom_acs += " \\textit{%s}" % (self.officiel.DATA_ACS[self.annee][comp][code_ac].replace("&","\\&"))
+                    details_acs.append(nom_acs)
+            details_competences.append("\n\\tabularnewline\n".join(details_acs))
+
+            # toutes les infos sur la comp
+            latex_comp.append("\n\\tabularnewline\n".join(details_competences))
+
+        # le latex final
+        if latex_comp:
+            chaine = "\\begin{tabular}[t]{UW}\n"
+            chaine += "\n\\tabularnewline\n".join(latex_comp)
+            chaine += "\n\\tabularnewline\n"
+            chaine += "\\end{tabular}\n"
+        else:
+            chaine = ""
+
+
+        return chaine
+
+    def to_latex_liste_competences_et_acs_old(self):
         """Renvoie la description latex d'une liste de compétences et d'acs"""
         latex_comp = []
 
@@ -76,7 +124,7 @@ class ActivitePedagogique():
                 couleur = "compC" + ["A", "B", "C"][int(comp[-1])-1]
             else:
                 couleur = "compS" + ["A", "B"][int(comp[-1])-1] # la couleur pour les parcours
-            nom_comp = self.officiel.DATA_COMPETENCES[comp]
+            nom_comp = self.officiel.DATA_COMPETENCES[comp].replace("&", "\\&")
             details_competences.append("\\textcolor{%s}{%s} %s" % (couleur, comp, nom_comp)) # le code de la comp
             # details_competences.append("\\tabularnewline")
 
@@ -91,7 +139,7 @@ class ActivitePedagogique():
                     self.__LOGGER.warning(f"{self.code}/{self.codeRT}: to_latex: Pb {code_ac} non trouvé en {self.annee}")
                 else:
                     nom_acs = "~> " + "\\textcolor{%s}{%s}" % (couleur, code_ac)
-                    nom_acs += " " + self.officiel.DATA_ACS[self.annee][comp][code_ac]
+                    nom_acs += " \\textit{%s}" % self.officiel.DATA_ACS[self.annee][comp][code_ac].replace("&", "\\&")
                     details_acs.append(nom_acs)
             details_competences.append("\n\\tabularnewline\n".join(details_acs))
 
@@ -150,6 +198,36 @@ class ActivitePedagogique():
 
 
     def to_latex_liste_fiches(self, liste_fiches):
+        """Prépare le latex d'une liste de fiches (fournis en paramètre) = ressources ou SAE indifféremment
+        ex: liste_fiches = self.yaml["saes"]
+        -> equivalent de \listeSAE"""
+        latex_liste = []
+
+        for elmt in liste_fiches:
+            if elmt.startswith("S"):
+                couleur = "saeC"
+                intitule = self.officiel.get_sae_name_by_code(elmt)
+            else:
+                couleur = "ressourceC"
+                intitule = self.officiel.get_ressource_name_by_code(elmt)
+            if intitule:
+                intitule = intitule.replace("&", "\\&") # échappement des &
+            else:
+                intitule = ""
+            nom = "\\hyperlink{%s}{\\textcolor{%s}{%s}} & %s" % (self.get_code_latex_hyperlink(elmt), couleur, elmt, intitule)
+            latex_liste.append(nom)
+
+        if latex_liste:
+            chaine = "\\begin{tabular}[t]{@{}UW@{}}\n"
+            chaine += "\n\\tabularnewline\n".join(latex_liste)
+            chaine += "\n\\tabularnewline\n"
+            chaine += "\\end{tabular}"
+        else:
+            chaine = ""
+        return chaine
+
+
+    def to_latex_liste_fiches_old(self, liste_fiches):
         """Prépare le latex d'une liste de fiches (fournis en paramètre) = ressources ou SAE indifféremment
         ex: liste_fiches = self.yaml["saes"]
         -> equivalent de \listeSAE"""

@@ -117,7 +117,7 @@ class RessourceDocx(rdocx.docx.Docx):
         if True in [ligne.startswith("Contexte ") for ligne in champs]:  # la ligne commençant par Contenus
             indicea = [ligne.startswith("Contexte ") for ligne in champs].index(True)
 
-        indicec = 0
+        indicec = -1
         contexte = []
         marqueur = False
         identifiants = ["Contenus", "Objectifs visés"] # Identifiant marquant la ligne des contenus
@@ -129,7 +129,10 @@ class RessourceDocx(rdocx.docx.Docx):
         if True in [ligne.startswith("Contexte et ") for ligne in champs]:
             contexte = champs[indicea + 1:indicec]
         else:
-            contexte = champs[:indicec]
+            if indicec >= 0:
+                contexte = champs[:indicec]
+            else:
+                contexte = "" # Pas de contexte
         # suppression des lignes vides
         contexte = "\n".join(tools.remove_ligne_vide(contexte))
         # suppression des liens
@@ -137,7 +140,10 @@ class RessourceDocx(rdocx.docx.Docx):
         contexte = rdocx.docx.remove_link(contexte)
         if not contexte:
             contexte = "Aucun"
-        contenu = "\n".join(champs[indicec + 1:])
+        if indicec == -1:
+            contenu = "\n".join(champs[indicec + 1:])
+        else:
+            contenu = "\n".join(champs[indicec + 1:])
 
         # sauvegarde des champs
         self.contexte = contexte
