@@ -36,7 +36,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Recherche" href="search.html" />
     <link rel="next" title="Module modeles" href="modeles.html" />
-    <link rel="prev" title="Module activitedocx" href="activitedocx.html" />
+    <link rel="prev" title="Package rdocx" href="rdocx.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en" />
     
@@ -71,13 +71,13 @@
 </p>
 <ul class="current nav bd-sidenav">
  <li class="toctree-l1">
-  <a class="reference internal" href="activite.html">
-   Module activite
+  <a class="reference internal" href="rpn.html">
+   Package rpn
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="activitedocx.html">
-   Module activitedocx
+  <a class="reference internal" href="rdocx.html">
+   Package rdocx
   </a>
  </li>
  <li class="toctree-l1 current active">
@@ -91,13 +91,8 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="officiel.html">
-   Module officiel
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="semestre.html">
-   Module semestre
+  <a class="reference internal" href="rofficiel.html">
+   Package rofficiel
   </a>
  </li>
  <li class="toctree-l1">
@@ -179,82 +174,8 @@
         
               <div>
                 
-  <div class="section" id="module-0">
-<span id="module-latex"></span><h1>Module latex<a class="headerlink" href="#module-0" title="Lien permanent vers ce titre">¶</a></h1>
-<p>Ensemble de fonctions utiles à l’export des ressources/SAé en latex.</p>
-<p>Une partie des traitements s’appuient sur :</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">DATA_ABBREVIATIONS</span></code> provenant du fichier <code class="docutils literal notranslate"><span class="pre">yaml\abbreviations.yml</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">DATA_MOTSCLES</span></code> provenant du fichier <code class="docutils literal notranslate"><span class="pre">yaml\motscles.yml</span></code> qui liste notamment des
-noms de logiciels, des commandes…</p></li>
-</ul>
-<dl class="py function">
-<dt id="latex.ajoute_abbr_latex">
-<code class="sig-prename descclassname">latex.</code><code class="sig-name descname">ajoute_abbr_latex</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">chaine</span></em>, <em class="sig-param"><span class="n">DATA_ABBREVIATIONS</span></em><span class="sig-paren">)</span><a class="headerlink" href="#latex.ajoute_abbr_latex" title="Lien permanent vers cette définition">¶</a></dt>
-<dd><p>Parse la <code class="docutils literal notranslate"><span class="pre">chaine</span></code> latex pour ajouter les abréviations décrites dans le dictionnaire
-<code class="docutils literal notranslate"><span class="pre">DATA_ABBREVIATIONS</span></code> et les remplacer par
-le balisage latex <code class="docutils literal notranslate"><span class="pre">\textabbrv{abreviation}</span></code></p>
-</dd></dl>
-
-<dl class="py function">
-<dt id="latex.ajoute_cmd_latex">
-<code class="sig-prename descclassname">latex.</code><code class="sig-name descname">ajoute_cmd_latex</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">chaine</span></em>, <em class="sig-param"><span class="n">DATA_MOTSCLES</span></em><span class="sig-paren">)</span><a class="headerlink" href="#latex.ajoute_cmd_latex" title="Lien permanent vers cette définition">¶</a></dt>
-<dd><p>Parse la <code class="docutils literal notranslate"><span class="pre">chaine</span></code> latex pour ajouter les abréviations et les mettre en forme
-avec le balisage <code class="docutils literal notranslate"><span class="pre">\textabbrv{abreviation}</span></code></p>
-</dd></dl>
-
-<dl class="py function">
-<dt id="latex.cesure_contenu">
-<code class="sig-prename descclassname">latex.</code><code class="sig-name descname">cesure_contenu</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">contenu</span></em>, <em class="sig-param"><span class="n">long_max</span><span class="o">=</span><span class="default_value">30</span></em><span class="sig-paren">)</span><a class="headerlink" href="#latex.cesure_contenu" title="Lien permanent vers cette définition">¶</a></dt>
-<dd><p>Découpe un <code class="docutils literal notranslate"><span class="pre">contenu</span></code> pour le mettre en forme sur plusieurs lignes, chaque ligne
-ayant <code class="docutils literal notranslate"><span class="pre">long_max</span></code> caractères maximum.</p>
-<p>Le découpage se fait au mot près.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt id="latex.contient_abbr">
-<code class="sig-prename descclassname">latex.</code><code class="sig-name descname">contient_abbr</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">chaine</span></em>, <em class="sig-param"><span class="n">DATA_ABBREVIATIONS</span></em><span class="sig-paren">)</span><a class="headerlink" href="#latex.contient_abbr" title="Lien permanent vers cette définition">¶</a></dt>
-<dd><p>Détecte les abréviations présentes dans la <code class="docutils literal notranslate"><span class="pre">chaine</span></code> et présentes dans le dictionnaire
-<code class="docutils literal notranslate"><span class="pre">DATA_ABBREVIATIONS</span></code> et les renvoie sous forme d’une liste d’abréviations triée
-par nombre de caractères décroissants</p>
-</dd></dl>
-
-<dl class="py function">
-<dt id="latex.contient_commandes">
-<code class="sig-prename descclassname">latex.</code><code class="sig-name descname">contient_commandes</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">chaine</span></em>, <em class="sig-param"><span class="n">DATA_MOTSCLES</span></em><span class="sig-paren">)</span><a class="headerlink" href="#latex.contient_commandes" title="Lien permanent vers cette définition">¶</a></dt>
-<dd><p>Détecte si la <code class="docutils literal notranslate"><span class="pre">chaine</span></code> fait partie des commandes listées dans le dictionnaire <code class="docutils literal notranslate"><span class="pre">DATA_MOTSCLES</span></code>.</p>
-<p>La détection prend en compte un éventuel caractère de ponctuation final.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt id="latex.md_to_latex">
-<code class="sig-prename descclassname">latex.</code><code class="sig-name descname">md_to_latex</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">contenu</span></em>, <em class="sig-param"><span class="n">DATA_MOTSCLES</span></em><span class="sig-paren">)</span><a class="headerlink" href="#latex.md_to_latex" title="Lien permanent vers cette définition">¶</a></dt>
-<dd><p>Réalise la conversion d’un <code class="docutils literal notranslate"><span class="pre">contenu</span></code> markdown en syntaxe latex avec pypandoc.</p>
-<p>Détecte les mots clés indiqués dans le dictionnaire <code class="docutils literal notranslate"><span class="pre">DATA_MOTSCLES</span></code> pour les mettre
-en évidence dans le code latex.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt id="latex.nettoie_latex">
-<code class="sig-prename descclassname">latex.</code><code class="sig-name descname">nettoie_latex</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">chaine</span></em>, <em class="sig-param"><span class="n">DATA_ABBREVIATIONS</span></em><span class="sig-paren">)</span><a class="headerlink" href="#latex.nettoie_latex" title="Lien permanent vers cette définition">¶</a></dt>
-<dd><p>Purge certains éléments de la <code class="docutils literal notranslate"><span class="pre">chaine</span></code> latex générée par <code class="docutils literal notranslate"><span class="pre">pypandoc</span></code>
-et détecte les abréviations indiquées dans le dictionnaire
-<code class="docutils literal notranslate"><span class="pre">DATA_ABBREVIATIONS</span></code>.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt id="latex.rotation_entete_colonne">
-<code class="sig-prename descclassname">latex.</code><code class="sig-name descname">rotation_entete_colonne</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">contenu</span></em>, <em class="sig-param"><span class="n">pos</span><span class="o">=</span><span class="default_value">'l'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#latex.rotation_entete_colonne" title="Lien permanent vers cette définition">¶</a></dt>
-<dd><p>Renvoie le code latex permettant la rotation de 90° d’un <code class="docutils literal notranslate"><span class="pre">contenu</span></code></p>
-</dd></dl>
-
-<dl class="py function">
-<dt id="latex.to_latex_abbreviations">
-<code class="sig-prename descclassname">latex.</code><code class="sig-name descname">to_latex_abbreviations</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">DATA_ABBREVIATIONS</span></em><span class="sig-paren">)</span><a class="headerlink" href="#latex.to_latex_abbreviations" title="Lien permanent vers cette définition">¶</a></dt>
-<dd><p>Renvoie le code latex d’un tableau listant l’ensemble des abréviations
-contenue dans le dictionnaire <code class="docutils literal notranslate"><span class="pre">DATA_ABBREVIATIONS</span></code>.</p>
-</dd></dl>
-
+  <div class="section" id="module-latex">
+<h1>Module latex<a class="headerlink" href="#module-latex" title="Lien permanent vers ce titre">¶</a></h1>
 </div>
 
 
@@ -263,7 +184,7 @@ contenue dans le dictionnaire <code class="docutils literal notranslate"><span c
         
         <div class='prev-next-bottom'>
             
-    <a class='left-prev' id="prev-link" href="activitedocx.html" title="previous page">Module activitedocx</a>
+    <a class='left-prev' id="prev-link" href="rdocx.html" title="previous page">Package rdocx</a>
     <a class='right-next' id="next-link" href="modeles.html" title="next page">Module modeles</a>
 
         </div>

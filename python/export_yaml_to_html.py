@@ -3,6 +3,8 @@ import sys
 import argparse
 import glob
 
+import rofficiel.acs
+import rofficiel.competences
 import rpn.exemple
 import rpn.ressource
 import rpn.sae
@@ -329,11 +331,11 @@ ListACs = {"RT1":[], "RT2":[], "RT3":[]}
 
 # Chargement des ACs
 fichieryaml = REPERTOIRE_ACS +'/acs.yml'
-acs = officiel.ACs(fichieryaml)
+acs = rofficiel.competences.ACs(fichieryaml)
 
 # Chargement des Compétences
 fichieryaml = REPERTOIRE_COMPETENCES_DEFINITIVES + '/RT123.yml'
-competences = officiel.Competences(fichieryaml)
+competences = rofficiel.competences.Competences(fichieryaml)
 
 # Création des pages individuelles ACs, Compétences
 for indexRt, rt in enumerate(acs.getInfo()):

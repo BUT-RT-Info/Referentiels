@@ -1,11 +1,14 @@
-import officiel
+import re
+
+import rofficiel.officiel
 import rdocx.docx, rdocx.ressourcedocx, rdocx.saedocx, rdocx.exempledocx
 import tools
 import logging
 
 # Entêtes recherchées dans une ressource (BUT1 ou BUT2/3)
 ENTETES_RESSOURCES = ["Nom", "Code", "Semestre", "Heures de formation", "dont heures de TP",
-                "SAÉ", "Prérequis", "Descriptif", "Mots", "Parcours"]
+                        "dont heures de CM", "dont heures de TD", "Fiche d’adaptation locale",
+                        "SAÉ", "Prérequis", "Descriptif", "Mots", "Parcours", "Exemple"]
 
 # Entêtes recherchées dans une SAE BUT1 / BUT23
 ENTETES_CHAPEAU = ["Titre", # Libellé
@@ -13,6 +16,7 @@ ENTETES_CHAPEAU = ["Titre", # Libellé
                    "Semestre",
                    "Heures de formation", # Préconisation heures totales
                    "dont heures de TP", # Préconisation heures TP
+                   "dont heures de CM", "dont heures de TD", "Fiche d’adaptation locale",
                    "Heures \"projet tutoré\"", # Préconisation "projet tutoré"
                    "Objectifs", # "Objectifs et descriptions"
                    "Description", #  + description générique
@@ -58,7 +62,9 @@ def get_ressource_BUT1_from_google(code_ressource, res):
     data = [None for i in range(len(ENTETES_RESSOURCES))]  # les données attendues Nom, Code, ..., Mots clés
     apprentissages = [None for i in range(3)]  # les apprentissages des 3 compétences
     coeffs = [None for i in range(3)]
-    data[-1] = 'Tronc commun' # Pas de mention du parcours dans les fiches de BUT1
+
+    k = tools.get_indice("Parcours", ENTETES_RESSOURCES)
+    data[k] = 'Tronc commun' # Pas de mention du parcours dans les fiches de BUT1
 
     non_interprete = []
     for j in range(len(res)):  # parcours des entêtes du tableau décrivant la ressource
@@ -69,8 +75,8 @@ def get_ressource_BUT1_from_google(code_ressource, res):
             if i != None:
                 data[i] = tools.caracteres_recalcitrants("\n".join(res[j][1]))
                 if champ == "Prérequis" and not data[i]:
-                    data[i] = officiel.AUCUN_PREREQUIS
-                    __LOGGER.warning(f"{code_ressource}: complète les prérequis à {officiel.AUCUN_PREREQUIS}")
+                    data[i] = rofficiel.officiel.AUCUN_PREREQUIS
+                    __LOGGER.warning(f"{code_ressource}: complète les prérequis à {rofficiel.officiel.AUCUN_PREREQUIS}")
             else:
                 non_interprete.append((champ, ligne[1][0]))
         else:  # ligne de données soit chapeau (ex Compétences ciblées) soit détail par compétence
@@ -109,7 +115,7 @@ def get_ressource_BUT1_from_google(code_ressource, res):
         if not data[j]:
             champ_manquants += [champ]
     if champ_manquants:
-        __LOGGER.warning(f"{code_ressource}: champs manquants  : " + ",".join(champ_manquants))
+        __LOGGER.warning(f"{code_ressource}: champs manquants : " + ", ".join(champ_manquants))
 
     # Sauvegarde des champs de la ressource
     info = tuple(data[1:])
@@ -124,9 +130,6 @@ def get_ressource_BUT23_from_google(code_ressource, docu):
     """Lit les infos du rdocx pour une ressource du BUT23 à partir du tableau"""
     # if len(res) != 15:
     # __LOGGER.warning(f"Champs en trop ou manquants dans \"{nom_ressource}\"")
-    # Parsing des données brute de la ressource
-    if code_ressource == "R3.07":
-        print("ici")
 
     data = [None for i in range(len(ENTETES_RESSOURCES))]  # les données attendues Nom, Code, ..., Mots clés
     apprentissages = []  # les apprentissages des 5 compétences
@@ -164,8 +167,8 @@ def get_ressource_BUT23_from_google(code_ressource, docu):
                         val.append(res[l][0][0])
                 val = "\n".join(val)
                 if not val:
-                    val = officiel.AUCUN_PREREQUIS
-                    __LOGGER.warning(f"{code_ressource}: complète les prérequis à {officiel.AUCUN_PREREQUIS}")
+                    val = rofficiel.officiel.AUCUN_PREREQUIS
+                    __LOGGER.warning(f"{code_ressource}: complète les prérequis à {rofficiel.officiel.AUCUN_PREREQUIS}")
                 data[k] = val
             elif "SAÉ" in champ:
                 k = tools.get_indice_sans_accent_ni_espace("SAÉ", ENTETES_RESSOURCES)
@@ -174,6 +177,10 @@ def get_ressource_BUT23_from_google(code_ressource, docu):
                     if res[l][0][0]:
                         val.append(res[l][0][0])
                 val = tools.caracteres_recalcitrants("\n".join(val))
+            elif "Exemple(s) de" in champ: # exemple de mise en oeuvre
+                k = tools.get_indice_sans_accent_ni_espace("Exemple", ENTETES_RESSOURCES)
+                val = res[1][0]
+                val = "\n".join(val)
             if k != None:
                 data[k] = tools.caracteres_recalcitrants(val)
 
@@ -198,7 +205,13 @@ def get_ressource_BUT23_from_google(code_ressource, docu):
                     for ligne in range(len(res[k][1])):
                         if res[k][1][ligne]:
                             apprentissages.append(tools.caracteres_recalcitrants(res[k][1][ligne]))
-
+            elif "Fiche d'adaptation" in champ: # adaptation locale et préconisation
+                k = tools.get_indice_sans_accent_ni_espace("Adaptation locale", ENTETES_RESSOURCES)
+                data[k] = res[0][1][0]
+                k = tools.get_indice_sans_accent_ni_espace("dont heures de CM", ENTETES_RESSOURCES)
+                data[k] = res[1][1][0]
+                k = tools.get_indice_sans_accent_ni_espace("dont heures de TD", ENTETES_RESSOURCES)
+                data[k] = res[2][1][0]
 
         else:  # ligne avec colonne de données => chapeau
             champ = ligne[0][0]
@@ -220,7 +233,7 @@ def get_ressource_BUT23_from_google(code_ressource, docu):
         if not data[j]:
             champ_manquants += [champ]
     if champ_manquants:
-        __LOGGER.warning(f"{code_ressource}: champs manquants  : " + ", ".join(champ_manquants))
+        __LOGGER.warning(f"{code_ressource}: champs manquants : " + ", ".join(champ_manquants))
 
     # Sauvegarde des champs de la ressource
     info = tuple(data[1:])
@@ -265,9 +278,6 @@ def parse_docu_ressource(code_ressource, docu, pnofficiel):
 def get_sae_BUT1_from_google(code, res, pnofficiel):
     """Récupère les info sur une SAE chapeau avec son code/le docu google/ l'indice de ligne auquel débute la sae
     dans le docu"""
-    if "1.4" in code:
-        print("ici")
-
     # res = docu[i]  # la ressource
     nom_sae = tools.caracteres_recalcitrants(res[0][1][0])
 
@@ -275,7 +285,9 @@ def get_sae_BUT1_from_google(code, res, pnofficiel):
     data = [None for i in range(len(ENTETES_CHAPEAU))]  # les données attendues Nom, Code, ..., Mots clés
     apprentissages = [None for i in range(3)]  # les apprentissages des 3 compétences
     coeffs = [None for i in range(3)]
-    data[-1] = 'Tronc commun'  # Pas de mention du parcours dans les fiches de BUT1
+
+    k = tools.get_indice("Parcours", ENTETES_CHAPEAU)
+    data[k] = 'Tronc commun'  # Pas de mention du parcours dans les fiches de BUT1
 
     non_interprete = []
     for j in range(len(res)):  # parcours des entêtes du tableau décrivant la ressource
@@ -305,7 +317,7 @@ def get_sae_BUT1_from_google(code, res, pnofficiel):
 
     if non_interprete:  # souvent Heures de formation (incluant les TP)
 
-        __LOGGER.warning(f"Dans la saé \"{nom_sae}\", champs en trop non interprétés  : " + ",".join(
+        __LOGGER.warning(f"{code}: champs en trop non interprétés : " + ", ".join(
             [chp[0] for chp in non_interprete]))
 
     # Analyse des champs manquants
@@ -314,7 +326,7 @@ def get_sae_BUT1_from_google(code, res, pnofficiel):
         if not data[j]:
             champ_manquants += [champ]
     if champ_manquants:
-        __LOGGER.warning(f"Dans \"{nom_sae}\", champs manquants  : " + ",".join(champ_manquants))
+        __LOGGER.warning(f"{code}: champs manquants : " + ", ".join(champ_manquants))
 
     # Sauvegarde des champs de la ressource
     info = tuple(data[1:])
@@ -335,6 +347,7 @@ def get_sae_BUT23_from_google(code_sae, docu):
     apprentissages = []  # les apprentissages des 5 compétences
     competences = []
     coeffs = {} # si existant
+    exemples = "" # les exemples
 
     non_interprete = []
     for i in range(len(docu)):
@@ -373,6 +386,12 @@ def get_sae_BUT23_from_google(code_sae, docu):
                 val = "\n".join(val)
                 if not val:
                     __LOGGER.warning(f"{code_sae}: manque les ressources combinées")
+            elif "Type de livrable" in champ:
+                k = tools.get_indice_sans_accent_ni_espace("Type de livrable", ENTETES_CHAPEAU)
+                val = res[1][0][0]
+                val = tools.caracteres_recalcitrants(val)
+            elif "Exemple(s) de mise" in champ:
+                exemples = tools.caracteres_recalcitrants("\n".join(res[1][0]))
             # sauvegarde
             if k != None:
                 data[k] = val
@@ -404,13 +423,21 @@ def get_sae_BUT23_from_google(code_sae, docu):
                         if res[k][1][ligne]:
                             apprentissages.append(tools.caracteres_recalcitrants(res[k][1][ligne]))
 
+        elif "Fiche d'adaptation" in champ:  # adaptation locale et préconisation
+            k = tools.get_indice_sans_accent_ni_espace("Adaptation locale", ENTETES_RESSOURCES)
+            data[k] = res[0][1][0]
+            k = tools.get_indice_sans_accent_ni_espace("dont heures de CM", ENTETES_RESSOURCES)
+            data[k] = res[1][1][0]
+            k = tools.get_indice_sans_accent_ni_espace("dont heures de TD", ENTETES_RESSOURCES)
+            data[k] = res[2][1][0]
 
         else:  # ligne avec colonne de données => chapeau taille 4
             champ = ligne[0][0]
             if "Code" in champ:
                 ordre_semestre = res[1][1][0]
                 k = tools.get_indice_sans_accent_ni_espace("Code", ENTETES_CHAPEAU)
-                data[k] = res[1][0][0] if res[1][0][0] else res[1][3][0] # le code
+                data[k] = res[1][0][0] if res[1][0][0] else res[1][3][0] # le code RT
+                code_RT = data[k]
                 k = tools.get_indice_sans_accent_ni_espace("Titre", ENTETES_CHAPEAU)
                 data[k] = res[1][2][0] # le nom
 
@@ -425,11 +452,43 @@ def get_sae_BUT23_from_google(code_sae, docu):
         if not data[j]:
             champ_manquants += [champ]
     if champ_manquants:
-        __LOGGER.warning(f"{code_sae}: champs manquants  : " + ", ".join(champ_manquants))
+        __LOGGER.warning(f"{code_sae}: champs manquants : " + ", ".join(champ_manquants))
+
+    # Analyse des exemples
+    exemples = tools.remove_ligne_vide(exemples) # supprime les lignes vides
+    liste_exemples = {}
+    if exemples:
+        marqueurs = re.findall(r"Exemple\s*\d\s*:{0,1}", exemples)
+        if marqueurs:
+            positions = {m: exemples.index(m) for m in marqueurs} # la position des exemples
+            for (i, m) in enumerate(marqueurs):
+                deb = positions[m] + len(m)
+                if i < len(marqueurs) -1:
+                    fin = positions[marqueurs[i+1]]
+                else:
+                    fin = len(exemples)
+                extrait = exemples[deb:fin] # la 1ère ligne = titre ?
+                lignes = extrait.split("\n")
+                liste_exemples[i] = [lignes[0], # titre
+                                    "\n".join(lignes[1:]), # description
+                                    None, # forme
+                                    None, # problématique
+                                    None] # modalité
+        else:
+            __LOGGER.warning(f"{code_sae} : Pas d'exemples parsés / trouvés")
+            # ENTETES_EXEMPLES = ["Titre", "Description", "Formes", "Quelle problématique",
+            #                     "Modalités"]
+            liste_exemples[0] = [None, # titre
+                                 exemples,
+                                 None,
+                                 None,
+                                 None]
+
+
 
     # Sauvegarde des champs de la ressource
     info = tuple(data[1:])
-    return info, apprentissages, competences, coeffs
+    return info, apprentissages, competences, coeffs, liste_exemples
 
 
 def get_exemple_sae_BUT1_from_google(nom_exemple, res):
@@ -523,7 +582,7 @@ def parse_docu_sae(code_sae, docu, pnofficiel):
         nom_sae = tools.caracteres_recalcitrants(res[1][2][0])
 
         s = rdocx.saedocx.SAEDocx(nom_sae, code_sae, res, pnofficiel)
-        info, apprentissages, competences, coeffs = get_sae_BUT23_from_google(code_sae, docu)
+        info, apprentissages, competences, coeffs, exemples = get_sae_BUT23_from_google(code_sae, docu)
 
         s.charge_informations(*info)
         s.charge_ac(apprentissages)
@@ -531,11 +590,18 @@ def parse_docu_sae(code_sae, docu, pnofficiel):
         s.charge_coeffs(coeffs)
 
         # nettoie le titre et le code
+
         s.nettoie_code()
         s.nettoie_titre_sae()
-
-        # Doit reparcourir le même doc à la recherche des exemples
+        # Créé les exemples
         liste_exemples = []
+        for no in exemples: # 1 dictionnaire n° => info:
+            e = rdocx.exempledocx.ExempleSAEDocx(exemples[no][0], "", s.code, s.codeRT,
+                                                pnofficiel)  # fourni les codes de la sae rattachée
+            info = exemples[no][1:]
+            e.charge_informations(*info)
+            liste_exemples.append(e)
+        # Doit reparcourir le même doc à la recherche des exemples
         return (s, liste_exemples)
     else:
         print("SAE de BUT1 ou BUT2/3 non détectée")

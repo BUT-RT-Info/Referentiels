@@ -4,6 +4,7 @@ Module semestre
 import glob, os, logging
 import string
 
+import rofficiel.officiel
 import rpn.exemple
 import rpn.ressource
 import rpn.sae
@@ -67,6 +68,39 @@ class SemestrePN():
         # Checks divers
         self.check_activites_vs_officiel()
 
+        # Trie des fiches par parcours
+        self.saes_par_parcours = self.tri_activites_par_parcours(self.saes)
+        self.ressources_par_parcours = self.tri_activites_par_parcours(self.ressources)
+
+
+    def tri_activites_par_parcours(self, dico):
+        """Tri une liste d'activité par parcours (soit des ressources, soit des saes, donc les codes sont fournis dans un dictionnaire)"""
+        tri = {p: {} for p in ["Tronc commun"] + rofficiel.officiel.PARCOURS} # + ["Fiches complémentaires"]}
+        for code in dico:
+            ajout = False
+            a = dico[code]
+            if a.est_tronc_commun():
+                tri["Tronc commun"][code] = a
+                ajout = True
+            else:
+                for p in rofficiel.officiel.PARCOURS:
+                    if p in dico[code].yaml["parcours"]:
+                        tri[p][code] = a
+                        ajout = True
+            if not ajout:
+                self.__LOGGER.warning(f"{self.nom_semestre}: tri_activites_par_parcours: {code} n'a pas pu être ajouté à un parcours")
+        return tri
+
+
+    def get_niveau_from_comp(self, comp):
+        """Renvoie le niveau (numéro) d'une comp en fonction de l'année => à déplacer"""
+        if "RT" in comp:
+            niveau = int(self.annee[-1]) # le niveau = l'année
+        else:
+            niveau = int(self.annee[-1]) - 1 # le niveau est décrémenté
+        return niveau
+
+
     def get_activites_from_yaml(self,
                                 type,
                                 repertoire):
@@ -80,8 +114,6 @@ class SemestrePN():
         # ne conserve que les fichiers du-dit semestre RN.XX ou N=numero du semestre
 
         for fichieryaml in fichiers:
-            if "R3.05" in fichieryaml:
-                print("ici")
             if type == "ressource":
                 a = rpn.ressource.Ressource(fichieryaml, self.officiel)  # lecture du fichier
                 if a.nom_semestre == self.nom_semestre:
@@ -98,6 +130,15 @@ class SemestrePN():
                         if sae not in self.exemples:
                             self.exemples[sae] = []
                         self.exemples[sae].append(e)
+
+
+        # injecte les exemples dans les sae
+        for s in self.exemples:
+            if s not in self.saes:
+                self.__LOGGER.warning(f"{self.nom_semestre}: la SAE {s} n'existe pas et ne peut être chargé avec ses exemples")
+            else:
+                for e in self.exemples[s]:
+                    self.saes[s].charge_exemple(e)
 
         if type == "ressources":
             SemestrePN.__LOGGER.info("Semestre {} : {} ressources chargées".format(self.nom_semestre,
@@ -167,6 +208,7 @@ class SemestrePN():
         :return:
         """
         pass
+
 
     def get_matrice_ac_vs_saes(self, parcours=None):
         """Calcule la matrice AC vs sae pour un sem donné (tous parcours confondus)"""
@@ -287,6 +329,47 @@ class SemestrePN():
         return chaine
 
 
+    def prepare_inclusion_fiches(self, codes_par_parcours):
+        """Prépare une liste de fiches à inclure sur la base de leur code"""
+        chaine = ""
+        for p in codes_par_parcours:
+            if codes_par_parcours[p]: # s'il y a des fiches
+                # chaine += "\\subsubsection{%s}\n\n" % (p)
+                chaine += "\\phantomsection \\label{subsubsec:FichesSAE%s%s}\n" % (self.nom_semestre, p.split(" ")[0])
+                chaine += "\\addtocounter{subsubsection}{1}\n"
+                chaine += "\\addcontentsline{toc}{subsubsection}{%s}" % (p)
+                liste = []
+                for code in codes_par_parcours[p]:
+                    if "S" in code:
+                        type = "saes"
+                    else:
+                        type = "ressources"
+                    a = codes_par_parcours[p][code]
+                    liste.append("\\input{%s/%s/%s.tex}" % (type, self.nom_semestre, a.code.replace("É", "E")))
+                chaine += "\\newpage\n".join(liste)
+                chaine += "\\newpage\n"
+                chaine += "\n"
+        return chaine
+
+
+    def to_latex_description_semestres(self, modele=Config.ROOT + "/python/templates/modele_semestre.tex"):
+        """Génère le code latex décrivant un semestre (ses SAE, ses ressources, ...)
+        """
+        modlatex = modeles.get_modele(modele)
+        latex_inclusion_fiches_saes = self.prepare_inclusion_fiches(self.saes_par_parcours)
+        latex_inclusion_fiches_ressources = self.prepare_inclusion_fiches(self.ressources_par_parcours)
+
+        # Injection dans le template
+        chaine = modeles.TemplateLatex(modlatex).substitute(
+            numero=self.numero_semestre,
+            fichierListeSAEs="liste_saes_%s.tex" % (self.nom_semestre),
+            fichierListeRessources="liste_ressources_%s.tex" % (self.nom_semestre),
+            fichierMatriceACs="%s_acs_vs_saes_ressources.tex" % (self.nom_semestre),
+            inclusion_fiches_saes=latex_inclusion_fiches_saes,
+            inclusion_fiches_ressources=latex_inclusion_fiches_ressources,
+        )
+        return chaine
+
     def to_latex_matrice_ac_vs_activites(self):
         """Renvoie le tableau latex affichant la matrice des apprentissages critiques
         ayant connaissances des ``saes`` et des ``ressources``
@@ -320,85 +403,89 @@ class SemestrePN():
         chaine += " & & "
         # les noms des SAE et des ressources
         noms_saes = []
-        for (i, code) in enumerate(saes_du_semestre):  # pour chaque SAE
-            s = self.saes[code]
-            # saecode = "Scode" + lettresem + string.ascii_uppercase[i]
-            # contenu = "\\xdef\saecode{\csname " + saecode + "\endcsname}"
-            # contenu += "\\tiny{\\hyperlink{sae:\\saecode}{" + s.sae["titre"] + "~}}"
-            contenu = "\\tiny{" + s.yaml["titre"] + "~}"
-            noms_saes.append(rpn.latex.rotation_entete_colonne(contenu) + "\n")
+        noms_ressources = []
+        for (i, code) in enumerate(saes_du_semestre + ressources_du_semestre):  # pour chaque SAE
+            if code in saes_du_semestre:
+                a = self.saes[code]
+            else:
+                a = self.ressources[code]
+            contenu = "\\tiny{%s}" % (a.nom.replace("&", "\&"))
+            rotation = rpn.latex.rotation_entete_colonne(contenu) + "\n"
+            if code in saes_du_semestre:
+                noms_saes.append(rotation)
+            else:
+                noms_ressources.append(rotation)
         chaine += " & ".join(noms_saes) + "\n"
         chaine += " & "
-
-        noms_ressources = []
-        for (i, code) in enumerate(ressources_du_semestre):  # pour chaque ressource
-            r = self.ressources[code]
-            # contenu = r.ressource["code"] + " | " + r.ressource["nom"]
-            # noms_ressources.append(rpn.latex.rotation_entete_colonne(contenu) + "\n")
-            contenu = "\\tiny{" + r.yaml["nom"] + "~}"
-            noms_ressources.append(rpn.latex.rotation_entete_colonne(contenu) + "\n")
         chaine += " & ".join(noms_ressources) + "\n"
         chaine += "\\\\ \n"
 
         # les codes des SAE et des ressources
         noms_saes = []
+        noms_ressources = []
         chaine += " & & \n"
-        for (i, code) in enumerate(saes_du_semestre):  # pour chaque SAE
-            s = self.saes[code]
-            contenu = "~\\hyperlink{sae:" + s.yaml["code"] + "}{"
-            contenu += "\\textcolor{saeC}{" + s.yaml["code"] + "}"
-            contenu += "}"
-            noms_saes.append(rpn.latex.rotation_entete_colonne(contenu, pos="r") + "\n")
+        for (i, code) in enumerate(saes_du_semestre + ressources_du_semestre):  # pour chaque SAE
+            if code in saes_du_semestre:
+                a = self.saes[code]
+                couleur = "saeC"
+            else:
+                a = self.ressources[code]
+                couleur = "ressourceC"
+            contenu = "~\\hyperlink{%s}{\\textcolor{%s}{%s}}" % (a.get_code_latex_hyperlink(a.code),
+                                                                 couleur,
+                                                                 a.code)
+            rotation = rpn.latex.rotation_entete_colonne(contenu, pos="r") + "\n"
+            if code in saes_du_semestre:
+                noms_saes.append(rotation)
+            else:
+                noms_ressources.append(rotation)
         chaine += " & ".join(noms_saes) + "\n"
         chaine += " & "
-
-        noms_ressources = []
-        for (i, code) in enumerate(ressources_du_semestre):  # pour chaque ressource
-            r = self.ressources[code]
-            contenu = "~\\hyperlink{res:" + r.yaml["code"] + "}{"
-            contenu += "\\textcolor{ressourceC}{" + r.yaml["code"] + "}"
-            contenu += "}"
-            noms_ressources.append(rpn.latex.rotation_entete_colonne(contenu, pos="r") + "\n")
         chaine += " & ".join(noms_ressources) + "\n"
         chaine += "\\\\ \n"
         chaine += "\\hline \n"
 
         # Les ACS et les croix
-        for (noc, comp) in enumerate(self.officiel.DATA_ACS[self.annee]):
+        for (noc, comp) in enumerate(self.acs): # les comp & les acs du semestre
             nom_comp = self.officiel.DATA_COMPETENCES_DETAILLEES[comp]["nom"]
-            niveau = list(self.officiel.DATA_COMPETENCES_DETAILLEES[comp]["niveaux"].keys())[0]
-            couleur = "\\textcolor{compC" + string.ascii_uppercase[noc] + "}"
+            numero_niveau = self.get_niveau_from_comp(comp) # le numero du niveau de 1 à 3
+            niveau = list(self.officiel.DATA_COMPETENCES_DETAILLEES[comp]["niveaux"].keys())[numero_niveau-1]
+
+            couleur = rpn.latex.get_couleur_comp(comp)
             chaine += (
-                "\\multicolumn{%d}{|l|}{\hyperlink{comp:%s}{%s{\\bfseries %s - %s }}} \\\\"
-                % (nbre_colonnes, comp, couleur, comp, nom_comp.replace("&", "\&"))
+                "\\multicolumn{%d}{|l|}{\hyperlink{%s}{\\textcolor{%s}{\\bfseries %s - %s }}} \\\\ \n"
+                % (nbre_colonnes, comp, couleur, comp,
+                   nom_comp.replace("&", "\&"))
             )
-            chaine += "\\multicolumn{%d}{|l|}{\small Niveau 1 - %s} \\\\" % (
+            chaine += "\\multicolumn{%d}{|l|}{\small Niveau %d - %s} \\\\ \n" % (
                 nbre_colonnes,
+                numero_niveau,
                 niveau.replace("&", "\&"),
             )
             chaine += "\\hline \n"
-            for (k, ac) in enumerate(self.officiel.DATA_ACS[comp]):
-                chaine += couleur + "{" + ac + "}" + " & " + "\n"
+            for ac in self.acs[comp]:
+                chaine += "\\textcolor{%s}{%s} & \n" % (couleur, ac)
                 chaine += "\\begin{tabular}{p{%scm}} " % (str(longueur - 0.2))
-                chaine += "\\tiny{" + self.officiel.DATA_ACS[comp][ac] + "}"
+                chaine += "\\tiny{\\textit{" + self.acs[comp][ac].replace("&", "\&") + "}}"
                 chaine += "\\end{tabular} & \n"
 
-                croix = []
+                croix_saes = []
+                croix_ressources = []
                 indice_ac = acs_du_semestre.index(ac)
-                for (i, code) in enumerate(saes_du_semestre):  # pour chaque SAE
-                    s = self.saes[code]
-                    croix.append("$\\times$" if matrice[indice_ac][i] == True else "")
-                chaine += " & ".join(croix) + "\n"
+                for (i, code) in enumerate(saes_du_semestre + ressources_du_semestre):  # pour chaque SAE
+                    if code in saes_du_semestre:
+                        a = self.saes[code]
+                    else:
+                        a = self.ressources[code]
+                    valeur = "$\\times$" if matrice[indice_ac][i] == True else ""
+                    if code in saes_du_semestre:
+                        croix_saes.append(valeur)
+                    else:
+                        croix_ressources.append(valeur)
+
+                chaine += " & ".join(croix_saes) + "\n"
                 chaine += " & "
-                croix = []
-                for (j, code) in enumerate(ressources_du_semestre):  # pour chaque ressource
-                    r = self.ressources[code]
-                    croix.append(
-                        "$\\times$" if matrice[indice_ac][self.nbre_saes + j] == True else ""
-                    )
-                chaine += " & ".join(croix) + "\\\\ \n"
-                # if k < len(DATA_ACS[comp]) -1:
-                #    chaine += "\\cline{2-%d}" % (nbre_saes+ nbre_ressources+3)
+                chaine += " & ".join(croix_ressources) + "\\\\ \n"
                 chaine += "\\hline \n"
             chaine += "\\hline \n"
 
@@ -643,11 +730,11 @@ class SemestrePN():
         chaine += trait + "\n"
         for (code, r) in self.ressources.items():
             chaine += ligne.format(r.code if r.code else "MANQUANT",
-                               # r.nom[:30] + ("..." if len(r.nom) > 30 else "") ,
-                               r.nom,
-                               str(r.heures_encadrees) if r.heures_encadrees else "MANQUANT",
-                               str(r.tp) if r.tp else "MANQUANT") + "\n"
-        heures_formation_total = sum([r.heures_encadrees for r in ressem if r.heures_encadrees != None])
+                                   # r.nom[:30] + ("..." if len(r.nom) > 30 else "") ,
+                                   r.nom,
+                                   str(r.heures_formation) if r.heures_formation else "MANQUANT",
+                                   str(r.tp) if r.tp else "MANQUANT") + "\n"
+        heures_formation_total = sum([r.heures_formation for r in ressem if r.heures_formation != None])
         heures_tp_total = sum([r.tp for r in ressem if r.tp != None])
         chaine += trait + "\n"
         chaine += ligne.format("", "Total", str(heures_formation_total), str(heures_tp_total)) + "\n"
@@ -701,24 +788,27 @@ class SemestrePN():
         modlatex = modeles.get_modele(modele)
 
         liste_saes_et_exemples = []
-        for sae in self.saes: # les saes du semestre
-            info_sae = []
-            hyperlink = self.saes[sae].get_code_latex_hyperlink(self.saes[sae].code)
-            code = "\\bfseries \\hyperlink{%s}{\\textcolor{saeC}{%s}}" % (hyperlink, self.saes[sae].code)
-            titre = "%s : " % (self.saes[sae].codeRT)
-            titre += self.saes[sae].nom.replace("&", "\\&")
-            page = "\\pageref{subsubsec:%s}" % (hyperlink)
-            info_sae.append( " & ".join([code, titre, page]))
+        for p in self.saes_par_parcours:
+            titre = "\\multicolumn{3}{|l|}{\\bfseries %s}" % ("Tronc commun" if "Tronc" in p else "Parcours %s" % p)
+            liste_saes_et_exemples.append(titre)
+            for sae in self.saes: # les saes du semestre
+                info_sae = []
+                hyperlink = self.saes[sae].get_code_latex_hyperlink(self.saes[sae].code)
+                code = "\\bfseries \\hyperlink{%s}{\\textcolor{saeC}{%s}}" % (hyperlink, self.saes[sae].code)
+                titre = "%s : " % (self.saes[sae].codeRT)
+                titre += self.saes[sae].nom.replace("&", "\&")
+                page = "\\pageref{subsubsec:%s}" % (hyperlink)
+                info_sae.append( " & ".join([code, titre, page]))
 
-            for exemple in []: # self.exemples[sae]:
-                code = ""
-                titre = "Exemple 1:"
-                # page = "\"
-                info_sae.append( " & ".join([code, titre, page]) )
+                for exemple in []: # self.exemples[sae]:
+                    code = ""
+                    titre = "Exemple 1:"
+                    # page = "\"
+                    info_sae.append( " & ".join([code, titre, page]) )
 
-            liste_saes_et_exemples.append("\n\\tabularnewline\n".join(info_sae))
+                liste_saes_et_exemples.append("\n\\tabularnewline\n".join(info_sae))
 
-        tableau = "\n \\tabularnewline \\hline \n".join(liste_saes_et_exemples) + "\n\\tabularnewline\n"
+            tableau = "\n \\tabularnewline \\hline \n".join(liste_saes_et_exemples) + "\n\\tabularnewline\n"
 
         chaine = modeles.TemplateLatex(modlatex).substitute(
             liste_sae_par_semestre=tableau
@@ -738,7 +828,7 @@ class SemestrePN():
             hyperlink = self.ressources[res].get_code_latex_hyperlink(self.ressources[res].code)
             code = "\\bfseries \\hyperlink{%s}{\\textcolor{ressourceC}{%s}}" % (hyperlink, self.ressources[res].code)
             titre = "%s : " % (self.ressources[res].codeRT)
-            titre += self.ressources[res].nom.replace("&", "\\&")
+            titre += self.ressources[res].nom.replace("&", "\&")
             page = "\\pageref{subsubsec:%s}" % (hyperlink)
             liste_ressources.append( " & ".join([code, titre, page]))
 

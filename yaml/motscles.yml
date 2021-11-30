@@ -18,6 +18,7 @@ logiciels:
   - VirtualBox
   - VIRL
   - VMWare
+  - Whois
 commandes:
   - arp-scan
   - arp

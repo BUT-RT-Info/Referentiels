@@ -35,7 +35,7 @@
     <script src="_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Recherche" href="search.html" />
-    <link rel="prev" title="Module semestre" href="semestre.html" />
+    <link rel="prev" title="Package rofficiel" href="rofficiel.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en" />
     
@@ -70,13 +70,13 @@
 </p>
 <ul class="current nav bd-sidenav">
  <li class="toctree-l1">
-  <a class="reference internal" href="activite.html">
-   Module activite
+  <a class="reference internal" href="rpn.html">
+   Package rpn
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="activitedocx.html">
-   Module activitedocx
+  <a class="reference internal" href="rdocx.html">
+   Package rdocx
   </a>
  </li>
  <li class="toctree-l1">
@@ -90,13 +90,8 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="officiel.html">
-   Module officiel
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="semestre.html">
-   Module semestre
+  <a class="reference internal" href="rofficiel.html">
+   Package rofficiel
   </a>
  </li>
  <li class="toctree-l1 current active">
@@ -183,9 +178,15 @@
 <dl class="py function">
 <dt id="tools.caracteres_recalcitrants">
 <code class="sig-prename descclassname">tools.</code><code class="sig-name descname">caracteres_recalcitrants</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">contenu</span></em><span class="sig-paren">)</span><a class="headerlink" href="#tools.caracteres_recalcitrants" title="Lien permanent vers cette définition">¶</a></dt>
-<dd><p>Supprime les caractères récalcitrans (éâà) d’un <code class="docutils literal notranslate"><span class="pre">contenu</span></code> provenant d’un docx dont
+<dd><p>Supprime les caractères récalcitrans (éâà) d’un <code class="docutils literal notranslate"><span class="pre">contenu</span></code> provenant d’un rdocx dont
 l’encodage dépend du système d’exploitation sur lequel a été rédigé
 le document</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="tools.check_espace">
+<code class="sig-prename descclassname">tools.</code><code class="sig-name descname">check_espace</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">contenu</span></em><span class="sig-paren">)</span><a class="headerlink" href="#tools.check_espace" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Vérifie les pb d’espaces</p>
 </dd></dl>
 
 <dl class="py function">
@@ -200,6 +201,49 @@ le document</p>
 <dd><p>Récupère l’indice d’une entête en se débarrassant des majuscules/caractères spéciaux/espace</p>
 </dd></dl>
 
+<dl class="py function">
+<dt id="tools.get_marqueur_from_liste">
+<code class="sig-prename descclassname">tools.</code><code class="sig-name descname">get_marqueur_from_liste</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ligne</span></em>, <em class="sig-param"><span class="n">marqueurs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#tools.get_marqueur_from_liste" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Renvoie le marqueur qui marque le début d’une ligne parmi une liste de marqueurs recherchés</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="tools.get_marqueur_numerique">
+<code class="sig-prename descclassname">tools.</code><code class="sig-name descname">get_marqueur_numerique</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">contenu</span></em><span class="sig-paren">)</span><a class="headerlink" href="#tools.get_marqueur_numerique" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Revoie la liste des marqueurs numériques</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="tools.get_marqueurs">
+<code class="sig-prename descclassname">tools.</code><code class="sig-name descname">get_marqueurs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">contenu</span></em><span class="sig-paren">)</span><a class="headerlink" href="#tools.get_marqueurs" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Renvoie la liste des marqueurs (à 1 caractère) partant d’un contenu - splitable en plusieurs lignes
+(éventuellement vide)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="tools.indice_premier_caractere">
+<code class="sig-prename descclassname">tools.</code><code class="sig-name descname">indice_premier_caractere</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">contenu</span></em><span class="sig-paren">)</span><a class="headerlink" href="#tools.indice_premier_caractere" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Renvoie l’indice du premier caractère (non espace) pour suppression espace</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="tools.remove_ligne_vide">
+<code class="sig-prename descclassname">tools.</code><code class="sig-name descname">remove_ligne_vide</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">contenus</span></em><span class="sig-paren">)</span><a class="headerlink" href="#tools.remove_ligne_vide" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Supprime les lignes vides</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="tools.remplace_marqueur_numerique_with_caracteres">
+<code class="sig-prename descclassname">tools.</code><code class="sig-name descname">remplace_marqueur_numerique_with_caracteres</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">contenu</span></em><span class="sig-paren">)</span><a class="headerlink" href="#tools.remplace_marqueur_numerique_with_caracteres" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Remplace les marqueurs numériques par des marqueurs &gt; lorsque présents dans un contenu</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="tools.supprime_accent_espace">
+<code class="sig-prename descclassname">tools.</code><code class="sig-name descname">supprime_accent_espace</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">chaine</span></em><span class="sig-paren">)</span><a class="headerlink" href="#tools.supprime_accent_espace" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Met une chaine en minuscule, supprime les accents, les ponctuations et les espaces</p>
+</dd></dl>
+
 </div>
 
 
@@ -208,7 +252,7 @@ le document</p>
         
         <div class='prev-next-bottom'>
             
-    <a class='left-prev' id="prev-link" href="semestre.html" title="previous page">Module semestre</a>
+    <a class='left-prev' id="prev-link" href="rofficiel.html" title="previous page">Package rofficiel</a>
 
         </div>
         

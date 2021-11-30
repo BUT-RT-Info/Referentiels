@@ -2,8 +2,9 @@ import logging
 
 from ruamel.yaml.scalarstring import FoldedScalarString as folded
 
-import officiel
+import rofficiel.officiel
 import rdocx.docx
+import rofficiel.activites
 import tools
 
 
@@ -12,33 +13,35 @@ class RessourceDocx(rdocx.docx.Docx):
     __LOGGER = logging.getLogger(__name__)
 
 
-    def charge_informations(self, codeRT, semestre, heures_encadrees, tp,
+    def charge_informations(self, codeRT, semestre,
+                            heures_encadrees, tp, cm, td,
+                            adapation_locale,
                             sae, prerequis,
-                            description, mots, parcours):
+                            description, mots, parcours,
+                            exemple):
         self.codeRT = codeRT.strip()
         self.semestre = semestre # <--
         self.heures_encadrees = heures_encadrees
+
         self.tp = tp
-        self.sae = sae
+        self.cm = cm
+        self.td = td
+
+        self.adaptation_locale = adapation_locale
+
+        self.saes = sae
         self.prerequis = prerequis
-        self.description = description
-        self.contexte = None # <= inutilisé à partir du BUT2/3
-        self.contenu = None # <= inutilisé à partir du BUT2/3
+        self.desc = description # la description avant d'être slitée dans self.description
+
         self.mots = mots
         self.parcours = parcours
+        self.exemple = exemple
 
 
     def nettoie_titre_ressource(self):
-        """Nettoie le titre d'une ressource ou d'une SAE en utilisant les titres officiels
+        """Nettoie le titre d'une ressource en utilisant les titres officiels
         fournis dans le yaml (via le dictionnaire DATA_RESSOURCES)"""
         self.nettoie_titre(self.officiel.DATA_RESSOURCES)
-
-
-    def nettoie_semestre(self):
-        """Pour une ressource, ou une SAE, nettoie le champ semestre
-        étant donné le semestre_officiel_decode"""
-        semestre = self.officiel.get_sem_ressource_by_code(self.code)
-        self.nettoie_semestre_from_decode(semestre)
 
 
     def nettoie_code(self):
@@ -50,7 +53,7 @@ class RessourceDocx(rdocx.docx.Docx):
                 if codes[0] != self.codeRT:
                     raise Exception(f"Probleme dans le mapping {self.code} <-> {self.codeRT}")
             else:
-                code_devine = officiel.get_code_from_nom_using_dict(self.nom, self.officiel.DATA_RESSOURCES)
+                code_devine = rofficiel.officiel.get_code_from_nom_using_dict(self.nom, self.officiel.DATA_RESSOURCES)
 
                 if code_devine:
                     RessourceDocx.__LOGGER.warning(f"nettoie_code : \"{self.nom}\" => code {code_devine}")
@@ -63,8 +66,8 @@ class RessourceDocx(rdocx.docx.Docx):
 
     def nettoie_prerequis(self):
         """Nettoie les prérequis"""
-        if not self.prerequis or officiel.AUCUN_PREREQUIS.lower() in self.prerequis.lower():
-            self.prerequis = officiel.AUCUN_PREREQUIS
+        if not self.prerequis or rofficiel.officiel.AUCUN_PREREQUIS.lower() in self.prerequis.lower():
+            self.prerequis = rofficiel.officiel.AUCUN_PREREQUIS
         else:
             ressources = self.nettoie_liste_ressources(self.prerequis)
             if ressources:
@@ -73,18 +76,13 @@ class RessourceDocx(rdocx.docx.Docx):
 
     def nettoie_sae(self):
         """Nettoie le champ SAe d'une ressource en détectant les codes"""
-        SAE_avec_code = rdocx.docx.devine_sae_by_code_SXX(self.sae) # <- les codes RT
-        SAE_avec_code2 = rdocx.docx.devine_sae_by_code_SXpXX(self.sae) # <- les codes en notation pointé
-        liste = [l.replace(".", "").replace(" ", "") for l in SAE_avec_code + SAE_avec_code2] # supprime les points
-        # passe en notation pointée
-        liste = [officiel.get_sae_notation_pointe(code) for code in liste]
-        liste = sorted(list(set(liste))) # élimine les doublons
-        self.sae = liste
-        if not self.sae:
-            RessourceDocx.__LOGGER.warning(f"{self.code}/{self.codeRT}: nettoie_sae:  pas de SAE (:")
+        liste = self.saes
+        self.saes = self.nettoie_liste_sae(liste)
+        if not self.saes:
+            self.__LOGGER.warning(f"{self}: nettoie_sae:  pas de SAE (:")
 
 
-    def nettoie_heures(self):
+    def nettoie_heures_encadrees_et_tp(self):
         """Nettoie le champ (horaire) (de la forme 46h ou 33...) pour en extraire la valeur numérique :
         le champ peut contenir 2 volumes (heures formation puis heures tp), auquel cas les 2 valeurs sont renvoyées
         dans un tuple"""
@@ -107,72 +105,64 @@ class RessourceDocx(rdocx.docx.Docx):
 
 
     def split_description(self):
-        """Découpe le champ description en un contexte+un contenu ; si pas possible """
+        """Découpe le champ description en contexte/contenu/prolongement;
+        si pas possible place dans contenu"""
         # if self.code == "R110":
         #    print("ici")
-        champs = self.description.split("\n")
-        champs = [c for c in champs if c]  # supprime les lignes vides
+        description = {**self.description, "objectifs": []} # copie du dictionnaire description
 
-        indicea = 0  # la ligne mentionnant le contexte
-        if True in [ligne.startswith("Contexte ") for ligne in champs]:  # la ligne commençant par Contenus
-            indicea = [ligne.startswith("Contexte ") for ligne in champs].index(True)
+        lignes = self.desc.split("\n")
+        lignes = [c for c in lignes if c]  # supprime les lignes vides
 
-        indicec = -1
-        contexte = []
-        marqueur = False
-        identifiants = ["Contenus", "Objectifs visés"] # Identifiant marquant la ligne des contenus
-        for id in identifiants:
-            presence = [ligne.startswith(id) for ligne in champs]
-            if True in presence and not marqueur: # la ligne commençant par l'identifiant
-                indicec = presence.index(True)
-                marqueur = True
-        if True in [ligne.startswith("Contexte et ") for ligne in champs]:
-            contexte = champs[indicea + 1:indicec]
+        indices = {cle: -1 for cle in description}
+        for id in description:
+            presence = [ligne.lower().startswith(id) for ligne in lignes]
+            if True in presence: # la ligne commençant par l'identifiant
+                indices[id] = presence.index(True)
+
+        champs_ordonnes = sorted(indices, key=lambda cle: indices[cle]) # tri par indice croissant
+
+        # -1 -1 -1 -1 => tout dans contenu
+        if list(indices.values()).count(-1) == 4:
+            description["contenus"] = lignes[:]
+        # sinon 1 marqueur a été trouvé
         else:
-            if indicec >= 0:
-                contexte = champs[:indicec]
-            else:
-                contexte = "" # Pas de contexte
+            for (i, cle) in enumerate(champs_ordonnes):
+                if indices[cle] >= 0: # si la clé est trouvée
+                    if i < len(champs_ordonnes) -1: # pas le dernier champ
+                        champ_suivant = champs_ordonnes[i+1]
+                        description[cle] = lignes[indices[cle]+1:indices[champ_suivant]]
+                    else:
+                        description[cle] = lignes[indices[cle]+1:]
+
         # suppression des lignes vides
-        contexte = "\n".join(tools.remove_ligne_vide(contexte))
-        # suppression des liens
-
-        contexte = rdocx.docx.remove_link(contexte)
-        if not contexte:
-            contexte = "Aucun"
-        if indicec == -1:
-            contenu = "\n".join(champs[indicec + 1:])
-        else:
-            contenu = "\n".join(champs[indicec + 1:])
-
-        # sauvegarde des champs
-        self.contexte = contexte
-        self.contenu = contenu
+        for cle in description:
+            lignes_conservees = tools.remove_ligne_vide(description[cle])
+            chaine = "\n".join(lignes_conservees)
+            description[cle] = rdocx.docx.remove_link(chaine)
+            if not description[cle]:
+                self.__LOGGER.warning(f"{self}: nettoie_description: description > {cle} manquant")
+        # sauvegarde
+        self.description = {"contexte": description["contexte"],
+                            "contenus": description["contenus"] + description["objectifs"],
+                            "prolongements": description["prolongements"]}
 
 
-    def nettoie_contenu(self):
-        """Partant du contenu détaillé d'une ressource, la transforme
-        en markdown en générant les listes à puces"""
-        contenu = self.contenu.replace(" / ", "/")
-        self.contenu = rdocx.docx.convert_to_markdown(contenu)
-
-
-    def nettoie_contexte(self):
-        """Partant du contexte détaillé d'une ressource, la transforme
-        en markdown en générant les listes à puces"""
-        contexte = self.contexte.replace(" / ", "/")
-        self.contexte = rdocx.docx.convert_to_markdown(contexte)
-
-
-    def nettoie_champ(self):
+    def nettoie_champs(self):
         """Lance le nettoyage des champs"""
         self.nettoie_code()
         self.nettoie_titre_ressource()
-        self.nettoie_heures()
+        self.nettoie_heures_encadrees_et_tp()
+        self.nettoie_heures_cm_td()
+        self.nettoie_adaptation_locale()
 
         self.nettoie_semestre()
-        self.annee = officiel.Officiel.get_annee_from_semestre(self.semestre)
+        self.annee = rofficiel.officiel.Officiel.get_annee_from_semestre(self.semestre)
+
         self.nettoie_acs()
+        self.nettoie_competences()
+        self.compare_acs_competences()
+
         self.nettoie_sae()
         self.nettoie_prerequis()
         self.nettoie_mots_cles()
@@ -181,30 +171,57 @@ class RessourceDocx(rdocx.docx.Docx):
 
         # Remet en forme le descriptif
         self.split_description()
-        self.nettoie_contexte()
-        self.nettoie_contenu()
-        # self.nettoie_description()
+        self.nettoie_description()
         # print(f"{self.code} {self.semestre}")
+        self.nettoie_exemple()
+
+
+    def nettoie_description(self):
+        """Nettoie le champ description après l'avoir splitté"""
+        for cle in self.description:
+            contenu = self.description[cle].replace(" / ", "/")
+            self.description[cle] = rdocx.docx.convert_to_markdown(contenu)
+
+
+    def nettoie_exemple(self):
+        """Nettoie l'exemple de mise en oeuvre"""
+        contenu = self.exemple
+        if not contenu:
+            self.exemple = ""
+        else:
+            contenu = tools.remove_ligne_vide(contenu)  # supprime les ligne vides
+            self.exemple = rdocx.docx.convert_to_markdown(contenu)
 
 
     def to_yaml(self):
         """Exporte la ressource en yaml"""
+        # prépare le champ description (fusion de contexte/objectifs/contenu/prolongements)
         dico = {"nom": self.nom,
                 "code": self.code,
                 "codeRT": self.codeRT,
-                "libelle": self.codeRT,
+                "libelle": self.codeRT, # A revoir
                 "semestre" : int(self.semestre),
                 "annee": self.annee,
+                "parcours": self.parcours,
                 "heures_formation": self.heures_encadrees if self.heures_encadrees else "???",
+                "heures_cm": self.cm if self.cm or self.cm == 0 else "???",
+                "heures_td": self.td if self.td or self.td == 0 else "???",
                 "heures_tp": self.tp if self.tp or self.tp == 0 else "???",
+                "heures_formation_pn": "???",
+                "heures_cm_pn": "???",
+                "heures_td_pn": "???",
+                "heures_tp_pn": "???",
+                "adaptation_locale": "oui" if self.adaptation_locale.lower() == "oui" else "non",
                 "coeffs": self.coeffs,
+                "competences": self.competences,
                 "acs": self.acs,
-                "sae": self.sae,
+                "sae": self.saes,
                 "prerequis": self.prerequis,
-                "contexte": folded(self.contexte),
-                "contenu": folded(self.contenu),
+                "contexte": folded(self.description["contexte"]) if self.description["contexte"] else "Aucun",
+                "contenus": folded(self.description["contenus"]) if self.description["contenus"] else "Aucun",
+                "prolongements": folded(self.description["prolongements"]) if self.description["prolongements"] else "",
                 "motscles": self.mots if self.mots else "",
-                "parcours": self.parcours
+                "exemple": folded(self.exemple)
                 }
         return self.dico_to_yaml(dico)
 

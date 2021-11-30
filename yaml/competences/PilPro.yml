@@ -21,11 +21,11 @@ PilPro1:
     Opérationnaliser un projet R&T:
       AC34.01PilPro: "Rédaction d'un appel d'offres ou d'un cahier des charges technique R&T"
       AC34.02PilPro: "Animation technique d’équipes pluridisciplinaires"
-      AC34.03PilPro: "Coordination d’équipes sur une partie de projet R&T ou sa totalité"
+      AC34.03PilPro: "Coordination d'équipes sur une partie de projet R&T ou sa totalité"
       AC34.04PilPro: "Mise en place de solutions techniques R&T efficientes"
       AC34.05PilPro: "Livraison et suivi technique de projet R&T"
 PilPro2:
-  nom: Gérer des activités R\&T en termes organisationnels, relationnels, financiers et commerciaux
+  nom: Gérer des activités R&T en termes organisationnels, relationnels, financiers et commerciaux
   diminutif: Organiser
   description: >-
     Le monde des réseaux et télécommunications est très évolutif, concurrentiel et complexe. Il

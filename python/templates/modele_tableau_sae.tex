@@ -17,21 +17,24 @@
 \\
 \end{tabular}
 
-\begin{tabular}[t]{|P|Q|V|}
+\begin{tabular}[t]{|P|T|}
 \hline % 2ème ligne : semestre
-	\textcolor{saeC}{\bfseries Semestre}
-	& \multicolumn{2}{l|}{ #semestre } \\
+	\textcolor{saeC}{\bfseries Cursus}
+	& #cursus  \\
 \hline % 3ème ligne : Heures
 \hline
     \textcolor{saeC}{\bfseries Heures}
     &
-    \textcolor{saeC}{\bfseries Formation encadrée} & {#heures_formation}h, dont {#heures_tp}h de TP \\
-\cline{2-3}
-	& \textcolor{saeC}{\bfseries Projet} & {#heures_projet}h \\
+    \textcolor{saeC}{\bfseries Formation encadrée publiée au PN} : {\bfseries {#heures_formation_pn}h}, dont {#heures_tp_pn}h de TP \\ % dont {#heures_cm}h de CM, {#heures_td}h de TD,
+\cline{2-2}
+    &
+    \textcolor{saeC}{\bfseries Formation encadrée préconisée en adaptation locale} : {\bfseries {#heures_formation}h}, dont {#heures_tp}h de TP \\
+\cline{2-2}
+	& \textcolor{saeC}{\bfseries Projet} : {#heures_projet}h \\
 \hline
 \hline % 4ème ligne : Parcours
 	\textcolor{saeC}{\bfseries Parcours}
-	& \multicolumn{2}{l|}{#parcours} \\
+	& #parcours \\
 \hline
 \end{tabular}
 
@@ -49,9 +52,7 @@
 \begin{tabular}{|G|}
 	\textcolor{saeC}{\bfseries Description générique} \\
 	\hline
-    #description
-	\\
-    #livrables \\
+    #description \\
 \hline
 \end{tabular}
 
@@ -64,8 +65,7 @@
         \bfseries \textcolor{saeC}{critiques}
     \end{tabular}
     &
-    #competences_et_acs
-    \\
+    #competences_et_acs \\
 \hline
 \end{tabular}
 % \ifcsdef{Rcoeff\CODE A}{coef. {\csname Rcoeff\CODE A\endcsname}}{}
@@ -81,25 +81,5 @@
 \end{tabular}
 
 
-% Mots-clés
-\begin{tabular}[t]{|P|T|}
-\hline
-    \textcolor{saeC}{\bfseries Mots-clés}
-    &
-    #motsCles % {\csname Rmotscles\CODE\endcsname}
-    \\
-\hline
-\end{tabular}
 
-% Mots-clés
-\begin{tabular}[t]{|P|T|}
-\hline
-        \begin{tabular}[t]{@{}P@{}}
-        \bfseries \textcolor{saeC}{Exemples de} \tabularnewline
-        \bfseries \textcolor{saeC}{mise en \oe{}uvre}
-    \end{tabular}
-    &
-     % {\csname Rmotscles\CODE\endcsname}
-    \\
-\hline
-\end{tabular}
+

@@ -223,7 +223,7 @@ for s in liste_saes:
 exemples = {"S1" : {}, "S2" : {} }
 print(" > Exemples")
 for s in liste_exemples: # la sae
-    sem = pnofficiel.get_sem_sae_by_code(s)
+    sem = pnofficiel.get_sem_activite_by_code(s)
     exemples[sem][s] = []
 
     for e in liste_exemples[s]:

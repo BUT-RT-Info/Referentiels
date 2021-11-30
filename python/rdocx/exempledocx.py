@@ -1,6 +1,6 @@
 from ruamel.yaml.scalarstring import FoldedScalarString as folded
 
-import rdocx.docx
+import rdocx.docx, rofficiel
 import logging
 
 __LOGGER = logging.getLogger(__name__)
@@ -9,15 +9,17 @@ class ExempleSAEDocx(rdocx.docx.Docx):
     """Classe modélisant les exemples de SAE tel que relu dans les Docx"""
 
     def __init__(self, nom, brut, code, codeRT, pnofficiel):
-        self.nom = nom.rstrip()
+        """Initialise l'exemple"""
+        self.nom = nom
         self.brut = brut  # les données brutes de la ressource
         self.code = code # code de la SAE à laquelle l'exemple est raccroché
         self.codeRT = codeRT
         self.officiel = pnofficiel
         # Ajoute le semestre de la SAE
-        self.semestre = int(self.officiel.get_sem_sae_by_code(code)[1])
+        self.semestre = self.officiel.get_sem_activite_by_code(code)[1]
 
     def charge_informations(self, description, formes, problematique, modalite):
+        """Charge les info"""
         self.description = description
         self.formes = formes  # <--
         self.problematique = problematique
@@ -51,7 +53,10 @@ class ExempleSAEDocx(rdocx.docx.Docx):
 
     def nettoie_champs(self):
         """Déclenche le nettoyage des champs de l'exemple"""
-        self.nom = self.nom.strip()
+        if self.nom:
+            self.nom = self.nom.strip()
+        self.annee = rofficiel.officiel.Officiel.get_annee_from_semestre(self.semestre)
+
         self.nettoie_modalite()
         self.nettoie_description()
         self.nettoie_problematique()
@@ -62,7 +67,8 @@ class ExempleSAEDocx(rdocx.docx.Docx):
         dico = {"titre": self.nom,
                 "code": self.code,
                 "codeRT": self.codeRT,
-                "semestre": self.semestre,
+                "semestre": int(self.semestre),
+                "annee": self.annee,
                 "description": folded(self.description),
                 "formes": folded(self.formes),
                 "problematique": folded(self.problematique) if self.problematique !="" else "",

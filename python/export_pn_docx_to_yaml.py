@@ -34,7 +34,7 @@ Config.ROOT = args.root
 # __LOGGER.warning(f"{sys.argv[0]} outputs to {args.outdir}")
 
 # Ces imports doivent être faits après la config
-import officiel
+import rofficiel.officiel
 import rdocx.parsedocx
 # from rdocx.parsedocx import get_docx_format, get_type_fiche, parse_docu_ressource, parse_docu_sae
 
@@ -42,7 +42,7 @@ __LOGGER = logging.getLogger(__name__)
 # logging.basicConfig(filename='export_pn.log.txt', level=logging.WARNING)
 
 # Récupère les données officielles
-pnofficiel = officiel.Officiel()
+pnofficiel = rofficiel.officiel.Officiel()
 
 # Ouverture du document
 # if not os.path.isfile(args.DOCUMENT):
@@ -50,7 +50,8 @@ pnofficiel = officiel.Officiel()
 #    sys.exit()
 
 # Pour debuggage, donne les codes sur lesquelles se focuser
-LIMIT_TO = [] # ["R3.21"] #"R4.01"] # ["R1.01", "R3.14"]
+# LIMIT_TO = ["SAÉ3.2"] # ["R3.21"] #"R4.01"] # ["R1.01", "R3.14"]
+LIMIT_TO = [] # "R3.02"] #"SAÉ3.2"]
 
 REPERTOIRE_GOOGLE = "../google/"
 
@@ -59,12 +60,12 @@ liste_saes = []
 liste_exemples_saes = {} # la liste des exemples de chaque SAé
 last_sae = None
 
-DATA_RESSOURCES = officiel.get_DATA_RESSOURCES() # les ressources du PN
-DATA_SAES = officiel.get_DATA_SAES() # les saés du PN
+DATA_RESSOURCES = rofficiel.officiel.get_DATA_RESSOURCES() # les ressources du PN
+DATA_SAES = rofficiel.officiel.get_DATA_SAES() # les saés du PN
 
 print("*** ETAPE 1*** Lecture des google.docx avec parsing des informations")
 for sem in ['S1', 'S2', 'S3', 'S4', 'S5', 'S6']: # DATA_RESSOURCES: # ['S1']: #
-    for code in {**DATA_RESSOURCES[sem], **DATA_SAES[sem]}:
+    for code in {**DATA_RESSOURCES[sem], **DATA_SAES[sem]}: #
         if not LIMIT_TO or code in LIMIT_TO:
             fichier = pnofficiel.get_docx_file_by_code(code)
             if fichier == None:
@@ -110,7 +111,7 @@ print("*** ETAPE 2*** Post-traitement/nettoyage des informations")
 ressources = {"S{}".format(d) : [] for d in range(1, 7)}
 print(" > Ressources :")
 for (i, r) in enumerate(liste_ressources):
-    r.nettoie_champ()
+    r.nettoie_champs()
 
     # Remet en forme les mots-clés
     # Tri dans le bon semestre
@@ -128,10 +129,11 @@ for s in liste_saes:
 exemples = {"S{}".format(d) : {} for d in range(1, 7)}
 print(" > Exemples")
 for s in liste_exemples_saes: # la sae
-    sem = pnofficiel.get_sem_sae_by_code(s)
+    sem = pnofficiel.get_sem_activite_by_code(s)
     exemples[sem][s] = []
-
+    print(s)
     for e in liste_exemples_saes[s]:
+        print(e)
         e.nettoie_champs()
 
         # Tri dans le bon semestre

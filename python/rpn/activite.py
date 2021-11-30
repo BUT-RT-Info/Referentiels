@@ -1,6 +1,9 @@
 import ruamel.yaml
 import logging
 
+import rofficiel.officiel
+import rpn.latex
+
 __LOGGER = logging.getLogger(__name__)
 
 MODALITES = ["CM/TD", "TP", "Projet"]   # modalités de mise en oeuvre d'une ressource/SAE
@@ -31,22 +34,43 @@ class ActivitePedagogique():
                 self.yaml = yaml.load(fid.read())
             except:
                 ActivitePedagogique.__LOGGER.warning(f"Pb de chargement de {fichieryaml}")
-        # Rappatrie les infos communes (code/titre)
+        # Rapatrie les infos communes (code/titre)
         self.code = self.yaml["code"]
-        if "codeRT" not in self.yaml:
-            self.__LOGGER.warning(f"{self.code}: ActivitePedagogique: codeRT manquant")
         self.codeRT = self.yaml["codeRT"]
         self.numero_semestre = self.yaml["semestre"]
         self.nom_semestre = "S" + str(self.numero_semestre)
         self.annee = None # <- chargé plus tard
+        self.adaptation_locale = None
         self.acs = None # <- chargé plus tard
+        self.parcours = None
+
+        # Heures
+        self.heures_formation = None    # les heures de formation idéale
+        self.heures_formation_pn = None # les heures de formation moins les 30% d'adaption locale
+        self.heures_tp = None
+        self.heures_tp_pn = None
+        self.heures_projet = None
+        self.heures_projet_pn = None
 
         # Charges les données officielles
         self.officiel = pnofficiel
 
+    def est_tronc_commun(self):
+        """
+        Indique si l'activité est de tronc commun
+        :return:
+        """
+        for p in self.parcours:
+            if "Tronc" in p:
+                return True
+        if len(self.parcours) == len(rofficiel.officiel.PARCOURS):
+            return True
+        return False
+
     def get_heures_encadrees(self):
         """Renvoie les heures de formation encadrees (incluant les TP)"""
         return self.heures_encadrees
+
 
     def get_heures_tp(self):
         """Renvoie les heures de TP"""
@@ -59,6 +83,14 @@ class ActivitePedagogique():
     def getInfo(self):
         """Renvoie les données du yaml (pour export to html)"""
         return self.yaml
+
+    def prepare_cursus(self):
+        """Prépare les informations sur le cursus"""
+        # Prépare cursus
+        latex_cursus = self.annee + " > " + self.nom_semestre
+        if self.adaptation_locale == "oui":
+            latex_cursus += " > " + "\\textit{Adaptation locale}"
+        return latex_cursus
 
     def to_latex_liste_competences_et_acs(self):
         """Renvoie la description latex d'une liste de compétences et d'acs"""
@@ -102,14 +134,25 @@ class ActivitePedagogique():
             chaine = "\\begin{tabular}[t]{UW}\n"
             chaine += "\n\\tabularnewline\n".join(latex_comp)
             chaine += "\n\\tabularnewline\n"
-            chaine += "\\end{tabular}\n"
+            chaine += "\\end{tabular}"
         else:
             chaine = ""
 
 
         return chaine
 
-    def to_latex_liste_competences_et_acs_old(self):
+    def to_latex_champ_titre(self, titre, champ):
+        """Convertit un champ en latex en lui ajoutant un titre"""
+        latex_champ = ""
+        if champ:
+            champs = []
+            champs.append("{\\bfseries " + titre + "}")
+            champs.append(rpn.latex.md_to_latex(champ, self.officiel.DATA_MOTSCLES))
+            latex_champ = "\n\n".join(champs)
+        return latex_champ
+
+
+    def to_latex_competences_et_acs(self):
         """Renvoie la description latex d'une liste de compétences et d'acs"""
         latex_comp = []
 
@@ -138,8 +181,9 @@ class ActivitePedagogique():
                 if code_ac not in self.officiel.DATA_ACS[self.annee][comp]:
                     self.__LOGGER.warning(f"{self.code}/{self.codeRT}: to_latex: Pb {code_ac} non trouvé en {self.annee}")
                 else:
-                    nom_acs = "~> " + "\\textcolor{%s}{%s}" % (couleur, code_ac)
-                    nom_acs += " \\textit{%s}" % self.officiel.DATA_ACS[self.annee][comp][code_ac].replace("&", "\\&")
+                    nom_acs = "\\textcolor{%s}{$\\bullet$ %s}" % (couleur, code_ac)
+                    intitule = self.officiel.DATA_ACS[self.annee][comp][code_ac].replace("&", "\\&")
+                    nom_acs += " \\textit{%s}" % intitule
                     details_acs.append(nom_acs)
             details_competences.append("\n\\tabularnewline\n".join(details_acs))
 
@@ -154,47 +198,7 @@ class ActivitePedagogique():
             chaine += "\\end{tabular}\n"
         else:
             chaine = ""
-
-        chaine = chaine.replace("&", "\\&") # echappement
         return chaine
-
-    def to_latex_competences_et_acs(self, type="ressource"):
-        """Renvoie la description latex d'une liste de compétences et d'acs"""
-        competences = []
-
-        # mapping ACs de la ressource -> compétences
-        for comp in self.acs:
-            details_competences = []
-            # le nom de la comp
-            type_niveau = "\\niveau" + {"BUT1": "A", "BUT2": "B", "BUT3": "C"}[self.yaml["annee"]]
-            if type == "ressource":
-                champ = "ajoutRcompetence"
-            else:
-                champ = "ajoutScompetence"
-            details_competences.append("\\%s{%s}{%s}" % (champ, comp, type_niveau))
-
-            # Préparation du coeff (si existe)
-            # ajoutcoeff = "\\ajoutRcoeff{%s}"
-            # details_competences.append(ajoutcoeff % (str(self.ressource["coeffs"][comp])))
-
-            # Préparation des ac
-            if type == "ressource":
-                champ = "ajoutRac"
-            else:
-                champ = "ajoutSac"
-            ajoutac = "\\ajoutRac{%s}{%s}"
-            details_acs = []
-            for code_ac in self.acs[comp]:  # les acs de la ressource (triés théoriquement)
-                if code_ac not in self.officiel.DATA_ACS[self.annee][comp]:
-                    self.__LOGGER.warning(f"{self.code}/{self.codeRT}: to_latex: Pb {code_ac} non trouvé en {self.annee}")
-                else:
-                    details_acs.append("\\%s{%s}{%s}" % (champ, code_ac, self.officiel.DATA_ACS[self.annee][comp][code_ac]))
-            details_competences.append("\n".join(details_acs))
-
-            # toutes les infos sur la comp
-            competences.append("\n".join(details_competences))
-
-        return competences
 
 
     def to_latex_liste_fiches(self, liste_fiches):
@@ -214,11 +218,18 @@ class ActivitePedagogique():
                 intitule = intitule.replace("&", "\\&") # échappement des &
             else:
                 intitule = ""
-            nom = "\\hyperlink{%s}{\\textcolor{%s}{%s}} & %s" % (self.get_code_latex_hyperlink(elmt), couleur, elmt, intitule)
+            if False:
+                nom = "\\hyperlink{%s}{\\textcolor{%s}{%s}} & %s" % (self.get_code_latex_hyperlink(elmt), couleur, elmt, intitule)
+            else:
+                nom = "\\hyperlink{%s}{\\textcolor{%s}{%s}} %s" % (self.get_code_latex_hyperlink(elmt), couleur, elmt, intitule)
+
             latex_liste.append(nom)
 
         if latex_liste:
-            chaine = "\\begin{tabular}[t]{@{}UW@{}}\n"
+            if False:
+                chaine = "\\begin{tabular}[t]{@{}UW@{}}\n"
+            else:
+                chaine = "\\begin{tabular}[t]{@{}T@{}}\n"
             chaine += "\n\\tabularnewline\n".join(latex_liste)
             chaine += "\n\\tabularnewline\n"
             chaine += "\\end{tabular}"

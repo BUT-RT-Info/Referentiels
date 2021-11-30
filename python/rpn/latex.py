@@ -9,7 +9,7 @@ Une partie des traitements s'appuient sur :
 """
 
 import re, pypandoc, string
-from tools import remove_ligne_vide
+import tools
 
 
 def rotation_entete_colonne(contenu, pos="l"):
@@ -49,37 +49,38 @@ def nettoie_latex(chaine, DATA_ABBREVIATIONS):
     et détecte les abréviations indiquées dans le dictionnaire
     ``DATA_ABBREVIATIONS``.
     """
-    chaine = chaine.replace("\\tightlist\n", "")
-    chaine = ajoute_abbr_latex(chaine, DATA_ABBREVIATIONS) # détecte les abréviations
+    if chaine:
+        chaine = chaine.replace("\\tightlist\n", "")
+        chaine = ajoute_abbr_latex(chaine, DATA_ABBREVIATIONS) # détecte les abréviations
 
-    # detecte les espaces insécables
-    chaine = chaine.replace(" :", "~:")
-    m = re.findall(r"(\w\w:)", chaine)
-    m += re.findall(r"(\w}:)", chaine)
-    for marq in m:
-        if marq != "ex:" and marq != "ps:" and marq != "tp:": # les ex et les liens
-            chaine = chaine.replace(marq, marq[0:2] + "~:")
-    m = re.findall(r"(:\w)", chaine) # les : suivis d'une lettre
-    m += re.findall(r"(:\\)", chaine)
-    for marq in m:
-        chaine = chaine.replace(marq, ": " + marq[-1])
-    chaine = chaine.replace(" ;", "\,;")
-    m = re.findall(r"(\w;)", chaine)
-    m += re.findall(r"(\);)", chaine)
-    for marq in m:
-        chaine = chaine.replace(marq, marq[0] + "\,;")
+        # detecte les espaces insécables
+        chaine = chaine.replace(" :", "~:")
+        m = re.findall(r"(\w\w:)", chaine)
+        m += re.findall(r"(\w}:)", chaine)
+        for marq in m:
+            if marq != "ex:" and marq != "ps:" and marq != "tp:": # les ex et les liens
+                chaine = chaine.replace(marq, marq[0:2] + "~:")
+        m = re.findall(r"(:\w)", chaine) # les : suivis d'une lettre
+        m += re.findall(r"(:\\)", chaine)
+        for marq in m:
+            chaine = chaine.replace(marq, ": " + marq[-1])
+        chaine = chaine.replace(" ;", "\,;")
+        m = re.findall(r"(\w;)", chaine)
+        m += re.findall(r"(\);)", chaine)
+        for marq in m:
+            chaine = chaine.replace(marq, marq[0] + "\,;")
 
-    # Ajoute les topsep
-    lignes = chaine.split("\n")
-    nbre_itemize = 0
-    for (i, ligne) in enumerate(lignes):
-        if "\\begin{itemize}" in ligne:  # on rencontre un itemize
-            nbre_itemize += 1
-            if nbre_itemize == 1 and i != 0: # si c'est le 1er itemize et que ce n'est pas la 1ère ligne
-                lignes[i] = lignes[i].replace("\\begin{itemize}", "\\begin{itemize}[topsep=5pt]")
-        elif "\\end{itemize}" in ligne:
-            nbre_itemize -= 1
-    chaine = "\n".join(lignes)
+        # Ajoute les topsep
+        lignes = chaine.split("\n")
+        nbre_itemize = 0
+        for (i, ligne) in enumerate(lignes):
+            if "\\begin{itemize}" in ligne:  # on rencontre un itemize
+                nbre_itemize += 1
+                if nbre_itemize == 1 and i != 0: # si c'est le 1er itemize et que ce n'est pas la 1ère ligne
+                    lignes[i] = lignes[i].replace("\\begin{itemize}", "\\begin{itemize}[topsep=5pt]")
+            elif "\\end{itemize}" in ligne:
+                nbre_itemize -= 1
+        chaine = "\n".join(lignes)
 
     return chaine
 
@@ -144,7 +145,7 @@ def md_to_latex(contenu, DATA_MOTSCLES):
     contenu = "\n\n".join(lignes)
 
     # contenu = caracteres_recalcitrants(contenu)
-    contenu = remove_ligne_vide(contenu)
+    contenu = tools.remove_ligne_vide(contenu)
     lignes = contenu.split("\n")  # pour debug
 
     # if contenu.startswith("\\begin{itemize}"):
@@ -156,7 +157,7 @@ def md_to_latex(contenu, DATA_MOTSCLES):
     #    contenu += "\\\\[3pt]"
 
     contenu = ajoute_cmd_latex(contenu, DATA_MOTSCLES)  # détecte les commandes
-
+    contenu = ajoute_hyperlink_to_SAE_or_ressources(contenu)
     return contenu
 
 
@@ -198,6 +199,16 @@ def ajoute_cmd_latex(chaine, DATA_MOTSCLES):
     chaine = " ".join(mots)
     return chaine
 
+def ajoute_hyperlink_to_SAE_or_ressources(chaine):
+    """Parse la ``chaine`` et ajoute les hyperlink à des SAes et des ressources"""
+
+    codes = re.findall(r"SAÉ\d\.\d", chaine)
+    codes += re.findall(r"R\d\.\d{2}", chaine)
+    for code in codes:
+        code_link = code.replace("É", "E").replace(".", "")
+        chaine = chaine.replace(code, "\\hyperlink{%s}{%s}" % (code_link, code))
+    return chaine
+
 def contient_commandes(chaine, DATA_MOTSCLES):
     """
     Détecte si la ``chaine`` fait partie des commandes listées dans le dictionnaire ``DATA_MOTSCLES``.
@@ -213,3 +224,10 @@ def contient_commandes(chaine, DATA_MOTSCLES):
     if chaine_texte in DATA_MOTSCLES["commandes"]:
         return chaine_texte
     return None
+
+def get_couleur_comp(comp):
+    """Renvoie la couleur d'une compétence en fonction de son code de compétence"""
+    if "RT" in comp: # comp de tronc commun
+        return "compC" + "ABC"[int(comp[-1])-1]
+    else:
+        return "compS" + "AB"[int(comp[-1])-1]

@@ -16,20 +16,22 @@
 \\
 \end{tabular}
 
-\begin{tabular}[t]{|P|Q|V|}
+\begin{tabular}[t]{|P|T|}
 \hline % 2ème ligne : semestre
-	\textcolor{ressourceC}{\bfseries Semestre}
-	& \multicolumn{2}{l|}{ #semestre } \\
+	\textcolor{ressourceC}{\bfseries Cursus}
+	& #cursus \\
 \hline % 3ème ligne : Heures
 \hline
     \textcolor{ressourceC}{\bfseries Heures}
     &
-    \textcolor{ressourceC}{\bfseries Formation encadrée}
-    & {#heures_formation}h, dont {#heures_tp}h de TP \\
+    \textcolor{ressourceC}{\bfseries Formation encadrée publiée au PN} : {\bfseries {#heures_formation_pn}h}, dont {#heures_tp_pn}h de TP \\ % dont {#heures_cm}h de CM, {#heures_td}h de TD,
+\cline{2-2}
+    &
+    \textcolor{ressourceC}{\bfseries Formation encadrée préconisée en adaptation locale} : {\bfseries {#heures_formation}h}, dont {#heures_tp}h de TP \\
 \hline
 \hline % 4ème ligne : Parcours
 	\textcolor{ressourceC}{\bfseries Parcours}
-	& \multicolumn{2}{l|}{#parcours} \\
+	& #parcours \\
 \hline
 \end{tabular}
 
@@ -38,19 +40,12 @@
 	\hline
 	\textcolor{ressourceC}{\bfseries Description} \\
 	\hline
-	 #contexte
-	\\
+    #description \\
 \hline
 \end{tabular}
 
-% Contenu
-\begin{tabular}{|G|}
-	\textcolor{ressourceC}{\bfseries Contenu} \\
-	\hline
-    #contenu
-	\\
-    \hline
-\end{tabular}
+% Exemple de mise en oeuvre
+#exemple
 
 % 2ème tableau : Compétences et apprentissages critiques
 \begin{tabular}[t]{|P|T|}
@@ -61,8 +56,7 @@
         \bfseries \textcolor{ressourceC}{critiques}
     \end{tabular}
     &
-    #competences_et_acs
-    \\
+    #competences_et_acs \\
 \hline
 \end{tabular}
 % \ifcsdef{Rcoeff\CODE A}{coef. {\csname Rcoeff\CODE A\endcsname}}{}
@@ -97,3 +91,4 @@
 \hline
 
 \end{tabular}
+

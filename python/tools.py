@@ -1,6 +1,6 @@
 import string
 
-from officiel import supprime_accent_espace
+
 import unicodedata
 import re
 
@@ -35,6 +35,7 @@ def caracteres_recalcitrants(contenu):
     # contenu = unicodedata.normalize("NFKD", contenu)
     contenu = contenu.replace("’", "'") #.replace(b"\xe2\x80\x99".decode("utf8"), "'")
     contenu = contenu.replace('\xa0', ' ') # le nbsp
+    contenu = contenu.replace("\\", "") # les slashs ?
 
 
     # contenu = contenu.encode("utf8", "ignore").decode("utf8")
@@ -67,7 +68,9 @@ def remove_ligne_vide(contenus):
             temp = [t for t in temp if t.replace("\t", "").rstrip()]
             return "\n".join(temp)
         else: # pas de marqueur => respect des paragraphes
-            contenus = contenus.replace("\n\n", "\\\\\n")
+            marqueurs_ligne = re.findall("\n{2}\n*", contenus)
+            for m in marqueurs_ligne[::-1]:
+                contenus = contenus.replace(m, "\n")
             temp = contenus.split("\n")
             temp = [t for t in temp if t.replace("\t", "").rstrip()]
             return "\n".join(temp)
@@ -142,7 +145,16 @@ def get_marqueur_numerique(contenu):
     m = re.findall(r"(\d/|\d\s/)", contenu)
     #m += re.findall(r"(\d\s\)|\d\))", contenu) # les marqueurs de la forme 1)
     m += re.findall(r"(\d\s\))", contenu)
+    m += re.findall(r"(\d-)", contenu)
     # m = re.findall(r"\d\s{0,1}[/\)]", contenu)
     # tirets = re.findall(r"(--)(\s|\t)", contenu) # <-- pourquoi ?
     # m += ["".join(t) for t in tirets]
     return m
+
+
+def supprime_accent_espace(chaine):
+    """Met une chaine en minuscule, supprime les accents, les ponctuations et les espaces"""
+    purge = chaine.lower().replace("'", "").replace("’", "")
+    purge = unicodedata.normalize('NFD', purge).encode('ascii', 'ignore').decode('ascii')
+    purge = purge.replace(" ", "")
+    return purge

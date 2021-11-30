@@ -3,7 +3,7 @@ import logging
 import rpn.latex
 from config import Config
 import rpn.activite
-import modeles, officiel
+import modeles
 
 class SAE(rpn.activite.ActivitePedagogique):
     """Modélise une SAé (chapeau) en chargeant les données provenant du ``fichieryaml``
@@ -14,13 +14,32 @@ class SAE(rpn.activite.ActivitePedagogique):
 
     def __init__(self, fichieryaml, officiel):
         super().__init__(fichieryaml, officiel)
+        self.nom = self.yaml["nom"]
         self.acs = self.yaml["acs"]
-        self.nom = self.yaml["titre"]
+
         # self.competences = self.yaml["competences"]
         self.annee = self.yaml["annee"]
-        self.heures_encadrees = self.yaml["heures_encadrees"]
+        # self.heures_encadrees = self.yaml["heures_encadrees"]
+        self.parcours = self.yaml["parcours"]
+
+        self.heures_formation = self.yaml["heures_formation"]
+        self.heures_formation_pn = self.yaml["heures_formation_pn"]
+        self.heures_cm = self.yaml["heures_cm"]
+        self.heures_cm_pn = self.yaml["heures_cm_pn"]
+        self.heures_td = self.yaml["heures_td"]
+        self.heures_td_pn = self.yaml["heures_td_pn"]
         self.heures_tp = self.yaml["heures_tp"]
-        self.heures_projet = self.yaml["projet"]
+        self.heures_tp_pn = self.yaml["heures_tp_pn"]
+        self.heures_projet = self.yaml["heures_projet"]
+        self.heures_projet_pn = self.yaml["heures_projet_pn"]
+
+
+        self.exemples = [] # la liste des exemples
+
+
+    def charge_exemple(self, e):
+        """Charge un exemple"""
+        self.exemples.append(e)
 
 
     def to_latex(self, modele=Config.ROOT + "/python/templates/modele_tableau_sae.tex"):
@@ -30,7 +49,7 @@ class SAE(rpn.activite.ActivitePedagogique):
         modlatex = modeles.get_modele(modele)  # "templates/modele_ressource.tex")
 
         # La liste des compétences, des acs (et des coeffs)
-        latex_competences = self.to_latex_liste_competences_et_acs()
+        latex_competences = self.to_latex_competences_et_acs()
 
         # Préparation des ressources
         latex_ressource = self.to_latex_liste_fiches(self.yaml["ressources"])
@@ -43,23 +62,13 @@ class SAE(rpn.activite.ActivitePedagogique):
             latex_objectifs = rpn.latex.md_to_latex(objectifs, self.officiel.DATA_MOTSCLES)
 
         # préparation de la description générique
-        descriptif = self.yaml["description"]
-        if not descriptif:
-            latex_description = "\\textit{Aucun}"
-            SAE.__LOGGER.warning(f"{self.nom} n'a pas de description")
-        else:
-            latex_description = rpn.latex.md_to_latex(descriptif, self.officiel.DATA_MOTSCLES)
-
-        # préparation des livrables
-        livrables = self.yaml["livrables"]
-        if livrables == "Aucun":
-            latex_livrables = ""
-            SAE.__LOGGER.warning(f"{self.nom} n'a pas de livrables")
-        else:
-            latex_livrables = rpn.latex.md_to_latex(livrables, self.officiel.DATA_MOTSCLES)
+        latex_descriptif = self.prepare_descriptif()
 
         # Prépare les parcours
         latex_parcours = ", ".join(self.yaml["parcours"])
+
+        # Prépare les infos sur le cursus
+        latex_cursus = self.prepare_cursus()
 
         # préparation des exemples
         # A FAIRE
@@ -70,78 +79,90 @@ class SAE(rpn.activite.ActivitePedagogique):
             code=self.code,
             codeRT=self.codeRT,
             nom=rpn.latex.nettoie_latex(self.nom, self.officiel.DATA_ABBREVIATIONS),
-            semestre=self.nom_semestre,
-            heures_formation=self.yaml["heures_encadrees"],
-            heures_tp=self.yaml["heures_tp"],
-            heures_projet=self.yaml["projet"],
+            cursus=latex_cursus,
+            heures_formation=self.heures_formation,
+            heures_tp=self.heures_tp,
+            heures_cm=self.heures_cm,
+            heures_td=self.heures_td,
+            heures_formation_pn=self.heures_formation_pn,
+            heures_tp_pn=self.heures_tp_pn,
+            heures_cm_pn=self.heures_cm_pn,
+            heures_td_pn=self.heures_td_pn,
+            heures_projet=self.heures_projet,
+            heures_projet_pn=self.heures_projet_pn,
             parcours=latex_parcours,
             objectifs=rpn.latex.nettoie_latex(latex_objectifs, self.officiel.DATA_ABBREVIATIONS),
-            description=rpn.latex.nettoie_latex(latex_description, self.officiel.DATA_ABBREVIATIONS),
-            livrables=latex_livrables,
+            description=latex_descriptif,
             competences_et_acs=latex_competences,
-            listeRessources=latex_ressource,
-            motsCles=rpn.latex.nettoie_latex(self.yaml["motscles"] + ".", self.officiel.DATA_ABBREVIATIONS),
+            listeRessources=latex_ressource
             # listeExemples = A FAIRE
         )
         # chaine = chaine.replace("&", "\&")
+        # Ajoute à la chaine les exemples
+        if self.exemples: # le tableau donnant la liste des exemples
+            chaine += "\n"
+            chaine += self.to_latex_tableau_exemples()
+
+        contenu = []
+        for (i, e) in enumerate(self.exemples):
+            contenu.append(e.to_latex(i+1))
+        chaine += "\n\n".join(contenu)
+
         return chaine
 
-    def to_variable_latex(self, modele=Config.ROOT + "/python/templates/modele_sae.tex"):
-        """Génère le code latex décrivant la saé en utilisant le template latex donné
-        dans ``modele``
-        """
-        modlatex = modeles.get_modele(modele)  # "templates/modele_ressource.tex")
+    def to_latex_tableau_exemples(self):
+        chaine = ""
+        if self.exemples:
+            chaine += "\\begin{tabular}[t]{|P|T|}\n"
+            chaine += "\\hline\n"
+            chaine += "\\begin{tabular}[t]{@{}P@{}}\n"
+            chaine += " \\bfseries \\textcolor{saeC}{Exemples de} \\tabularnewline\n"
+            chaine += " \\bfseries \\textcolor{saeC}{mise en \oe{}uvre}\n"
+            chaine += "\end{tabular}\n"
+            chaine += " & \n"
+            chaine += ""
+            chaine += "\\begin{tabular}[t]{@{}T@{}}\n"
+            aff = []
+            for (i, e) in enumerate(self.exemples):
+                aff.append(e.get_titre_numerote(i+1, option="hyperlink"))
+            chaine += "\n\\tabularnewline\n".join(aff)
+            chaine += "\n\\tabularnewline\n"
+            chaine += "\\end{tabular}\n"
+            chaine += "\\\\\n"
+            chaine += "\\hline\n"
+            chaine += "\\end{tabular}\n"
+        return chaine
 
-        # La liste des compétences, des acs (et des coeffs)
-        competences = self.to_latex_competences_et_acs("sae")
+    def prepare_descriptif(self):
+        """Prépare le descriptif, avec dans le cas des SAEs de BUT1, fusion des livrables et des mots-clés"""
 
-        # Préparation des ressources
-        ajoutressources = "\\ajoutSressources{%s}{%s}"
-        resRT = []
-        for (i, res) in enumerate(
-            self.yaml["ressources"]
-        ):  # in range(len(self.apprentissages)):
-            resRT.append(
-                ajoutressources % (res, self.officiel.get_ressource_name_by_code(res))
-            )
-        ressources = "\n".join(resRT)
+        champs = []
 
-        objectifs = self.yaml["objectifs"]
-        if not objectifs:
-            objectifs = "Aucun"
-        objectifs = rpn.latex.md_to_latex(objectifs, self.officiel.DATA_MOTSCLES)
-
-        # préparation de la description générique
         descriptif = self.yaml["description"]
-        if not descriptif:
-            descriptif = "Aucun"
-            SAE.__LOGGER.warning(f"{self.nom} n'a pas de description")
-        descriptif = rpn.latex.md_to_latex(descriptif, self.officiel.DATA_MOTSCLES)
+        latex_description = ""
+        if descriptif:
+            latex_description = rpn.latex.md_to_latex(descriptif, self.officiel.DATA_MOTSCLES)
 
         # préparation des livrables
         livrables = self.yaml["livrables"]
-        if livrables == "Aucun":
-            livrables = ""
-            SAE.__LOGGER.warning(f"{self.nom} n'a pas de livrables")
+        latex_livrables = ""
+        if livrables and livrables != "Aucun":
+            latex_livrables = self.to_latex_champ_titre("Type de livrables ou de productions", self.yaml["livrables"])
+
+        # préparation des mots-clés
+        latex_mots = ""
+        if self.yaml["motscles"]:
+            latex_mots = self.to_latex_champ_titre("Mots-clés", self.yaml["motscles"] + ".")
+
+        if not latex_livrables and not latex_mots:
+            return latex_description
         else:
-            livrables = rpn.latex.md_to_latex(livrables, self.officiel.DATA_MOTSCLES)
-
-        chaine = ""
-        chaine = modeles.TemplateLatex(modlatex).substitute(
-            code=self.code,
-            codeRT=self.codeRT,
-            titre=self.nom,
-            competences_et_ACs="\n".join(competences),
-            heures_encadrees=self.yaml["heures_encadrees"],
-            heures_tp=self.yaml["tp"],
-            heures_projet=self.yaml["projet"],
-            objectifs=objectifs,
-            description=descriptif,
-            ressources=ressources,
-            livrables=livrables,
-            motscles=self.yaml["motscles"] + ".",
-        )
-        # chaine = chaine.replace("&", "\&")
-
-        chaine = rpn.latex.nettoie_latex(chaine, self.officiel.DATA_ABBREVIATIONS)
-        return chaine
+            champs = []
+            if latex_description:
+                latex_description = self.to_latex_champ_titre("Description", self.yaml["description"])
+                champs.append(latex_description)
+            if latex_livrables:
+                champs.append(latex_livrables)
+            if latex_mots:
+                champs.append(latex_mots)
+            return "\n\n\\vspace{0.2cm}\n".join(champs)

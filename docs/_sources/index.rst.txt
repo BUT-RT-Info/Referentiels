@@ -10,12 +10,10 @@ Welcome to Référentiel BUT-RT's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-   activite.rst
-   activitedocx.rst
-   latex.rst
+   rpn.rst
+   rdocx.rst
    modeles.rst
-   officiel.rst
-   semestre.rst
+   rofficiel.rst
    tools.rst
 
 

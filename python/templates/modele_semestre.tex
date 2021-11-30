@@ -1,0 +1,41 @@
+
+
+%%%%%%%%%%%%%%%%%%%%%%
+%% Semestre #numero %%
+%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Semestre #numero}
+
+\subsection*{SAÉs du semestre #numero}
+\input{synthese/#fichierListeSAEs}
+
+
+\subsection*{Ressources du semestre #numero}
+\input{synthese/#fichierListeRessources}
+
+\subsection*{Matrice Compétences/SAÉs-Ressources du semestre #numero}
+
+\scalebox{0.95}{\input{synthese/#fichierMatriceACs}}
+%
+%\subsection{Volumes horaires, coefficients et ECTS du semestre 1}
+%
+%\input{synthese/S1_coeffs_saes_ressources.tex}
+%
+\newpage
+
+% \subsection{Fiches SAÉs du semestre 1}
+\phantomsection \label{subsec:FichesSAES#numero}
+\addtocounter{subsection}{1}
+%\addcontentsline{toc}{subsection}{\arabic{section}.\arabic{subsection}~~~ Fiches SAÉs du semestre}
+\addcontentsline{toc}{subsection}{Fiches SAÉs du semestre #numero}
+
+#inclusion_fiches_saes
+
+%% Les ressources du semestre 1
+% \subsection{Fiches ressources du semestre 1}
+\phantomsection \label{subsec:FichesRessourcesS#numero}
+\addtocounter{subsection}{1}
+%\addcontentsline{toc}{subsection}{\arabic{section}.\arabic{subsection}~~~ Fiches ressources du semestre 1}
+\addcontentsline{toc}{subsection}{Fiches ressources du semestre #numero}
+
+#inclusion_fiches_ressources
