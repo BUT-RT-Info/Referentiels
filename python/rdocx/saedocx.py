@@ -4,7 +4,7 @@ from ruamel.yaml.scalarstring import FoldedScalarString as folded
 
 import rofficiel.officiel
 import rdocx.docx
-
+import tools
 
 class SAEDocx(rdocx.docx.Docx):
     """Classe modélisant un chapeau de SAé relu dans les rdocx"""
@@ -17,16 +17,20 @@ class SAEDocx(rdocx.docx.Docx):
         self.codeRT = codeRT
         self.semestre = semestre  # <--
         self.heures_encadrees = heures_encadrees
-        self.tp = tp
-        self.cm = cm
-        self.td = td
+        self.details_heures_encadrees = {'cm': cm, 'td': td, 'tp': tp}
+
         self.adaptation_locale = adaptation_locale
         self.projet = projet
         self.objectifs = objectifs
-        self.description = description
+        self.descr = description # la description
+        ## pour les saes
+        self.description = {"description": "",
+                            "type de livrables": "",
+                            "prolongements": "",
+                            "mots": ""}
         self.ressources = ressources
-        self.livrables = livrables
-        self.mots = mots
+        self.livrables = livrables # => à renvoyer dans self.description
+        self.mots = mots # => à renvoyer dans self.description
         self.parcours = parcours
 
 
@@ -62,18 +66,18 @@ class SAEDocx(rdocx.docx.Docx):
         if self.heures_encadrees:  # si les heures encadrées sont renseignées
             self.heures_encadrees = self.nettoie_champ_heure(self.heures_encadrees)
         else:
-            SAEDocx.__LOGGER.warning(f"nettoie_heures_sae: dans {self.nom}, manque les heures de formation")
+            SAEDocx.__LOGGER.warning(f"{self}: nettoie_heures_sae: manque les heures de formation")
             self.heures_encadrees = "???"
 
-        if self.tp or self.tp == 0:
-            self.tp = self.nettoie_champ_heure(self.tp)
+        if self.details_heures_encadrees["tp"] or self.details_heures_encadrees["tp"] == 0:
+            self.details_heures_encadrees["tp"] = self.nettoie_champ_heure(self.details_heures_encadrees["tp"])
         else:
-            SAEDocx.__LOGGER.warning(f"nettoie_heures_sae: dans {self.nom}, manque les heures de tp")
-            self.tp = "???"
+            SAEDocx.__LOGGER.warning(f"{self}: nettoie_heures_sae:  manque les heures de tp")
+            self.details_heures_encadrees["tp"] = "???"
 
         try:
-            if self.heures_encadrees < self.tp:
-                SAEDocx.__LOGGER.warning(f"nettoie_heures_sae: dans {self.nom}, pb dans les heures formations/tp")
+            if self.heures_encadrees < self.details_heures_encadrees["tp"]:
+                SAEDocx.__LOGGER.warning(f"{self}: nettoie_heures_sae: pb dans les heures formations/tp")
         except:
             pass
 
@@ -96,9 +100,9 @@ class SAEDocx(rdocx.docx.Docx):
         """Partant du contenu détaillé d'une ressource, la transforme
         en markdown en générant les listes à puces"""
         if self.livrables:
-            self.livrables = rdocx.docx.convert_to_markdown(self.livrables)
-        else:
-            self.livrables = ""
+            livrables = rdocx.docx.convert_to_markdown(self.livrables)
+            self.description["type de livrables"] += livrables # injecte dans description
+
 
 
     def nettoie_ressources(self):
@@ -111,13 +115,6 @@ class SAEDocx(rdocx.docx.Docx):
         if not self.ressources:
             SAEDocx.__LOGGER.warning(f"{self.code}/{self.codeRT}: nettoie_ressources: pas de ressources (:")
 
-    def nettoie_description(self):
-        """Nettoie le champ description"""
-        if self.description:
-            self.description = rdocx.docx.convert_to_markdown(self.description)
-        else:
-            self.description = ""
-
 
     def nettoie_objectifs(self):
         """Nettoie le champ objectifs"""
@@ -127,13 +124,62 @@ class SAEDocx(rdocx.docx.Docx):
             self.objectifs = ""
 
 
+    def split_description(self):
+        """Découpe le champ description en description/type livrable/prolongement/mots-clés;
+        si pas possible place dans contenu"""
+        # if self.code == "R110":
+        #    print("ici")
+        description = {**self.description} # copie du dictionnaire description
+
+        if self.descr:
+            lignes = self.descr.split("\n")
+            lignes = [c for c in lignes if c]  # supprime les lignes vides
+
+            indices = {cle: -1 for cle in description}
+            for id in description:
+                presence = [ligne.lower().startswith(id) for ligne in lignes]
+                if True in presence: # la ligne commençant par l'identifiant
+                    indices[id] = presence.index(True)
+
+            champs_ordonnes = sorted(indices, key=lambda cle: indices[cle]) # tri par indice croissant
+
+            # -1 -1 -1 -1 => tout dans contenu
+            if list(indices.values()).count(-1) == len(description):
+                description["description"] = lignes[:]
+            # sinon 1 marqueur a été trouvé
+            else:
+                for (i, cle) in enumerate(champs_ordonnes):
+                    if indices[cle] >= 0: # si la clé est trouvée
+                        if i < len(champs_ordonnes) -1: # pas le dernier champ
+                            champ_suivant = champs_ordonnes[i+1]
+                            description[cle] = lignes[indices[cle]+1:indices[champ_suivant]]
+                        else:
+                            description[cle] = lignes[indices[cle]+1:]
+
+            # suppression des lignes vides
+            for cle in description:
+                lignes_conservees = tools.remove_ligne_vide(description[cle])
+                chaine = "\n".join(lignes_conservees)
+                description[cle] = rdocx.docx.remove_link(chaine)
+                if not description[cle]:
+                    self.__LOGGER.warning(f"{self}: nettoie_description: description > {cle} manquant")
+            # sauvegarde
+            self.description = {"description": description["description"],
+                            "type de livrables": description["type de livrables"],
+                            "prolongements": description["prolongements"],
+                            "mots": description["mots"]}
+        # sinon self.descr vide
+
+
+
     def nettoie_champs(self):
         """Lance le nettoyage de tous les champs de la SAé"""
         self.nettoie_code()
         self.nettoie_titre_sae()
 
+        for type in ["cm", "td", "tp"]:
+            self.details_heures_encadrees[type] = self.nettoie_heures_cm_td(self.details_heures_encadrees, type)
         self.nettoie_heures_sae()
-        self.nettoie_heures_cm_td()
         self.nettoie_heures_projets()
 
         self.nettoie_adaptation_locale()
@@ -146,10 +192,19 @@ class SAEDocx(rdocx.docx.Docx):
         self.compare_acs_competences()
 
         self.nettoie_ressources()
-        self.nettoie_description()
+
         self.nettoie_objectifs()
-        self.nettoie_livrables_sae()
+
+        # La description
+        self.split_description() # découpe le champ descr en 4
+        self.nettoie_description()
+
+        self.nettoie_livrables_sae() # injecte les livrables si exi
         self.nettoie_mots_cles()
+        if self.mots:
+            self.description["mots"] += self.mots
+
+
         self.nettoie_coeffs()
 
         self.parcours = self.nettoie_parcours(self.parcours)
@@ -164,13 +219,9 @@ class SAEDocx(rdocx.docx.Docx):
                 "annee": self.annee,
                 "parcours": self.parcours,
                 "heures_formation": self.heures_encadrees if self.heures_encadrees != "" else "???",
-                "heures_cm": self.cm if self.cm or self.cm == 0 else "???",
-                "heures_td": self.td if self.td or self.td == 0 else "???",
-                "heures_tp": self.tp if self.tp != "" else "???",
-                "heures_formation_pn": "???",
-                "heures_cm_pn": "???",
-                "heures_td_pn": "???",
-                "heures_tp_pn": "???",
+                "details_heures_formation": self.prepare_heures_yaml(self.details_heures_encadrees),
+                "heures_formation_pn": self.heures_encadrees_pn if self.heures_encadrees_pn else "???",
+                "details_heures_formation_pn": self.prepare_heures_yaml(self.details_heures_encadrees_pn),
                 "heures_projet": self.projet if self.projet != "" else "???",
                 "heures_projet_pn": "???",
                 "adaptation_locale": "oui" if self.adaptation_locale.lower() == "oui" else "non",
@@ -179,9 +230,10 @@ class SAEDocx(rdocx.docx.Docx):
                 "acs": self.acs,
                 "ressources": self.ressources,
                 "objectifs": folded(self.objectifs),
-                "description": folded(self.description) if self.description else "",
-                "livrables": folded(self.livrables),
-                "motscles": self.mots
+                "description": folded(self.description["description"]) if self.description["description"] else "",
+                "livrables": folded(self.description["type de livrables"]) if self.description["type de livrables"] else "",
+                "prolongements" : folded(self.description["prolongements"]) if self.description["prolongements"] else "",
+                "motscles": folded(self.description["mots"]) if self.description["mots"] else "",
                 }
         return self.dico_to_yaml(dico)
 

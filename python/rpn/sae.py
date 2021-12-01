@@ -24,15 +24,13 @@ class SAE(rpn.activite.ActivitePedagogique):
 
         self.heures_formation = self.yaml["heures_formation"]
         self.heures_formation_pn = self.yaml["heures_formation_pn"]
-        self.heures_cm = self.yaml["heures_cm"]
-        self.heures_cm_pn = self.yaml["heures_cm_pn"]
-        self.heures_td = self.yaml["heures_td"]
-        self.heures_td_pn = self.yaml["heures_td_pn"]
-        self.heures_tp = self.yaml["heures_tp"]
-        self.heures_tp_pn = self.yaml["heures_tp_pn"]
+        self.details_heures_formation = self.yaml["details_heures_formation"]
+        self.details_heures_formation_pn = self.yaml["details_heures_formation_pn"]
         self.heures_projet = self.yaml["heures_projet"]
         self.heures_projet_pn = self.yaml["heures_projet_pn"]
 
+        # L'adaptation locale
+        self.adaptation_locale = self.yaml["adaptation_locale"]
 
         self.exemples = [] # la liste des exemples
 
@@ -78,16 +76,16 @@ class SAE(rpn.activite.ActivitePedagogique):
             codelatex=self.get_code_latex_hyperlink(self.code),
             code=self.code,
             codeRT=self.codeRT,
-            nom=rpn.latex.nettoie_latex(self.nom, self.officiel.DATA_ABBREVIATIONS),
+            nom=self.prepare_nom(),
             cursus=latex_cursus,
             heures_formation=self.heures_formation,
-            heures_tp=self.heures_tp,
-            heures_cm=self.heures_cm,
-            heures_td=self.heures_td,
+            heures_tp=self.details_heures_formation["tp"],
+            heures_cm=self.details_heures_formation["cm"],
+            heures_td=self.details_heures_formation["td"],
             heures_formation_pn=self.heures_formation_pn,
-            heures_tp_pn=self.heures_tp_pn,
-            heures_cm_pn=self.heures_cm_pn,
-            heures_td_pn=self.heures_td_pn,
+            heures_tp_pn=self.details_heures_formation_pn["tp"],
+            heures_cm_pn=self.details_heures_formation_pn["cm"],
+            heures_td_pn=self.details_heures_formation_pn["td"],
             heures_projet=self.heures_projet,
             heures_projet_pn=self.heures_projet_pn,
             parcours=latex_parcours,
@@ -149,6 +147,11 @@ class SAE(rpn.activite.ActivitePedagogique):
         if livrables and livrables != "Aucun":
             latex_livrables = self.to_latex_champ_titre("Type de livrables ou de productions", self.yaml["livrables"])
 
+        # préparation des prolongements
+        latex_prolongements = ""
+        if self.yaml["motscles"]:
+            latex_prolongements = self.to_latex_champ_titre("Prolongements possibles", self.yaml["prolongements"] + ".")
+
         # préparation des mots-clés
         latex_mots = ""
         if self.yaml["motscles"]:
@@ -163,6 +166,8 @@ class SAE(rpn.activite.ActivitePedagogique):
                 champs.append(latex_description)
             if latex_livrables:
                 champs.append(latex_livrables)
+            if latex_prolongements:
+                champs.append(latex_prolongements)
             if latex_mots:
                 champs.append(latex_mots)
             return "\n\n\\vspace{0.2cm}\n".join(champs)

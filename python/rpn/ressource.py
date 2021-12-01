@@ -25,14 +25,14 @@ class Ressource(rpn.activite.ActivitePedagogique):
         # Les heures
         self.heures_formation = self.yaml["heures_formation"]
         self.heures_formation_pn = self.yaml["heures_formation_pn"]
-        self.heures_cm = self.yaml["heures_cm"]
-        self.heures_cm_pn = self.yaml["heures_cm_pn"]
-        self.heures_td = self.yaml["heures_td"]
-        self.heures_td_pn = self.yaml["heures_td_pn"]
-        self.heures_tp = self.yaml["heures_tp"]
-        self.heures_tp_pn = self.yaml["heures_tp_pn"]
+        self.details_heures_formation = self.yaml["details_heures_formation"]
+        self.details_heures_formation_pn = self.yaml["details_heures_formation_pn"]
         self.heures_projet = 0
         self.heures_projet_pn = 0
+
+        # L'adaptation locale
+        self.adaptation_locale = self.yaml["adaptation_locale"]
+
 
 
     def prepare_prerequis(self):
@@ -132,16 +132,16 @@ class Ressource(rpn.activite.ActivitePedagogique):
             codelatex=self.get_code_latex_hyperlink(self.code),
             code=self.code,
             codeRT=self.codeRT,
-            nom=rpn.latex.nettoie_latex(self.nom, self.officiel.DATA_ABBREVIATIONS),
+            nom=self.prepare_nom(),
             cursus= latex_cursus,
             heures_formation=self.heures_formation,
-            heures_tp=self.heures_tp,
-            heures_cm=self.heures_cm,
-            heures_td=self.heures_td,
+            heures_tp=self.details_heures_formation["tp"],
+            heures_cm=self.details_heures_formation["cm"],
+            heures_td=self.details_heures_formation["td"],
             heures_formation_pn=self.heures_formation_pn,
-            heures_tp_pn=self.heures_tp_pn,
-            heures_cm_pn=self.heures_cm_pn,
-            heures_td_pn=self.heures_td_pn,
+            heures_tp_pn=self.details_heures_formation_pn["tp"],
+            heures_cm_pn=self.details_heures_formation_pn["cm"],
+            heures_td_pn=self.details_heures_formation_pn["td"],
             parcours=latex_parcours,
             description=latex_description,
             exemple=latex_exemple,

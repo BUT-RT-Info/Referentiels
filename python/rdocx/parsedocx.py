@@ -16,7 +16,7 @@ ENTETES_CHAPEAU = ["Titre", # Libellé
                    "Semestre",
                    "Heures de formation", # Préconisation heures totales
                    "dont heures de TP", # Préconisation heures TP
-                   "dont heures de CM", "dont heures de TD", "Fiche d’adaptation locale",
+                   "dont heures de CM", "dont heures de TD", "Adaptation locale",
                    "Heures \"projet tutoré\"", # Préconisation "projet tutoré"
                    "Objectifs", # "Objectifs et descriptions"
                    "Description", #  + description générique
@@ -423,13 +423,13 @@ def get_sae_BUT23_from_google(code_sae, docu):
                         if res[k][1][ligne]:
                             apprentissages.append(tools.caracteres_recalcitrants(res[k][1][ligne]))
 
-        elif "Fiche d'adaptation" in champ:  # adaptation locale et préconisation
-            k = tools.get_indice_sans_accent_ni_espace("Adaptation locale", ENTETES_RESSOURCES)
-            data[k] = res[0][1][0]
-            k = tools.get_indice_sans_accent_ni_espace("dont heures de CM", ENTETES_RESSOURCES)
-            data[k] = res[1][1][0]
-            k = tools.get_indice_sans_accent_ni_espace("dont heures de TD", ENTETES_RESSOURCES)
-            data[k] = res[2][1][0]
+            elif "Fiche d" in champ:  # adaptation locale et préconisation
+                k = tools.get_indice_sans_accent_ni_espace("Adaptation locale", ENTETES_CHAPEAU)
+                data[k] = res[0][1][0]
+                k = tools.get_indice_sans_accent_ni_espace("dont heures de CM", ENTETES_CHAPEAU)
+                data[k] = res[1][1][0]
+                k = tools.get_indice_sans_accent_ni_espace("dont heures de TD", ENTETES_CHAPEAU)
+                data[k] = res[2][1][0]
 
         else:  # ligne avec colonne de données => chapeau taille 4
             champ = ligne[0][0]

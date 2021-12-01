@@ -52,9 +52,9 @@ class Docx():
 
         # les heures
         self.heures_encadrees = None
-        self.tp = None
-        self.cm = None
-        self.td = None
+        self.details_heures_encadrees = {'cm': None, 'td': None, 'tp': None}
+        self.heures_encadrees_pn = None
+        self.details_heures_encadrees_pn = {'cm': None, 'td': None, 'tp': None}
 
         # adaptation locale
         self.adaptation_locale = False
@@ -65,10 +65,7 @@ class Docx():
         self.prerequis = None
 
         # les éléments descriptifs
-        ## pour les ressources
-        self.description = {"contexte": [],
-                            "contenus": [],
-                            "prolongements": []}
+
         # {"Contexte" : '',
         # avec découpage
         self.contexte = None
@@ -194,24 +191,18 @@ class Docx():
             self.__LOGGER.warning(f"{self.code}/{self.codeRT}:: Pb des compétences relevant d'ACs indiqués ne correspondent pas aux compétences listés (champ compétences)")
 
 
-    def nettoie_heures_cm_td(self):
+    def nettoie_heures_cm_td(self, champ=None, type="cm"):
         """Nettoie les champs (horaires) cm/td"""
-        if self.cm:  # si les heures encadrées sont renseignées
-            volumes = self.nettoie_champ_heure(self.cm)
+        if not champ:
+            champ = self.details_heures_encadrees
+        if champ[type] or champ[type] == 0:  # si les heures encadrées sont renseignées
+            volumes = self.nettoie_champ_heure(champ[type])
             if isinstance(volumes, int):
-                self.cm = volumes
+                return volumes
             elif isinstance(volumes, tuple):
-                self.cm = volumes[0]
+                return volumes[0]
             else:
-                self.__LOGGER.warning(f"{self}: nettoie_heures_cm: pas d'heures CM")
-        if self.td:
-            volumes = self.nettoie_champ_heure(self.td)
-            if isinstance(volumes, int):
-                self.td = volumes
-            elif isinstance(volumes, tuple):
-                self.td = volumes[0]
-            else:
-                self.__LOGGER.warning(f"{self}: nettoie_heures_td: pas d'heures TD")
+                self.__LOGGER.warning(f"{self}: nettoie_heures_cm: pas d'heures {type}")
 
 
     def nettoie_adaptation_locale(self):
@@ -224,6 +215,16 @@ class Docx():
         else:
             self.adaptation_locale = "non"
             self.__LOGGER.warning(f"{self}: nettoie_adaptation_locale: pas d'info sur l'adaptation locale => fixe à non")
+
+
+
+    def nettoie_description(self):
+        """Nettoie le champ description après l'avoir splitté"""
+        for cle in self.description:
+            if self.description[cle]:
+                contenu = self.description[cle].replace(" / ", "/")
+                self.description[cle] = convert_to_markdown(contenu)
+
 
 
     def nettoie_mots_cles(self):
@@ -268,6 +269,18 @@ class Docx():
                 coeff = 0
                 coeffs_finaux["RT" + str(comp + 1)] = coeff
         self.coeffs = coeffs_finaux
+
+
+    def prepare_heures_yaml(self, champ):
+        """Renvoie le dictionnaire affichant les heures en partant du champ donné (self.detail_heures_formation par exemple)"""
+        dico = {}
+        for cle in champ:
+            if champ[cle] or champ[cle] == 0:
+                dico[cle] = champ[cle]
+            else:
+                dico[cle] = "???"
+        return dico
+
 
 
     def dico_to_yaml(self, dico):

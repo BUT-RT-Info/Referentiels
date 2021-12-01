@@ -161,44 +161,69 @@ class SemestrePN():
             SemestrePN.__LOGGER.warning(f"Pb => il manque des ressources au {self.nom_semestre}")
 
 
-    def get_codes_competences_tries(self):
-        """Trie les compétences avec le tronc commun d'abord (RT1, RT2, RT3) puis les parcours"""
-        comps = [c for c in self.acs if not c.startswith("RT")]
+    def tri_codes_competences(self, parcours=None):
+        """Trie les compétences avec le tronc commun d'abord (RT1, RT2, RT3) puis les parcours.
+        Si parcours=`None`, tous les parcours sont considérés ;
+        Sinon seul le parcours mentionné est considéré"""
+        if not parcours:
+            comps = [c for c in self.acs if not c.startswith("RT")] # les comps de parcours (tous parcours confondus)
+        else:
+            comps = [c for c in self.acs if not c.startswith("RT") and parcours in c]
         return ["RT{}".format(i) for i in range(1, 4)] + sorted(comps)
 
 
-    def get_codes_acs_tries(self):
-        """Renvoie le code des ACS triés par compétence"""
-        competences_triees = self.get_codes_competences_tries()
-        acs_du_semeste = [ac for comp in competences_triees for ac in self.acs[comp]]  # les acs prévus au semestre dans l'ordre des comp
-        return acs_du_semeste
+    def tri_codes_acs_par_comp(self, parcours=None):
+        """Renvoie les codes des ACS triés par compétence (dictionnaire {competence: [acs]},
+        tous parcours confondus
+        si ``parcours=None`` et pour un parcours donné s'il est mentionné"""
+        competences_triees = self.tri_codes_competences(parcours=parcours)
+        acs_du_parcours = {comp: sorted([ac for ac in self.acs[comp]]) for comp in competences_triees}  # les acs prévus au semestre dans l'ordre des comp
+        return acs_du_parcours
+
+    def tri_liste_codes_acs(self, parcours=None):
+        """La même mais pour une liste"""
+        competences_triees = self.tri_codes_competences(parcours=parcours)
+        acs_du_parcours = self.tri_codes_acs_par_comp()
+        return [ac for comp in competences_triees for ac in acs_du_parcours[comp]]
 
 
-    def get_codes_ressources_tries(self, parcours=None):
+    def tri_codes_activites(self, codes_a_trier, parcours=None):
         """
-        Renvoie les codes des ressources triés par code croissant
-        :return:
+        Renvoie les codes_a_trier triés par code croissant.
+        Si parcours = None, tous les parcours sont considérés
+        Si parcours mentionné, seul le parcours indiqué est pris en compte
         """
-        codes = self.ressources.keys()
-        liste_codes = sorted(codes)
+        liste_codes = sorted(codes_a_trier)
         if not parcours:
             return liste_codes
         else: # les ressources triées d'un parcours
             codes_du_parcours = []
-            for r in liste_codes:
-                parcours_ressources = ",".join(self.ressources[r].yaml["parcours"])
-                if parcours in parcours_ressources or "Tronc" in parcours_ressources:
-                    codes_du_parcours.append(r)
+            for c in liste_codes:
+                a = self.activites[c]
+                if a.est_tronc_commun():
+                    codes_du_parcours.append(c)
+                elif parcours in a.parcours:
+                    codes_du_parcours.append(c)
             return codes_du_parcours
 
 
-    def get_codes_saes_tries(self):
+    def tri_codes_ressources(self, parcours=None):
+        """
+        Renvoie les codes des ressources triés par code croissant.
+        Si parcours = None, tous les parcours sont considérés
+        Si parcours mentionné, seul le parcours indiqué est pris en compte
+        """
+        return self.tri_codes_activites(self.ressources, parcours=parcours)
+
+
+    def tri_codes_saes(self, parcours=None):
         """
         Renvoie les codes des SAés triés
+        Si parcours = None, tous les parcours sont considérés
+        Si parcours mentionné, seul le parcours indiqué est pris en compte
         :return:
         """
-        codes = self.saes.keys()
-        return sorted(codes)
+        return self.tri_codes_activites(self.saes, parcours=parcours)
 
 
     def get_matrices_dependances(self):
@@ -211,48 +236,61 @@ class SemestrePN():
 
 
     def get_matrice_ac_vs_saes(self, parcours=None):
-        """Calcule la matrice AC vs sae pour un sem donné (tous parcours confondus)"""
-        codes_activites = self.get_codes_saes_tries() # le codes de saes
-        (matrice, acs_du_semestre) = self.get_matrice_ac(codes_activites)
+        """Calcule la matrice AC vs sae pour un sem donné (tous parcours confondus).
+        Si parcours = None, tous les parcours sont considérés
+        Si parcours mentionné, seul le parcours indiqué est pris en compte
+        """
+        codes_activites = self.tri_codes_saes(parcours=parcours) # le codes de saes
+        (matrice, acs_du_semestre) = self.get_matrice_ac(codes_activites, parcours=parcours)
         return (matrice, acs_du_semestre, codes_activites)
 
 
     def get_matrice_ac_vs_ressources(self, parcours=None):
-        """Calcule la matrice AC vs sae pour un sem donné (tous parcours confondus)"""
-        codes_activites = self.get_codes_ressources_tries()
-        (matrice, acs_du_semestre) = self.get_matrice_ac(codes_activites)
+        """Calcule la matrice AC vs sae pour un sem donné (tous parcours confondus)
+        Si parcours = None, tous les parcours sont considérés
+        Si parcours mentionné, seul le parcours indiqué est pris en compte"""
+        codes_activites = self.tri_codes_ressources(parcours=parcours)
+        (matrice, acs_du_semestre) = self.get_matrice_ac(codes_activites, parcours=parcours)
         return (matrice, acs_du_semestre, codes_activites)
 
 
-    def get_matrice_ac(self, codes_activites):
-        """Renvoie la matrice d'AC pour une série de codes_activites fournis en paramètre"""
-        matrice = [[False] * len(codes_activites) for i in range(self.nbre_acs)]
-        acs_du_semestre = self.get_codes_acs_tries()  # les acs prévus au semestre dans l'ordre des comp
+    def get_matrice_ac(self, codes_activites, parcours=None):
+        """Renvoie la matrice d'AC pour une série de codes_activites fournis en paramètre.
+        Si parcours = None, tous les parcours sont considérés
+        Si parcours mentionné, seul le parcours indiqué est pris en compte
+        """
+        acs_par_comp_du_parcours = self.tri_codes_acs_par_comp(parcours=parcours) # 1 dictionnaire
+        acs_du_parcours = self.tri_liste_codes_acs(parcours=parcours)
+        matrice = [[False] * len(codes_activites) for i in range(len(acs_du_parcours))]
+
         for (i, code) in enumerate(codes_activites):  # pour chaque activité (saé & ressource)
             a = self.activites[code]
-            for ac in acs_du_semestre:  # pour chaque ac prévu dans le semestre
-                comp = self.officiel.get_comp_from_acs_code(ac)
-                if comp in a.acs and ac in a.acs[comp]:  # si l'ac est prévue dans la saé
-                    k = acs_du_semestre.index(ac)
-                    matrice[k][i] = True
-        return (matrice, acs_du_semestre)
+            for comp in acs_par_comp_du_parcours:
+                for ac in acs_par_comp_du_parcours[comp]:  # pour chaque ac prévu dans le semestre
+                    if comp in a.acs and ac in a.acs[comp]:  # si l'ac est prévue dans la saé
+                        k = acs_du_parcours.index(ac)
+                        matrice[k][i] = True
+        return (matrice, acs_du_parcours)
 
 
-    def get_matrice_ac_vs_activites(self):
+    def get_matrice_ac_vs_activites(self, parcours=None):
         """Calcule la matrice AC vs sae + ressource pour un sem donné
-        et la renvoie, en fusion les 2 matrices acs vs saes & acs vs ressources"""
-        (matrice_saes, acs_du_semestre, codes_sae) = self.get_matrice_ac_vs_saes()
-        (matrice_ressources, acs_du_semestre, codes_ressources) = self.get_matrice_ac_vs_ressources()
+        et la renvoie, en fusion les 2 matrices acs vs saes & acs vs ressources
+        Si parcours = None, tous les parcours sont considérés
+        Si parcours mentionné, seul le parcours indiqué est pris en compte
+        """
+        (matrice_saes, acs_du_parcours, codes_sae) = self.get_matrice_ac_vs_saes(parcours=parcours)
+        (matrice_ressources, acs_du_parcours, codes_ressources) = self.get_matrice_ac_vs_ressources(parcours=parcours)
 
         # Fusionne les 2 matrices
-        matrice = [ [False]*(len(codes_sae) + len(codes_ressources)) for i in range(self.nbre_acs)]
+        matrice = [ [False]*(len(codes_sae) + len(codes_ressources)) for i in range(len(acs_du_parcours))]
         for i in range(len(codes_sae)):
-            for k in range(len(acs_du_semestre)):
+            for k in range(len(acs_du_parcours)):
                 matrice[k][i] = matrice_saes[k][i]
         for i in range(len(codes_ressources)):
-            for k in range(len(acs_du_semestre)):
+            for k in range(len(acs_du_parcours)):
                 matrice[k][i + len(codes_sae)] = matrice_ressources[k][i]
-        return (matrice, acs_du_semestre, codes_sae + codes_ressources)
+        return (matrice, acs_du_parcours, codes_sae + codes_ressources)
 
 
     def get_matrice_coeffs_comp_vs_activites(self):
@@ -261,7 +299,7 @@ class SemestrePN():
 
         matrice = [[None] * (len(comps)) for i in range(self.nbre_activites)]
 
-        codes_activites = self.get_codes_saes_tries() + self.get_codes_ressources_tries()
+        codes_activites = self.tri_codes_saes() + self.tri_codes_ressources()
         for (i, code) in enumerate(codes_activites):  # pour chaque activité (saé & ressources)
             a = self.activites[code]
             for (j, comp) in enumerate(comps):  # pour chaque comp
@@ -274,7 +312,7 @@ class SemestrePN():
         """Calcule la matrice AC vs sae + ressource pour un sem donné et la renvoie"""
         matrice = [[0] * (len(rpn.activite.MODALITES)) for i in range(self.nbre_activites)]
 
-        codes_activites = self.get_codes_saes_tries() + self.get_codes_ressources_tries()
+        codes_activites = self.tri_codes_saes() + self.tri_codes_ressources()
         for (i, code) in enumerate(codes_activites):  # pour chaque activité (SAE puis ressource)
             a = self.activites[code]
             if isinstance(a, rpn.sae.SAE):
@@ -352,6 +390,20 @@ class SemestrePN():
         return chaine
 
 
+    def prepare_inclusion_matrices(self):
+        """Ajoute les matrices"""
+
+        if self.nom_semestre == "S1" or self.nom_semestre == "S2":
+            champs = ["\\scalebox{0.95}{\\input{synthese/%s_acs_vs_saes_ressources.tex}}" % (self.nom_semestre)]
+        else:
+            champs = []
+            for p in rofficiel.officiel.PARCOURS:
+                champs.append("\\subsubsection{Parcours %s}" % (p))
+                champs.append("\\scalebox{0.85}{\\input{synthese/%s_%s_acs_vs_saes_ressources.tex}}" % (self.nom_semestre, p))
+                champs.append("\\newpage" )
+
+        return "\n".join(champs) + "\n"
+
     def to_latex_description_semestres(self, modele=Config.ROOT + "/python/templates/modele_semestre.tex"):
         """Génère le code latex décrivant un semestre (ses SAE, ses ressources, ...)
         """
@@ -359,25 +411,29 @@ class SemestrePN():
         latex_inclusion_fiches_saes = self.prepare_inclusion_fiches(self.saes_par_parcours)
         latex_inclusion_fiches_ressources = self.prepare_inclusion_fiches(self.ressources_par_parcours)
 
+        latex_matrices = self.prepare_inclusion_matrices()
+
         # Injection dans le template
         chaine = modeles.TemplateLatex(modlatex).substitute(
             numero=self.numero_semestre,
             fichierListeSAEs="liste_saes_%s.tex" % (self.nom_semestre),
             fichierListeRessources="liste_ressources_%s.tex" % (self.nom_semestre),
-            fichierMatriceACs="%s_acs_vs_saes_ressources.tex" % (self.nom_semestre),
+            # fichierMatriceACs="%s_acs_vs_saes_ressources.tex" % (self.nom_semestre),
+            fichiersMatriceACs=latex_matrices,
             inclusion_fiches_saes=latex_inclusion_fiches_saes,
             inclusion_fiches_ressources=latex_inclusion_fiches_ressources,
         )
         return chaine
 
-    def to_latex_matrice_ac_vs_activites(self):
+    def to_latex_matrice_ac_vs_activites(self, parcours=None):
         """Renvoie le tableau latex affichant la matrice des apprentissages critiques
         ayant connaissances des ``saes`` et des ``ressources``
         du semestre
         """
-        saes_du_semestre = self.get_codes_saes_tries()
-        ressources_du_semestre = self.get_codes_ressources_tries()
-        matrice, acs_du_semestre, codes_activites = self.get_matrice_ac_vs_activites()
+        saes_du_parcours = self.tri_codes_saes(parcours=parcours)
+        ressources_du_parcours = self.tri_codes_ressources(parcours=parcours)
+        matrice, acs_du_parcours, codes_activites = self.get_matrice_ac_vs_activites(parcours=parcours)
+        acs_par_comp_du_parcours = self.tri_codes_acs_par_comp(parcours=parcours) # dico : comp => acs
 
         nbre_colonnes = len(codes_activites) + 2
         longueur = 4
@@ -391,12 +447,12 @@ class SemestrePN():
         # l'entete
         chaine += " & & "
         chaine += (
-            "\multicolumn{%d}{c|}{\\textcolor{saeC}{\\bfseries SAÉs}}" % (len(saes_du_semestre)) + "\n"
+            "\multicolumn{%d}{c|}{\\textcolor{saeC}{\\bfseries SAÉs}}" % (len(saes_du_parcours)) + "\n"
         )
         chaine += " & "
         chaine += (
             "\multicolumn{%d}{c|}{\\textcolor{ressourceC}{\\bfseries Ressources}}"
-            % (len(ressources_du_semestre))
+            % (len(ressources_du_parcours))
             + "\\\\ \n"
         )
         chaine += "\\cline{3-%d}" % (nbre_colonnes)
@@ -404,14 +460,11 @@ class SemestrePN():
         # les noms des SAE et des ressources
         noms_saes = []
         noms_ressources = []
-        for (i, code) in enumerate(saes_du_semestre + ressources_du_semestre):  # pour chaque SAE
-            if code in saes_du_semestre:
-                a = self.saes[code]
-            else:
-                a = self.ressources[code]
+        for (i, code) in enumerate(saes_du_parcours + ressources_du_parcours):  # pour chaque SAE
+            a = self.activites[code]
             contenu = "\\tiny{%s}" % (a.nom.replace("&", "\&"))
             rotation = rpn.latex.rotation_entete_colonne(contenu) + "\n"
-            if code in saes_du_semestre:
+            if code in saes_du_parcours:
                 noms_saes.append(rotation)
             else:
                 noms_ressources.append(rotation)
@@ -424,18 +477,17 @@ class SemestrePN():
         noms_saes = []
         noms_ressources = []
         chaine += " & & \n"
-        for (i, code) in enumerate(saes_du_semestre + ressources_du_semestre):  # pour chaque SAE
-            if code in saes_du_semestre:
-                a = self.saes[code]
+        for (i, code) in enumerate(saes_du_parcours + ressources_du_parcours):  # pour chaque SAE
+            a = self.activites[code]
+            if code in saes_du_parcours:
                 couleur = "saeC"
             else:
-                a = self.ressources[code]
                 couleur = "ressourceC"
             contenu = "~\\hyperlink{%s}{\\textcolor{%s}{%s}}" % (a.get_code_latex_hyperlink(a.code),
                                                                  couleur,
                                                                  a.code)
             rotation = rpn.latex.rotation_entete_colonne(contenu, pos="r") + "\n"
-            if code in saes_du_semestre:
+            if code in saes_du_parcours:
                 noms_saes.append(rotation)
             else:
                 noms_ressources.append(rotation)
@@ -445,49 +497,49 @@ class SemestrePN():
         chaine += "\\\\ \n"
         chaine += "\\hline \n"
 
-        # Les ACS et les croix
-        for (noc, comp) in enumerate(self.acs): # les comp & les acs du semestre
-            nom_comp = self.officiel.DATA_COMPETENCES_DETAILLEES[comp]["nom"]
-            numero_niveau = self.get_niveau_from_comp(comp) # le numero du niveau de 1 à 3
-            niveau = list(self.officiel.DATA_COMPETENCES_DETAILLEES[comp]["niveaux"].keys())[numero_niveau-1]
+        # Les ACS et les croix self.acs
+        comp_du_parcours = self.tri_codes_competences(parcours=parcours)
+        for (noc, comp) in enumerate(comp_du_parcours): # les comp & les acs du semestre
+            if True: # si c'est une comp du parcours
+                nom_comp = self.officiel.DATA_COMPETENCES_DETAILLEES[comp]["nom"]
+                numero_niveau = self.get_niveau_from_comp(comp) # le numero du niveau de 1 à 3
+                niveau = list(self.officiel.DATA_COMPETENCES_DETAILLEES[comp]["niveaux"].keys())[numero_niveau-1]
 
-            couleur = rpn.latex.get_couleur_comp(comp)
-            chaine += (
-                "\\multicolumn{%d}{|l|}{\hyperlink{%s}{\\textcolor{%s}{\\bfseries %s - %s }}} \\\\ \n"
-                % (nbre_colonnes, comp, couleur, comp,
-                   nom_comp.replace("&", "\&"))
-            )
-            chaine += "\\multicolumn{%d}{|l|}{\small Niveau %d - %s} \\\\ \n" % (
-                nbre_colonnes,
-                numero_niveau,
-                niveau.replace("&", "\&"),
-            )
-            chaine += "\\hline \n"
-            for ac in self.acs[comp]:
-                chaine += "\\textcolor{%s}{%s} & \n" % (couleur, ac)
-                chaine += "\\begin{tabular}{p{%scm}} " % (str(longueur - 0.2))
-                chaine += "\\tiny{\\textit{" + self.acs[comp][ac].replace("&", "\&") + "}}"
-                chaine += "\\end{tabular} & \n"
-
-                croix_saes = []
-                croix_ressources = []
-                indice_ac = acs_du_semestre.index(ac)
-                for (i, code) in enumerate(saes_du_semestre + ressources_du_semestre):  # pour chaque SAE
-                    if code in saes_du_semestre:
-                        a = self.saes[code]
-                    else:
-                        a = self.ressources[code]
-                    valeur = "$\\times$" if matrice[indice_ac][i] == True else ""
-                    if code in saes_du_semestre:
-                        croix_saes.append(valeur)
-                    else:
-                        croix_ressources.append(valeur)
-
-                chaine += " & ".join(croix_saes) + "\n"
-                chaine += " & "
-                chaine += " & ".join(croix_ressources) + "\\\\ \n"
+                couleur = rpn.latex.get_couleur_comp(comp)
+                chaine += (
+                    "\\multicolumn{%d}{|l|}{\hyperlink{%s}{\\textcolor{%s}{\\bfseries %s - %s }}} \\\\ \n"
+                    % (nbre_colonnes, comp, couleur, comp,
+                       nom_comp.replace("&", "\&"))
+                )
+                chaine += "\\multicolumn{%d}{|l|}{\small Niveau %d - %s} \\\\ \n" % (
+                    nbre_colonnes,
+                    numero_niveau,
+                    niveau.replace("&", "\&"),
+                )
                 chaine += "\\hline \n"
-            chaine += "\\hline \n"
+                for ac in acs_par_comp_du_parcours[comp]:
+                    chaine += "\\textcolor{%s}{%s} & \n" % (couleur, ac)
+                    chaine += "\\begin{tabular}{p{%scm}} " % (str(longueur - 0.2))
+                    nom_ac = self.acs[comp][ac].replace("&", "\&")
+                    chaine += "\\tiny{\\textit{" + nom_ac + "}}"
+                    chaine += "\\end{tabular} & \n"
+
+                    croix_saes = []
+                    croix_ressources = []
+                    indice_ac = acs_du_parcours.index(ac)
+                    for (i, code) in enumerate(saes_du_parcours + ressources_du_parcours):  # pour chaque SAE
+                        a = self.activites[code]
+                        valeur = "$\\times$" if matrice[indice_ac][i] == True else ""
+                        if code in saes_du_parcours:
+                            croix_saes.append(valeur)
+                        else:
+                            croix_ressources.append(valeur)
+
+                    chaine += " & ".join(croix_saes) + "\n"
+                    chaine += " & "
+                    chaine += " & ".join(croix_ressources) + "\\\\ \n"
+                    chaine += "\\hline \n"
+                chaine += "\\hline \n"
 
         chaine += "\\end{tabular}"
         return chaine
@@ -566,7 +618,7 @@ class SemestrePN():
         chaine += "\\\\ \n"
         chaine += "\\hline "
         # le nom des SAE
-        saes = self.get_codes_saes_tries()
+        saes = self.tri_codes_saes()
         for (i, code) in enumerate(saes):  # pour chaque SAE
             s = self.saes[code]
             chaine += "\\hyperlink{sae:" + s.yaml["code"] + "}{"
@@ -595,7 +647,7 @@ class SemestrePN():
         chaine += "\\\\ \n"
         chaine += "\\hline "
 
-        ressources = self.get_codes_ressources_tries()
+        ressources = self.tri_codes_ressources()
         for (i, code) in enumerate(ressources):  # pour chaque SAE
             r = self.ressources[code]
             chaine += "\hyperlink{res:" + r.yaml["code"] + "}{"
@@ -782,21 +834,25 @@ class SemestrePN():
         return heures
 
 
-    def to_latex_liste_saes(self, modele=Config.ROOT + "/python/templates/modele_liste_sae_par_semestre.tex"):
-        """Prépare les codes latex d'une liste de sae"""
+    def to_latex_liste_activites(self, activites_par_parcours,
+                                 modele=Config.ROOT + "/python/templates/modele_liste_sae_par_semestre.tex"):
+        """Prépare les codes latex d'une liste d'activité triée par parcours"""
 
         modlatex = modeles.get_modele(modele)
 
         liste_saes_et_exemples = []
-        for p in self.saes_par_parcours:
-            titre = "\\multicolumn{3}{|l|}{\\bfseries %s}" % ("Tronc commun" if "Tronc" in p else "Parcours %s" % p)
-            liste_saes_et_exemples.append(titre)
-            for sae in self.saes: # les saes du semestre
+        for p in activites_par_parcours:
+            if len(activites_par_parcours[p]) > 0:
+                titre = "\\multicolumn{3}{|l|}{\\bfseries %s}" % ("Tronc commun" if "Tronc" in p else "Parcours %s" % p)
+                liste_saes_et_exemples.append(titre)
+            for sae in activites_par_parcours[p]: # les saes du semestre et du parcours
+                a = activites_par_parcours[p][sae] # l'activite
                 info_sae = []
-                hyperlink = self.saes[sae].get_code_latex_hyperlink(self.saes[sae].code)
-                code = "\\bfseries \\hyperlink{%s}{\\textcolor{saeC}{%s}}" % (hyperlink, self.saes[sae].code)
-                titre = "%s : " % (self.saes[sae].codeRT)
-                titre += self.saes[sae].nom.replace("&", "\&")
+                hyperlink = a.get_code_latex_hyperlink(a.code)
+                couleur = "saeC" if a.est_sae_from_code() else "ressourceC"
+                code = "\\bfseries \\hyperlink{%s}{\\textcolor{%s}{%s}}" % (hyperlink, couleur, a.code)
+                titre = "%s : " % (a.codeRT)
+                titre += a.nom.replace("&", "\&")
                 page = "\\pageref{subsubsec:%s}" % (hyperlink)
                 info_sae.append( " & ".join([code, titre, page]))
 
@@ -817,27 +873,4 @@ class SemestrePN():
         # chaine = chaine.replace("&", "\&")
         return chaine
 
-
-    def to_latex_liste_ressources(self, modele=Config.ROOT + "/python/templates/modele_liste_sae_par_semestre.tex"):
-        """Prépare les codes latex d'une liste de sae"""
-
-        modlatex = modeles.get_modele(modele)
-
-        liste_ressources = []
-        for res in self.ressources: # les saes du semestre
-            hyperlink = self.ressources[res].get_code_latex_hyperlink(self.ressources[res].code)
-            code = "\\bfseries \\hyperlink{%s}{\\textcolor{ressourceC}{%s}}" % (hyperlink, self.ressources[res].code)
-            titre = "%s : " % (self.ressources[res].codeRT)
-            titre += self.ressources[res].nom.replace("&", "\&")
-            page = "\\pageref{subsubsec:%s}" % (hyperlink)
-            liste_ressources.append( " & ".join([code, titre, page]))
-
-        tableau = "\n \\tabularnewline \\hline \n".join(liste_ressources) + "\n\\tabularnewline\n"
-
-        chaine = modeles.TemplateLatex(modlatex).substitute(
-            liste_sae_par_semestre=tableau
-            # listeExemples = A FAIRE
-        )
-        # chaine = chaine.replace("&", "\&")
-        return chaine
 

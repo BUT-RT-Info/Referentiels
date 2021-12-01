@@ -19,19 +19,22 @@ class RessourceDocx(rdocx.docx.Docx):
                             sae, prerequis,
                             description, mots, parcours,
                             exemple):
+        """Charge les informations lues de la fiche docx (et parsées par parsedocx)"""
         self.codeRT = codeRT.strip()
         self.semestre = semestre # <--
-        self.heures_encadrees = heures_encadrees
 
-        self.tp = tp
-        self.cm = cm
-        self.td = td
+        self.heures_encadrees = heures_encadrees
+        self.details_heures_encadrees = {'cm': cm, 'td': td, 'tp': tp}
 
         self.adaptation_locale = adapation_locale
 
         self.saes = sae
         self.prerequis = prerequis
         self.desc = description # la description avant d'être slitée dans self.description
+        ## pour les ressources
+        self.description = {"contexte": [],
+                            "contenus": [],
+                            "prolongements": []}
 
         self.mots = mots
         self.parcours = parcours
@@ -89,17 +92,16 @@ class RessourceDocx(rdocx.docx.Docx):
         volumes = None
         if self.heures_encadrees:  # si les heures encadrées sont renseignées
             volumes = self.nettoie_champ_heure(self.heures_encadrees)
-        if self.tp:
-            self.tp = self.nettoie_champ_heure(self.tp)
 
         if isinstance(volumes, int):
             self.heures_encadrees = volumes
         elif isinstance(volumes, tuple):
             self.heures_encadrees = volumes[0]
-            if not self.tp:
-                self.tp = volumes[1]
-            elif self.tp != volumes[1]:
-                RessourceDocx.__LOGGER.warning(r"nettoie_heure: ans {self.nom}, pb dans les heures tp/td")
+            if not self.details_heures_encadrees["tp"]:
+                self.details_heures_encadrees["tp"] = volumes[1]
+                RessourceDocx.__LOGGER.warning(f"{self}: nettoie_heure: injection heures de heures encadrées dans heures tp")
+            elif self.details_heures_encadrees["tp"] != volumes[1]:
+                RessourceDocx.__LOGGER.warning(f"{self}: nettoie_heure: pb dans les heures tp")
         else:
             self.heures_encadrees = None
 
@@ -152,6 +154,8 @@ class RessourceDocx(rdocx.docx.Docx):
         """Lance le nettoyage des champs"""
         self.nettoie_code()
         self.nettoie_titre_ressource()
+        for type in ["cm", "td", "tp"]:
+            self.details_heures_encadrees[type] = self.nettoie_heures_cm_td(self.details_heures_encadrees, type)
         self.nettoie_heures_encadrees_et_tp()
         self.nettoie_heures_cm_td()
         self.nettoie_adaptation_locale()
@@ -176,13 +180,6 @@ class RessourceDocx(rdocx.docx.Docx):
         self.nettoie_exemple()
 
 
-    def nettoie_description(self):
-        """Nettoie le champ description après l'avoir splitté"""
-        for cle in self.description:
-            contenu = self.description[cle].replace(" / ", "/")
-            self.description[cle] = rdocx.docx.convert_to_markdown(contenu)
-
-
     def nettoie_exemple(self):
         """Nettoie l'exemple de mise en oeuvre"""
         contenu = self.exemple
@@ -204,13 +201,9 @@ class RessourceDocx(rdocx.docx.Docx):
                 "annee": self.annee,
                 "parcours": self.parcours,
                 "heures_formation": self.heures_encadrees if self.heures_encadrees else "???",
-                "heures_cm": self.cm if self.cm or self.cm == 0 else "???",
-                "heures_td": self.td if self.td or self.td == 0 else "???",
-                "heures_tp": self.tp if self.tp or self.tp == 0 else "???",
-                "heures_formation_pn": "???",
-                "heures_cm_pn": "???",
-                "heures_td_pn": "???",
-                "heures_tp_pn": "???",
+                "details_heures_formation": self.prepare_heures_yaml(self.details_heures_encadrees),
+                "heures_formation_pn": self.heures_encadrees_pn if self.heures_encadrees_pn else "???",
+                "details_heures_formation_pn": self.prepare_heures_yaml(self.details_heures_encadrees_pn),
                 "adaptation_locale": "oui" if self.adaptation_locale.lower() == "oui" else "non",
                 "coeffs": self.coeffs,
                 "competences": self.competences,

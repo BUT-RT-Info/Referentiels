@@ -46,9 +46,9 @@ class ActivitePedagogique():
 
         # Heures
         self.heures_formation = None    # les heures de formation idéale
-        self.heures_formation_pn = None # les heures de formation moins les 30% d'adaption locale
-        self.heures_tp = None
-        self.heures_tp_pn = None
+        self.heures_formation_pn = None
+        self.details_heures_formation = {"cm": None, "tp": None, "td": None} # les heures de formation
+        self.details_heures_formation_pn = {"cm": None, "tp": None, "td": None}  # les heures de formation moins les 30% d'adaption locale
         self.heures_projet = None
         self.heures_projet_pn = None
 
@@ -67,6 +67,22 @@ class ActivitePedagogique():
             return True
         return False
 
+
+    def est_ressource_from_code(self):
+        """Indique si l'activité est une ressource d'après le code"""
+        if "R" in self.code:
+            return True
+        else:
+            return False
+
+    def est_sae_from_code(self):
+        """Indique si l'activité est une sae d'après le code"""
+        if "SA" in self.code:
+            return True
+        else:
+            return False
+
+
     def get_heures_encadrees(self):
         """Renvoie les heures de formation encadrees (incluant les TP)"""
         return self.heures_encadrees
@@ -83,6 +99,12 @@ class ActivitePedagogique():
     def getInfo(self):
         """Renvoie les données du yaml (pour export to html)"""
         return self.yaml
+
+
+    def prepare_nom(self):
+        """Prépare le nom d'une activité"""
+        return rpn.latex.nettoie_latex(self.nom.replace("&", "\\&"), self.officiel.DATA_ABBREVIATIONS)
+
 
     def prepare_cursus(self):
         """Prépare les informations sur le cursus"""

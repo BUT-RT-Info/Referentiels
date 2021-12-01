@@ -38,7 +38,7 @@ Config.ROOT = args.root
 Config.ccn = args.ccn
 
 # LIMIT_TO = ["SAÉ3.1"]
-LIMIT_TO = [] #"R3.02"]
+LIMIT_TO = [] # "SAÉ6.6"] #"R3.02"]
 
 import rpn.semestre, rofficiel.officiel, rpn.activite
 
@@ -73,16 +73,46 @@ for sem in semestres:
         fid.write(chaine)
     print(f"Export de {fichierlatex}")
 
+    ## Tableurs lisant les SAEs et les ressources
+    # Les SAEs
+    fichierlatex = REPERTOIRE_SYNTHESE + "/" + "liste_saes_{}.tex".format(sem)
+    contenu = semestres[sem].to_latex_liste_activites(semestres[sem].saes_par_parcours)
+
+    with open(fichierlatex, "w", encoding="utf8") as fid:
+        fid.write(contenu)
+    print(f"Export de {fichierlatex} ")
+
+    # Les ressources
+    fichierlatex = REPERTOIRE_SYNTHESE + "/" + "liste_ressources_{}.tex".format(sem)
+    contenu = semestres[sem].to_latex_liste_activites(semestres[sem].ressources_par_parcours)
+
+    with open(fichierlatex, "w", encoding="utf8") as fid:
+        fid.write(contenu)
+    print(f"Export de {fichierlatex} ")
+
     ## Matrices ACS vs saes & ressources
-    (Msaes1, acs_du_semestre, codes_saes) = semestres[sem].get_matrice_ac_vs_saes()
-    (Mressources1, acs_du_semestre, codes_ressources) = semestres[sem].get_matrice_ac_vs_ressources()
+    if sem in ["S1", "S2"]:
+        chaine = semestres[sem].to_latex_matrice_ac_vs_activites()
+        fichierlatex = REPERTOIRE_SYNTHESE + "/" + f"{sem}_acs_vs_saes_ressources.tex"
+        with open(fichierlatex, "w", encoding="utf8") as fid:
+            fid.write(chaine)
+        print(f"Export de {fichierlatex}")
+    else:
+        for parcours in rofficiel.officiel.PARCOURS:
+            chaine = semestres[sem].to_latex_matrice_ac_vs_activites(parcours=parcours)
+            fichierlatex = REPERTOIRE_SYNTHESE + "/" + f"{sem}_{parcours}_acs_vs_saes_ressources.tex"
+            with open(fichierlatex, "w", encoding="utf8") as fid:
+                fid.write(chaine)
+            print(f"Export de {fichierlatex}")
+
+
 
     # Matrice textuelle
     # (M1, acs_du_semestre, codes_activites) = semestres[sem].get_matrice_ac_vs_activites()
     # chaine = semestres[sem].str_matrice_vs_activites(M1, acs_du_semestre, codes_activites)
     # print(chaine)
 
-    chaine = semestres[sem].to_latex_matrice_ac_vs_activites()
+
     fichierlatex = REPERTOIRE_SYNTHESE + "/" + f"{sem}_acs_vs_saes_ressources.tex"
     with open(fichierlatex, "w", encoding="utf8") as fid:
          fid.write(chaine)
@@ -109,7 +139,7 @@ for parcours in rofficiel.officiel.PARCOURS:
     print("***", parcours)
     for sem in semestres: # pour chaque semestre
         print(" > Semestre", sem)
-        codes_ressources = semestres[sem].get_codes_ressources_tries(parcours=parcours)
+        codes_ressources = semestres[sem].tri_codes_ressources(parcours=parcours)
         # print(codes_ressources)
         for c in codes_ressources:
             chaine = ""
@@ -127,22 +157,6 @@ else:
     for sem in semestres:
         if not os.path.exists(REPERTOIRE_SYNTHESE):
             os.mkdir(REPERTOIRE_SYNTHESE)
-
-        # Les SAEs
-        fichierlatex = REPERTOIRE_SYNTHESE + "/" + "liste_saes_{}.tex".format(sem)
-        contenu = semestres[sem].to_latex_liste_saes()
-
-        with open(fichierlatex, "w", encoding="utf8") as fid:
-            fid.write(contenu)
-        print(f"Export de {fichierlatex} ")
-
-        # Les ressources
-        fichierlatex = REPERTOIRE_SYNTHESE + "/" + "liste_ressources_{}.tex".format(sem)
-        contenu = semestres[sem].to_latex_liste_ressources()
-
-        with open(fichierlatex, "w", encoding="utf8") as fid:
-            fid.write(contenu)
-        print(f"Export de {fichierlatex} ")
 
     inclusion = []
     # Création des répertoires
