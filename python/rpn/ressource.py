@@ -127,21 +127,46 @@ class Ressource(rpn.activite.ActivitePedagogique):
         # Prépare l'exemple
         latex_exemple = self.prepare_exemple()
 
+        # Prépare les heures du tableur
+        if isinstance(self.yaml["tableur_heures_formation"]["cm/td"], int) and isinstance(self.yaml["tableur_heures_formation"]["tp"], int):
+            tableur_heures_formation_encadree = self.yaml["tableur_heures_formation"]["cm/td"] + self.yaml["tableur_heures_formation"]["tp"]
+        else:
+            tableur_heures_formation_encadree = "???"
+        if isinstance(self.yaml["tableur_heures_formation_pn"]["cm/td"], int) and isinstance(self.yaml["tableur_heures_formation_pn"]["tp"], int):
+            tableur_heures_formation_encadree_pn = self.yaml["tableur_heures_formation_pn"]["cm/td"] + self.yaml["tableur_heures_formation_pn"]["tp"]
+        else:
+            tableur_heures_formation_encadree_pn = "???"
+
+        # Prépare les heures des fiches (aec éventuel détail CM/TD/TP)
+        heures_acd = []
+        for cle in ["cm", "td", "tp"]:
+            if self.details_heures_formation[cle] != "???" and isinstance(self.details_heures_formation[cle], int):
+                heures_acd.append(str(self.details_heures_formation[cle]) + "h " + cle.upper())
+        heures_acd = ", ".join(heures_acd)
+
         # Injection dans le template
         chaine = modeles.TemplateLatex(modlatex).substitute(
             codelatex=self.get_code_latex_hyperlink(self.code),
             code=self.code,
             codeRT=self.codeRT,
+            url=rpn.latex.md_to_latex(self.yaml["url"] if "url" in self.yaml else "", self.officiel.DATA_MOTSCLES),
             nom=self.prepare_nom(),
             cursus= latex_cursus,
-            heures_formation=self.heures_formation,
-            heures_tp=self.details_heures_formation["tp"],
-            heures_cm=self.details_heures_formation["cm"],
-            heures_td=self.details_heures_formation["td"],
-            heures_formation_pn=self.heures_formation_pn,
-            heures_tp_pn=self.details_heures_formation_pn["tp"],
-            heures_cm_pn=self.details_heures_formation_pn["cm"],
-            heures_td_pn=self.details_heures_formation_pn["td"],
+            heures_formation=self.heures_formation if isinstance(self.heures_formation, int) else "???",
+            heures_acd= heures_acd,
+            #heures_tp=self.details_heures_formation["tp"],
+            #heures_cm=self.details_heures_formation["cm"],
+            #heures_td=self.details_heures_formation["td"],
+            # heures_formation_pn=self.heures_formation_pn,
+            # heures_tp_pn=self.details_heures_formation_pn["tp"],
+            # heures_cm_pn=self.details_heures_formation_pn["cm"],
+            # heures_td_pn=self.details_heures_formation_pn["td"],
+            tableur_heures_formation=tableur_heures_formation_encadree,
+            tableur_heures_cm_td=self.yaml["tableur_heures_formation"]["cm/td"],
+            tableur_heures_tp=self.yaml["tableur_heures_formation"]["tp"],
+            tableur_heures_formation_pn=tableur_heures_formation_encadree_pn,
+            tableur_heures_cm_td_pn=self.yaml["tableur_heures_formation_pn"]["cm/td"],
+            tableur_heures_tp_pn=self.yaml["tableur_heures_formation_pn"]["tp"],
             parcours=latex_parcours,
             description=latex_description,
             exemple=latex_exemple,

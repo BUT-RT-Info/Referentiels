@@ -100,6 +100,8 @@ AUCUN_PREREQUIS = "Aucun"
 
 PARCOURS = ["Cyber", "DevCloud", "IOM", "ROM", "PilPro"]
 
+PHRASE_ANGLAIS = "L'étudiant pourra être amené à exploiter des documents vidéos et/ou écrits en anglais (et/ou dans une autre langue étrangère), et en présenter une synthèse à l'écrit et/ou à l'oral, en anglais (et/ou dans une autre langue étrangère.)"
+
 class Officiel():
     """
     Récupère et stocke des informations dites *officielles*, fournies par différents

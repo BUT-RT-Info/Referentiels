@@ -2,21 +2,18 @@
 from __future__ import print_function
 import pickle
 import os.path
-import io, re
+import io
 import shutil
-import string
 
-import requests
-from mimetypes import MimeTypes
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
-from googleapiclient.http import MediaIoBaseDownload, MediaFileUpload
-import openpyxl
+from googleapiclient.http import MediaIoBaseDownload
 import docxcompose.composer
 from docx import Document as Document_compose
+import tools
 
-# Define the scopes
+
 REPERTOIRE = "../google/"
 SCOPES = ['https://www.googleapis.com/auth/drive']
 CLE = "client_secret.json"
@@ -94,7 +91,7 @@ def download_file_docx(service, file_id, file_name):
 
 def main():
     # Récupère la liste des fiches à télécharger
-    fiches = get_download_information()
+    fiches = tools.get_download_information()
 
     # Se connecte à google
     creds = get_credentials()
@@ -112,7 +109,7 @@ def main():
         print("***Etape 1*** Téléchargement des fiches depuis google drive")
         nbre_telecharge = 0
         for f in fiches:
-            f_id = fiches[f] # "1Ddks5BOdAVCA6p4nFAbDx0PqQ71-pKirSu-nrdQ0JLQ" # input("Enter file id: ")
+            f_id = fiches[f]["idf"] # "1Ddks5BOdAVCA6p4nFAbDx0PqQ71-pKirSu-nrdQ0JLQ" # input("Enter file id: ")
             f_name = REPERTOIRE + f"{f}.docx" # nom du fichier
             if os.path.exists(f_name):
                 os.remove(f_name) # supprime le fichier
@@ -144,28 +141,6 @@ def main():
     composer_ressources.save("ressources.docx")
     composer_saes.save("saes.docx")
 
-def get_download_information(fichier = "BUT-RT-S1-S6.xlsx"):
-    """Récupère les info sur les fiches à télécharger par lecture de la feuille "Ressources et SAE S1-S6" du
-    tableur"""
-
-    wb_obj = openpyxl.load_workbook(REPERTOIRE + fichier)
-
-    # Read the active sheet:
-    sheet = wb_obj["Ressources et SAE S1-S6"]
-
-    fiches = {}
-    for (i, row) in enumerate(sheet.iter_rows(max_row=500)): #lecture ligne à ligne
-        code = sheet["A" + str(i+1)].value
-        url = sheet["S" + str(i+1)].value
-        if code:
-            m = re.match("^[RS].+\d$", code) # commence par un R ou un S et se finit par un chiffre
-            if m:
-                idf = url.split("/")[-2] # l'id de la fiche sur Google Drive
-                # print(code, idf)
-                if m in fiches:
-                    print(f"Pb : {m} déjà dans les fiches")
-                fiches[code] = idf
-    return fiches
 
 if __name__=="__main__":
     main()

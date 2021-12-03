@@ -187,8 +187,9 @@ class RessourceDocx(rdocx.docx.Docx):
             self.exemple = ""
         else:
             contenu = tools.remove_ligne_vide(contenu)  # supprime les ligne vides
-            self.exemple = rdocx.docx.convert_to_markdown(contenu)
-
+            contenu_md = rdocx.docx.convert_to_markdown(contenu)
+            contenu_md = self.nettoie_codes_dans_champ(contenu_md)
+            self.exemple = contenu_md
 
     def to_yaml(self):
         """Exporte la ressource en yaml"""
@@ -196,7 +197,8 @@ class RessourceDocx(rdocx.docx.Docx):
         dico = {"nom": self.nom,
                 "code": self.code,
                 "codeRT": self.codeRT,
-                "libelle": self.codeRT, # A revoir
+                "libelle": self.codeRT,  # A revoir
+                "url": folded(self.url),
                 "semestre" : int(self.semestre),
                 "annee": self.annee,
                 "parcours": self.parcours,
@@ -204,6 +206,8 @@ class RessourceDocx(rdocx.docx.Docx):
                 "details_heures_formation": self.prepare_heures_yaml(self.details_heures_encadrees),
                 "heures_formation_pn": self.heures_encadrees_pn if self.heures_encadrees_pn else "???",
                 "details_heures_formation_pn": self.prepare_heures_yaml(self.details_heures_encadrees_pn),
+                "tableur_heures_formation": self.prepare_heures_yaml(self.tableur_heures_formation),
+                "tableur_heures_formation_pn": self.prepare_heures_yaml(self.tableur_heures_formation_pn),
                 "adaptation_locale": "oui" if self.adaptation_locale.lower() == "oui" else "non",
                 "coeffs": self.coeffs,
                 "competences": self.competences,

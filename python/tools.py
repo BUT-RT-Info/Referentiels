@@ -4,6 +4,10 @@ import string
 import unicodedata
 import re
 
+import openpyxl
+
+from export_fiches import REPERTOIRE
+
 
 def get_indice(champ, entetes):
     """Récupère l'indice d'une entête"""
@@ -158,3 +162,45 @@ def supprime_accent_espace(chaine):
     purge = unicodedata.normalize('NFD', purge).encode('ascii', 'ignore').decode('ascii')
     purge = purge.replace(" ", "")
     return purge
+
+
+def get_download_information(fichier = "BUT-RT-S1-S6.xlsx"):
+    """Récupère les info sur les fiches à télécharger par lecture de la feuille "Ressources et SAE S1-S6" du
+    tableur"""
+
+    wb_obj = openpyxl.load_workbook(REPERTOIRE + fichier)
+
+    # Read the active sheet:
+    sheet = wb_obj["Ressources et SAE S1-S6"]
+
+    modele = {"url": "", # l'url
+              "idf": "", # l'idf
+              "tableur_heures_formation" : {}, #"cm/td": None, "tp": None, "projet": None},
+              "tableur_heures_formation_pn" : {}, #"cm/td": None, "tp": None}
+    }
+    fiches = {}
+    for (i, row) in enumerate(sheet.iter_rows(max_row=500)): #lecture ligne à ligne
+        code = sheet["A" + str(i+1)].value
+        url = sheet["U" + str(i+1)].value
+        if code:
+            m = re.match("^[RS].+\d$", code) # commence par un R ou un S et se finit par un chiffre
+            if m:
+                idf = url.split("/")[-2] # l'id de la fiche sur Google Drive
+                # print(code, idf)
+                if m in fiches:
+                    print(f"Pb : {m} déjà dans les fiches")
+                fiches[code] = {**modele}
+                fiches[code]["idf"] = idf
+                fiches[code]["url"] = url
+
+                # Lecture des heures
+                fiches[code]["tableur_heures_formation"] = {}
+                fiches[code]["tableur_heures_formation"]["cm/td"] = sheet["C" + str(i+1)].value
+                fiches[code]["tableur_heures_formation"]["tp"] = sheet["D" + str(i + 1)].value
+                fiches[code]["tableur_heures_formation"]["projet"] = sheet["E" + str(i + 1)].value
+
+                fiches[code]["tableur_heures_formation_pn"] = {}
+                fiches[code]["tableur_heures_formation_pn"]["cm/td"] = sheet["F" + str(i + 1)].value
+                fiches[code]["tableur_heures_formation_pn"]["tp"] = sheet["G" + str(i + 1)].value
+
+    return fiches

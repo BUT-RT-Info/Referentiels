@@ -174,8 +174,8 @@ def get_ressource_BUT23_from_google(code_ressource, docu):
                 k = tools.get_indice_sans_accent_ni_espace("SAÉ", ENTETES_RESSOURCES)
                 val = []
                 for l in range(1, len(res)):
-                    if res[l][0][0]:
-                        val.append(res[l][0][0])
+                    if res[l][0]:
+                        val.append("\n".join(res[l][0]))
                 val = tools.caracteres_recalcitrants("\n".join(val))
             elif "Exemple(s) de" in champ: # exemple de mise en oeuvre
                 k = tools.get_indice_sans_accent_ni_espace("Exemple", ENTETES_RESSOURCES)
@@ -205,8 +205,8 @@ def get_ressource_BUT23_from_google(code_ressource, docu):
                     for ligne in range(len(res[k][1])):
                         if res[k][1][ligne]:
                             apprentissages.append(tools.caracteres_recalcitrants(res[k][1][ligne]))
-            elif "Fiche d'adaptation" in champ: # adaptation locale et préconisation
-                k = tools.get_indice_sans_accent_ni_espace("Adaptation locale", ENTETES_RESSOURCES)
+            elif "Fiche d" in champ: # adaptation locale et préconisation
+                k = tools.get_indice_sans_accent_ni_espace("Fiche d'adaptation locale", ENTETES_RESSOURCES)
                 data[k] = res[0][1][0]
                 k = tools.get_indice_sans_accent_ni_espace("dont heures de CM", ENTETES_RESSOURCES)
                 data[k] = res[1][1][0]

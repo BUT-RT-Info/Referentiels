@@ -45,7 +45,7 @@ class SAEDocx(rdocx.docx.Docx):
         self.codeRT = self.codeRT.replace("SAE", "SAÉ") # ajoute les é éventuellement manquants
         if self.codeRT:
             codes = rdocx.docx.devine_sae_by_code_SXX(self.codeRT)
-            codes += rdocx.docx.devine_sae_by_code_SPXX(self.codeRT) # code type SAE-IOM-53
+            codes += rdocx.docx.devine_sae_by_code_SAEPXX(self.codeRT) # code type SAE-IOM-53
             if len(codes) == 1:
                 if codes[0].lower() != self.codeRT.lower():
                     raise Exception(f"Problème dans le mapping {self.code} <-> {self.codeRT}")
@@ -101,6 +101,7 @@ class SAEDocx(rdocx.docx.Docx):
         en markdown en générant les listes à puces"""
         if self.livrables:
             livrables = rdocx.docx.convert_to_markdown(self.livrables)
+            livrables = self.nettoie_codes_dans_champ(livrables)
             self.description["type de livrables"] += livrables # injecte dans description
 
 
@@ -162,7 +163,7 @@ class SAEDocx(rdocx.docx.Docx):
                 chaine = "\n".join(lignes_conservees)
                 description[cle] = rdocx.docx.remove_link(chaine)
                 if not description[cle]:
-                    self.__LOGGER.warning(f"{self}: nettoie_description: description > {cle} manquant")
+                    self.__LOGGER.warning(f"{self}: split_description: description > {cle} manquant")
             # sauvegarde
             self.description = {"description": description["description"],
                             "type de livrables": description["type de livrables"],
@@ -215,6 +216,7 @@ class SAEDocx(rdocx.docx.Docx):
                 "code": self.code,
                 "codeRT": self.codeRT,
                 "libelle": self.codeRT,
+                "url": folded(self.url),
                 "semestre": int(self.semestre),
                 "annee": self.annee,
                 "parcours": self.parcours,
@@ -222,6 +224,8 @@ class SAEDocx(rdocx.docx.Docx):
                 "details_heures_formation": self.prepare_heures_yaml(self.details_heures_encadrees),
                 "heures_formation_pn": self.heures_encadrees_pn if self.heures_encadrees_pn else "???",
                 "details_heures_formation_pn": self.prepare_heures_yaml(self.details_heures_encadrees_pn),
+                "tableur_heures_formation": self.prepare_heures_yaml(self.tableur_heures_formation),
+                "tableur_heures_formation_pn": self.prepare_heures_yaml(self.tableur_heures_formation_pn),
                 "heures_projet": self.projet if self.projet != "" else "???",
                 "heures_projet_pn": "???",
                 "adaptation_locale": "oui" if self.adaptation_locale.lower() == "oui" else "non",

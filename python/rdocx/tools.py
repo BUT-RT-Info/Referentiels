@@ -4,13 +4,23 @@ from rofficiel.officiel import get_DATA_R_DOCX, __LOGGER
 
 def mapping_code_RXXX_vers_code_pointe(code):
     """Renvoie le code d'une ressource en utilisant le mapping"""
+    code_clean = code.lower().replace(".", "").replace(" ", "").replace("é", "e")
     DATA_R_DOCX = get_DATA_R_DOCX()
     for sem in DATA_R_DOCX:
         for mod in DATA_R_DOCX[sem]:
-            if DATA_R_DOCX[sem][mod].lower().startswith(code.lower()):
+            if DATA_R_DOCX[sem][mod].lower().startswith(code_clean):
                 return mod
     __LOGGER.warning(f"Pb: Le code {code} n'a pas pu être mappé en RX.XX")
 
+def mapping_code_SAEXX_vers_code_pointe(code):
+    """Renvoie le code d'une sae en utilisant le mapping"""
+    code_clean = code.lower().replace(".", "").replace(" ", "").replace("é", "e")
+    DATA_R_DOCX = get_DATA_R_DOCX()
+    for sem in DATA_R_DOCX:
+        for mod in DATA_R_DOCX[sem]:
+            if DATA_R_DOCX[sem][mod].lower().startswith(code_clean):
+                return mod
+    __LOGGER.warning(f"Pb: Le code {code} n'a pas pu être mappé en SAEX.X")
 
 def mapping_code_AC0XXX_vers_code_pointe(code):
     """Réalise le mapping d'un AC avec l'ancien systeme de numeroration

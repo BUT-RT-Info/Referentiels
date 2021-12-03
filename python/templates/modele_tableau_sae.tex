@@ -17,21 +17,37 @@
 \\
 \end{tabular}
 
+
+\begin{tabular}[t]{|G|}
+\hline % 2ème ligne : url
+	#url
+\\
+\end{tabular}
+
 \begin{tabular}[t]{|P|T|}
 \hline % 2ème ligne : semestre
 	\textcolor{saeC}{\bfseries Cursus}
 	& #cursus  \\
 \hline % 3ème ligne : Heures
 \hline
-    \textcolor{saeC}{\bfseries Heures}
+    \textcolor{saeC}{\bfseries Heures (fiche)}
     &
-    \textcolor{saeC}{\bfseries Formation encadrée publiée au PN} : {\bfseries {#heures_formation_pn}h}, dont {#heures_tp_pn}h de TP \\ % dont {#heures_cm}h de CM, {#heures_td}h de TD,
-\cline{2-2}
-    &
-    \textcolor{saeC}{\bfseries Formation encadrée préconisée en adaptation locale} : {\bfseries {#heures_formation}h}, dont {#heures_tp}h de TP \\
+    \textcolor{saeC}{\bfseries Formation encadrée préconisée par l'ACD-RT} : {\bfseries {#heures_formation}h}, dont {#heures_acd} \\
 \cline{2-2}
 	& \textcolor{saeC}{\bfseries Projet} : {#heures_projet}h \\
 \hline
+\hline
+    \textcolor{saeC}{\bfseries Heures (tableur PACD)}
+    &
+    \textcolor{saeC}{\bfseries Formation encadrée publiée au PN} : {\bfseries {#tableur_heures_formation_pn}h}, dont {#tableur_heures_cm_td_pn}h CM/TD, {#tableur_heures_tp_pn}h TP \\ % dont {heures_cm}h de CM, {heures_td}h de TD,
+\cline{2-2}
+    &
+    \textcolor{saeC}{\bfseries Formation encadrée préconisée par l'ACD-RT} : {\bfseries {#tableur_heures_formation}h}, dont {#tableur_heures_cm_td}h CM/TD, {#tableur_heures_tp}h TP \\
+\cline{2-2}
+    &
+    \textcolor{saeC}{\bfseries Projet} : {\bfseries {#tableur_heures_projet}h} \\
+\hline
+
 \hline % 4ème ligne : Parcours
 	\textcolor{saeC}{\bfseries Parcours}
 	& #parcours \\

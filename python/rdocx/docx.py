@@ -55,6 +55,8 @@ class Docx():
         self.details_heures_encadrees = {'cm': None, 'td': None, 'tp': None}
         self.heures_encadrees_pn = None
         self.details_heures_encadrees_pn = {'cm': None, 'td': None, 'tp': None}
+        self.tableur_heures_formation = {'cm/td': None, 'tp': None, 'projet': None} # les heures du tableur
+        self.tableur_heures_formation_pn = {'cm/td': None, 'tp': None} # les heures du tableur
 
         # adaptation locale
         self.adaptation_locale = False
@@ -77,6 +79,8 @@ class Docx():
         self.coeffs = None # chargés ultérieurement
         self.officiel = pnofficiel # les éléments du templates officiel
 
+        # Les info venant du tableur
+        self.url = None
 
     def __str__(self):
         """Affichage d'une activité"""
@@ -90,6 +94,23 @@ class Docx():
         """Chaine de caractère représentant une ressource ou une SAE"""
         return self.code + "/" + self.codeRT
 
+    def charge_infos_tableur(self, url, tableur_heures_formation, tableur_heures_formation_pn):
+        self.url = url
+        # charge et nettoie
+        self.tableur_heures_formation = tableur_heures_formation
+        self.tableur_heures_formation_pn = tableur_heures_formation_pn
+        for cle in self.tableur_heures_formation:
+            try:
+                self.tableur_heures_formation[cle] = int(self.tableur_heures_formation[cle])
+            except:
+                self.tableur_heures_formation[cle] = None
+                self.__LOGGER.warning(f"{self}: charge_infos_tableur: pas d'heures formation pour {cle} dans le tableur BUT-RT-S1-S6")
+        for cle in self.tableur_heures_formation_pn:
+            try:
+                self.tableur_heures_formation_pn[cle] = int(self.tableur_heures_formation_pn[cle])
+            except:
+                self.tableur_heures_formation_pn[cle] = None
+                self.__LOGGER.warning(f"{self}: charge_infos_tableur: pas d'heures formation pn pour {cle} dans le tableur BUT-RT-S1-S6")
 
     def charge_ac(self, apprentissages):
         """Mutateur pour les apprentissages"""
@@ -217,14 +238,33 @@ class Docx():
             self.__LOGGER.warning(f"{self}: nettoie_adaptation_locale: pas d'info sur l'adaptation locale => fixe à non")
 
 
+    def nettoie_codes_dans_champ(self, contenu_md):
+        """Cherche les codes de SAE ou de ressources (au format code RT) pour les remplacer par les codes Orébut"""
+        # Recherche les codes de SAE
+        SAE_avec_code = devine_sae_by_code_SXX(contenu_md)  # <- les codes RT
+        # SAE_avec_code3 = devine_sae_by_code_SPXX(contenu_md)  # les codes avec mention du parcours
+        SAE_avec_code4 = devine_sae_by_code_SAEPXX(contenu_md)
+
+        for codeRT in SAE_avec_code + SAE_avec_code4:  # supprime les points
+            code = rdocx.tools.mapping_code_SAEXX_vers_code_pointe(codeRT)
+            contenu_md = contenu_md.replace(codeRT, code)
+
+        # Recherche des codes ressources
+        R_avec_code = devine_ressources_by_code_RXXX(contenu_md)  # les codes RXXX
+        for codeRT in R_avec_code:
+            code = rdocx.tools.mapping_code_RXXX_vers_code_pointe(codeRT)
+            contenu_md = contenu_md.replace(codeRT, code)
+        return contenu_md
+
 
     def nettoie_description(self):
-        """Nettoie le champ description après l'avoir splitté"""
+        """Nettoie le champ description après l'avoir splité"""
         for cle in self.description:
             if self.description[cle]:
                 contenu = self.description[cle].replace(" / ", "/")
-                self.description[cle] = convert_to_markdown(contenu)
-
+                contenu_md = convert_to_markdown(contenu)
+                contenu_md = self.nettoie_codes_dans_champ(contenu_md)
+                self.description[cle] = contenu_md
 
 
     def nettoie_mots_cles(self):
@@ -234,6 +274,7 @@ class Docx():
             mots = mots.replace(".", "").replace(";", ",").replace(":", ",")
             liste_mots = mots.split(",")
             liste_mots = [l.strip() for l in liste_mots if l.strip()] # supprime les espaces inutiles et les lignes vides
+            liste_mots = [l.capitalize()[0] + l[1:] for l in liste_mots] # mise en majuscule du 1er caractère
             mots = ", ".join(liste_mots)
             self.mots = mots
         else:
@@ -349,14 +390,11 @@ class Docx():
         old = self.semestre # le semestre indiqué dans la ressource
 
         if not semestre_officiel_decode:
-            raise Exception(f"{self.code}/{self.codeRT}: nettoie_semestre: n'est rattaché à aucun semestre")
+            raise Exception(f"{self}: nettoie_semestre: n'est rattaché à aucun semestre")
         else:
-            if semestre_officiel_decode not in old and semestre_officiel_decode.replace("S", "Semestre ") not in old:
-                if semestre_officiel_decode not in old:
-                    self.__LOGGER.warning(f"{self.code}/{self.codeRT}: nettoie_semestre: PAS de semestre ou mal détecté => rattaché à {semestre_officiel_decode}")
-                elif semestre_officiel_decode != old:
-                    self.__LOGGER.warning(f"{self.code}/{self.codeRT}: nettoie_semestre: semestre nettoyé en {semestre_officiel_decode}")
-        self.semestre = semestre_officiel_decode[1] # ne prend que le chiffre
+            if semestre_officiel_decode not in old:
+                self.__LOGGER.warning(f"{self}: nettoie_semestre: PAS de semestre ou mal détecté => rattaché à {semestre_officiel_decode}")
+            self.semestre = semestre_officiel_decode[1] # ne prend que le chiffre
 
 
     def nettoie_liste_ressources(self, contenu):
@@ -390,6 +428,7 @@ class Docx():
                 self.__LOGGER.warning(f"{self.code}/{self.codeRT}: nettoie_liste_ressource: les ressources devinées avec leur nom ne sont pas compatibles dans les codes :(")
 
         liste = R_code + R_anterieur_avec_nom
+        liste = [l for l in liste if l] # supprime les champs None
         # liste = [l.replace(",", "").replace(".", "").replace(" ", "") for l in liste] # supprime les espaces et les ponctuations restantes
         if liste:
             return sorted(list(set(liste)))
@@ -400,11 +439,13 @@ class Docx():
     def nettoie_liste_sae(self, liste):
         """Nettoie une liste de SAE"""
         SAE_avec_code = rdocx.docx.devine_sae_by_code_SXX(liste)  # <- les codes RT
-        SAE_avec_code2 = rdocx.docx.devine_sae_by_code_SXpXX(liste)  # <- les codes en notation pointé
-        liste = [l.replace(".", "").replace(" ", "") for l in SAE_avec_code + SAE_avec_code2]  # supprime les points
+        # SAE_avec_code2 = rdocx.docx.devine_sae_by_code_SXpXX(liste)  # <- les codes en notation pointé (sans parcours)
+        SAE_avec_code3 = rdocx.docx.devine_sae_by_code_SAEPXX(liste) # les codes avec mention du parcours
+        liste = [l.replace(".", "").replace(" ", "") for l in SAE_avec_code + SAE_avec_code3]  # supprime les points
 
         # passe en notation pointée
-        liste = [rofficiel.activites.get_sae_notation_pointe(code) for code in liste]
+        liste = [rdocx.tools.mapping_code_SAEXX_vers_code_pointe(code) for code in liste]
+        liste = [l for l in liste if l] # supprime les champs None
         liste = sorted(list(set(liste)))  # élimine les doublons
         return liste
 
@@ -429,19 +470,21 @@ class Docx():
         parcours = parcours.lower() # mise en minuscule pour faciliter la détection
 
         # self.__LOGGER.warning(f"{self.code}/{self.codeRT}: PB: pas de parcours détectés")
-
-        parcours_officiel = []
-        for p in PARCOURS:
-            if p.lower() in parcours:
-                parcours_officiel.append(p)
-        if len(parcours_officiel) == len(PARCOURS):
-            parcours = ["Tronc commun"]
-            self.__LOGGER.warning(f"{self.code}/{self.codeRT}: 5 parcours => Tronc commun")
-        elif len(parcours_officiel) == 0: # pas de parcours => TC
-            parcours = ["Tronc commun"]
-            self.__LOGGER.warning(f"{self.code}/{self.codeRT}: 0 parcours => Tronc commun")
+        if parcours == "tronc commun":
+            parcours = ["Tronc commun"] # corrige éventuellement l'orthographe
         else:
-            parcours = parcours_officiel
+            parcours_officiel = []
+            for p in PARCOURS:
+                if p.lower() in parcours:
+                    parcours_officiel.append(p)
+            if len(parcours_officiel) == len(PARCOURS):
+                parcours = ["Tronc commun"]
+                self.__LOGGER.warning(f"{self.code}/{self.codeRT}: 5 parcours => Tronc commun")
+            elif len(parcours_officiel) == 0: # pas de parcours => TC
+                parcours = ["Tronc commun"]
+                self.__LOGGER.warning(f"{self.code}/{self.codeRT}: 0 parcours => Tronc commun")
+            else:
+                parcours = parcours_officiel
         return sorted(list(set(parcours)))
 
 def remove_link(contenu):
@@ -584,9 +627,27 @@ def devine_sae_by_code_SXX(donnees):
         codes[i] = codes[i].upper().replace("E", "É")
     return sorted(list(set(codes)))
 
+def devine_sae_by_code_SAEPXX(donnees):
+    """Améliore la détection des codes de SAE de la forme SAE-Parcours-XX"""
+    PARCOURS = rofficiel.officiel.PARCOURS
+    mapping_parcours = {'Cyber': ['Cyber'],
+                        'PilPro': ['PilPro', 'PPR'],
+                        'DevCloud': ['DevCloud', 'DSC'],
+                        'ROM': ['ROM'],
+                        'IOM': ['IOM']}
+    liste_codes = []
+    for p in PARCOURS:
+        for map in mapping_parcours[p]:
+            reg_ex = ""
+            for car in map:
+                reg_ex += "[" + car.lower() + car.upper() + "]"
+            codes = re.findall("[sS][aA][eéEÉ]\s*-" + reg_ex + "-\d\d", donnees)
+            liste_codes += codes
+    return sorted(list(set(liste_codes)))
+
 
 def devine_sae_by_code_SPXX(donnees):
-    # Inclut la présence d'un parcours dans le code de la SAE
+    # Inclut la présence d'un parcours dans le code de la SAE => à supprimer !!!
     PARCOURS = rofficiel.officiel.PARCOURS
     mapping_parcours = {'Cyber': ['Cyber'],
                         'PilPro': ['PilPro', 'PPR'],
@@ -606,7 +667,7 @@ def devine_sae_by_code_SPXX(donnees):
                 codes_parcours += codes
     codes_parcours = sorted(list(set(codes_parcours)))
 
-    return sorted(list(set(codes_parcours)))
+    return codes_parcours
 
 
 def devine_sae_by_code_SXpXX(donnees):

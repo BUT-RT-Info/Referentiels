@@ -27,26 +27,34 @@ class ExempleSAEDocx(rdocx.docx.Docx):
 
     def nettoie_description(self):
         """Nettoie la description d'un exemple de SAE"""
-        self.description = rdocx.docx.convert_to_markdown(self.description)
+        contenu = rdocx.docx.convert_to_markdown(self.description)
+        contenu = self.nettoie_codes_dans_champ(contenu)
+        self.description = contenu
 
     def nettoie_problematique(self):
         """Nettoie la description d'un exemple de SAE"""
         if self.problematique:
-            self.problematique = rdocx.docx.convert_to_markdown(self.problematique)
+            contenu = rdocx.docx.convert_to_markdown(self.problematique)
+            contenu = self.nettoie_codes_dans_champ(contenu)
+            self.problematique = contenu
         else:
             self.problematique = ""
 
     def nettoie_modalite(self):
         """Nettoie les modalités (d'évaluation) d'un exemple de SAE"""
         if self.modalite:
-            self.modalite = rdocx.docx.convert_to_markdown(self.modalite)
+            contenu = rdocx.docx.convert_to_markdown(self.modalite)
+            contenu = self.nettoie_codes_dans_champ(contenu)
+            self.modalite = contenu
         else:
             self.modalite = ""
 
     def nettoie_formes(self):
         """Nettoie les modalités (d'évaluation) d'un exemple de SAE"""
         if self.formes:
-            self.formes = rdocx.docx.convert_to_markdown(self.formes)
+            contenu = rdocx.docx.convert_to_markdown(self.formes)
+            contenu = self.nettoie_codes_dans_champ(contenu)
+            self.formes = contenu
         else:
             self.formes = ""
 

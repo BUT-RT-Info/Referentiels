@@ -2,6 +2,7 @@ import os.path
 import argparse
 import logging
 import docx2python
+import tools
 
 from config import Config
 
@@ -39,7 +40,7 @@ import rdocx.parsedocx
 # from rdocx.parsedocx import get_docx_format, get_type_fiche, parse_docu_ressource, parse_docu_sae
 
 __LOGGER = logging.getLogger(__name__)
-# logging.basicConfig(filename='export_pn.log.txt', level=logging.WARNING)
+logging.basicConfig(filename='export_pn.log.txt', level=logging.WARNING)
 
 # Récupère les données officielles
 pnofficiel = rofficiel.officiel.Officiel()
@@ -51,7 +52,7 @@ pnofficiel = rofficiel.officiel.Officiel()
 
 # Pour debuggage, donne les codes sur lesquelles se focuser
 # LIMIT_TO = ["SAÉ3.2"] # ["R3.21"] #"R4.01"] # ["R1.01", "R3.14"]
-LIMIT_TO = [] # "SAÉ1.1"] # "R3.02"] #"SAÉ3.2"]
+LIMIT_TO = ["R3.22"] #"R3.01"] # "SAÉ1.1"] # "R3.02"] #"SAÉ3.2"]
 
 REPERTOIRE_GOOGLE = "../google/"
 
@@ -138,6 +139,20 @@ for s in liste_exemples_saes: # la sae
 
         # Tri dans le bon semestre
         exemples[sem][s].append(e)
+
+# Injecte information BUT
+print("*** ETAPE 2.bis*** Injection des informations venant du tableur")
+fiches = tools.get_download_information(fichier = "BUT-RT-S1-S6.xlsx")
+manquants = []
+for a in liste_ressources + liste_saes:
+    codedocx = pnofficiel.DATA_R_DOCX['S' + a.semestre][a.code][:-5] # supprime l'extension
+    if codedocx in fiches:
+        url = fiches[codedocx]["url"]
+        a.charge_infos_tableur(url, fiches[codedocx]["tableur_heures_formation"],
+                               fiches[codedocx]["tableur_heures_formation_pn"])
+    else:
+        manquants.append(a)
+print()
 
 # Export yaml
 print("*** ETAPE 3*** Export yaml")
