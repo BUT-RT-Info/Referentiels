@@ -109,8 +109,12 @@ class SAEDocx(rdocx.docx.Docx):
     def nettoie_ressources(self):
         """Nettoie le champ ressource d'une sae en détectant les codes"""
         if self.ressources:
-            liste_ressources = self.nettoie_liste_ressources(self.ressources)
-            self.ressources = liste_ressources
+            if "Toutes les ressources" in "\n".join(self.ressources):
+                liste_ressources = self.officiel.DATA_RESSOURCES[self.annee][self.semestre]
+            else:
+                liste_ressources = self.nettoie_liste_ressources(self.ressources)
+            # liste_sae = self.nettoie_liste_sae(self.ressources) # s'il y a des SAE
+            self.ressources = liste_ressources # + liste_sae
         else:
             self.ressources = []
         if not self.ressources:
@@ -176,6 +180,10 @@ class SAEDocx(rdocx.docx.Docx):
     def nettoie_champs(self):
         """Lance le nettoyage de tous les champs de la SAé"""
         self.nettoie_code()
+
+        self.nettoie_semestre()
+        self.annee = rofficiel.officiel.Officiel.get_annee_from_semestre(self.semestre)
+
         self.nettoie_titre_sae()
 
         for type in ["cm", "td", "tp"]:
@@ -185,8 +193,7 @@ class SAEDocx(rdocx.docx.Docx):
 
         self.nettoie_adaptation_locale()
 
-        self.nettoie_semestre()
-        self.annee = rofficiel.officiel.Officiel.get_annee_from_semestre(self.semestre)
+
 
         self.nettoie_acs()
         self.nettoie_competences()
@@ -236,7 +243,7 @@ class SAEDocx(rdocx.docx.Docx):
                 "objectifs": folded(self.objectifs),
                 "description": folded(self.description["description"]) if self.description["description"] else "",
                 "livrables": folded(self.description["type de livrables"]) if self.description["type de livrables"] else "",
-                "prolongements" : folded(self.description["prolongements"]) if self.description["prolongements"] else "",
+                # "prolongements" : folded(self.description["prolongements"]) if self.description["prolongements"] else "",
                 "motscles": folded(self.description["mots"]) if self.description["mots"] else "",
                 }
         return self.dico_to_yaml(dico)

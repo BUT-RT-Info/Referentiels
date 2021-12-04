@@ -41,16 +41,11 @@ class RessourceDocx(rdocx.docx.Docx):
         self.exemple = exemple
 
 
-    def nettoie_titre_ressource(self):
-        """Nettoie le titre d'une ressource en utilisant les titres officiels
-        fournis dans le yaml (via le dictionnaire DATA_RESSOURCES)"""
-        self.nettoie_titre(self.officiel.DATA_RESSOURCES)
-
-
     def nettoie_code(self):
         """Recherche le code de la forme RXXX => ne sert plus qu'à vérifier le mapping"""
         if self.codeRT:
             codes = rdocx.docx.devine_ressources_by_code_RXXX(self.codeRT)
+            codes += rdocx.docx.devine_ressource_by_code_RPXX(self.codeRT)
 
             if len(codes) == 1: # 1 code deviné
                 if codes[0] != self.codeRT:
@@ -153,15 +148,18 @@ class RessourceDocx(rdocx.docx.Docx):
     def nettoie_champs(self):
         """Lance le nettoyage des champs"""
         self.nettoie_code()
-        self.nettoie_titre_ressource()
+        self.nettoie_semestre()
+        self.annee = rofficiel.officiel.Officiel.get_annee_from_semestre(self.semestre)
+
+        self.nettoie_titre(self.officiel.DATA_RESSOURCES)
+
         for type in ["cm", "td", "tp"]:
             self.details_heures_encadrees[type] = self.nettoie_heures_cm_td(self.details_heures_encadrees, type)
         self.nettoie_heures_encadrees_et_tp()
         self.nettoie_heures_cm_td()
         self.nettoie_adaptation_locale()
 
-        self.nettoie_semestre()
-        self.annee = rofficiel.officiel.Officiel.get_annee_from_semestre(self.semestre)
+
 
         self.nettoie_acs()
         self.nettoie_competences()

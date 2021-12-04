@@ -72,7 +72,7 @@ class ExempleSAEDocx(rdocx.docx.Docx):
 
     def to_yaml(self):
         """Exporte la ressource en yaml"""
-        dico = {"titre": self.nom,
+        dico = {"titre": folded(self.nom) if self.nom else "",
                 "code": self.code,
                 "codeRT": self.codeRT,
                 "semestre": int(self.semestre),

@@ -121,10 +121,10 @@ BUT3:
     AC34.03Cyber: "Sécuriser les systèmes d’exploitation"
     AC34.04Cyber: "Proposer une architecture sécurisée de système d’information pour une petite structure"
   Cyber2:
-    AC35.01Cyber: "Administrer les outils de surveillance du système d’information"
-    AC35.02Cyber: "Surveiller l'activité du système d’information"
-    AC35.03Cyber: "Appliquer une méthodologie de tests de pénétration"
-    AC35.04Cyber: "Réagir face à un incident de sécurité"
+    AC35.01Cyber: "Surveiller l'activité du système d’information"
+    AC35.02Cyber: "Appliquer une méthodologie de tests de pénétration"
+    AC35.03Cyber: "Réagir face à un incident de sécurité"
+    AC35.04Cyber: "Administrer les outils de surveillance du système d’information"
   ROM1:
     AC34.01ROM: "Administrer/superviser les infrastructures et les services télécom"
     AC34.02ROM: "Administrer et déployer des fonctions réseaux virtualisées et programmer le réseau"
@@ -138,7 +138,7 @@ BUT3:
     AC35.01DevCloud: "Adopter les pratiques de pilotage de projet"
     AC35.02DevCloud: "Concevoir, gérer et sécuriser un environnement de microservices"
     AC35.03DevCloud: "Gérer son infrastructure comme du code"
-    AC35.04DevCloud: "Gérer une chaîne d’intégration et/ou de déploiement continu"
+    AC35.04DevCloud: "Gérer une chaîne d'intégration et/ou de déploiement continu"
   PilPro1:
     AC34.01PilPro: "Rédaction d'un appel d'offres ou d'un cahier des charges technique R&T"
     AC34.02PilPro: "Animation technique d’équipes pluridisciplinaires"

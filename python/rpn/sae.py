@@ -114,7 +114,7 @@ class SAE(rpn.activite.ActivitePedagogique):
             tableur_heures_projet=self.yaml["tableur_heures_formation"]["projet"],
             parcours=latex_parcours,
             objectifs=rpn.latex.nettoie_latex(latex_objectifs, self.officiel.DATA_ABBREVIATIONS),
-            description=latex_descriptif,
+            description=rpn.latex.nettoie_latex(latex_descriptif, self.officiel.DATA_ABBREVIATIONS),
             competences_et_acs=latex_competences,
             listeRessources=latex_ressource
             # listeExemples = A FAIRE
@@ -173,7 +173,7 @@ class SAE(rpn.activite.ActivitePedagogique):
 
         # préparation des prolongements
         latex_prolongements = ""
-        if self.yaml["motscles"]:
+        if "prolongements" in self.yaml and self.yaml["prolongements"]:
             latex_prolongements = self.to_latex_champ_titre("Prolongements possibles", self.yaml["prolongements"] + ".")
 
         # préparation des mots-clés

@@ -40,7 +40,7 @@ import rdocx.parsedocx
 # from rdocx.parsedocx import get_docx_format, get_type_fiche, parse_docu_ressource, parse_docu_sae
 
 __LOGGER = logging.getLogger(__name__)
-logging.basicConfig(filename='export_pn.log.txt', level=logging.WARNING)
+# logging.basicConfig(filename='export_pn.log.txt', level=logging.WARNING)
 
 # Récupère les données officielles
 pnofficiel = rofficiel.officiel.Officiel()
@@ -52,7 +52,7 @@ pnofficiel = rofficiel.officiel.Officiel()
 
 # Pour debuggage, donne les codes sur lesquelles se focuser
 # LIMIT_TO = ["SAÉ3.2"] # ["R3.21"] #"R4.01"] # ["R1.01", "R3.14"]
-LIMIT_TO = ["R3.22"] #"R3.01"] # "SAÉ1.1"] # "R3.02"] #"SAÉ3.2"]
+LIMIT_TO = ["SAÉ5.7"] # "R4.09"] #"R3.01"] # "SAÉ1.1"] # "R3.02"] #"SAÉ3.2"]
 
 REPERTOIRE_GOOGLE = "../google/"
 

@@ -8,6 +8,7 @@ import rofficiel.competences
 
 import rdocx.tools
 import tools
+import copy
 
 __LOGGER = logging.getLogger(__name__)
 
@@ -137,12 +138,14 @@ class Docx():
     def nettoie_acs(self):
         """Nettoie les acs d'une ressource ou d'une saé,
         en les remplaçant par leur code pour les 3 compétences"""
-        if self.code == "SAÉ1.1":
-            print("ici")
+        if "Tous les AC" in "\n".join(self.apprentissages):
+            self.__LOGGER.warning(f"{self}: nettoie_acs: Injecte tous les AC")
+            self.acs = copy.deepcopy(self.officiel.DATA_ACS[self.annee])
+            return
 
         if self.annee == "BUT1": # vieux modèle
             if len(self.apprentissages) != 3:
-                self.__LOGGER.warning(f"nettoie_acs : Problème dans le nombre de compétences de {self.code} | {self.nom}")
+                self.__LOGGER.warning(f"{self}: nettoie_acs : Problème dans le nombre de compétences")
 
             dico = {}
             for comp in range(3): # seulement 3 comp en BUT1
@@ -181,6 +184,7 @@ class Docx():
         comp_a_supprimer = [comp for comp in self.acs if not self.acs[comp]]
         for comp in comp_a_supprimer:
             del self.acs[comp]
+
 
         if not self.acs:
             self.__LOGGER.warning(f"{self.code}/{self.codeRT}: pas d'ACS !!")
@@ -247,13 +251,16 @@ class Docx():
 
         for codeRT in SAE_avec_code + SAE_avec_code4:  # supprime les points
             code = rdocx.tools.mapping_code_SAEXX_vers_code_pointe(codeRT)
-            contenu_md = contenu_md.replace(codeRT, code)
+            if code:
+                contenu_md = contenu_md.replace(codeRT, code)
 
         # Recherche des codes ressources
         R_avec_code = devine_ressources_by_code_RXXX(contenu_md)  # les codes RXXX
-        for codeRT in R_avec_code:
+        R_avec_code2 = devine_ressource_by_code_RPXX(contenu_md) # les codes R-Parcours-XXX
+        for codeRT in R_avec_code + R_avec_code2:
             code = rdocx.tools.mapping_code_RXXX_vers_code_pointe(codeRT)
-            contenu_md = contenu_md.replace(codeRT, code)
+            if code:
+                contenu_md = contenu_md.replace(codeRT, code)
         return contenu_md
 
 
@@ -284,16 +291,20 @@ class Docx():
         """Nettoie le titre d'une ressource ou d'une SAE en utilisant les titres officiels
         fournis dans le yaml (via le dictionnaire DATA_RESSOURCES)"""
 
-        def devine_nom(champ):
+        def devine_nom(champ, semestre):
             champ_purge = tools.supprime_accent_espace(champ)
-            for sem in data_titres:
-                for code in data_titres[sem]:
-                    nom_purge = tools.supprime_accent_espace(data_titres[sem][code])
-                    if champ_purge.startswith(nom_purge):
-                        return data_titres[sem][code] # le bon nom
+            # for sem in data_titres:
+            if semestre.startswith("S"):
+                sem = semestre
+            else:
+                sem = "S" + semestre
+            for code in data_titres[sem]:
+                nom_purge = tools.supprime_accent_espace(data_titres[sem][code])
+                if champ_purge.startswith(nom_purge):
+                    return data_titres[sem][code] # le bon nom
 
-        old = self.nom.replace(":", "-") # supprime les -
-        titre = devine_nom(self.nom)
+        old = self.nom # .replace(":", "-") # supprime les -
+        titre = devine_nom(self.nom, self.semestre)
         if titre and titre != old:
             Docx.__LOGGER.warning(f"nettoie_titre : {old} => titre deviné \"{titre}\"")
             self.nom = titre
@@ -392,6 +403,10 @@ class Docx():
         if not semestre_officiel_decode:
             raise Exception(f"{self}: nettoie_semestre: n'est rattaché à aucun semestre")
         else:
+            try:
+                old = "S" + str(int(old)) # lorsque le semestre a déjà été nettoyé
+            except:
+                pass
             if semestre_officiel_decode not in old:
                 self.__LOGGER.warning(f"{self}: nettoie_semestre: PAS de semestre ou mal détecté => rattaché à {semestre_officiel_decode}")
             self.semestre = semestre_officiel_decode[1] # ne prend que le chiffre
@@ -405,30 +420,28 @@ class Docx():
 
         # Recherche des codes
         R_avec_code = devine_ressources_by_code_RXXX(contenu) # les codes RXXX
-        R_avec_code = [l.replace(",", "").replace(".", "").replace(" ", "") for l in R_avec_code]
-        mapping_R_avec_code = [rdocx.tools.mapping_code_RXXX_vers_code_pointe(l) for l in R_avec_code]
+        # R_avec_code = [l.replace(",", "").replace(".", "").replace(" ", "") for l in R_avec_code]
+        R_avec_parcours = devine_ressource_by_code_RPXX(contenu)
+        mapping_R_avec_code = [rdocx.tools.mapping_code_RXXX_vers_code_pointe(l) for l in R_avec_code + R_avec_parcours]
 
-        R_avec_code_pointe = [] # devine_ressources_by_code_RXpXX(contenu)
+        # R_avec_code_pointe = [] # devine_ressources_by_code_RXpXX(contenu)
 
         # Ne conserve que les ressources d'un semestre antérieur
-        R_avec_nom = rofficiel.officiel.devine_code_activite_by_nom_from_dict(contenu, DATA_RESSOURCES)
-        R_anterieur_avec_nom = []
-        for r in R_avec_nom:
-            sem = int(r[1])
-            try:
-                int(self.semestre)
-            except:
-                print("pb formattage")
-            if sem <= int(self.semestre):
-                R_anterieur_avec_nom.append(r)
+        #R_avec_nom = rofficiel.officiel.devine_code_activite_by_nom_from_dict(contenu, DATA_RESSOURCES)
+        # R_anterieur_avec_nom = []
+        # for r in mapping_R_avec_code:
+        #    try:
+        #        sem = int(r[1])
+        #        int(self.semestre)
+        #        if sem <= int(self.semestre):
+        #            R_anterieur_avec_nom.append(r)
+        #        else:
+        #            self.__LOGGER.warning(
+        #                f"{self}: nettoie_liste_ressource: des ressources postérieures au semestre sont cités")
+        #    except:
+        #        print("pb formattage")
 
-        R_code = mapping_R_avec_code + R_avec_code_pointe
-        if R_code:
-            if set(R_anterieur_avec_nom).intersection(set(R_code)) != set(R_code):
-                self.__LOGGER.warning(f"{self.code}/{self.codeRT}: nettoie_liste_ressource: les ressources devinées avec leur nom ne sont pas compatibles dans les codes :(")
-
-        liste = R_code + R_anterieur_avec_nom
-        liste = [l for l in liste if l] # supprime les champs None
+        liste = [l for l in mapping_R_avec_code if l] # supprime les champs None
         # liste = [l.replace(",", "").replace(".", "").replace(" ", "") for l in liste] # supprime les espaces et les ponctuations restantes
         if liste:
             return sorted(list(set(liste)))
@@ -441,10 +454,9 @@ class Docx():
         SAE_avec_code = rdocx.docx.devine_sae_by_code_SXX(liste)  # <- les codes RT
         # SAE_avec_code2 = rdocx.docx.devine_sae_by_code_SXpXX(liste)  # <- les codes en notation pointé (sans parcours)
         SAE_avec_code3 = rdocx.docx.devine_sae_by_code_SAEPXX(liste) # les codes avec mention du parcours
-        liste = [l.replace(".", "").replace(" ", "") for l in SAE_avec_code + SAE_avec_code3]  # supprime les points
-
+        code = SAE_avec_code + SAE_avec_code3
         # passe en notation pointée
-        liste = [rdocx.tools.mapping_code_SAEXX_vers_code_pointe(code) for code in liste]
+        liste = [rdocx.tools.mapping_code_SAEXX_vers_code_pointe(c) for c in code]
         liste = [l for l in liste if l] # supprime les champs None
         liste = sorted(list(set(liste)))  # élimine les doublons
         return liste
@@ -467,7 +479,8 @@ class Docx():
         if not parcours:
             parcours = "Tronc commun"
             self.__LOGGER.warning(f"{self.code}/{self.codeRT}: ajout en tant que \"Tronc commun\"")
-        parcours = parcours.lower() # mise en minuscule pour faciliter la détection
+
+        parcours = parcours.lower().strip() # mise en minuscule pour faciliter la détection
 
         # self.__LOGGER.warning(f"{self.code}/{self.codeRT}: PB: pas de parcours détectés")
         if parcours == "tronc commun":
@@ -590,10 +603,10 @@ def devine_ressources_by_code_RXXX(champ):
     """Recherche les codes ressources de la forme RXXX ou R-XXX-XXX dans champ ;
     """
     # Sans notation pointée
-    codes1 = re.findall(r"R\d{3}", champ) # de code à 3 chiffres
-    codes2 = re.findall(r"R\d{3}[:\|\D]", champ) # est-ce encore utile ?
-    codes3 = re.findall(r"R-[a-zA-Z]{0,9}-\d{3}", champ)
-    codes = codes1 + [c[:-1] for c in codes2] + codes3
+    codes1 = re.findall(r"R\s*\d{3}", champ) # de code à 3 chiffres
+    codes2 = re.findall(r"R\s*\d{3}[:\|\D]", champ) # est-ce encore utile ?
+    # codes3 = re.findall(r"R-[a-zA-Z]{0,9}-\d{3}", champ)
+    codes = codes1 + [c[:-1] for c in codes2] # + codes3
     return sorted(list(set(codes)))
 
 
@@ -607,6 +620,7 @@ def devine_ressources_by_code_RXpXX(champ):
 def mapping_code_pointe_from_codeRT(code_RXXX):
     """Partant d'un code RT (ressource ou SAE), renvoie le code pointé attribué à l'activité"""
     DATA_R = rofficiel.officiel.get_DATA_R_DOCX() # le mapping
+    code_RXXX = code_RXXX.replace("É", "E").replace(" ", "")
     for sem in DATA_R:
         for code in DATA_R[sem]:
             if DATA_R[sem][code].startswith(code_RXXX):
@@ -641,33 +655,28 @@ def devine_sae_by_code_SAEPXX(donnees):
             reg_ex = ""
             for car in map:
                 reg_ex += "[" + car.lower() + car.upper() + "]"
-            codes = re.findall("[sS][aA][eéEÉ]\s*-" + reg_ex + "-\d\d", donnees)
+            codes = re.findall("[sS][aA][eéEÉ]\s*-{0,1}" + reg_ex + "-{0,1}\d\d", donnees)
             liste_codes += codes
     return sorted(list(set(liste_codes)))
 
 
-def devine_sae_by_code_SPXX(donnees):
-    # Inclut la présence d'un parcours dans le code de la SAE => à supprimer !!!
+def devine_ressource_by_code_RPXX(donnees):
+    """Améliore la détection des codes de SAE de la forme SAE-Parcours-XX"""
     PARCOURS = rofficiel.officiel.PARCOURS
     mapping_parcours = {'Cyber': ['Cyber'],
                         'PilPro': ['PilPro', 'PPR'],
                         'DevCloud': ['DevCloud', 'DSC'],
                         'ROM': ['ROM'],
                         'IOM': ['IOM']}
-    codes_parcours = []
-    p_detecte = []
-    minuscule = donnees.lower().replace("é", "e")
+    liste_codes = []
     for p in PARCOURS:
         for map in mapping_parcours[p]:
-            codes = re.findall("sae\s*-" + map.lower() + "-\d\d", minuscule)
-            if codes:
-                p_detecte += [p]  # ajout du parcours
-                codes = [c.replace(" ", "").replace("sae", "SAÉ").replace(map.lower(), p) for c in
-                         codes]  # recode les acs
-                codes_parcours += codes
-    codes_parcours = sorted(list(set(codes_parcours)))
-
-    return codes_parcours
+            reg_ex = ""
+            for car in map:
+                reg_ex += "[" + car.lower() + car.upper() + "]"
+            codes = re.findall("[rR]\s*-" + reg_ex + "-\d{3}", donnees)
+            liste_codes += codes
+    return sorted(list(set(liste_codes)))
 
 
 def devine_sae_by_code_SXpXX(donnees):

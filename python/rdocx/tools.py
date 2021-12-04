@@ -14,11 +14,11 @@ def mapping_code_RXXX_vers_code_pointe(code):
 
 def mapping_code_SAEXX_vers_code_pointe(code):
     """Renvoie le code d'une sae en utilisant le mapping"""
-    code_clean = code.lower().replace(".", "").replace(" ", "").replace("é", "e")
+    code_clean = code.lower().replace(".", "").replace(" ", "").replace("é", "e").replace("-", "")
     DATA_R_DOCX = get_DATA_R_DOCX()
     for sem in DATA_R_DOCX:
         for mod in DATA_R_DOCX[sem]:
-            if DATA_R_DOCX[sem][mod].lower().startswith(code_clean):
+            if DATA_R_DOCX[sem][mod].lower().replace("-", "").startswith(code_clean):
                 return mod
     __LOGGER.warning(f"Pb: Le code {code} n'a pas pu être mappé en SAEX.X")
 

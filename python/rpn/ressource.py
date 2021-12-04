@@ -169,12 +169,13 @@ class Ressource(rpn.activite.ActivitePedagogique):
             tableur_heures_tp_pn=self.yaml["tableur_heures_formation_pn"]["tp"],
             parcours=latex_parcours,
             description=latex_description,
-            exemple=latex_exemple,
+            exemple=rpn.latex.nettoie_latex(latex_exemple,
+                                             self.officiel.DATA_ABBREVIATIONS),
             competences_et_acs=latex_competences, # les compétences
             listeSAE=latex_sae,
             listePreRequis=latex_prerequis,
             motsCles=rpn.latex.nettoie_latex(self.yaml["motscles"] + ".",
-                                             self.officiel.DATA_ABBREVIATIONS)
+                                             self.officiel.DATA_ABBREVIATIONS) if self.yaml["motscles"] else ""
         )
         # contenu=rpn.latex.nettoie_latex(latex_contenu, self.officiel.DATA_ABBREVIATIONS),
         # chaine = chaine.replace("&", "\&")

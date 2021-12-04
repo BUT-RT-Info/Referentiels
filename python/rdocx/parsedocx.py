@@ -163,8 +163,8 @@ def get_ressource_BUT23_from_google(code_ressource, docu):
                 k = tools.get_indice_sans_accent_ni_espace("Prérequis", ENTETES_RESSOURCES)
                 val = []
                 for l in range(1, len(res)):
-                    if res[l][0][0]:
-                        val.append(res[l][0][0])
+                    if res[l][0]:
+                        val.append("\n".join(res[l][0]))
                 val = "\n".join(val)
                 if not val:
                     val = rofficiel.officiel.AUCUN_PREREQUIS
@@ -198,7 +198,7 @@ def get_ressource_BUT23_from_google(code_ressource, docu):
                 deb_apprentissage = positions.index(True)
                 competences = []
                 for k in range(0, deb_apprentissage):
-                    competences.append(tools.caracteres_recalcitrants(res[k][1][0]))
+                    competences.append(tools.caracteres_recalcitrants("\n".join(res[k][1]))) # Les cellules
                 # Apprentissages critiques
                 apprentissages = []
                 for k in range(deb_apprentissage, len(res)): # res[k][1][i]
@@ -373,7 +373,7 @@ def get_sae_BUT23_from_google(code_sae, docu):
                 val = res[1][0][0]
             elif champ.startswith("Parcours"):
                 k = tools.get_indice_sans_accent_ni_espace("Parcours", ENTETES_CHAPEAU)
-                val = res[1][0][0]
+                val = "\n".join(res[1][0])
             elif champ.startswith("Semestre"):
                 val = champ.split(":")[-1].strip()
                 k = tools.get_indice_sans_accent_ni_espace("Semestre", ENTETES_CHAPEAU)
@@ -381,8 +381,8 @@ def get_sae_BUT23_from_google(code_sae, docu):
                 k = tools.get_indice_sans_accent_ni_espace("Liste des ressources", ENTETES_CHAPEAU)
                 val = []
                 for l in range(1, len(res)):
-                    if res[l][0][0]:
-                        val.append(res[l][0][0])
+                    if res[l][0]:
+                        val.append("\n".join(res[l][0]))
                 val = "\n".join(val)
                 if not val:
                     __LOGGER.warning(f"{code_sae}: manque les ressources combinées")
@@ -415,7 +415,7 @@ def get_sae_BUT23_from_google(code_sae, docu):
                 deb_apprentissage = positions.index(True)
                 competences = []
                 for k in range(0, deb_apprentissage):
-                    competences.append(tools.caracteres_recalcitrants(res[k][1][0]))
+                    competences.append(tools.caracteres_recalcitrants("\n".join(res[k][1])))
                 # Apprentissages critiques
                 apprentissages = []
                 for k in range(deb_apprentissage, len(res)): # res[k][1][i]
@@ -564,6 +564,7 @@ def parse_docu_sae(code_sae, docu, pnofficiel):
 
                 # nettoie le titre et le code
                 s.nettoie_code()
+                s.nettoie_semestre()
                 s.nettoie_titre_sae()
 
             elif est_exemple == True:
@@ -592,6 +593,7 @@ def parse_docu_sae(code_sae, docu, pnofficiel):
         # nettoie le titre et le code
 
         s.nettoie_code()
+        s.nettoie_semestre()
         s.nettoie_titre_sae()
         # Créé les exemples
         liste_exemples = []

@@ -53,8 +53,8 @@ Cyber2:
       AC25.01Cyber: "Administrer les protections contre les logiciels malveillants"
       AC25.02Cyber: "Prendre en main des outils de test de pénétration réseau/système"
     Mettre en œuvre le système de surveillance d'incidents de sécurité:
-      AC35.01Cyber: "Administrer les outils de surveillance du système d’information"
-      AC35.02Cyber: "Surveiller l'activité du système d’information"
-      AC35.03Cyber: "Appliquer une méthodologie de tests de pénétration"
-      AC35.04Cyber: "Réagir face à un incident de sécurité"
+      AC35.01Cyber: "Surveiller l'activité du système d’information"
+      AC35.02Cyber: "Appliquer une méthodologie de tests de pénétration"
+      AC35.03Cyber: "Réagir face à un incident de sécurité"
+      AC35.04Cyber: "Administrer les outils de surveillance du système d’information"
 

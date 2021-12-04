@@ -47,10 +47,9 @@ class ExempleSAE(rpn.activite.ActivitePedagogique):
         chaine = ""
         chaine = modeles.TemplateLatex(modlatex).substitute(
             titre=titre,
-            description=description,
+            description=rpn.latex.nettoie_latex(description, self.officiel.DATA_ABBREVIATIONS),
         )
         # chaine = chaine.replace("&", "\&")
-        chaine = rpn.latex.nettoie_latex(chaine, self.officiel.DATA_ABBREVIATIONS)
 
         return chaine
 
