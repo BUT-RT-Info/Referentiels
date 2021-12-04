@@ -105,7 +105,12 @@ for sem in semestres:
                 fid.write(chaine)
             print(f"Export de {fichierlatex}")
 
-
+    ## Matrices dépendances saes & ressources
+    chaine = semestres[sem].to_latex_matrice_dependance()
+    fichierlatex = REPERTOIRE_SYNTHESE + "/" + f"{sem}_dependances_saes_vs_ressources.tex"
+    with open(fichierlatex, "w", encoding="utf8") as fid:
+        fid.write(chaine)
+    print(f"Export de {fichierlatex}")
 
     # Matrice textuelle
     # (M1, acs_du_semestre, codes_activites) = semestres[sem].get_matrice_ac_vs_activites()

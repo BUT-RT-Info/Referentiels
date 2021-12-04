@@ -13,9 +13,22 @@
 \subsection*{Ressources du semestre #numero}
 \input{synthese/#fichierListeRessources}
 
+\subsection*{Dépendances SAEs vs Ressouces (au sein d'un même semestre)}
+\input{synthese/#fichierDependance}
+
+Légende :
+\begin{itemize}
+    \item $\uparrow$ signifie que la SAE déclare mobiliser la ressource, mais que la ressource ne déclare pas se prolonger par la SAE (ce qui peut avoir du sens s'il s'agit d'activités de parcours)
+    \item $\leftarrow$ signifie que la SAE ne déclare pas mobiliser la ressource, alors que la ressource déclare se prolonger par la SAE
+    \item $\times$ signifie que la SAE et la ressource s'appuient l'une sur l'autre
+    \item \textit{vide} signifie qu'il n'y a pas de liens entre la SAE et la ressource
+\end{itemize}
+
 \subsection*{Matrice Compétences/SAÉs-Ressources du semestre #numero}
 
 #fichiersMatriceACs
+
+
 % \scalebox{0.95}{\input{synthese/fichierMatriceACs}}
 %
 %\subsection{Volumes horaires, coefficients et ECTS du semestre 1}

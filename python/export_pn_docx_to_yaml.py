@@ -52,7 +52,7 @@ pnofficiel = rofficiel.officiel.Officiel()
 
 # Pour debuggage, donne les codes sur lesquelles se focuser
 # LIMIT_TO = ["SAÉ3.2"] # ["R3.21"] #"R4.01"] # ["R1.01", "R3.14"]
-LIMIT_TO = ["SAÉ5.7"] # "R4.09"] #"R3.01"] # "SAÉ1.1"] # "R3.02"] #"SAÉ3.2"]
+LIMIT_TO = [] # "R4.09"] #"R3.01"] # "SAÉ1.1"] # "R3.02"] #"SAÉ3.2"]
 
 REPERTOIRE_GOOGLE = "../google/"
 
