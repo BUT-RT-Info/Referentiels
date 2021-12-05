@@ -30,7 +30,8 @@ class SAE(rpn.activite.ActivitePedagogique):
         self.heures_projet_pn = self.yaml["heures_projet_pn"]
 
         # L'adaptation locale
-        self.adaptation_locale = self.yaml["adaptation_locale"]
+        self.type = self.yaml["type"]
+        self.adaptation_locale = self.yaml["type"]["adaptation_locale"]
 
         self.exemples = [] # la liste des exemples
 

@@ -159,13 +159,13 @@ print(f"{nbre_ressources} ressources")
 ressources = {"S1" : [], "S2": []}
 
 for (i, r) in enumerate(liste_ressources):
-    if r.semestre.startswith("Projet "):
+    if r.numero_semestre.startswith("Projet "):
         print("ici")
     r.nettoie_champs()
 
     # Remet en forme les mots-clés
     # Tri dans le bon semestre
-    ressources[r.semestre] += [r]
+    ressources[r.numero_semestre] += [r]
 
 # complète les codes d'après les numéros
 for sem in ressources:

@@ -37,8 +37,7 @@ class ActivitePedagogique():
         # Rapatrie les infos communes (code/titre)
         self.code = self.yaml["code"]
         self.codeRT = self.yaml["codeRT"]
-        self.numero_semestre = self.yaml["semestre"]
-        self.nom_semestre = "S" + str(self.numero_semestre)
+        self.nom_semestre = self.yaml["semestre"]
         self.annee = None # <- chargé plus tard
         self.adaptation_locale = None
         self.acs = None # <- chargé plus tard
@@ -109,10 +108,21 @@ class ActivitePedagogique():
     def prepare_cursus(self):
         """Prépare les informations sur le cursus"""
         # Prépare cursus
-        latex_cursus = self.annee + " > " + self.nom_semestre
-        if self.adaptation_locale == "oui":
-            latex_cursus += " > " + "\\textit{Adaptation locale}"
-        return latex_cursus
+        champs = []
+        if isinstance(self.annee, str):
+            champs.append(self.annee)
+        else:
+            champs.append(", ".join(self.annee))
+        if isinstance(self.nom_semestre, str):
+            champs.append(self.nom_semestre)
+        else:
+            champs.append(", ".join(self.nom_semestre))
+        if self.adaptation_locale:
+            champs.append("\\textit{Adaptation locale}")
+        if self.type["complementaire"]:
+            champs.append("\\textit{Ressource complémentaire}")
+        return " > ".join(champs)
+
 
     def to_latex_liste_competences_et_acs(self):
         """Renvoie la description latex d'une liste de compétences et d'acs"""
@@ -183,7 +193,9 @@ class ActivitePedagogique():
             details_competences = []
             # \hyperlink{comp:\compcode}{\textcolor{saeC}{\saecode}}
             # le nom de la comp
-            type_niveau = "\\niveau" + {"BUT1": "A", "BUT2": "B", "BUT3": "C"}[self.yaml["annee"]]
+            type_niveau = "\\niveauA"
+            if isinstance(self.yaml["annee"], str):
+                type_niveau = "\\niveau" + {"BUT1": "A", "BUT2": "B", "BUT3": "C"}[self.yaml["annee"]]
 
             if "RT" in comp:
                 couleur = "compC" + ["A", "B", "C"][int(comp[-1])-1]
@@ -197,17 +209,19 @@ class ActivitePedagogique():
             # ajoutcoeff = "\\ajoutRcoeff{%s}"
             # details_competences.append(ajoutcoeff % (str(self.ressource["coeffs"][comp])))
 
-            # Préparation des ac
+            # Affichage du niveau de la compétence (si pas ressource complémentaire)
             details_acs = []
             for code_ac in self.acs[comp]:  # les acs de la ressource (triés théoriquement)
-                if code_ac not in self.officiel.DATA_ACS[self.annee][comp]:
+                if not self.type["complementaire"] and code_ac not in self.officiel.DATA_ACS[self.annee][comp]:
                     self.__LOGGER.warning(f"{self.code}/{self.codeRT}: to_latex: Pb {code_ac} non trouvé en {self.annee}")
                 else:
                     nom_acs = "\\textcolor{%s}{$\\bullet$ %s}" % (couleur, code_ac)
-                    intitule = self.officiel.DATA_ACS[self.annee][comp][code_ac].replace("&", "\\&")
+                    annee = self.officiel.get_annee_from_acs(code_ac)
+                    intitule = self.officiel.DATA_ACS[annee][comp][code_ac].replace("&", "\\&")
                     nom_acs += " \\textit{%s}" % intitule
                     details_acs.append(nom_acs)
             details_competences.append("\n\\tabularnewline\n".join(details_acs))
+
 
             # toutes les infos sur la comp
             latex_comp.append("\n\\tabularnewline\n".join(details_competences))
@@ -241,9 +255,11 @@ class ActivitePedagogique():
             else:
                 intitule = ""
             if False:
-                nom = "\\hyperlink{%s}{\\textcolor{%s}{%s}} & %s" % (self.get_code_latex_hyperlink(elmt), couleur, elmt, intitule)
+                nom = "\\hyperlink{%s}{\\textcolor{%s}{%s}} & %s" % (self.get_code_latex_hyperlink(elmt),
+                                                                     couleur, elmt, intitule)
             else:
-                nom = "\\hyperlink{%s}{\\textcolor{%s}{%s}} %s" % (self.get_code_latex_hyperlink(elmt), couleur, elmt, intitule)
+                nom = "\\hyperlink{%s}{\\textcolor{%s}{%s}} %s" % (self.get_code_latex_hyperlink(elmt),
+                                                                   couleur, elmt, intitule)
 
             latex_liste.append(nom)
 

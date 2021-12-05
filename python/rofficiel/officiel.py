@@ -210,15 +210,31 @@ class Officiel():
                     return comp
         return None
 
+    def get_annee_from_acs(self, code_acs):
+        """Renvoie l'année correspondant à un acs"""
+        for annee in self.DATA_ACS:
+            for comp in self.DATA_ACS[annee]:
+                if code_acs in self.DATA_ACS[annee][comp]:
+                    return annee
+        return None
+
     @staticmethod
     def get_annee_from_semestre(sem):
         """Renvoie l'année en fonction d'un semestre"""
-        if sem in ["1", "2"]:
-            return "BUT1"
-        elif sem in ["3", "4"]:
-            return "BUT2"
-        else:
-            return "BUT3"
+        if isinstance(sem, str):
+            if sem in ["1", "2"]:
+                return "BUT1"
+            elif sem in ["3", "4"]:
+                return "BUT2"
+            elif sem in ["5", "6"]:
+                return "BUT3"
+            else:
+                return "BUTC"
+        else: # si liste
+            annees = []
+            for s in sem:
+                annees.append(Officiel.get_annee_from_semestre(s))
+            return sorted(list(set(annees)))
 
 
 def devine_code_activite_by_nom_from_dict(champ, dico):

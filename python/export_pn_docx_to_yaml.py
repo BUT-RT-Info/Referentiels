@@ -65,7 +65,7 @@ DATA_RESSOURCES = rofficiel.officiel.get_DATA_RESSOURCES() # les ressources du P
 DATA_SAES = rofficiel.officiel.get_DATA_SAES() # les saés du PN
 
 print("*** ETAPE 1*** Lecture des google.docx avec parsing des informations")
-for sem in ['S1', 'S2', 'S3', 'S4', 'S5', 'S6']: # DATA_RESSOURCES: # ['S1']: #
+for sem in ['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'SC']: # DATA_RESSOURCES: # ['S1']: #
     for code in {**DATA_RESSOURCES[sem], **DATA_SAES[sem]}: #
         if not LIMIT_TO or code in LIMIT_TO:
             fichier = pnofficiel.get_docx_file_by_code(code)
@@ -73,6 +73,10 @@ for sem in ['S1', 'S2', 'S3', 'S4', 'S5', 'S6']: # DATA_RESSOURCES: # ['S1']: #
                 raise Exception( f"{code} n'existe pas")
 
             fichier = REPERTOIRE_GOOGLE + fichier
+            if sem == "SC":
+                est_complementaire = True
+            else:
+                est_complementaire = False
             if not fichier or not os.path.exists(fichier):
                 print(f"{fichier} manquant pour la fiche {code}")
             else:
@@ -90,7 +94,7 @@ for sem in ['S1', 'S2', 'S3', 'S4', 'S5', 'S6']: # DATA_RESSOURCES: # ['S1']: #
                     pass
 
                 if type_fiche == "RESSOURCE":
-                    r = rdocx.parsedocx.parse_docu_ressource(code, docu, pnofficiel)
+                    r = rdocx.parsedocx.parse_docu_ressource(code, docu, pnofficiel, complementaire=est_complementaire)
                     if r:
                         liste_ressources.append(r)
                 else: # type_fiche == "SAE":
@@ -110,28 +114,39 @@ print("*** ETAPE 2*** Post-traitement/nettoyage des informations")
 
 # Post traitement des ressources => gestion des heures/des acs/ + tri par semestre
 ressources = {"S{}".format(d) : [] for d in range(1, 7)}
+ressources["SC"] = []
 print(" > Ressources :")
 for (i, r) in enumerate(liste_ressources):
     r.nettoie_champs()
 
     # Remet en forme les mots-clés
     # Tri dans le bon semestre
-    ressources["S" + r.semestre] += [r]
+    if not r.type["complementaire"]:
+        ressources[r.nom_semestre] += [r]
+    else:
+        ressources["SC"] += [r]
 
 saes = {"S{}".format(d) : [] for d in range(1, 7)}
+saes["SC"] = []
 print(" > SAE")
 for s in liste_saes:
     print(f"{s.nom}")
     s.nettoie_champs()
 
     # Tri dans le bon semestre
-    saes["S" + s.semestre] += [s]
+    if not s.type["complementaire"]:
+        saes[s.nom_semestre] += [s]
+    else:
+        saes["SC"] += [s]
 
 exemples = {"S{}".format(d) : {} for d in range(1, 7)}
+exemples["SC"] = {}
 print(" > Exemples")
 for s in liste_exemples_saes: # la sae
     sem = pnofficiel.get_sem_activite_by_code(s)
+
     exemples[sem][s] = []
+
     print(s)
     for e in liste_exemples_saes[s]:
         print(e)
@@ -145,7 +160,11 @@ print("*** ETAPE 2.bis*** Injection des informations venant du tableur")
 fiches = tools.get_download_information(fichier = "BUT-RT-S1-S6.xlsx")
 manquants = []
 for a in liste_ressources + liste_saes:
-    codedocx = pnofficiel.DATA_R_DOCX['S' + a.semestre][a.code][:-5] # supprime l'extension
+    if not a.type["complementaire"]:
+        sem = a.nom_semestre
+    else:
+        sem = "SC"
+    codedocx = pnofficiel.DATA_R_DOCX[sem][a.code][:-5] # supprime l'extension
     if codedocx in fiches:
         url = fiches[codedocx]["url"]
         a.charge_infos_tableur(url, fiches[codedocx]["tableur_heures_formation"],

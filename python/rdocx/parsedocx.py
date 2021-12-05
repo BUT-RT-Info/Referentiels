@@ -9,6 +9,7 @@ import logging
 ENTETES_RESSOURCES = ["Nom", "Code", "Semestre", "Heures de formation", "dont heures de TP",
                         "dont heures de CM", "dont heures de TD", "Fiche d’adaptation locale",
                         "SAÉ", "Prérequis", "Descriptif", "Mots", "Parcours", "Exemple"]
+OPTIONNEL_RESSOURCES = ["dont heures de TP", "dont heures de TD"]
 
 # Entêtes recherchées dans une SAE BUT1 / BUT23
 ENTETES_CHAPEAU = ["Titre", # Libellé
@@ -25,6 +26,7 @@ ENTETES_CHAPEAU = ["Titre", # Libellé
                    "Mots", # Rien
                    "Parcours" # TC ou parcours
                    ]
+OPTIONNEL_SAE = ["dont heures de TP", "dont heures de TD"]
 
 ENTETES_EXEMPLES = ["Titre", "Description", "Formes", "Quelle problématique",
                     "Modalités"]
@@ -53,6 +55,15 @@ def get_type_fiche(tableau_document): # <- docu[i]
     else:
         return "SAE"
 
+
+def analyse_champ_manquants(code_ressource, data, entete, optionnel):
+    """Analyse les champs manquants après le parsing"""
+    champ_manquants = []
+    for (j, champ) in enumerate(entete):
+        if not data[j] and champ not in optionnel:
+            champ_manquants += [champ]
+    if champ_manquants:
+        __LOGGER.warning(f"{code_ressource}: champs manquants : " + ", ".join(champ_manquants))
 
 def get_ressource_BUT1_from_google(code_ressource, res):
     """Lit les infos du rdocx pour une ressource du BUT1 à partir du tableau"""
@@ -110,12 +121,7 @@ def get_ressource_BUT1_from_google(code_ressource, res):
                 [chp[0] for chp in non_interprete]))
 
     # Analyse des champs manquants
-    champ_manquants = []
-    for (j, champ) in enumerate(ENTETES_RESSOURCES):
-        if not data[j]:
-            champ_manquants += [champ]
-    if champ_manquants:
-        __LOGGER.warning(f"{code_ressource}: champs manquants : " + ", ".join(champ_manquants))
+    analyse_champ_manquants(code_ressource, data, ENTETES_RESSOURCES, OPTIONNEL_RESSOURCES)
 
     # Sauvegarde des champs de la ressource
     info = tuple(data[1:])
@@ -228,19 +234,14 @@ def get_ressource_BUT23_from_google(code_ressource, docu):
             data[k] = tools.caracteres_recalcitrants(val)
 
     # Analyse des champs manquants
-    champ_manquants = []
-    for (j, champ) in enumerate(ENTETES_RESSOURCES):
-        if not data[j]:
-            champ_manquants += [champ]
-    if champ_manquants:
-        __LOGGER.warning(f"{code_ressource}: champs manquants : " + ", ".join(champ_manquants))
+    analyse_champ_manquants(code_ressource, data, ENTETES_RESSOURCES, OPTIONNEL_RESSOURCES)
 
     # Sauvegarde des champs de la ressource
     info = tuple(data[1:])
     return info, apprentissages, competences, coeffs
 
 
-def parse_docu_ressource(code_ressource, docu, pnofficiel):
+def parse_docu_ressource(code_ressource, docu, pnofficiel, complementaire=False):
     """
     Parse un document google exporté en .rdocx, avec pour son code_ressource donné.
     Format du parsing issu de docx2python
@@ -259,7 +260,7 @@ def parse_docu_ressource(code_ressource, docu, pnofficiel):
         nom_ressource = tools.caracteres_recalcitrants(res[1][2][0])
 
     # Création de la ressource
-    r = rdocx.ressourcedocx.RessourceDocx(nom_ressource, code_ressource, res, pnofficiel)
+    r = rdocx.ressourcedocx.RessourceDocx(nom_ressource, code_ressource, res, pnofficiel, complementaire=complementaire)
 
     if version == "BUT1":
         info, apprentissages, competences, coeffs = get_ressource_BUT1_from_google(code_ressource, docu[1])  # le tableau de la fiche
@@ -321,12 +322,7 @@ def get_sae_BUT1_from_google(code, res, pnofficiel):
             [chp[0] for chp in non_interprete]))
 
     # Analyse des champs manquants
-    champ_manquants = []
-    for (j, champ) in enumerate(ENTETES_CHAPEAU):
-        if not data[j]:
-            champ_manquants += [champ]
-    if champ_manquants:
-        __LOGGER.warning(f"{code}: champs manquants : " + ", ".join(champ_manquants))
+    analyse_champ_manquants(code, data, ENTETES_CHAPEAU, OPTIONNEL_SAE)
 
     # Sauvegarde des champs de la ressource
     info = tuple(data[1:])
@@ -447,12 +443,7 @@ def get_sae_BUT23_from_google(code_sae, docu):
             data[k] = tools.caracteres_recalcitrants(val)
 
     # Analyse des champs manquants
-    champ_manquants = []
-    for (j, champ) in enumerate(ENTETES_CHAPEAU):
-        if not data[j]:
-            champ_manquants += [champ]
-    if champ_manquants:
-        __LOGGER.warning(f"{code_sae}: champs manquants : " + ", ".join(champ_manquants))
+    analyse_champ_manquants(code_sae, data, ENTETES_CHAPEAU, OPTIONNEL_SAE)
 
     # Analyse des exemples
     exemples = tools.remove_ligne_vide(exemples) # supprime les lignes vides
@@ -516,12 +507,7 @@ def get_exemple_sae_BUT1_from_google(nom_exemple, res):
             [chp[0] for chp in non_interprete]))
 
     # Analyse des champs manquants
-    champ_manquants = []
-    for (j, champ) in enumerate(ENTETES_EXEMPLES):
-        if not data[j]:
-            champ_manquants += [champ]
-    if champ_manquants:
-        __LOGGER.warning(f"Dans \"{nom_exemple}\", champs manquants  : " + ",".join(champ_manquants))
+    analyse_champ_manquants(nom_exemple, data, ENTETES_EXEMPLES, [])
 
     # Sauvegarde des champs de la ressource
     info = tuple(data[1:])

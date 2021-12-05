@@ -21,12 +21,12 @@ class RessourceDocx(rdocx.docx.Docx):
                             exemple):
         """Charge les informations lues de la fiche docx (et parsées par parsedocx)"""
         self.codeRT = codeRT.strip()
-        self.semestre = semestre # <--
+        self.nom_semestre = semestre # <--
 
         self.heures_encadrees = heures_encadrees
         self.details_heures_encadrees = {'cm': cm, 'td': td, 'tp': tp}
 
-        self.adaptation_locale = adapation_locale
+        self.type["adaptation_locale"] = adapation_locale
 
         self.saes = sae
         self.prerequis = prerequis
@@ -149,7 +149,7 @@ class RessourceDocx(rdocx.docx.Docx):
         """Lance le nettoyage des champs"""
         self.nettoie_code()
         self.nettoie_semestre()
-        self.annee = rofficiel.officiel.Officiel.get_annee_from_semestre(self.semestre)
+        self.annee = rofficiel.officiel.Officiel.get_annee_from_semestre(self.numero_semestre)
 
         self.nettoie_titre(self.officiel.DATA_RESSOURCES)
 
@@ -197,7 +197,7 @@ class RessourceDocx(rdocx.docx.Docx):
                 "codeRT": self.codeRT,
                 "libelle": self.codeRT,  # A revoir
                 "url": folded(self.url),
-                "semestre" : int(self.semestre),
+                "semestre" : self.nom_semestre,
                 "annee": self.annee,
                 "parcours": self.parcours,
                 "heures_formation": self.heures_encadrees if self.heures_encadrees else "???",
@@ -206,7 +206,8 @@ class RessourceDocx(rdocx.docx.Docx):
                 "details_heures_formation_pn": self.prepare_heures_yaml(self.details_heures_encadrees_pn),
                 "tableur_heures_formation": self.prepare_heures_yaml(self.tableur_heures_formation),
                 "tableur_heures_formation_pn": self.prepare_heures_yaml(self.tableur_heures_formation_pn),
-                "adaptation_locale": "oui" if self.adaptation_locale.lower() == "oui" else "non",
+                "type": self.type,
+                # "adaptation_locale": "oui" if self.adaptation_locale.lower() == "oui" else "non",
                 "coeffs": self.coeffs,
                 "competences": self.competences,
                 "acs": self.acs,

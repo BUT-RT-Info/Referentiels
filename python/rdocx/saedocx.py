@@ -15,11 +15,11 @@ class SAEDocx(rdocx.docx.Docx):
                             projet, objectifs, description, ressources,
                             livrables, mots, parcours):
         self.codeRT = codeRT
-        self.semestre = semestre  # <--
+        self.nom_semestre = semestre  # <--
         self.heures_encadrees = heures_encadrees
         self.details_heures_encadrees = {'cm': cm, 'td': td, 'tp': tp}
 
-        self.adaptation_locale = adaptation_locale
+        self.type["adaptation_locale"] = adaptation_locale
         self.projet = projet
         self.objectifs = objectifs
         self.descr = description # la description
@@ -110,7 +110,7 @@ class SAEDocx(rdocx.docx.Docx):
         """Nettoie le champ ressource d'une sae en détectant les codes"""
         if self.ressources:
             if "Toutes les ressources" in "\n".join(self.ressources):
-                liste_ressources = self.officiel.DATA_RESSOURCES[self.annee][self.semestre]
+                liste_ressources = self.officiel.DATA_RESSOURCES[self.annee][self.numero_semestre]
             else:
                 liste_ressources = self.nettoie_liste_ressources(self.ressources)
             # liste_sae = self.nettoie_liste_sae(self.ressources) # s'il y a des SAE
@@ -182,7 +182,7 @@ class SAEDocx(rdocx.docx.Docx):
         self.nettoie_code()
 
         self.nettoie_semestre()
-        self.annee = rofficiel.officiel.Officiel.get_annee_from_semestre(self.semestre)
+        self.annee = rofficiel.officiel.Officiel.get_annee_from_semestre(self.numero_semestre)
 
         self.nettoie_titre_sae()
 
@@ -224,7 +224,7 @@ class SAEDocx(rdocx.docx.Docx):
                 "codeRT": self.codeRT,
                 "libelle": self.codeRT,
                 "url": folded(self.url),
-                "semestre": int(self.semestre),
+                "semestre": self.nom_semestre,
                 "annee": self.annee,
                 "parcours": self.parcours,
                 "heures_formation": self.heures_encadrees if self.heures_encadrees != "" else "???",
@@ -235,7 +235,8 @@ class SAEDocx(rdocx.docx.Docx):
                 "tableur_heures_formation_pn": self.prepare_heures_yaml(self.tableur_heures_formation_pn),
                 "heures_projet": self.projet if self.projet != "" else "???",
                 "heures_projet_pn": "???",
-                "adaptation_locale": "oui" if self.adaptation_locale.lower() == "oui" else "non",
+                "type": self.type,
+                # "adaptation_locale": "oui" if self.adaptation_locale.lower() == "oui" else "non",
                 "coeffs": self.coeffs,
                 "competences": self.competences,
                 "acs": self.acs,

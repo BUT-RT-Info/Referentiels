@@ -53,6 +53,8 @@ REPERTOIRE_MODELE_LATEX = Config.ROOT + "/python/latex"
 # Chargement des ressources, des SAés et des exemples
 pnofficiel = rofficiel.officiel.Officiel() # charge les données officielles
 semestres = {"S{}".format(d) : None for d in range(1, 7)}
+# semestres = {}
+semestres["SC"] = None
 print("***Etape 1*** Chargement des yaml")
 for sem in semestres:
     print(f" > Semestre {sem}")
@@ -99,29 +101,32 @@ for sem in semestres:
         print(f"Export de {fichierlatex}")
     else:
         for parcours in rofficiel.officiel.PARCOURS:
-            chaine = semestres[sem].to_latex_matrice_ac_vs_activites(parcours=parcours)
-            fichierlatex = REPERTOIRE_SYNTHESE + "/" + f"{sem}_{parcours}_acs_vs_saes_ressources.tex"
-            with open(fichierlatex, "w", encoding="utf8") as fid:
-                fid.write(chaine)
-            print(f"Export de {fichierlatex}")
+            if not semestres[sem].est_complementaire():
+                chaine = semestres[sem].to_latex_matrice_ac_vs_activites(parcours=parcours)
+                fichierlatex = REPERTOIRE_SYNTHESE + "/" + f"{sem}_{parcours}_acs_vs_saes_ressources.tex"
+                with open(fichierlatex, "w", encoding="utf8") as fid:
+                    fid.write(chaine)
+                print(f"Export de {fichierlatex}")
 
     ## Matrices dépendances saes & ressources
-    chaine = semestres[sem].to_latex_matrice_dependance()
-    fichierlatex = REPERTOIRE_SYNTHESE + "/" + f"{sem}_dependances_saes_vs_ressources.tex"
-    with open(fichierlatex, "w", encoding="utf8") as fid:
-        fid.write(chaine)
-    print(f"Export de {fichierlatex}")
+    if not semestres[sem].est_complementaire():
+        chaine = semestres[sem].to_latex_matrice_dependance()
+        fichierlatex = REPERTOIRE_SYNTHESE + "/" + f"{sem}_dependances_saes_vs_ressources.tex"
+        with open(fichierlatex, "w", encoding="utf8") as fid:
+            fid.write(chaine)
+        print(f"Export de {fichierlatex}")
 
     # Matrice textuelle
     # (M1, acs_du_semestre, codes_activites) = semestres[sem].get_matrice_ac_vs_activites()
     # chaine = semestres[sem].str_matrice_vs_activites(M1, acs_du_semestre, codes_activites)
     # print(chaine)
 
-
-    fichierlatex = REPERTOIRE_SYNTHESE + "/" + f"{sem}_acs_vs_saes_ressources.tex"
-    with open(fichierlatex, "w", encoding="utf8") as fid:
-         fid.write(chaine)
-    print(f"Export de {fichierlatex}")
+    ## Matrice des acs vs saes et ressources
+    if not semestres[sem].est_complementaire():
+        fichierlatex = REPERTOIRE_SYNTHESE + "/" + f"{sem}_acs_vs_saes_ressources.tex"
+        with open(fichierlatex, "w", encoding="utf8") as fid:
+             fid.write(chaine)
+        print(f"Export de {fichierlatex}")
 
 
     # coeff1 = semestres[sem].get_matrice_coeffs_comp_vs_activites()
@@ -144,13 +149,14 @@ for parcours in rofficiel.officiel.PARCOURS:
     print("***", parcours)
     for sem in semestres: # pour chaque semestre
         print(" > Semestre", sem)
-        codes_ressources = semestres[sem].tri_codes_ressources(parcours=parcours)
-        # print(codes_ressources)
-        for c in codes_ressources:
-            chaine = ""
-            chaine += semestres[sem].ressources[c].yaml["nom"]
-            chaine += " (~{}h)".format(semestres[sem].ressources[c].yaml["heures_formation"])
-            chaine += " : " + semestres[sem].ressources[c].yaml["motscles"]
+        if not semestres[sem].est_complementaire():
+            codes_ressources = semestres[sem].tri_codes_ressources(parcours=parcours)
+            # print(codes_ressources)
+            for c in codes_ressources:
+                chaine = ""
+                chaine += semestres[sem].ressources[c].yaml["nom"]
+                chaine += " (~{}h)".format(semestres[sem].ressources[c].yaml["heures_formation"])
+                chaine += " : " + semestres[sem].ressources[c].yaml["motscles"]
             # print(chaine)
 
 

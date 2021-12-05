@@ -217,7 +217,7 @@ for s in liste_saes:
     s.nettoie_champs()
 
     # Tri dans le bon semestre
-    saes[s.semestre] += [s]
+    saes[s.numero_semestre] += [s]
 
 # Post traitement des exemples "S1" => "codesae chapeau" => "ExempleSAE"
 exemples = {"S1" : {}, "S2" : {} }
@@ -227,7 +227,7 @@ for s in liste_exemples: # la sae
     exemples[sem][s] = []
 
     for e in liste_exemples[s]:
-        print(f"{s} : {e.semestre}")
+        print(f"{s} : {e.numero_semestre}")
         e.nettoie_champs()
 
         # Tri dans le bon semestre

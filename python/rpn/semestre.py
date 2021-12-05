@@ -31,7 +31,7 @@ class SemestrePN():
 
         """
         self.nom_semestre = nom_semestre
-        self.numero_semestre = int(nom_semestre[1:])
+        self.numero_semestre = nom_semestre[1:]
 
         self.parcours = None # <- Mis à jour plus tard si besoin
         self.ressources = {}
@@ -40,14 +40,20 @@ class SemestrePN():
 
         # Charge les infos officielles
         self.officiel = pnofficiel
-        self.annee = self.officiel.get_annee_from_semestre(self.nom_semestre[1])
+        self.annee = self.officiel.get_annee_from_semestre(self.numero_semestre)
 
         # Les ACS du semestre
-        self.comp_et_acs = self.officiel.DATA_ACS[self.annee] #
+        if not self.est_complementaire():
+            self.comp_et_acs = self.officiel.DATA_ACS[self.annee] #
+        else:
+            self.comp_et_acs = {}
         self.nbre_acs = len([self.comp_et_acs[comp][a] for comp in self.comp_et_acs for a in self.comp_et_acs[comp]])
 
         # Les compétences du semestre
-        self.niveaux = self.officiel.get_noms_niveaux()[self.annee]
+        if not self.est_complementaire():
+            self.niveaux = self.officiel.get_noms_niveaux()[self.annee]
+        else:
+            self.niveaux = {}
         self.comp = self.officiel.DATA_COMPETENCES
 
         # Chargement des ressources
@@ -72,6 +78,11 @@ class SemestrePN():
         self.saes_par_parcours = self.tri_activites_par_parcours(self.saes)
         self.ressources_par_parcours = self.tri_activites_par_parcours(self.ressources)
 
+    def est_complementaire(self):
+        if self.annee == "BUTC":
+            return True
+        else:
+            return False
 
     def tri_activites_par_parcours(self, dico):
         """Tri une liste d'activité par parcours (soit des ressources, soit des saes, donc les codes sont fournis dans un dictionnaire)"""
@@ -116,12 +127,18 @@ class SemestrePN():
         for fichieryaml in fichiers:
             if type == "ressource":
                 a = rpn.ressource.Ressource(fichieryaml, self.officiel)  # lecture du fichier
-                if a.nom_semestre == self.nom_semestre:
+                if not self.est_complementaire():
+                    if a.nom_semestre == self.nom_semestre:
+                        self.ressources[a.code] = a
+                else:
                     self.ressources[a.code] = a
             else: # type = "saé"
                 if "exemple" not in fichieryaml:
                     a = rpn.sae.SAE(fichieryaml, self.officiel)
-                    if a.nom_semestre == self.nom_semestre:
+                    if not self.est_complementaire():
+                        if a.nom_semestre == self.nom_semestre:
+                            self.saes[a.code] = a
+                    else:
                         self.saes[a.code] = a
                 else: # un exemple de SAE
                     e = rpn.exemple.ExempleSAE(fichieryaml, self.officiel)
@@ -373,26 +390,38 @@ class SemestrePN():
 
         return "\n".join(champs) + "\n"
 
-    def to_latex_description_semestres(self, modele=Config.ROOT + "/python/templates/modele_semestre.tex"):
+    def to_latex_description_semestres(self,
+                                       modele=Config.ROOT + "/python/templates/modele_semestre.tex",
+                                       modele_complementaire=Config.ROOT + "/python/templates/modele_semestre_complementaire.tex"):
         """Génère le code latex décrivant un semestre (ses SAE, ses ressources, ...)
         """
-        modlatex = modeles.get_modele(modele)
+        if not self.est_complementaire():
+            modlatex = modeles.get_modele(modele)
+        else:
+            modlatex = modeles.get_modele(modele_complementaire)
+
         latex_inclusion_fiches_saes = self.prepare_inclusion_fiches(self.saes_par_parcours)
         latex_inclusion_fiches_ressources = self.prepare_inclusion_fiches(self.ressources_par_parcours)
 
         latex_matrices = self.prepare_inclusion_matrices()
 
         # Injection dans le template
-        chaine = modeles.TemplateLatex(modlatex).substitute(
-            numero=self.numero_semestre,
-            fichierListeSAEs="liste_saes_%s.tex" % (self.nom_semestre),
-            fichierListeRessources="liste_ressources_%s.tex" % (self.nom_semestre),
-            fichierDependance="%s_dependances_saes_vs_ressources.tex" % (self.nom_semestre),
-            # fichierMatriceACs="%s_acs_vs_saes_ressources.tex" % (self.nom_semestre),
-            fichiersMatriceACs=latex_matrices,
-            inclusion_fiches_saes=latex_inclusion_fiches_saes,
-            inclusion_fiches_ressources=latex_inclusion_fiches_ressources,
-        )
+        if not self.est_complementaire():
+                chaine = modeles.TemplateLatex(modlatex).substitute(
+                    numero=self.numero_semestre,
+                    fichierListeSAEs="liste_saes_%s.tex" % (self.nom_semestre),
+                    fichierListeRessources="liste_ressources_%s.tex" % (self.nom_semestre),
+                    fichierDependance="%s_dependances_saes_vs_ressources.tex" % (self.nom_semestre),
+                    # fichierMatriceACs="%s_acs_vs_saes_ressources.tex" % (self.nom_semestre),
+                    fichiersMatriceACs=latex_matrices,
+                    inclusion_fiches_saes=latex_inclusion_fiches_saes,
+                    inclusion_fiches_ressources=latex_inclusion_fiches_ressources,
+                )
+        else:
+            chaine = modeles.TemplateLatex(modlatex).substitute(
+                    fichierListeRessources="liste_ressources_%s.tex" % (self.nom_semestre),
+                    inclusion_fiches_ressources=latex_inclusion_fiches_ressources,
+                )
         return chaine
 
 

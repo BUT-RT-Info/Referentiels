@@ -150,10 +150,10 @@ S6:
   SAÉ6.5: "SAE-ROM-65.docx"
   SAÉ6.6: "SAE-DEVCLOUD-66.docx"
   SAÉ6.7: "SAE-PILPRO-67.docx"
-SX:
-  RX01: "RX01.docx"
-  RX02: "RX02.docx"
-  RX03: "RX1.docx"
-  RX04: "RX2.docx"
-  RX05: "RX3.docx"
-  RX06: "RX4.docx"
+SC:
+  RC.01: "RC01.docx"
+  RC.02: "RC02.docx"
+  RC.03: "RC03.docx"
+  RC.04: "RC04.docx"
+  RC.05: "RC05.docx"
+  RC.06: "RC06.docx"

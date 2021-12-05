@@ -1,5 +1,6 @@
 import logging
 import re
+import string
 
 import ruamel.yaml
 
@@ -37,19 +38,20 @@ class Docx():
     """
     __LOGGER = logging.getLogger(__name__)
 
-    def __init__(self, nom, code, brut, pnofficiel):
+    def __init__(self, nom, code, brut, pnofficiel, complementaire=False):
         self.nom = nom
         self.code = code
         self.codeRT = None # chargé ultérieurement
         self.brut = brut  # les données brutes de la ressource/saé
-        self.semestre = None # le semestre de la ressource/saé (chargé ultérieurement sous forme d'une str)
+        self.numero_semestre = None # le semestre de la ressource/saé (chargé ultérieurement sous forme d'une str)
+        self.nom_semestre = None
         self.annee = None # l'année en fonction du semestre
         self.parcours = None  # chargé ultérieurement
 
         # les compétences et apprentissages critiques
         self.apprentissages = None # les acs tels que décrit dans le rdocx (chargés ultérieurement)
-        self.acs = None # les acs après analyse des apprentissages
-        self.competences = None  # chargé ultérieurement
+        self.acs = {} # les acs après analyse des apprentissages
+        self.competences = {}  # chargé ultérieurement
 
         # les heures
         self.heures_encadrees = None
@@ -60,7 +62,8 @@ class Docx():
         self.tableur_heures_formation_pn = {'cm/td': None, 'tp': None} # les heures du tableur
 
         # adaptation locale
-        self.adaptation_locale = False
+        self.type = {"adaptation_locale": False,
+                     "complementaire": complementaire}
 
         # les listes de ressources ou saés associés
         self.ressources = None
@@ -138,6 +141,7 @@ class Docx():
     def nettoie_acs(self):
         """Nettoie les acs d'une ressource ou d'une saé,
         en les remplaçant par leur code pour les 3 compétences"""
+
         if "Tous les AC" in "\n".join(self.apprentissages):
             self.__LOGGER.warning(f"{self}: nettoie_acs: Injecte tous les AC")
             self.acs = copy.deepcopy(self.officiel.DATA_ACS[self.annee])
@@ -166,28 +170,35 @@ class Docx():
 
             self.acs = dico  # Mise à jour du champ
         else: # Cas du BUT2/BUT3 dans lequel les ACS ne sont pas rangés par compétence
+            # Lecture des ACs
             acs_avec_code = []
             for val in self.apprentissages:
-                acs_avec_code.extend( devine_acs_by_code(val) )
-            acs_avec_code = sorted(list(set(acs_avec_code))) # supprime les doublons
-            # Trie les acs par compétences (dans l'année du BUT concernée)
-            acs = {comp: [] for comp in self.officiel.DATA_ACS[self.annee]}
+                acs_avec_code.extend(devine_acs_by_code(val))
+            acs_avec_code = sorted(list(set(acs_avec_code)))  # supprime les doublons
+
+            if not self.type["complementaire"]: # semestre classique
+                # Trie les acs par compétences (dans l'année du BUT concernée)
+                acs = {comp: [] for comp in self.officiel.DATA_ACS[self.annee]} # les compétences tout parcours
+            else:
+                acs = {comp: [] for comp in self.officiel.DATA_ACS["BUT2"]}
+
             for ac in acs_avec_code:
                 comp = self.officiel.get_comp_from_acs_code(ac)
                 if not comp:
                     self.__LOGGER.warning(f"Pb l'{ac} n'est rattaché à aucune comp")
                 else:
                     acs[comp].append(ac)
-            self.acs = acs
-
-        # supprime les champs vides
-        comp_a_supprimer = [comp for comp in self.acs if not self.acs[comp]]
-        for comp in comp_a_supprimer:
-            del self.acs[comp]
+                self.acs = acs
 
 
-        if not self.acs:
-            self.__LOGGER.warning(f"{self.code}/{self.codeRT}: pas d'ACS !!")
+            # supprime les champs vides
+            comp_a_supprimer = [comp for comp in self.acs if not self.acs[comp]]
+            for comp in comp_a_supprimer:
+                del self.acs[comp]
+
+
+            if not self.acs:
+                self.__LOGGER.warning(f"{self.code}/{self.codeRT}: pas d'ACS !!")
 
 
     def nettoie_competences(self):
@@ -232,13 +243,17 @@ class Docx():
 
     def nettoie_adaptation_locale(self):
         """Nettoie le champ adapation locale"""
-        if self.adaptation_locale and self.adaptation_locale.strip() != "":
-            if "oui" in self.adaptation_locale.lower():
-                self.adaptation_locale = "oui"
+        adaptation = self.type["adaptation_locale"]
+        if self.type["complementaire"]: # module complémentaire
+            self.type["adaptation_locale"] = True
+            self.__LOGGER.debug(f"{self}: nettoie_adaptation_locale: forcée à oui/True")
+        elif adaptation and adaptation.strip() != "":
+            if "oui" in adaptation.lower():
+                self.type["adaptation"] = True
             else:
-                self.adaptation_locale = "non"
+                self.type["adaptation"] = False
         else:
-            self.adaptation_locale = "non"
+            self.type["adaptation"] = False
             self.__LOGGER.warning(f"{self}: nettoie_adaptation_locale: pas d'info sur l'adaptation locale => fixe à non")
 
 
@@ -291,20 +306,19 @@ class Docx():
         """Nettoie le titre d'une ressource ou d'une SAE en utilisant les titres officiels
         fournis dans le yaml (via le dictionnaire DATA_RESSOURCES)"""
 
-        def devine_nom(champ, semestre):
+        def devine_nom(champ, nom_semestre):
             champ_purge = tools.supprime_accent_espace(champ)
             # for sem in data_titres:
-            if semestre.startswith("S"):
-                sem = semestre
-            else:
-                sem = "S" + semestre
-            for code in data_titres[sem]:
-                nom_purge = tools.supprime_accent_espace(data_titres[sem][code])
+            for code in data_titres[nom_semestre]:
+                nom_purge = tools.supprime_accent_espace(data_titres[nom_semestre][code])
                 if champ_purge.startswith(nom_purge):
-                    return data_titres[sem][code] # le bon nom
+                    return data_titres[nom_semestre][code] # le bon nom
 
         old = self.nom # .replace(":", "-") # supprime les -
-        titre = devine_nom(self.nom, self.semestre)
+        if not self.type["complementaire"]:
+            titre = devine_nom(self.nom, self.nom_semestre)
+        else:
+            titre = devine_nom(self.nom, "SC")
         if titre and titre != old:
             Docx.__LOGGER.warning(f"nettoie_titre : {old} => titre deviné \"{titre}\"")
             self.nom = titre
@@ -398,19 +412,31 @@ class Docx():
     def nettoie_semestre_from_decode(self, semestre_officiel_decode):
         """Pour une ressource, ou une SAE, nettoie le champ semestre
         étant donné le semestre_officiel_decode"""
-        old = self.semestre # le semestre indiqué dans la ressource
+        old = self.nom_semestre # le semestre indiqué dans la ressource
 
         if not semestre_officiel_decode:
             raise Exception(f"{self}: nettoie_semestre: n'est rattaché à aucun semestre")
         else:
-            try:
-                old = "S" + str(int(old)) # lorsque le semestre a déjà été nettoyé
-            except:
-                pass
-            if semestre_officiel_decode not in old:
-                self.__LOGGER.warning(f"{self}: nettoie_semestre: PAS de semestre ou mal détecté => rattaché à {semestre_officiel_decode}")
-            self.semestre = semestre_officiel_decode[1] # ne prend que le chiffre
-
+            if self.type["complementaire"]: # liste de semestre autorise
+                semestres_decodes = []
+                for no_sem in string.digits[1:7]:
+                    if "S"+no_sem in self.nom_semestre:
+                        semestres_decodes.append(no_sem)
+                if not semestres_decodes:
+                    self.numero_semestre = "C"
+                    self.nom_semestre = "SC"
+                else:
+                    self.numero_semestre = semestres_decodes
+                    self.nom_semestre = ["S" + sem for sem in semestres_decodes]
+            else: # les ressources non complémentaires => mention du semestre obligatoire
+                try:
+                    old = "S" + str(int(old)) # lorsque le semestre a déjà été nettoyé
+                except:
+                    pass
+                if semestre_officiel_decode not in old:
+                    self.__LOGGER.warning(f"{self}: nettoie_semestre: PAS de semestre ou mal détecté => rattaché à {semestre_officiel_decode}")
+                self.numero_semestre = semestre_officiel_decode[1] # ne prend que le chiffre
+                self.nom_semestre = "S" + semestre_officiel_decode[1]
 
     def nettoie_liste_ressources(self, contenu):
         """Nettoie un contenu contenant une liste ressources, en extrayant les codes ressources
@@ -600,13 +626,14 @@ def devine_acs_by_code(champ):
 
 
 def devine_ressources_by_code_RXXX(champ):
-    """Recherche les codes ressources de la forme RXXX ou R-XXX-XXX dans champ ;
+    """Recherche les codes ressources de la forme RXXX ou R-XXX-XXX ou RCXX dans champ ;
     """
     # Sans notation pointée
     codes1 = re.findall(r"R\s*\d{3}", champ) # de code à 3 chiffres
     codes2 = re.findall(r"R\s*\d{3}[:\|\D]", champ) # est-ce encore utile ?
+    codes3 = re.findall(r"RC\s*\d{2}", champ) # le code des modules complémentaires
     # codes3 = re.findall(r"R-[a-zA-Z]{0,9}-\d{3}", champ)
-    codes = codes1 + [c[:-1] for c in codes2] # + codes3
+    codes = codes1 + [c[:-1] for c in codes2] + codes3
     return sorted(list(set(codes)))
 
 

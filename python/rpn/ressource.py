@@ -31,7 +31,8 @@ class Ressource(rpn.activite.ActivitePedagogique):
         self.heures_projet_pn = 0
 
         # L'adaptation locale
-        self.adaptation_locale = self.yaml["adaptation_locale"]
+        self.type = self.yaml["type"]
+        self.adaptation_locale = self.yaml["type"]["adaptation_locale"]
 
 
 
